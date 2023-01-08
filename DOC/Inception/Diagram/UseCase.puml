@@ -62,9 +62,9 @@ rectangle App {
  (Gestisce mazzo/i personalizzato/i) as zUC2
   (Gestisce mazzo carte desiderate) as zUC3
   (Gestisce mazzo carte possedute) as zUC4
-  (Visualizza tutte le carte di un gioco) as zUC5
-  (Effettua delle ricerche) as zUC6
-  (Visualizza i dettagli di una carta) as zUC7
+  ([UC01] Visualizza tutte le carte di un gioco [UC01]) as zUC5
+  ([UC02] Effettua delle ricerche ) as zUC6
+  ([UC03] Visualizza i dettagli di una carta) as zUC7
 }
 U  -> V
 U ----> zUC1
