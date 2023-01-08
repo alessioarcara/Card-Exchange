@@ -1,0 +1,30 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:style>
+        .card {
+            position: relative;
+            border-style: dotted;
+            border-color: black;
+            width: 20rem;
+            height: 450px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-around;
+        }
+
+        .deleteButton {
+            position: absolute;
+            top: 0;
+            right: 0;
+        }
+    </ui:style>
+    <g:HTMLPanel>
+        <div class="{style.card}">
+            <div ui:field="nameDiv">placeholder</div>
+            <div ui:field="descDiv">placeholder</div>
+            <g:Button ui:field="deleteButton" text="X" styleName="{style.deleteButton}"/>
+        </div>
+    </g:HTMLPanel>
+</ui:UiBinder>

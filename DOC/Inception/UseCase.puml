@@ -1,0 +1,34 @@
+@startuml
+left to right direction
+
+' package uc01 [
+' **Title**: /
+' **Actor**: /
+' **Preconditions**: /
+' **Trigger**: /
+' **Normal Flow**: /
+' **Alternative flows and exceptions**: /
+' **Postcondition**: /
+' **Non funcional requirements**: /
+' ]
+
+actor Utente as U
+actor Visitatore as V
+
+rectangle App {
+    (Gestione carte possedute) as UC1
+    (Gestione carte desiderate) as UC2
+    (Gestione carte) as UC3
+    (Creazione mazzi personalizzati) as UC4
+    (Registrazione all'applicazione) as UC5
+}
+
+U -down-|> V
+U -- UC1
+U -- UC2
+(UC1) .> (UC3) : include
+(UC2) .> (UC3) : include
+U -- UC4
+V -- UC5
+
+@enduml

@@ -1,0 +1,96 @@
+IPOTESI COSTRUZIONE:
+UTENTE
+---------------------------------
+MY CARDS -> ()
+DESIRED CARDS -> ()
+CUSTOM DECKS -> [(), ..., ()]
+CUSTOM DECKS (0,...,n) -> {MY CARDS}
+---------------------------------
+CARTA
+    funzionalitàApplicazione COMUNI per tutte le carte
+    variabiliSpecificheDelGioco DIVERSE per i tipi di gioco
+    _________    __________
+    | CARTA |o-- |  TIPO  |
+    ---------    ----------
+
+    CARTA:
+        stato 
+        descrizione
+        tipoCarta: TIPO_1
+    CARTA:
+        stato 
+        descrizione
+        tipoCarta: TIPO_1
+    CARTA:
+        stato 
+        descrizione
+        tipoCarta: TIPO_2
+    CARTA:
+        stato 
+        descrizione
+        tipoCarta: TIPO_2
+    CARTA:
+        stato 
+        descrizione
+        tipoCarta: TIPO_2
+
+    TIPO1:
+        gioco: yugioh
+        artista: 
+    TIPO2:
+        gioco: pokemon
+        artista: 
+
+---------------------------------
+DETTAGLIO
+    ...proprietà della carta
+    UTENTI CHE LA DESIDERANO -> []
+    UTENTI CHE LA POSSEGGONO -> []
+    addOwnButton
+    addWishButton
+---------------------------------
+
+- utente aggiunge, modifica proprietà della carta, ed elimina carte da gioco *che possiede* nella realtà (nota: devono essere disponibili nel catalogo del sistema) 
+    /* 
+        * STATO: condizioni si trova la carta posseduta
+        valore numerico che va da 1 (molto rovinata) a 5 (in perfette condizioni)
+        * DESCRIZIONE: una descrizione testuale che una persona interessata ad effettuare lo scambio può leggere
+    */
+- utente aggiunge, modifica proprietà della carta, ed elimina carte da gioco *che vorrebbe avere (nota: devono essere disponibili nel catalogo del sistema)
+    /*
+        * STATO: la condizione minima che deve avere una carta desiderata
+        valore numerico che va da 1 (molto rovinata) a 5 (in perfette condizioni)
+        * DESCRIZIONE: una descrizione testuale che una persona interessata ad effettuare lo scambio può leggere
+    */
+- utente crea, modifica, elimina deck
+    /*
+        * deck ha un nome
+        * diversi deck possono contenere la stessa carta
+    */
+- visitatore ricerca carte aggiunte al catalogo del sistema
+    /*
+        * sceglie il gioco per cui fare la ricerca
+        * può applicare filtri alla ricerca
+    */
+- utente propone uno specifico scambio a un altro utente destinatario
+    /*
+        * utente proponente specifica carta/e proposte e carta/e richieste
+        * trigger: pulsante su utente destinatario in lista
+        * precondition: l'utente destinatario deve essere in una lista
+    */
+- utente destinatario conferma/respinge la proposta di scambio
+    /* 
+        * HAPPY PATH:
+        * il sistema aggiorna i deck delle carte possedute dei due utenti
+    */
+- utente si registra, si autentica e si disconnette dal sistema
+    /*
+        * email, password
+    */
+
+STATO INIZIALE
+------------------------------------------------------
+- CARD1 = [utentiCheLaHanno][utentiCheLaDesiderano]  -
+- CARD2 = [utentiCheLaHanno][utentiCheLaDesiderano]  -
+- CARD3 = [utentiCheLaHanno][utentiCheLaDesiderano]  -
+------------------------------------------------------

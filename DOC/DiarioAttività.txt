@@ -1,0 +1,15 @@
+###### DIARIO DEL PROGETTO ######
+
+## SPRINT 0 - INIZIALIZZAZIONE ##
+
+Inizio:     22/12/22
+Fine:       29/12/22
+
+PO: Alessio
+SM: Davide
+DT: Alessia, Matteo
+
+Stato Backlog inizio:   Vuoto
+Stato Backlog fine:     #TODO
+ 
+##################################
