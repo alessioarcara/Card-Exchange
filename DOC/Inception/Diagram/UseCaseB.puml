@@ -1,0 +1,83 @@
+@startuml
+left to right direction
+
+
+
+
+actor Utente as U
+actor Visitatore as  V
+
+'U --down--> V
+
+App -d[hidden]-> Detail
+
+
+
+rectangle Detail {
+package  uc01 [
+
+**Title**: Visualizza i dettagli di una carta
+**Actor**: Visitatore
+**Preconditions**: Il visitatore seleziona uno dei giochi disponibili
+**Trigger**: /
+**Normal Flow**:
+ - Il visitatore visualizza l'elenco di tutte le carte del gioco scelto
+**Alternative flows and exceptions**: /
+**Postcondition**: /
+**Non funcional requirements**:
+]
+
+package  uc02 [
+
+**Title**: Effettua ricerche
+**Actor**: Visitatore
+**Preconditions**: Il visitatore seleziona uno dei giochi disponibili
+**Trigger**: /
+**Normal Flow**:
+ - Il visitatore seleziona dei filtri a seconda del gioco scelto
+**Alternative flows and exceptions**: /
+**Postcondition**: Viene visualizzato l'elenco delle card del gioco scelto con l'applicazione dei filtri
+**Non funcional requirements**:
+]
+
+package  uc03 [
+
+**Title**: Visualizza i dettagli di una carta
+**Actor**: Visitatore
+**Preconditions**: Il visitatore seleziona uno dei giochi disponibili
+**Trigger**: /
+**Normal Flow**:
+ - Il visitatore cliccando su una carta in elenco, ne visualizza i dettagli
+**Alternative flows and exceptions**: /
+**Postcondition**: Viene visualizzato l'elenco delle card del gioco scelto con l'applicazione dei filtri
+**Non funcional requirements**:
+]
+
+
+
+}
+
+rectangle App {
+ (Organizza le carte in mazzi) as zUC1
+ (Gestisce mazzo/i personalizzato/i) as zUC2
+  (Gestisce mazzo carte desiderate) as zUC3
+  (Gestisce mazzo carte possedute) as zUC4
+  (Visualizza tutte le carte di un gioco) as zUC5
+  (Effettua delle ricerche) as zUC6
+  (Visualizza i dettagli di una carta) as zUC7
+}
+U  -> V
+U ----> zUC1
+V ----> zUC5
+(zUC1) ..> (zUC4) : extend
+(zUC1) ..> (zUC2) : extend
+(zUC1) ..> (zUC3) : extend
+(zUC5) ..> (zUC6) : extend
+(zUC5) ..> (zUC7) : extend
+
+uc01 -d[hidden]-> uc02
+uc01 -l[hidden]-> uc03
+
+
+
+@enduml
