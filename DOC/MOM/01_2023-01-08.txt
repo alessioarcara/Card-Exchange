@@ -1,0 +1,16 @@
+###### Inception - 08-01-2023 ######
+
+Sprint Planning 01:
+-------------------
+1) Spiegazione del Product Backlog da parte del PO (user stories e relative priorità) [Davide]
+
+2) Poker Planning tra i membri del team [Davide, Alessia, Alessio, Matteo]
+   valori delle carte selezionati sulla base della sequenza di Fibonacci modificata:
+   0  1/2  1  2  3  5  8  13  20  40  100  ?  -tazzina di caffè-
+
+3) Stima dell'effort delle user stories da parte di tutto il team [Davide, Alessia, Alessio, Matteo]
+
+4) Popolamento dello Sprint Backlog (tasks) a cura degli sviluppatori e dello SM [Alessio, Matteo, Alessia]
+
+5) Stima dell'effort dei singoli task relativi ad ogni user story da parte di tutto il team [Davide, Alessia, Alessio, Matteo]
+
