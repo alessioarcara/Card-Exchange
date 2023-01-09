@@ -2,7 +2,7 @@ package com.aadm.cardexchange.client.presenters;
 
 import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.CardsView;
-import com.aadm.cardexchange.shared.Card;
+import com.aadm.cardexchange.shared.CardImpl;
 import com.aadm.cardexchange.shared.CardServiceAsync;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -26,9 +26,9 @@ public class CardsActivity extends AbstractActivity implements CardsView.Present
     }
 
     public void fetchCards() {
-        rpcService.getCards(new BaseAsyncCallback<Card[]>() {
+        rpcService.getCards(new BaseAsyncCallback<CardImpl[]>() {
             @Override
-            public void onSuccess(Card[] result) {
+            public void onSuccess(CardImpl[] result) {
                 view.setData(result);
             }
         });

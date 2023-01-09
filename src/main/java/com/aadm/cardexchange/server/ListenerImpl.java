@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.shared.Card;
+import com.aadm.cardexchange.shared.CardImpl;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Serializer;
@@ -14,10 +14,10 @@ import java.util.logging.Logger;
 // import com.google.gson.Gson;
 
 public class ListenerImpl implements ServletContextListener, MapDBConstants {
-    private static final Card[] DUMMY_DATA = new Card[]{
-            new Card("Charizard", "Pokemon fuoco"),
-            new Card("Blastoise", "Pokemon acqua"),
-            new Card("Venusaur", "Pokemon foglia")
+    private static final CardImpl[] DUMMY_DATA = new CardImpl[]{
+            new CardImpl("Charizard", "Un pokemon nervoso", "Fuoco"),
+            new CardImpl("Blastoise", "Un pokemon arrogante", "Acqua"),
+            new CardImpl("Venusaur", "Un pokemon solitario", "Erba")
     };
 
     @Override
@@ -31,9 +31,9 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
                 // stocks = objectMapper.readValue(new File("stock.json"), new
                 // TypeReference<List<String>>() {
                 // });
-                Serializer<Card> customSerializer = new SerializerCard();
+                Serializer<CardImpl> customSerializer = new SerializerCard();
                 DB db = DBMaker.fileDB(new File(DB_FILENAME)).make();
-                Map<Integer, Card> map = db
+                Map<Integer, CardImpl> map = db
                         .hashMap(CARDS_HASHMAP_NAME, Serializer.INTEGER, customSerializer)
                         .createOrOpen();
                 for (int i = 0; i < DUMMY_DATA.length; i++) {
