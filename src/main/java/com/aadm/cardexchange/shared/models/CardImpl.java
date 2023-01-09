@@ -1,6 +1,7 @@
-package com.aadm.cardexchange.shared;
+package com.aadm.cardexchange.shared.models;
 
 import java.io.Serializable;
+
 
 public class CardImpl implements Card, Serializable {
     private static final long serialVersionUID = 1L;

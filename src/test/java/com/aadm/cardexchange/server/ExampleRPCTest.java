@@ -1,7 +1,7 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.shared.Card;
-import com.aadm.cardexchange.shared.CardImpl;
+import com.aadm.cardexchange.shared.models.Card;
+import com.aadm.cardexchange.shared.models.CardImpl;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

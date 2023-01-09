@@ -1,10 +1,12 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.shared.CardImpl;
 import com.aadm.cardexchange.shared.CardService;
+import com.aadm.cardexchange.shared.models.CardImpl;
+import com.aadm.cardexchange.shared.models.Game;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 
+import java.util.List;
 import java.util.Map;
 
 public class CardServiceImpl extends RemoteServiceServlet implements CardService, MapDBConstants {
@@ -32,5 +34,10 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
             cards[i] = map.get(i);
         }
         return cards;
+    }
+
+    @Override
+    public <T> List<T> getGameCards(Game game) {
+        return null;
     }
 }

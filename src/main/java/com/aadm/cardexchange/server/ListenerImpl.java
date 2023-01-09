@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.shared.CardImpl;
+import com.aadm.cardexchange.shared.models.CardImpl;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Serializer;

@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.client.views;
 
-import com.aadm.cardexchange.shared.Card;
+import com.aadm.cardexchange.shared.models.Card;
 import com.google.gwt.user.client.ui.IsWidget;
 
 public interface CardsView extends IsWidget {

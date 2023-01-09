@@ -1,4 +1,4 @@
-package com.aadm.cardexchange.shared;
+package com.aadm.cardexchange.shared.models;
 
 public interface Card {
     String getName();

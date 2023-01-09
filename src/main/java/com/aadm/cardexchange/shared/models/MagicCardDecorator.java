@@ -1,4 +1,4 @@
-package com.aadm.cardexchange.shared;
+package com.aadm.cardexchange.shared.models;
 
 
 public class MagicCardDecorator extends CardDecorator {
@@ -11,8 +11,7 @@ public class MagicCardDecorator extends CardDecorator {
     private final boolean isReprint;
 
 
-    protected MagicCardDecorator(Card card, String artist, String rarity, boolean hasFoil,
-                                 boolean isAlternative, boolean isFullArt, boolean isPromo, boolean isReprint) {
+    public MagicCardDecorator(Card card, String artist, String rarity, boolean hasFoil, boolean isAlternative, boolean isFullArt, boolean isPromo, boolean isReprint) {
         super(card);
         this.artist = artist;
         this.rarity = rarity;

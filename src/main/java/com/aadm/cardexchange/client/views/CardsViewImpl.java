@@ -2,7 +2,7 @@ package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.widgets.CardWidget;
 import com.aadm.cardexchange.client.widgets.FunctionInterface;
-import com.aadm.cardexchange.shared.Card;
+import com.aadm.cardexchange.shared.models.Card;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;

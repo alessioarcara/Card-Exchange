@@ -1,4 +1,4 @@
-package com.aadm.cardexchange.shared;
+package com.aadm.cardexchange.shared.models;
 
 public abstract class CardDecorator implements Card {
     private final Card wrappee;

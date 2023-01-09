@@ -1,4 +1,5 @@
-package com.aadm.cardexchange.shared;
+package com.aadm.cardexchange.shared.models;
+
 
 public class PokemonCardDecorator extends CardDecorator {
     private final String artist;
