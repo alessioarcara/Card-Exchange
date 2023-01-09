@@ -25,8 +25,7 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
     }
 
     public CardImpl[] getCards() {
-        Map<Integer, CardImpl> map = getDb().getMap(getServletContext(), CARDS_HASHMAP_NAME, Serializer.INTEGER,
-                new SerializerCard());
+        Map<Integer, CardImpl> map = getDb().getMap(getServletContext(), CARDS_HASHMAP_NAME, Serializer.INTEGER, new SerializerCard());
         int n = map.size();
         CardImpl[] cards = new CardImpl[n];
         for (int i = 0; i < n; i++) {

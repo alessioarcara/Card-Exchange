@@ -1,14 +1,20 @@
 package com.aadm.cardexchange.shared;
 
-public class CardImpl implements Card {
-    private final String name;
-    private final String description;
-    private final String type;
+import java.io.Serializable;
+
+public class CardImpl implements Card, Serializable {
+    private static final long serialVersionUID = 1L;
+    private String name;
+    private String description;
+    private String type;
 
     public CardImpl(String name, String description, String type) {
         this.name = name;
         this.description = description;
         this.type = type;
+    }
+
+    public CardImpl() {
     }
 
     public String getName() {

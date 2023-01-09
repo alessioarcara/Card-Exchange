@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.shared;
 
+
 public class MagicCardDecorator extends CardDecorator {
     private final String artist;
     private final String rarity;

@@ -6,5 +6,5 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 // associa il service a un path relativo al modulo
 @RemoteServiceRelativePath("cards")
 public interface CardService extends RemoteService {
-    Card[] getCards();
+    CardImpl[] getCards();
 }

@@ -2,7 +2,7 @@ package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.widgets.CardWidget;
 import com.aadm.cardexchange.client.widgets.FunctionInterface;
-import com.aadm.cardexchange.shared.CardImpl;
+import com.aadm.cardexchange.shared.Card;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -33,9 +33,9 @@ public class CardsViewImpl extends Composite implements CardsView, FunctionInter
     }
 
     @Override
-    public void setData(CardImpl[] data) {
+    public void setData(Card[] data) {
         placeholder.removeFromParent();
-        for (CardImpl card : data) {
+        for (Card card : data) {
             cardsPanel.add(new CardWidget(this, card.getName(), card.getDescription()));
         }
     }

@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 public class SerializerCard implements Serializer<CardImpl>, Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 2L;
 
     @Override
     public void serialize(DataOutput2 out, CardImpl value) throws IOException {
