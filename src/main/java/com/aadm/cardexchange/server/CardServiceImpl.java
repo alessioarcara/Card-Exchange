@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.shared.Card;
+import com.aadm.cardexchange.shared.CardImpl;
 import com.aadm.cardexchange.shared.CardService;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
@@ -24,11 +24,10 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
         return db;
     }
 
-    public Card[] getCards() {
-        Map<Integer, Card> map = getDb().getMap(getServletContext(), CARDS_HASHMAP_NAME, Serializer.INTEGER,
-                new SerializerCard());
+    public CardImpl[] getCards() {
+        Map<Integer, CardImpl> map = getDb().getMap(getServletContext(), CARDS_HASHMAP_NAME, Serializer.INTEGER, new SerializerCard());
         int n = map.size();
-        Card[] cards = new Card[n];
+        CardImpl[] cards = new CardImpl[n];
         for (int i = 0; i < n; i++) {
             cards[i] = map.get(i);
         }
