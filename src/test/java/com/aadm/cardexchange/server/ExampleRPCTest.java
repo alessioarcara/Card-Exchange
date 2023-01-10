@@ -47,7 +47,7 @@ public class ExampleRPCTest {
                 put(2, new CardImpl("name2", "desc2", "type2"));
             }
         };
-        expect(mockDB.getMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+        expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(expectedCards);
 
         ctrl.replay();

@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.shared;
 
+import com.aadm.cardexchange.shared.models.CardDecorator;
 import com.aadm.cardexchange.shared.models.CardImpl;
 import com.aadm.cardexchange.shared.models.Game;
 import com.google.gwt.user.client.rpc.RemoteService;
@@ -12,5 +13,5 @@ import java.util.List;
 public interface CardService extends RemoteService {
     CardImpl[] getCards();
 
-    <T> List<T> getGameCards(Game game);
+    List<CardDecorator> getGameCards(Game game);
 }
