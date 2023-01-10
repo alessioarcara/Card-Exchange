@@ -1,9 +1,11 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.Card;
-import junit.framework.TestCase;
+import com.aadm.cardexchange.shared.CardImpl;
 import org.easymock.IMocksControl;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mapdb.Serializer;
 
 import javax.servlet.ServletConfig;
@@ -19,13 +21,13 @@ import static org.easymock.EasyMock.*;
  * Then you don't need to mock the getServletContext() method of your servlet.
  */
 
-public class ExampleRPCTest extends TestCase {
+public class ExampleRPCTest {
     private IMocksControl ctrl;
     private MapDB mockDB;
     private CardServiceImpl rpcService;
 
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeEach
+    protected void initialize() throws Exception {
         ctrl = createStrictControl();
         mockDB = ctrl.createMock(MapDB.class);
         rpcService = new CardServiceImpl(mockDB);
@@ -40,9 +42,9 @@ public class ExampleRPCTest extends TestCase {
     public void testGetCards() {
         Map<Integer, Card> expectedCards = new HashMap<Integer, Card>() {
             {
-                put(0, new Card("name0", "desc0"));
-                put(1, new Card("name1", "desc1"));
-                put(2, new Card("name2", "desc2"));
+                put(0, new CardImpl("name0", "desc0", "type0"));
+                put(1, new CardImpl("name1", "desc1", "type1"));
+                put(2, new CardImpl("name2", "desc2", "type2"));
             }
         };
         expect(mockDB.getMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
@@ -53,6 +55,6 @@ public class ExampleRPCTest extends TestCase {
         Card[] cards = rpcService.getCards();
 
         ctrl.verify();
-        assertEquals(3, cards.length);
+        Assertions.assertEquals(3, cards.length);
     }
 }
