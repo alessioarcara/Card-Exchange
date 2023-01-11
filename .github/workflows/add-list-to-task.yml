@@ -3,13 +3,12 @@ name: Add List to task
 
 on:
   issues:
-    label:
-      name: task
-      action: added
+    types: [labeled]
 
 jobs:
   issue_list:
     runs-on: ubuntu-latest
+    if: github.event.label.name == 'task'
 
     steps:
     - name: Edit description of issue
