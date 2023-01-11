@@ -5,6 +5,7 @@ on:
   issues:
     label:
       name: task
+      action: added
 
 jobs:
   issue_list:
