@@ -18,15 +18,15 @@ jobs:
         actions: 'update-issue'
         body: |
          _**Dod**_
-         - [] La pull request ha un titolo e descrizione adeguata
-         - [] La pull request è stata collegata con la issue del task
-         - [] I requisiti funzionali del task collegato sono soddisfatti
-         - [] Il codice si compila senza errori
-         - [] Gli Unit Tests sono stati scritti e passati 
-         - [] Gli Unit Tests esistenti sono stati passati
-         - [] La documentazione è stata aggiornata
-         - [] Il Code Review è stato fatto
-         - [] La pull request è stata accettata e fatto merge sul branch development.
+         - [ ]  La pull request ha un titolo e descrizione adeguata
+         - [ ]  La pull request è stata collegata con la issue del task
+         - [ ]  I requisiti funzionali del task collegato sono soddisfatti
+         - [ ]  Il codice si compila senza errori
+         - [ ]  Gli Unit Tests sono stati scritti e passati 
+         - [ ]  Gli Unit Tests esistenti sono stati passati
+         - [ ]  La documentazione è stata aggiornata
+         - [ ]  Il Code Review è stato fatto
+         - [ ]  La pull request è stata accettata e fatto merge sul branch development.
          
           **Effort effettivo:** 
           **Effort totale:**
