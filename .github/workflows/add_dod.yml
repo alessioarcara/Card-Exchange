@@ -1,0 +1,25 @@
+# This is a basic workflow that is manually triggered
+
+name: Add List to task
+
+# Controls when the action will run. Workflow runs when manually triggered using the UI
+# or API.
+on:
+  issues:
+    types: [opened]
+    labels:
+      - task
+
+jobs:
+  issue_list:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Add label to issue
+      uses: actions/add-labels@v2
+      with:
+        labels: 'list'
+    - name: Add comment to issue
+      uses: actions/create-issue-comment@v2
+      with:
+        body: '- item 1\n- item 2\n- item 3'
