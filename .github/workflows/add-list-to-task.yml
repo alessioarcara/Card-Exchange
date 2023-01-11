@@ -1,14 +1,9 @@
-# This is a basic workflow that is manually triggered
 
 name: Add List to task
 
-# Controls when the action will run. Workflow runs when manually triggered using the UI
-# or API.
 on:
-  issues:
-    types: [opened]
-    labels:
-      - task
+  label:
+    name: task
 
 jobs:
   issue_list:
