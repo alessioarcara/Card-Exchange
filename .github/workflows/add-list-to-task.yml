@@ -28,5 +28,4 @@ jobs:
          - [ ]  La pull request è stata accettata e fatto merge sul branch development.
          
           **Effort effettivo:** 
-          **Effort totale:**
         update-mode: 'replace'
