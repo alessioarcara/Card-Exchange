@@ -1,14 +1,16 @@
-package com.aadm.cardexchange.shared;
+package com.aadm.cardexchange.shared.models;
+
 
 public class PokemonCardDecorator extends CardDecorator {
-    private final String artist;
-    private final String imageUrl;
-    private final String rarity;
-    private final boolean isFirstEdition;
-    private final boolean isHolo;
-    private final boolean isNormal;
-    private final boolean isReverse;
-    private final boolean isPromo;
+    private static final long serialVersionUID = -2033966136995921050L;
+    private String artist;
+    private String imageUrl;
+    private String rarity;
+    private boolean isFirstEdition;
+    private boolean isHolo;
+    private boolean isNormal;
+    private boolean isReverse;
+    private boolean isPromo;
 
     public PokemonCardDecorator(Card card, String artist, String imageUrl, String rarity, boolean isFirstEdition, boolean isHolo, boolean isNormal, boolean isReverse, boolean isPromo) {
         super(card);
@@ -20,6 +22,9 @@ public class PokemonCardDecorator extends CardDecorator {
         this.isNormal = isNormal;
         this.isReverse = isReverse;
         this.isPromo = isPromo;
+    }
+
+    public PokemonCardDecorator() {
     }
 
     public String getArtist() {

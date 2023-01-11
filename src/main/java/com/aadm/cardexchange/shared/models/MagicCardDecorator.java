@@ -1,18 +1,18 @@
-package com.aadm.cardexchange.shared;
+package com.aadm.cardexchange.shared.models;
 
 
 public class MagicCardDecorator extends CardDecorator {
-    private final String artist;
-    private final String rarity;
-    private final boolean hasFoil;
-    private final boolean isAlternative;
-    private final boolean isFullArt;
-    private final boolean isPromo;
-    private final boolean isReprint;
+    private static final long serialVersionUID = 2368581922806822154L;
+    private String artist;
+    private String rarity;
+    private boolean hasFoil;
+    private boolean isAlternative;
+    private boolean isFullArt;
+    private boolean isPromo;
+    private boolean isReprint;
 
 
-    protected MagicCardDecorator(Card card, String artist, String rarity, boolean hasFoil,
-                                 boolean isAlternative, boolean isFullArt, boolean isPromo, boolean isReprint) {
+    public MagicCardDecorator(Card card, String artist, String rarity, boolean hasFoil, boolean isAlternative, boolean isFullArt, boolean isPromo, boolean isReprint) {
         super(card);
         this.artist = artist;
         this.rarity = rarity;
@@ -21,6 +21,9 @@ public class MagicCardDecorator extends CardDecorator {
         this.isFullArt = isFullArt;
         this.isPromo = isPromo;
         this.isReprint = isReprint;
+    }
+
+    public MagicCardDecorator() {
     }
 
     public String getArtist() {

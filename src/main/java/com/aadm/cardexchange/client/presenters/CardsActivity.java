@@ -2,8 +2,8 @@ package com.aadm.cardexchange.client.presenters;
 
 import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.CardsView;
-import com.aadm.cardexchange.shared.CardImpl;
 import com.aadm.cardexchange.shared.CardServiceAsync;
+import com.aadm.cardexchange.shared.models.CardImpl;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;

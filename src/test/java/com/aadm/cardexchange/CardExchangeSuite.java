@@ -1,6 +1,7 @@
 package com.aadm.cardexchange;
 
 import com.aadm.cardexchange.client.ExampleActivityTest;
+import com.aadm.cardexchange.server.CardServiceTest;
 import com.aadm.cardexchange.server.ExampleRPCTest;
 import com.aadm.cardexchange.shared.CardTest;
 import com.aadm.cardexchange.shared.MagicCardDecoratorTest;
@@ -15,6 +16,7 @@ import org.junit.platform.suite.api.Suite;
         YuGiOhCardDecoratorTest.class,
         PokemonCardDecoratorTest.class,
         MagicCardDecoratorTest.class,
+        CardServiceTest.class,
         ExampleActivityTest.class,
         ExampleRPCTest.class
 })
