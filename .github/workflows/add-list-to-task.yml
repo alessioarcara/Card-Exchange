@@ -2,19 +2,18 @@
 name: Add List to task
 
 on:
-  label:
-    name: task
+  issues:
+    label:
+      name: task
 
 jobs:
   issue_list:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Add label to issue
-      uses: actions/add-labels@v2
+    - name: Edit description of issue
+      uses: actions-cool/issues-helper@v3
       with:
-        labels: 'list'
-    - name: Add comment to issue
-      uses: actions/create-issue-comment@v2
-      with:
+        actions: 'update-issue'
         body: '- item 1\n- item 2\n- item 3'
+        update-mode: 'replace'
