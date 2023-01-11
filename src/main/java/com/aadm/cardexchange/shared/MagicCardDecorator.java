@@ -10,8 +10,7 @@ public class MagicCardDecorator extends CardDecorator {
     private final boolean isPromo;
     private final boolean isReprint;
 
-
-    protected MagicCardDecorator(Card card, String artist, String rarity, boolean hasFoil,
+    public MagicCardDecorator(Card card, String artist, String rarity, boolean hasFoil,
                                  boolean isAlternative, boolean isFullArt, boolean isPromo, boolean isReprint) {
         super(card);
         this.artist = artist;
