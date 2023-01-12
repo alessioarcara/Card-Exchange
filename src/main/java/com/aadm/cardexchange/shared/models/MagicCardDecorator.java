@@ -12,7 +12,7 @@ public class MagicCardDecorator extends CardDecorator {
     private boolean isReprint;
 
 
-    public MagicCardDecorator(Card card, String artist, String rarity, boolean hasFoil, boolean isAlternative, boolean isFullArt, boolean isPromo, boolean isReprint) {
+    public MagicCardDecorator(CardImpl card, String artist, String rarity, boolean hasFoil, boolean isAlternative, boolean isFullArt, boolean isPromo, boolean isReprint) {
         super(card);
         this.artist = artist;
         this.rarity = rarity;

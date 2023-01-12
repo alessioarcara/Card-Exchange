@@ -12,7 +12,7 @@ public class PokemonCardDecorator extends CardDecorator {
     private boolean isReverse;
     private boolean isPromo;
 
-    public PokemonCardDecorator(Card card, String artist, String imageUrl, String rarity, boolean isFirstEdition, boolean isHolo, boolean isNormal, boolean isReverse, boolean isPromo) {
+    public PokemonCardDecorator(CardImpl card, String artist, String imageUrl, String rarity, boolean isFirstEdition, boolean isHolo, boolean isNormal, boolean isReverse, boolean isPromo) {
         super(card);
         this.artist = artist;
         this.imageUrl = imageUrl;

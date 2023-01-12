@@ -1,9 +1,9 @@
 package com.aadm.cardexchange.client.routes;
 
 import com.aadm.cardexchange.client.ClientFactory;
-import com.aadm.cardexchange.client.places.CardsPlace;
+import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.places.HomePlace;
-import com.aadm.cardexchange.client.presenters.CardsActivity;
+import com.aadm.cardexchange.client.presenters.CardActivity;
 import com.aadm.cardexchange.client.presenters.HomeActivity;
 import com.aadm.cardexchange.shared.CardService;
 import com.google.gwt.activity.shared.Activity;
@@ -23,9 +23,9 @@ public class AppActivityMapper implements ActivityMapper {
     @Override
     public Activity getActivity(Place place) {
         if (place instanceof HomePlace)
-            return new HomeActivity((HomePlace) place, clientFactory);
-        if (place instanceof CardsPlace)
-            return new CardsActivity(clientFactory.getCardsView(), GWT.create(CardService.class));
+            return new HomeActivity(clientFactory.getHomeView(), GWT.create(CardService.class), clientFactory.getPlaceController());
+        if (place instanceof CardPlace)
+            return new CardActivity(clientFactory.getCardView(), GWT.create(CardService.class));
         return null;
     }
 }

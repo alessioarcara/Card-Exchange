@@ -8,17 +8,9 @@
   <!-- Servlets -->
 
   <servlet>
-    <servlet-name>com.aadm.cardexchange.CardExchange UserService</servlet-name>
-    <servlet-class>com.aadm.cardexchange.server.UserServiceImpl</servlet-class>
-  </servlet>
-  <servlet>
     <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>
     <servlet-class>com.aadm.cardexchange.server.CardServiceImpl</servlet-class>
   </servlet>
-  <servlet-mapping>
-    <servlet-name>com.aadm.cardexchange.CardExchange UserService</servlet-name>
-    <url-pattern>/cardexchange/users</url-pattern>
-  </servlet-mapping>
   <servlet-mapping>
     <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>
     <url-pattern>/cardexchange/cards</url-pattern>

@@ -12,49 +12,49 @@ import java.util.Map;
 public class ListenerImpl implements ServletContextListener, MapDBConstants {
     private static final MagicCardDecorator[] MAGIC_DUMMY_DATA = new MagicCardDecorator[]{
             new MagicCardDecorator(new
-                    CardImpl("mockName", "mockDesc", "mockType"),
-                    "mockArtist", "rare",
+                    CardImpl("magicName", "magicDesc", "magicType"),
+                    "magicArtist", "rare",
                     true, true, true, true, true
             ),
             new MagicCardDecorator(new
-                    CardImpl("mockName", "mockDesc", "mockType"),
-                    "mockArtist", "rare",
+                    CardImpl("magicName", "magicDesc", "magicType"),
+                    "magicArtist", "rare",
                     true, true, true, true, true
             ),
             new MagicCardDecorator(new
-                    CardImpl("mockName", "mockDesc", "mockType"),
-                    "mockArtist", "rare",
+                    CardImpl("magicName", "magicDesc", "magicType"),
+                    "magicArtist", "rare",
                     true, true, true, true, true
             ),
     };
     private static final PokemonCardDecorator[] POKEMON_DUMMY_DATA = new PokemonCardDecorator[]{
             new PokemonCardDecorator(new
-                    CardImpl("mockName", "mockDesc", "mockType"),
-                    "mockArtist", "http://www.image.jpg", "rare",
+                    CardImpl("pokemonName", "pokemonDesc", "pokemonType"),
+                    "pokemonArtist", "http://www.image.jpg", "rare",
                     true, true, true, true, true
             ),
             new PokemonCardDecorator(new
-                    CardImpl("mockName", "mockDesc", "mockType"),
-                    "mockArtist", "http://www.image.jpg", "rare",
+                    CardImpl("pokemonName", "pokemonDesc", "pokemonType"),
+                    "pokemonArtist", "http://www.image.jpg", "rare",
                     true, true, true, true, true
             ),
             new PokemonCardDecorator(new
-                    CardImpl("mockName", "mockDesc", "mockType"),
-                    "mockArtist", "http://www.image.jpg", "rare",
+                    CardImpl("pokemonName", "pokemonDesc", "pokemonType"),
+                    "pokemonArtist", "http://www.image.jpg", "rare",
                     true, true, true, true, true
-            )
+            ),
     };
     private static final YuGiOhCardDecorator[] YUGIOH_DUMMY_DATA = new YuGiOhCardDecorator[]{
             new YuGiOhCardDecorator(new
-                    CardImpl("mockName", "mockDesc", "mockmockType"),
+                    CardImpl("yugiohName", "yugiohDesc", "yugiohType"),
                     "race", "http://www.image.jpg", "http://www.smallimage.jpg"
             ),
             new YuGiOhCardDecorator(new
-                    CardImpl("mockName", "mockDesc", "mockmockType"),
+                    CardImpl("yugiohName", "yugiohDesc", "yugiohType"),
                     "race", "http://www.image.jpg", "http://www.smallimage.jpg"
             ),
             new YuGiOhCardDecorator(new
-                    CardImpl("mockName", "mockDesc", "mockmockType"),
+                    CardImpl("yugiohName", "yugiohDesc", "yugiohType"),
                     "race", "http://www.image.jpg", "http://www.smallimage.jpg"
             ),
     };
