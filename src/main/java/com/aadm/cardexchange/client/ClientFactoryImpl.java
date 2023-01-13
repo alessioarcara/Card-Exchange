@@ -1,7 +1,7 @@
 package com.aadm.cardexchange.client;
 
-import com.aadm.cardexchange.client.views.CardsView;
-import com.aadm.cardexchange.client.views.CardsViewImpl;
+import com.aadm.cardexchange.client.views.CardView;
+import com.aadm.cardexchange.client.views.CardViewImpl;
 import com.aadm.cardexchange.client.views.HomeView;
 import com.aadm.cardexchange.client.views.HomeViewImpl;
 import com.google.gwt.event.shared.SimpleEventBus;
@@ -12,7 +12,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private static final EventBus eventBus = new SimpleEventBus();
     private static final PlaceController placeController = new PlaceController(eventBus);
     private static final HomeView helloView = new HomeViewImpl();
-    private static final CardsView cardsView = new CardsViewImpl();
+    private static final CardView cardView = new CardViewImpl();
 
     @Override
     public EventBus getEventBus() {
@@ -30,7 +30,7 @@ public class ClientFactoryImpl implements ClientFactory {
     }
 
     @Override
-    public CardsView getCardsView() {
-        return cardsView;
+    public CardView getCardView() {
+        return cardView;
     }
 }

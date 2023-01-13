@@ -1,6 +1,5 @@
 package com.aadm.cardexchange.client;
 
-import com.aadm.cardexchange.client.places.CardsPlace;
 import com.aadm.cardexchange.client.places.HomePlace;
 import com.aadm.cardexchange.client.routes.AppActivityMapper;
 import com.aadm.cardexchange.client.routes.AppPlaceHistoryMapper;
@@ -22,18 +21,7 @@ public class CardExchange implements EntryPoint {
   private final SimplePanel appWidget = new SimplePanel();
 
   public void onModuleLoad() {
-    // UserServiceAsync loginService = GWT.create(UserService.class);
-    // loginService.me(new BaseAsyncCallback<Boolean>() {
-    // @Override
-    // public void onSuccess(Boolean loggedIn) {
-    // Window.alert("Logged in");
-    // }
-    // });
-
-    // Create ClientFactory using deferred binding so we can replace with different
-    // impls in gwt.xml
     ClientFactory clientFactory = new ClientFactoryImpl();
-    // ClientFactory clientFactory = GWT.create(ClientFactory.class);
     EventBus eventBus = clientFactory.getEventBus();
     PlaceController placeController = clientFactory.getPlaceController();
 
@@ -42,24 +30,18 @@ public class CardExchange implements EntryPoint {
     ActivityManager activityManager = new ActivityManager(activityMapper, eventBus);
     activityManager.setDisplay(appWidget);
 
-    /*
-     * link between Places and Activities is EventBus
-     */
-
     // Start PlaceHistoryHandler with our PlaceHistoryMapper
     AppPlaceHistoryMapper historyMapper = GWT.create(AppPlaceHistoryMapper.class);
     PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
     historyHandler.register(placeController, eventBus, defaultPlace);
 
-    RootPanel root = RootPanel.get("wrapper");
+      RootPanel root = RootPanel.get("layout");
     appWidget.setStyleName("main");
 
     HTMLPanel appSidebar = new HTMLPanel("");
     appSidebar.addStyleName("sidebar");
     Hyperlink homeLink = new Hyperlink("Home", historyMapper.getToken(defaultPlace));
-    Hyperlink cardsLink = new Hyperlink("Cards", historyMapper.getToken(new CardsPlace()));
     appSidebar.add(homeLink);
-    appSidebar.add(cardsLink);
 
     root.add(appSidebar);
     root.add(appWidget);

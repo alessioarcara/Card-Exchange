@@ -6,6 +6,6 @@ import javax.servlet.ServletContext;
 import java.util.Map;
 
 public interface MapDB {
-    <K, V> Map<K, V> getMap(ServletContext ctx, String HASHMAP_NAME, Serializer<K> keySerializer,
-                            Serializer<V> valueSerializer);
+    <K, V> Map<K, V> getCachedMap(ServletContext ctx, String MAP_NAME, Serializer<K> keySerializer,
+                                  Serializer<V> valueSerializer);
 }

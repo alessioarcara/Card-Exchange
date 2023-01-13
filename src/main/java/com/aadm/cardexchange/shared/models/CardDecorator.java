@@ -1,10 +1,14 @@
-package com.aadm.cardexchange.shared;
+package com.aadm.cardexchange.shared.models;
 
-public abstract class CardDecorator implements Card {
-    private final Card wrappee;
+public class CardDecorator implements Card {
+    private static final long serialVersionUID = -6914752354287411438L;
+    private CardImpl wrappee;
 
-    protected CardDecorator(Card card) {
+    protected CardDecorator(CardImpl card) {
         wrappee = card;
+    }
+
+    protected CardDecorator() {
     }
 
     @Override

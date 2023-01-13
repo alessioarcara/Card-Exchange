@@ -13,18 +13,13 @@
             align-items: center;
             justify-content: space-around;
         }
-
-        .deleteButton {
-            position: absolute;
-            top: 0;
-            right: 0;
-        }
     </ui:style>
     <g:HTMLPanel>
         <div class="{style.card}">
             <div ui:field="nameDiv">placeholder</div>
             <div ui:field="descDiv">placeholder</div>
-            <g:Button ui:field="deleteButton" text="X" styleName="{style.deleteButton}"/>
+            <div ui:field="typeDiv">placeholder</div>
+            <g:PushButton ui:field="detailsButton">Open Details</g:PushButton>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder>

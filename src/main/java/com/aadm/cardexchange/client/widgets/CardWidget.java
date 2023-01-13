@@ -4,8 +4,8 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CardWidget extends Composite {
@@ -15,13 +15,16 @@ public class CardWidget extends Composite {
     @UiField
     DivElement descDiv;
     @UiField
-    Button deleteButton;
+    DivElement typeDiv;
+    @UiField
+    PushButton detailsButton;
 
-    public CardWidget(FunctionInterface parent, String nameText, String descText) {
+    public CardWidget(FunctionInterface parent, String nameText, String descText, String typeText) {
         initWidget(uiBinder.createAndBindUi(this));
         nameDiv.setInnerHTML(nameText);
         descDiv.setInnerHTML(descText);
-        deleteButton.addClickHandler(clickEvent -> parent.handleRemoveData(this));
+        typeDiv.setInnerHTML(typeText);
+        detailsButton.addClickHandler(clickEvent -> parent.handleClickCard());
     }
 
     public String getId() {

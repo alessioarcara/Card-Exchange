@@ -1,10 +1,14 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.shared.CardImpl;
 import com.aadm.cardexchange.shared.CardService;
+import com.aadm.cardexchange.shared.models.CardDecorator;
+import com.aadm.cardexchange.shared.models.Game;
+import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class CardServiceImpl extends RemoteServiceServlet implements CardService, MapDBConstants {
@@ -24,13 +28,21 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
         return db;
     }
 
-    public CardImpl[] getCards() {
-        Map<Integer, CardImpl> map = getDb().getMap(getServletContext(), CARDS_HASHMAP_NAME, Serializer.INTEGER, new SerializerCard());
-        int n = map.size();
-        CardImpl[] cards = new CardImpl[n];
-        for (int i = 0; i < n; i++) {
-            cards[i] = map.get(i);
+    @Override
+    public List<CardDecorator> getGameCards(Game game) {
+        if (game == null) {
+            throw new IllegalArgumentException("game cannot be null");
         }
-        return cards;
+
+        MapDB DB = getDb();
+        final String mapName = game == Game.Magic ? MAGIC_MAP_NAME :
+                game == Game.Pokemon ? POKEMON_MAP_NAME :
+                        YUGIOH_MAP_NAME;
+
+        Gson gson = new Gson();
+        Map<Integer, CardDecorator> map = DB.getCachedMap(getServletContext(), mapName,
+                Serializer.INTEGER, new GsonSerializer<>(gson, CardDecorator.class));
+
+        return new ArrayList<>(map.values());
     }
 }

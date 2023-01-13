@@ -1,5 +1,7 @@
 package com.aadm.cardexchange.shared;
 
+import com.aadm.cardexchange.shared.models.CardImpl;
+import com.aadm.cardexchange.shared.models.MagicCardDecorator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
