@@ -1,10 +1,7 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.server.jsonparser.*;
-import com.aadm.cardexchange.shared.CardDecorator;
-import com.aadm.cardexchange.shared.MagicCardDecorator;
-import com.aadm.cardexchange.shared.PokemonCardDecorator;
-import com.aadm.cardexchange.shared.YuGiOhCardDecorator;
+import com.aadm.cardexchange.shared.models.*;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -104,5 +101,16 @@ public class JSONParserTest {
         Assertions.assertEquals(pokemonCards[11].getDescription(), "");
 
         Assertions.assertEquals(pokemonCards.length, 200);
+    }
+
+    @Test
+    public void testParserSetStrategy() throws FileNotFoundException {
+        Gson gson = new Gson();
+        JSONParser jsonParser = new JSONParser(new YuGiOhCardParseStrategy(), gson);
+
+        jsonParser.setParseStrategy(new PokemonCardParseStrategy());
+        CardDecorator[] cards = jsonParser.parseJSON("./resources/json/pokemon_cards.json");
+
+        Assertions.assertTrue(cards[0] instanceof PokemonCardDecorator);
     }
 }

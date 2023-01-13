@@ -1,7 +1,7 @@
 package com.aadm.cardexchange.server.jsonparser;
 
-import com.aadm.cardexchange.shared.CardImpl;
-import com.aadm.cardexchange.shared.YuGiOhCardDecorator;
+import com.aadm.cardexchange.shared.models.CardImpl;
+import com.aadm.cardexchange.shared.models.YuGiOhCardDecorator;
 import com.google.gson.JsonObject;
 
 public class YuGiOhCardParseStrategy implements CardParseStrategy {

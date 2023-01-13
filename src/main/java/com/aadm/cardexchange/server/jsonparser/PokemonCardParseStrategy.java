@@ -1,7 +1,7 @@
 package com.aadm.cardexchange.server.jsonparser;
 
-import com.aadm.cardexchange.shared.CardImpl;
-import com.aadm.cardexchange.shared.PokemonCardDecorator;
+import com.aadm.cardexchange.shared.models.CardImpl;
+import com.aadm.cardexchange.shared.models.PokemonCardDecorator;
 import com.google.gson.JsonObject;
 
 public class PokemonCardParseStrategy implements CardParseStrategy {

@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.server.jsonparser;
 
-import com.aadm.cardexchange.shared.CardDecorator;
+import com.aadm.cardexchange.shared.models.CardDecorator;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 

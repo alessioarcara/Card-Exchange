@@ -1,7 +1,7 @@
 package com.aadm.cardexchange.server.jsonparser;
 
-import com.aadm.cardexchange.shared.CardImpl;
-import com.aadm.cardexchange.shared.MagicCardDecorator;
+import com.aadm.cardexchange.shared.models.CardImpl;
+import com.aadm.cardexchange.shared.models.MagicCardDecorator;
 import com.google.gson.JsonObject;
 
 public class MagicCardParseStrategy implements CardParseStrategy{

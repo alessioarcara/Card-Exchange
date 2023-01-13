@@ -65,23 +65,28 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         }
     }
 
+
     @Override
     public void contextInitialized(ServletContextEvent sce) {
         System.out.println("Context initialized.");
         System.out.println("*** Loading data from file. ***");
+
         Gson gson = new Gson();
         GsonSerializer<CardDecorator> cardSerializer = new GsonSerializer<>(gson, CardDecorator.class);
         MapDB DB = new MapDBImpl();
         int counter = 0;
+
+        Map<Integer, CardDecorator> yMap = DB.getCachedMap(sce.getServletContext(), YUGIOH_MAP_NAME,
+                Serializer.INTEGER, cardSerializer);
         Map<Integer, CardDecorator> mMap = DB.getCachedMap(sce.getServletContext(), MAGIC_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
         Map<Integer, CardDecorator> pMap = DB.getCachedMap(sce.getServletContext(), POKEMON_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
-        Map<Integer, CardDecorator> yMap = DB.getCachedMap(sce.getServletContext(), YUGIOH_MAP_NAME,
-                Serializer.INTEGER, cardSerializer);
+
         loadDummyData(counter, mMap, MAGIC_DUMMY_DATA);
         loadDummyData(counter, pMap, POKEMON_DUMMY_DATA);
         loadDummyData(counter, yMap, YUGIOH_DUMMY_DATA);
+
         System.out.println("*** Data Loaded. ***");
 
 //        if (!new File(DB_FILENAME).exists()) {
