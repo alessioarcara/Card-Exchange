@@ -9,23 +9,19 @@ html, body {
 
 #layout {
     display: flex;
-    flex-direction: column;
-    height: 100vh;
-}
-
-#wrapper {
-    display: flex;
-    flex-direction: row;
-    flex: 1;
+    min-height: 100vh;
 }
 
 .sidebar {
+    width: 25%;
+    height: 100vh;
+    position: sticky;
+    top: 0;
     display: flex;
-    flex-basis: 250px;
-    background: aquamarine;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    background: #ccc;
 }
 
 .sidebar div {
@@ -37,15 +33,7 @@ html, body {
 .main {
     display: flex;
     flex: 1;
-    background: #eee;
     justify-content: space-around;
     align-items: center;
-}
-
-header {
-    display: flex;
-    min-height: 100px;
-    background: #ccc;
-    align-items: center;
-    justify-content: space-around;
+    background: #fff;
 }

@@ -7,7 +7,7 @@ public class YuGiOhCardDecorator extends CardDecorator {
     private String imageUrl;
     private String smallImageUrl;
 
-    public YuGiOhCardDecorator(Card card, String race, String imageUrl, String smallImageUrl) {
+    public YuGiOhCardDecorator(CardImpl card, String race, String imageUrl, String smallImageUrl) {
         super(card);
         this.race = race;
         this.imageUrl = imageUrl;

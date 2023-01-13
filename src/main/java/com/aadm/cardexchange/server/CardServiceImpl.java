@@ -2,7 +2,6 @@ package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.CardService;
 import com.aadm.cardexchange.shared.models.CardDecorator;
-import com.aadm.cardexchange.shared.models.CardImpl;
 import com.aadm.cardexchange.shared.models.Game;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -27,16 +26,6 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
             db = new MapDBImpl();
         }
         return db;
-    }
-
-    public CardImpl[] getCards() {
-        Map<Integer, CardImpl> map = getDb().getCachedMap(getServletContext(), TEST_MAP_NAME, Serializer.INTEGER, new SerializerCard());
-        int n = map.size();
-        CardImpl[] cards = new CardImpl[n];
-        for (int i = 0; i < n; i++) {
-            cards[i] = map.get(i);
-        }
-        return cards;
     }
 
     @Override

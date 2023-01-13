@@ -26,22 +26,6 @@ public class CardServiceTest {
     private MapDB mockDB;
     private CardServiceImpl cardService;
 
-    private static Stream<Arguments> provideMockData() {
-        return Stream.of(
-                Arguments.of(Game.Magic, MockCardData.createMagicDummyData()),
-                Arguments.of(Game.Pokemon, MockCardData.createPokemonDummyData()),
-                Arguments.of(Game.YuGiOh, MockCardData.createYuGiOhDummyData())
-        );
-    }
-
-    private static Stream<Arguments> provideClassAndMockData() {
-        return Stream.of(
-                Arguments.of(Game.Magic, MagicCardDecorator.class, MockCardData.createMagicDummyData()),
-                Arguments.of(Game.Pokemon, PokemonCardDecorator.class, MockCardData.createPokemonDummyData()),
-                Arguments.of(Game.YuGiOh, YuGiOhCardDecorator.class, MockCardData.createYuGiOhDummyData())
-        );
-    }
-
     @BeforeEach
     public void initialize() throws ServletException {
         ctrl = createStrictControl();
@@ -53,11 +37,20 @@ public class CardServiceTest {
         cardService.init(mockConfig);
     }
 
-    @Test
-    public void testGetGameCardsForNullParameter() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            cardService.getGameCards(null);
-        });
+    private static Stream<Arguments> provideClassAndMockData() {
+        return Stream.of(
+                Arguments.of(Game.Magic, MagicCardDecorator.class, MockCardData.createMagicDummyMap()),
+                Arguments.of(Game.Pokemon, PokemonCardDecorator.class, MockCardData.createPokemonDummyMap()),
+                Arguments.of(Game.YuGiOh, YuGiOhCardDecorator.class, MockCardData.createYuGiOhDummyMap())
+        );
+    }
+
+    private static Stream<Arguments> provideMockData() {
+        return Stream.of(
+                Arguments.of(Game.Magic, MockCardData.createMagicDummyMap()),
+                Arguments.of(Game.Pokemon, MockCardData.createPokemonDummyMap()),
+                Arguments.of(Game.YuGiOh, MockCardData.createYuGiOhDummyMap())
+        );
     }
 
     @ParameterizedTest
@@ -71,6 +64,11 @@ public class CardServiceTest {
         Assertions.assertTrue(cards.stream().allMatch(card ->
                 card.getClass() == clazz
         ));
+    }
+
+    @Test
+    public void testGetGameCardsForNullParameter() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> cardService.getGameCards(null));
     }
 
     @ParameterizedTest

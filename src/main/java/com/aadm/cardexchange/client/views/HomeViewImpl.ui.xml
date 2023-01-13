@@ -2,8 +2,30 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <ui:style>
+        .wrapper {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            gap: 1rem;
+            padding: 3rem;
+        }
+
+        .cards {
+            display: flex;
+            width: 100%;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: space-around;
+        }
     </ui:style>
-    <g:HTMLPanel ui:field='myPanel'>
-        <div ui:field='divElement'/>
+    <g:HTMLPanel styleName="{style.wrapper}">
+        <div>
+            <g:RadioButton ui:field="magicRadio" name="radio">Magic</g:RadioButton>
+            <g:RadioButton ui:field="pokemonRadio" name="radio">Pokemon</g:RadioButton>
+            <g:RadioButton ui:field="yugiohRadio" name="radio">YuGiOh</g:RadioButton>
+        </div>
+        <g:HTMLPanel styleName="{style.cards}" ui:field='cardsPanel'>Seleziona un catalogo di carte.</g:HTMLPanel>
     </g:HTMLPanel>
 </ui:UiBinder>

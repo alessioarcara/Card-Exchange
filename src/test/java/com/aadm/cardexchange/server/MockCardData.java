@@ -2,11 +2,13 @@ package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.models.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MockCardData {
-    static Map<Integer, MagicCardDecorator> createMagicDummyData() {
+    public static Map<Integer, MagicCardDecorator> createMagicDummyMap() {
         return new HashMap<>() {{
             put(0, new MagicCardDecorator(new CardImpl("Lightning Bolt", "Deal 3 damage to any target", "Instant"),
                     "Christopher Rush", "Rare", true, true, true, true, true
@@ -23,7 +25,7 @@ public class MockCardData {
         }};
     }
 
-    static Map<Integer, PokemonCardDecorator> createPokemonDummyData() {
+    public static Map<Integer, PokemonCardDecorator> createPokemonDummyMap() {
         return new HashMap<Integer, PokemonCardDecorator>() {{
             put(0, new PokemonCardDecorator(new CardImpl("Pikachu", "The electric mouse Pokemon", "Monster"),
                     "Atsuko Nishida", "http://www.pikachu-image.jpg", "Common", true, true, true, true, true
@@ -40,7 +42,7 @@ public class MockCardData {
         }};
     }
 
-    static Map<Integer, CardDecorator> createYuGiOhDummyData() {
+    public static Map<Integer, CardDecorator> createYuGiOhDummyMap() {
         return new HashMap<>() {
             {
                 put(0, new YuGiOhCardDecorator(new CardImpl("Dark Magician", "A powerful sorcerer", "Monster"),
@@ -57,5 +59,17 @@ public class MockCardData {
                 ));
             }
         };
+    }
+
+    public static List<CardDecorator> createMagicDummyList() {
+        return new ArrayList<>(createMagicDummyMap().values());
+    }
+
+    public static List<CardDecorator> createPokemonDummyList() {
+        return new ArrayList<>(createMagicDummyMap().values());
+    }
+
+    public static List<CardDecorator> createYuGiOhDummyList() {
+        return new ArrayList<>(createMagicDummyMap().values());
     }
 }
