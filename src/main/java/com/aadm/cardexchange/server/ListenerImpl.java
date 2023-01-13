@@ -18,12 +18,12 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
             ),
             new MagicCardDecorator(new
                     CardImpl("magicName", "magicDesc", "magicType"),
-                    "magicArtist", "rare",
+                    "magicArtist", "epic",
                     true, true, true, true, true
             ),
             new MagicCardDecorator(new
                     CardImpl("magicName", "magicDesc", "magicType"),
-                    "magicArtist", "rare",
+                    "magicArtist", "legendary",
                     true, true, true, true, true
             ),
     };
@@ -70,7 +70,7 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         System.out.println("Context initialized.");
         System.out.println("*** Loading data from file. ***");
         Gson gson = new Gson();
-        GsonSerializer<CardDecorator> cardSerializer = new GsonSerializer<>(gson, CardDecorator.class);
+        GsonSerializer<CardDecorator> cardSerializer = new GsonSerializer<>(gson);
         MapDB DB = new MapDBImpl();
         int counter = 0;
         Map<Integer, CardDecorator> mMap = DB.getCachedMap(sce.getServletContext(), MAGIC_MAP_NAME,

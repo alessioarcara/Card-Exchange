@@ -9,26 +9,14 @@ import org.junit.jupiter.api.Test;
 public class MagicCardDecoratorTest implements CardTestConstants {
 
     private MagicCardDecorator magicCard;
+    private MagicCardDecorator differentMagicCard;
 
     @BeforeEach
     public void initialize() {
         magicCard = new MagicCardDecorator(new CardImpl(cardName, cardDesc, cardType), genericArtist,
                 genericRarity, true, true, true, true, true);
-    }
-
-    @Test
-    public void testGetName() {
-        Assertions.assertEquals(cardName, magicCard.getName());
-    }
-
-    @Test
-    public void testGetDescription() {
-        Assertions.assertEquals(cardDesc, magicCard.getDescription());
-    }
-
-    @Test
-    public void testGetType() {
-        Assertions.assertEquals(cardType, magicCard.getType());
+        differentMagicCard = new MagicCardDecorator(new CardImpl("test", "test", "test"), "test",
+                "test", false, false, false, false, false);
     }
 
     @Test
@@ -38,7 +26,7 @@ public class MagicCardDecoratorTest implements CardTestConstants {
 
     @Test
     public void testGetRarity() {
-        Assertions.assertEquals(genericRarity, magicCard.getRarity());
+        Assertions.assertEquals(genericRarity, magicCard.getSpecialAttribute());
     }
 
     @Test
@@ -64,5 +52,37 @@ public class MagicCardDecoratorTest implements CardTestConstants {
     @Test
     public void testGetIsReprint() {
         Assertions.assertTrue(magicCard.getIsReprint());
+    }
+
+    @Test
+    public void testEqualsForItself() {
+        Assertions.assertTrue(magicCard.equals(magicCard));
+    }
+
+    @Test
+    public void testEqualsForDifferentFieldsObject() {
+        Assertions.assertFalse(magicCard.equals(new Object()));
+    }
+
+    @Test
+    public void testEqualsForDifferentFieldsCard() {
+        Assertions.assertFalse(magicCard.equals(differentMagicCard));
+    }
+
+    @Test
+    public void testEqualsForEqualFieldsCard() {
+        Assertions.assertTrue(magicCard.equals(new MagicCardDecorator(new CardImpl(cardName, cardDesc, cardType), genericArtist,
+                genericRarity, true, true, true, true, true)));
+    }
+
+    @Test
+    public void testHashCodeForDifferentFieldsCard() {
+        Assertions.assertFalse(magicCard.hashCode() == differentMagicCard.hashCode());
+    }
+
+    @Test
+    public void testHashCodeForEqualFieldsCard() {
+        Assertions.assertTrue(magicCard.hashCode() == new MagicCardDecorator(new CardImpl(cardName, cardDesc, cardType), genericArtist,
+                genericRarity, true, true, true, true, true).hashCode());
     }
 }
