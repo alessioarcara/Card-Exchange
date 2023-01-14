@@ -72,9 +72,9 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         System.out.println("*** Loading data from file. ***");
 
         Gson gson = new Gson();
-        GsonSerializer<CardDecorator> cardSerializer = new GsonSerializer<>(gson, CardDecorator.class);
+        GsonSerializer<CardDecorator> cardSerializer = new GsonSerializer<>(gson);
         MapDB DB = new MapDBImpl();
-        int counter = 0;
+        int count = 0;
 
         Map<Integer, CardDecorator> yMap = DB.getCachedMap(sce.getServletContext(), YUGIOH_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
@@ -83,26 +83,11 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         Map<Integer, CardDecorator> pMap = DB.getCachedMap(sce.getServletContext(), POKEMON_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
 
-        loadDummyData(counter, mMap, MAGIC_DUMMY_DATA);
-        loadDummyData(counter, pMap, POKEMON_DUMMY_DATA);
-        loadDummyData(counter, yMap, YUGIOH_DUMMY_DATA);
+        loadDummyData(count, mMap, MAGIC_DUMMY_DATA);
+        loadDummyData(count, pMap, POKEMON_DUMMY_DATA);
+        loadDummyData(count, yMap, YUGIOH_DUMMY_DATA);
 
         System.out.println("*** Data Loaded. ***");
-
-//        if (!new File(DB_FILENAME).exists()) {
-//            try {
-//                // List<String> stocks = new ArrayList<>();
-//                // ObjectMapper objectMapper = new ObjectMapper();
-//                // stocks = objectMapper.readValue(new File("stock.json"), new
-//                // TypeReference<List<String>>() {
-//                // });
-//            } catch (Exception e) {
-//                Logger.getGlobal().warning(e.toString());
-//            }
-//        }
-        // Gson gson = new Gson();
-        // Person p = gson.fromJson("{\"age\": 24, \"name\":\"Mario\"}", Person.class);
-        // System.out.println("Data: " + p);
     }
 
     @Override
