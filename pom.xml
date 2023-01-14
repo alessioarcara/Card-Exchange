@@ -170,12 +170,5 @@
         </configuration>
       </plugin>
     </plugins>
-
-    <resources>
-      <resource>
-        <directory>./src/main/java/com/aadm/cardexchange/server/resources</directory>
-      </resource>
-    </resources>
-
   </build>
 </project>
