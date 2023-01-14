@@ -2,24 +2,24 @@ package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.widgets.CardWidget;
-import com.aadm.cardexchange.client.widgets.FunctionInterface;
 import com.aadm.cardexchange.client.widgets.GameFiltersWidget;
+import com.aadm.cardexchange.client.widgets.ImperativeHandleCard;
+import com.aadm.cardexchange.client.widgets.ImperativeHandleFilters;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.RadioButton;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 
-public class HomeViewImpl extends Composite implements HomeView, FunctionInterface {
+public class HomeViewImpl extends Composite implements HomeView, ImperativeHandleCard, ImperativeHandleFilters {
     private static final HomeViewImplUIBinder uiBinder = GWT.create(HomeViewImplUIBinder.class);
     @UiField
     RadioButton magicRadio;
@@ -31,13 +31,19 @@ public class HomeViewImpl extends Composite implements HomeView, FunctionInterfa
     HTMLPanel cardsPanel;
     @UiField
     GameFiltersWidget filters;
+    @UiField
+    PushButton applyFiltersButton;
+    @UiField
+    PushButton cleanFiltersButton;
     private Presenter presenter;
 
     public HomeViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
-        magicRadio.addValueChangeHandler(e -> onValueChanged(e, Game.Magic));
-        pokemonRadio.addValueChangeHandler(e -> onValueChanged(e, Game.Pokemon));
-        yugiohRadio.addValueChangeHandler(e -> onValueChanged(e, Game.YuGiOh));
+        magicRadio.addValueChangeHandler(e -> onGameChanged(e, Game.Magic));
+        pokemonRadio.addValueChangeHandler(e -> onGameChanged(e, Game.Pokemon));
+        yugiohRadio.addValueChangeHandler(e -> onGameChanged(e, Game.YuGiOh));
+        applyFiltersButton.addClickHandler(e -> handleFiltersApply());
+        cleanFiltersButton.addClickHandler(e -> handleFiltersClean());
     }
 
     @Override
@@ -45,12 +51,23 @@ public class HomeViewImpl extends Composite implements HomeView, FunctionInterfa
         this.presenter = presenter;
     }
 
+    @UiFactory
+    GameFiltersWidget makeGameFilters() {
+        return new GameFiltersWidget(this);
+    }
+
+    private void setFilters(Set<String> uniqueSpecialAttributes, Set<String> uniqueTypes) {
+        filters.specialAttributeOptions.clear();
+        filters.typeOptions.clear();
+        filters.specialAttributeOptions.addItem("all");
+        filters.typeOptions.addItem("all");
+        uniqueSpecialAttributes.forEach(specialAttribute -> filters.specialAttributeOptions.addItem(specialAttribute));
+        uniqueTypes.forEach(type -> filters.typeOptions.addItem(type));
+    }
+
     @Override
     public void setData(List<CardDecorator> data) {
         cardsPanel.clear();
-        filters.specialAttributeOptions.clear();
-        filters.typeOptions.clear();
-        cardsPanel.getElement().setInnerHTML("");
         Set<String> uniqueSpecialAttributes = new HashSet<>();
         Set<String> uniqueTypes = new HashSet<>();
         data.forEach(card -> {
@@ -61,12 +78,10 @@ public class HomeViewImpl extends Composite implements HomeView, FunctionInterfa
                 uniqueSpecialAttributes.add(((PokemonCardDecorator) card).getRarity());
             } else {
                 uniqueSpecialAttributes.add(((YuGiOhCardDecorator) card).getRace());
-
             }
             cardsPanel.add(new CardWidget(this, card));
         });
-        uniqueTypes.forEach(type -> filters.typeOptions.addItem(type));
-        uniqueSpecialAttributes.forEach(specialAttribute -> filters.specialAttributeOptions.addItem(specialAttribute));
+        setFilters(uniqueSpecialAttributes, uniqueTypes);
     }
 
     @Override
@@ -74,10 +89,43 @@ public class HomeViewImpl extends Composite implements HomeView, FunctionInterfa
         presenter.goTo(new CardPlace());
     }
 
+    public void handleFiltersClean() {
+        filters.specialAttributeOptions.setItemSelected(0, true);
+        filters.typeOptions.setItemSelected(0, true);
+        filters.textOptions.setItemSelected(0, true);
+        filters.textInput.setText("");
+        setData(presenter.filterGameCards(
+                filters.specialAttributeOptions.getSelectedValue(),
+                filters.typeOptions.getSelectedValue(),
+                filters.textOptions.getSelectedValue(),
+                filters.textInput.getText(),
+                new ArrayList<>(),
+                new ArrayList<>()
+        ));
+    }
+
+    @Override
+    public void handleFiltersApply() {
+        List<String> booleanInputNames = new ArrayList<>();
+        List<Boolean> booleanInputValues = new ArrayList<>();
+        for (CheckBox checkBox : filters.checkBoxes) {
+            booleanInputNames.add(checkBox.getText());
+            booleanInputValues.add(checkBox.getValue());
+        }
+        setData(presenter.filterGameCards(
+                filters.specialAttributeOptions.getSelectedValue(),
+                filters.typeOptions.getSelectedValue(),
+                filters.textOptions.getSelectedValue(),
+                filters.textInput.getText(),
+                booleanInputNames,
+                booleanInputValues
+        ));
+    }
+
     interface HomeViewImplUIBinder extends UiBinder<Widget, HomeViewImpl> {
     }
 
-    private void onValueChanged(ValueChangeEvent<Boolean> e, Game game) {
+    private void onGameChanged(ValueChangeEvent<Boolean> e, Game game) {
         presenter.fetchGameCards(game);
         filters.handleGameChange(game);
     }

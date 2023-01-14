@@ -20,11 +20,11 @@ public class CardWidget extends Composite {
     @UiField
     PushButton detailsButton;
 
-    public CardWidget(FunctionInterface parent, CardDecorator card) {
+    public CardWidget(ImperativeHandleCard parent, CardDecorator card) {
         initWidget(uiBinder.createAndBindUi(this));
         nameDiv.setInnerHTML(card.getName());
         descDiv.setInnerHTML(card.getDescription());
-        typeDiv.setInnerHTML(card.getDescription());
+        typeDiv.setInnerHTML(card.getType());
         detailsButton.addClickHandler(clickEvent -> parent.handleClickCard());
     }
 

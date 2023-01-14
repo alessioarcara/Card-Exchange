@@ -88,7 +88,7 @@ public class JSONParserTest {
         Assertions.assertTrue(((PokemonCardDecorator) pokemonCards[0]).getIsNormal());
         Assertions.assertTrue(((PokemonCardDecorator) pokemonCards[0]).getIsReverse());
         Assertions.assertFalse(((PokemonCardDecorator) pokemonCards[0]).getIsPromo());
-        Assertions.assertEquals(pokemonCards[0].getType(), "");
+        Assertions.assertEquals(pokemonCards[0].getType(), "Unknown");
         Assertions.assertEquals(pokemonCards[0].getDescription(), "");
 
         Assertions.assertEquals(((PokemonCardDecorator) pokemonCards[11]).getArtist(), "5ban Graphics"); // illustrator

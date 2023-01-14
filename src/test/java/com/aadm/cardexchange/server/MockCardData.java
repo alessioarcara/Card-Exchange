@@ -26,7 +26,7 @@ public class MockCardData {
     }
 
     public static Map<Integer, PokemonCardDecorator> createPokemonDummyMap() {
-        return new HashMap<Integer, PokemonCardDecorator>() {{
+        return new HashMap<>() {{
             put(0, new PokemonCardDecorator(new CardImpl("Pikachu", "The electric mouse Pokemon", "Monster"),
                     "Atsuko Nishida", "http://www.pikachu-image.jpg", "Common", true, true, true, true, true
             ));
@@ -37,7 +37,7 @@ public class MockCardData {
                     "Mitsuhiro Arita", "http://www.blastoise-image.jpg", "Rare", true, false, true, true, false
             ));
             put(3, new PokemonCardDecorator(new CardImpl("Mewtwo", "The Genetic Pokemon", "Monster"),
-                    "Ken Sugimori", "http://www.mewtwo-image.jpg", "Ultra Rare", true, false, true, true, false
+                    "Akira Egawa", "http://www.mewtwo-image.jpg", "Ultra Rare", true, false, true, true, false
             ));
         }};
     }
@@ -66,10 +66,10 @@ public class MockCardData {
     }
 
     public static List<CardDecorator> createPokemonDummyList() {
-        return new ArrayList<>(createMagicDummyMap().values());
+        return new ArrayList<>(createPokemonDummyMap().values());
     }
 
     public static List<CardDecorator> createYuGiOhDummyList() {
-        return new ArrayList<>(createMagicDummyMap().values());
+        return new ArrayList<>(createYuGiOhDummyMap().values());
     }
 }
