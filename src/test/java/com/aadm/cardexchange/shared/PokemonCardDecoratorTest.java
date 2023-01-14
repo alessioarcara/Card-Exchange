@@ -8,26 +8,14 @@ import org.junit.jupiter.api.Test;
 
 public class PokemonCardDecoratorTest implements CardTestConstants {
     private PokemonCardDecorator pokemonCard;
+    private PokemonCardDecorator differentPokemonCard;
 
     @BeforeEach
     public void initialize() {
         pokemonCard = new PokemonCardDecorator(new CardImpl(cardName, cardDesc, cardType), genericArtist, cardImageUrl,
                 genericRarity, true, true, true, true, true);
-    }
-
-    @Test
-    public void testGetName() {
-        Assertions.assertEquals(cardName, pokemonCard.getName());
-    }
-
-    @Test
-    public void testGetDescription() {
-        Assertions.assertEquals(cardDesc, pokemonCard.getDescription());
-    }
-
-    @Test
-    public void testGetType() {
-        Assertions.assertEquals(cardType, pokemonCard.getType());
+        differentPokemonCard = new PokemonCardDecorator(new CardImpl("test", "test", "test"), "test", "test",
+                "test", false, false, false, false, false);
     }
 
     @Test
@@ -68,5 +56,37 @@ public class PokemonCardDecoratorTest implements CardTestConstants {
     @Test
     public void testGetIsPromo() {
         Assertions.assertTrue(pokemonCard.getIsPromo());
+    }
+
+    @Test
+    public void testEqualsForItself() {
+        Assertions.assertTrue(pokemonCard.equals(pokemonCard));
+    }
+
+    @Test
+    public void testEqualsForDifferentFieldsObject() {
+        Assertions.assertFalse(pokemonCard.equals(new Object()));
+    }
+
+    @Test
+    public void testEqualsForDifferentFieldsCard() {
+        Assertions.assertFalse(pokemonCard.equals(differentPokemonCard));
+    }
+
+    @Test
+    public void testEqualsForEqualFieldsCard() {
+        Assertions.assertTrue(pokemonCard.equals(new PokemonCardDecorator(new CardImpl(cardName, cardDesc, cardType), genericArtist, cardImageUrl,
+                genericRarity, true, true, true, true, true)));
+    }
+
+    @Test
+    public void testHashCodeForDifferentFieldsCard() {
+        Assertions.assertFalse(pokemonCard.hashCode() == differentPokemonCard.hashCode());
+    }
+
+    @Test
+    public void testHashCodeForEqualFieldsCard() {
+        Assertions.assertTrue(pokemonCard.hashCode() == new PokemonCardDecorator(new CardImpl(cardName, cardDesc, cardType), genericArtist, cardImageUrl,
+                genericRarity, true, true, true, true, true).hashCode());
     }
 }
