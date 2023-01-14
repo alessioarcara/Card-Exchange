@@ -37,8 +37,7 @@ public class PokemonCardDecorator extends CardDecorator {
         return imageUrl;
     }
 
-    @Override
-    public String getSpecialAttribute() {
+    public String getRarity() {
         return rarity;
     }
 

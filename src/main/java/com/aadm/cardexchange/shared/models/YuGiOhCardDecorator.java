@@ -19,8 +19,7 @@ public class YuGiOhCardDecorator extends CardDecorator {
     public YuGiOhCardDecorator() {
     }
 
-    @Override
-    public String getSpecialAttribute() {
+    public String getRace() {
         return race;
     }
 
@@ -37,12 +36,12 @@ public class YuGiOhCardDecorator extends CardDecorator {
         if (this == o) return true;
         if (!(o instanceof YuGiOhCardDecorator)) return false;
         if (!super.equals(o)) return false;
-        YuGiOhCardDecorator yugiohCard = (YuGiOhCardDecorator) o;
-        return getSpecialAttribute().equals(yugiohCard.getSpecialAttribute()) && getImageUrl().equals(yugiohCard.getImageUrl()) && getSmallImageUrl().equals(yugiohCard.getSmallImageUrl());
+        YuGiOhCardDecorator that = (YuGiOhCardDecorator) o;
+        return getRace().equals(that.getRace()) && getImageUrl().equals(that.getImageUrl()) && getSmallImageUrl().equals(that.getSmallImageUrl());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getSpecialAttribute(), getImageUrl(), getSmallImageUrl());
+        return Objects.hash(super.hashCode(), getRace(), getImageUrl(), getSmallImageUrl());
     }
 }

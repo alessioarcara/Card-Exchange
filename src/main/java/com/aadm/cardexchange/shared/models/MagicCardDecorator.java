@@ -32,8 +32,7 @@ public class MagicCardDecorator extends CardDecorator {
         return artist;
     }
 
-    @Override
-    public String getSpecialAttribute() {
+    public String getRarity() {
         return rarity;
     }
 
@@ -62,12 +61,12 @@ public class MagicCardDecorator extends CardDecorator {
         if (this == o) return true;
         if (!(o instanceof MagicCardDecorator)) return false;
         if (!super.equals(o)) return false;
-        MagicCardDecorator magicCard = (MagicCardDecorator) o;
-        return getHasFoil() == magicCard.getHasFoil() && isAlternative == magicCard.isAlternative && isFullArt == magicCard.isFullArt && isPromo == magicCard.isPromo && isReprint == magicCard.isReprint && getArtist().equals(magicCard.getArtist()) && rarity.equals(magicCard.rarity);
+        MagicCardDecorator that = (MagicCardDecorator) o;
+        return getHasFoil() == that.getHasFoil() && isAlternative == that.isAlternative && isFullArt == that.isFullArt && isPromo == that.isPromo && isReprint == that.isReprint && getArtist().equals(that.getArtist()) && getRarity().equals(that.getRarity());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getArtist(), rarity, getHasFoil(), isAlternative, isFullArt, isPromo, isReprint);
+        return Objects.hash(super.hashCode(), getArtist(), getRarity(), getHasFoil(), isAlternative, isFullArt, isPromo, isReprint);
     }
 }

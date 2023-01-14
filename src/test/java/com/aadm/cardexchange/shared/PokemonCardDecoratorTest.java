@@ -30,7 +30,7 @@ public class PokemonCardDecoratorTest implements CardTestConstants {
 
     @Test
     public void testGetRarity() {
-        Assertions.assertEquals(genericRarity, pokemonCard.getSpecialAttribute());
+        Assertions.assertEquals(genericRarity, pokemonCard.getRarity());
     }
 
     @Test

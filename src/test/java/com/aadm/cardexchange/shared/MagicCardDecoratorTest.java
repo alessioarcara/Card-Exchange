@@ -26,7 +26,7 @@ public class MagicCardDecoratorTest implements CardTestConstants {
 
     @Test
     public void testGetRarity() {
-        Assertions.assertEquals(genericRarity, magicCard.getSpecialAttribute());
+        Assertions.assertEquals(genericRarity, magicCard.getRarity());
     }
 
     @Test

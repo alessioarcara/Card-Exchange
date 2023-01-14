@@ -18,7 +18,7 @@ public class YuGiOhCardDecoratorTest implements CardTestConstants {
 
     @Test
     public void testGetRace() {
-        Assertions.assertEquals(yuGiOhRace, yuGiOhCard.getSpecialAttribute());
+        Assertions.assertEquals(yuGiOhRace, yuGiOhCard.getRace());
     }
 
     @Test

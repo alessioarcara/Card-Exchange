@@ -4,8 +4,7 @@ import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.widgets.CardWidget;
 import com.aadm.cardexchange.client.widgets.FunctionInterface;
 import com.aadm.cardexchange.client.widgets.GameFiltersWidget;
-import com.aadm.cardexchange.shared.models.CardDecorator;
-import com.aadm.cardexchange.shared.models.Game;
+import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -56,7 +55,14 @@ public class HomeViewImpl extends Composite implements HomeView, FunctionInterfa
         Set<String> uniqueTypes = new HashSet<>();
         data.forEach(card -> {
             uniqueTypes.add(card.getType());
-            uniqueSpecialAttributes.add(card.getSpecialAttribute());
+            if (card instanceof MagicCardDecorator) {
+                uniqueSpecialAttributes.add(((MagicCardDecorator) card).getRarity());
+            } else if (card instanceof PokemonCardDecorator) {
+                uniqueSpecialAttributes.add(((PokemonCardDecorator) card).getRarity());
+            } else {
+                uniqueSpecialAttributes.add(((YuGiOhCardDecorator) card).getRace());
+
+            }
             cardsPanel.add(new CardWidget(this, card));
         });
         uniqueTypes.forEach(type -> filters.typeOptions.addItem(type));

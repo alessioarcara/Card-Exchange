@@ -28,10 +28,6 @@ public class CardDecorator implements Card {
         return wrappee.getType();
     }
 
-    public String getSpecialAttribute() {
-        return "";
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -43,12 +39,11 @@ public class CardDecorator implements Card {
         CardDecorator card = (CardDecorator) o;
         return card.getName().equals(this.getName())
                 && card.getDescription().equals(this.getDescription())
-                && card.getType().equals(this.getType())
-                && card.getSpecialAttribute().equals(this.getSpecialAttribute());
+                && card.getType().equals(this.getType());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getDescription(), getType(), getSpecialAttribute());
+        return Objects.hash(getName(), getDescription(), getType());
     }
 }
