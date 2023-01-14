@@ -16,7 +16,7 @@ public class JSONParserTest {
     @Test
     public void testYuGiOhJSONParse() throws FileNotFoundException {
         Gson gson = new Gson();
-        CardParseStrategy strategy = new MagicCardParseStrategy();
+        CardParseStrategy strategy = new YuGiOhCardParseStrategy();
         JSONParser parser = new JSONParser(strategy, gson);
 
         CardDecorator[] yuGiOhCards = parser.parseJSON("./resources/json/yugioh_cards.json");
