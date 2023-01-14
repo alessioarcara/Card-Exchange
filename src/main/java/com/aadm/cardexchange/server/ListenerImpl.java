@@ -98,20 +98,22 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         JSONParser parser = new JSONParser(new YuGiOhCardParseStrategy(), gson);
         CardDecorator[] tmpCards;
         try {
-            tmpCards = parser.parseJSON("./resources/json/yugioh_cards.json");
+            tmpCards = parser.parseJSON("./CardExchange-1.0-SNAPSHOT/WEB-INF/classes/json/yugioh_cards.json");
             uploadDataToDB(counter, yuGiOhMap, tmpCards);
 
             parser.setParseStrategy(new MagicCardParseStrategy());
-            tmpCards = parser.parseJSON("./resources/json/magic_cards.json");
+            tmpCards = parser.parseJSON("./CardExchange-1.0-SNAPSHOT/WEB-INF/classes/json/magic_cards.json");
             uploadDataToDB(counter, magicMap, tmpCards);
 
             parser.setParseStrategy(new PokemonCardParseStrategy());
-            tmpCards = parser.parseJSON("./resources/json/pokemon_cards.json");
+            tmpCards = parser.parseJSON("./CardExchange-1.0-SNAPSHOT/WEB-INF/classes/json/pokemon_cards.json");
             uploadDataToDB(counter, pokemonMap, tmpCards);
 
         } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+            System.out.println("error");
+            System.out.println(e.getMessage());
         }
+
 
         System.out.println("*** Data Loaded. ***");
 
