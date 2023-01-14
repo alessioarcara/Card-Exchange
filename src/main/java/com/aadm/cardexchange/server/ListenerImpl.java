@@ -84,7 +84,7 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         System.out.println("*** Loading data from file. ***");
 
         Gson gson = new Gson();
-        GsonSerializer<CardDecorator> cardSerializer = new GsonSerializer<>(gson, CardDecorator.class);
+        GsonSerializer<CardDecorator> cardSerializer = new GsonSerializer<>(gson);
         MapDB DB = new MapDBImpl();
         int counter = 0;
 
