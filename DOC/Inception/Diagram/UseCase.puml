@@ -53,15 +53,40 @@ package  uc03 [
 **Non funcional requirements**:
 ]
 
+package  uc04 [
+
+**Title**: Organizza le carte in mazzi
+**Actor**: Utente
+**Preconditions**: L'utente è registrato e loggato al sistema.
+**Trigger**: /
+**Normal Flow**:
+ - Il visitatore può organizzare le proprie carte, sia possedute che desiderate,  in diversi mazzi, anche personalizzabili.
+**Alternative flows and exceptions**: /
+**Postcondition**:
+**Non funcional requirements**:
+]
+
+package  uc05 [
+
+**Title**: Gestisce mazzo carte possedute
+**Actor**: Utente
+**Preconditions**: L'utente è registrato e loggato al sistema.
+**Trigger**: /
+**Normal Flow**:
+ - Il visitatore può aggiungere/togliere le carte che possiede fisicamente ad un mazzo chiamato 'carte possedute'.
+**Alternative flows and exceptions**: /
+**Postcondition**: L'informazione verrà registrata e resa persistente.
+**Non funcional requirements**:
+]
 
 
 }
 
 rectangle App {
- (Organizza le carte in mazzi) as zUC1
- (Gestisce mazzo/i personalizzato/i) as zUC2
-  (Gestisce mazzo carte desiderate) as zUC3
-  (Gestisce mazzo carte possedute) as zUC4
+ ([UC04] Organizza le carte in mazzi) as zUC1
+ ([UC07] Gestisce mazzo/i personalizzato/i) as zUC2
+  ([UC06] Gestisce mazzo carte desiderate) as zUC3
+  ([UC05] Gestisce mazzo carte possedute) as zUC4
   ([UC01] Visualizza tutte le carte di un gioco [UC01]) as zUC5
   ([UC02] Effettua delle ricerche ) as zUC6
   ([UC03] Visualizza i dettagli di una carta) as zUC7
