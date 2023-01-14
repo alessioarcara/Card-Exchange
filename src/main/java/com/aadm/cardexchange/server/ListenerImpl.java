@@ -79,7 +79,7 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
     }
 
     @Override
-    public void contextInitialized(ServletContextEvent sce) {
+    public void contextInitialized(ServletContextEvent sce) throws RuntimeException {
         System.out.println("Context initialized.");
         System.out.println("*** Loading data from file. ***");
 
@@ -96,24 +96,24 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
                 Serializer.INTEGER, cardSerializer);
 
         JSONParser parser = new JSONParser(new YuGiOhCardParseStrategy(), gson);
+        CardDecorator[] tmpCards;
         try {
-            uploadDataToDB(counter, yuGiOhMap, parser.parseJSON("./resources/json/yugioh_cards.json"));
+            tmpCards = parser.parseJSON("./resources/json/yugioh_cards.json");
+            uploadDataToDB(counter, yuGiOhMap, tmpCards);
 
             parser.setParseStrategy(new MagicCardParseStrategy());
-            uploadDataToDB(counter, magicMap, parser.parseJSON("./resources/json/magic_cards.json"));
+            tmpCards = parser.parseJSON("./resources/json/magic_cards.json");
+            uploadDataToDB(counter, magicMap, tmpCards);
 
             parser.setParseStrategy(new PokemonCardParseStrategy());
-            uploadDataToDB(counter, pokemonMap, parser.parseJSON("./resources/json/pokemon_cards.json"));
+            tmpCards = parser.parseJSON("./resources/json/pokemon_cards.json");
+            uploadDataToDB(counter, pokemonMap, tmpCards);
+
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
 
         System.out.println("*** Data Loaded. ***");
-
-        /*
-        loadDummyData(counter, mMap, MAGIC_DUMMY_DATA);
-        loadDummyData(counter, pMap, POKEMON_DUMMY_DATA);
-        loadDummyData(counter, yMap, YUGIOH_DUMMY_DATA);
 
 //        if (!new File(DB_FILENAME).exists()) {
 //            try {
@@ -130,7 +130,7 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         // Person p = gson.fromJson("{\"age\": 24, \"name\":\"Mario\"}", Person.class);
         // System.out.println("Data: " + p);
 
-         */
+
     }
 
     @Override
