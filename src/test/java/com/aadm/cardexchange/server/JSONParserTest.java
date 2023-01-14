@@ -19,7 +19,7 @@ public class JSONParserTest {
         CardParseStrategy strategy = new YuGiOhCardParseStrategy();
         JSONParser parser = new JSONParser(strategy, gson);
 
-        CardDecorator[] yuGiOhCards = parser.parseJSON("./resources/json/yugioh_cards.json");
+        CardDecorator[] yuGiOhCards = parser.parseJSON("src/main/resources/json/yugioh_cards.json");
 
         Assertions.assertEquals(yuGiOhCards[0].getName(), "Steel Ogre Grotto #2");
         Assertions.assertEquals(yuGiOhCards[0].getType(), "Normal Monster");
@@ -44,7 +44,7 @@ public class JSONParserTest {
         CardParseStrategy strategy = new MagicCardParseStrategy();
         JSONParser parser = new JSONParser(strategy, gson);
 
-        CardDecorator[] magicCards = parser.parseJSON("./resources/json/magic_cards.json");
+        CardDecorator[] magicCards = parser.parseJSON("src/main/resources/json/magic_cards.json");
 
         Assertions.assertEquals(((MagicCardDecorator) magicCards[0]).getArtist(), "Pete Venters");
         Assertions.assertEquals(magicCards[0].getName(), "Ancestor's Chosen");
@@ -77,7 +77,7 @@ public class JSONParserTest {
         CardParseStrategy strategy = new PokemonCardParseStrategy();
         JSONParser parser = new JSONParser(strategy, gson);
 
-        CardDecorator[] pokemonCards = parser.parseJSON("./resources/json/pokemon_cards.json");
+        CardDecorator[] pokemonCards = parser.parseJSON("src/main/resources/json/pokemon_cards.json");
 
         Assertions.assertEquals(((PokemonCardDecorator) pokemonCards[0]).getArtist(), "Ken Sugimori"); // illustrator
         Assertions.assertEquals(((PokemonCardDecorator) pokemonCards[0]).getImageUrl(), "https://assets.tcgdex.net/en/gym/gym1/98");
@@ -112,7 +112,7 @@ public class JSONParserTest {
         JSONParser jsonParser = new JSONParser(new YuGiOhCardParseStrategy(), gson);
 
         jsonParser.setParseStrategy(new PokemonCardParseStrategy());
-        CardDecorator[] cards = jsonParser.parseJSON("./resources/json/pokemon_cards.json");
+        CardDecorator[] cards = jsonParser.parseJSON("src/main/resources/json/pokemon_cards.json");
 
         Assertions.assertTrue(cards[0] instanceof PokemonCardDecorator);
     }
