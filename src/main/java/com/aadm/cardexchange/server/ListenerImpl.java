@@ -1,21 +1,15 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.server.jsonparser.JSONParser;
-import com.aadm.cardexchange.server.jsonparser.MagicCardParseStrategy;
-import com.aadm.cardexchange.server.jsonparser.PokemonCardParseStrategy;
-import com.aadm.cardexchange.server.jsonparser.YuGiOhCardParseStrategy;
-import com.aadm.cardexchange.shared.models.CardDecorator;
+import com.aadm.cardexchange.shared.models.*;
 import com.google.gson.Gson;
 import org.mapdb.Serializer;
 
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
-import java.io.FileNotFoundException;
 import java.util.Map;
 
 
 public class ListenerImpl implements ServletContextListener, MapDBConstants {
-    /*
     private static final MagicCardDecorator[] MAGIC_DUMMY_DATA = new MagicCardDecorator[]{
             new MagicCardDecorator(new
                     CardImpl("magicName", "magicDesc", "magicType"),
@@ -70,13 +64,7 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
             map.put(counter++, card);
         }
     }
-    */
 
-    private void uploadDataToDB(int counter, Map<Integer, CardDecorator> map, CardDecorator[] data) {
-        for (CardDecorator card : data) {
-            map.put(counter++, card);
-        }
-    }
 
     @Override
     public void contextInitialized(ServletContextEvent sce) throws RuntimeException {
@@ -84,15 +72,15 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         System.out.println("*** Loading data from file. ***");
 
         Gson gson = new Gson();
-        GsonSerializer<CardDecorator> cardSerializer = new GsonSerializer<>(gson, CardDecorator.class);
+        GsonSerializer<CardDecorator> cardSerializer = new GsonSerializer<>(gson);
         MapDB DB = new MapDBImpl();
-        int counter = 0;
+        int count = 0;
 
-        Map<Integer, CardDecorator> yuGiOhMap = DB.getCachedMap(sce.getServletContext(), YUGIOH_MAP_NAME,
+        Map<Integer, CardDecorator> yMap = DB.getCachedMap(sce.getServletContext(), YUGIOH_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
-        Map<Integer, CardDecorator> magicMap = DB.getCachedMap(sce.getServletContext(), MAGIC_MAP_NAME,
+        Map<Integer, CardDecorator> mMap = DB.getCachedMap(sce.getServletContext(), MAGIC_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
-        Map<Integer, CardDecorator> pokemonMap = DB.getCachedMap(sce.getServletContext(), POKEMON_MAP_NAME,
+        Map<Integer, CardDecorator> pMap = DB.getCachedMap(sce.getServletContext(), POKEMON_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
 
         JSONParser parser = new JSONParser(new YuGiOhCardParseStrategy(), gson);
@@ -114,7 +102,6 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
             System.out.println(e.getMessage());
         }
 
-
         System.out.println("*** Data Loaded. ***");
 
 //        if (!new File(DB_FILENAME).exists()) {
@@ -131,8 +118,6 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         // Gson gson = new Gson();
         // Person p = gson.fromJson("{\"age\": 24, \"name\":\"Mario\"}", Person.class);
         // System.out.println("Data: " + p);
-
-
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.shared.models.CardDecorator;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -19,16 +20,12 @@ public class CardWidget extends Composite {
     @UiField
     PushButton detailsButton;
 
-    public CardWidget(FunctionInterface parent, String nameText, String descText, String typeText) {
+    public CardWidget(FunctionInterface parent, CardDecorator card) {
         initWidget(uiBinder.createAndBindUi(this));
-        nameDiv.setInnerHTML(nameText);
-        descDiv.setInnerHTML(descText);
-        typeDiv.setInnerHTML(typeText);
+        nameDiv.setInnerHTML(card.getName());
+        descDiv.setInnerHTML(card.getDescription());
+        typeDiv.setInnerHTML(card.getDescription());
         detailsButton.addClickHandler(clickEvent -> parent.handleClickCard());
-    }
-
-    public String getId() {
-        return "qualcosa";
     }
 
     interface CardUIBinder extends UiBinder<Widget, CardWidget> {

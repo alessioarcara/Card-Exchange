@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CardServiceImpl extends RemoteServiceServlet implements CardService, MapDBConstants {
+    private static final long serialVersionUID = 873638478071540464L;
     private MapDB db;
 
     public CardServiceImpl() {
@@ -41,7 +42,7 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
 
         Gson gson = new Gson();
         Map<Integer, CardDecorator> map = DB.getCachedMap(getServletContext(), mapName,
-                Serializer.INTEGER, new GsonSerializer<>(gson, CardDecorator.class));
+                Serializer.INTEGER, new GsonSerializer<>(gson));
 
         return new ArrayList<>(map.values());
     }

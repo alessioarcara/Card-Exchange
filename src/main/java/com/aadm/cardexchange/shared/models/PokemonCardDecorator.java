@@ -1,6 +1,8 @@
 package com.aadm.cardexchange.shared.models;
 
 
+import java.util.Objects;
+
 public class PokemonCardDecorator extends CardDecorator {
     private static final long serialVersionUID = -2033966136995921050L;
     private String artist;
@@ -57,5 +59,19 @@ public class PokemonCardDecorator extends CardDecorator {
 
     public boolean getIsPromo() {
         return isPromo;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof PokemonCardDecorator)) return false;
+        if (!super.equals(o)) return false;
+        PokemonCardDecorator pokemonCard = (PokemonCardDecorator) o;
+        return isFirstEdition == pokemonCard.isFirstEdition && isHolo == pokemonCard.isHolo && isNormal == pokemonCard.isNormal && isReverse == pokemonCard.isReverse && isPromo == pokemonCard.isPromo && getArtist().equals(pokemonCard.getArtist()) && getImageUrl().equals(pokemonCard.getImageUrl()) && rarity.equals(pokemonCard.rarity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getArtist(), getImageUrl(), rarity, isFirstEdition, isHolo, isNormal, isReverse, isPromo);
     }
 }

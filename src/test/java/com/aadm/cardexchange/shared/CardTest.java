@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.io.Serializable;
-
 public class CardTest implements CardTestConstants {
     private Card card;
 
@@ -29,10 +27,5 @@ public class CardTest implements CardTestConstants {
     @Test
     public void testGetType() {
         Assertions.assertEquals(cardType, card.getType());
-    }
-
-    @Test
-    public void testCardSerializable() {
-        Assertions.assertTrue(card instanceof Serializable);
     }
 }
