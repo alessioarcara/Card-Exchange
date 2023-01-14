@@ -114,7 +114,6 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
             System.out.println(e.getMessage());
         }
 
-
         System.out.println("*** Data Loaded. ***");
 
 //        if (!new File(DB_FILENAME).exists()) {
@@ -131,7 +130,6 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         // Gson gson = new Gson();
         // Person p = gson.fromJson("{\"age\": 24, \"name\":\"Mario\"}", Person.class);
         // System.out.println("Data: " + p);
-
 
     }
 
