@@ -1,6 +1,8 @@
 package com.aadm.cardexchange.shared.models;
 
 
+import java.util.Objects;
+
 public class MagicCardDecorator extends CardDecorator {
     private static final long serialVersionUID = 2368581922806822154L;
     private String artist;
@@ -52,5 +54,19 @@ public class MagicCardDecorator extends CardDecorator {
 
     public boolean getIsReprint() {
         return isReprint;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MagicCardDecorator)) return false;
+        if (!super.equals(o)) return false;
+        MagicCardDecorator that = (MagicCardDecorator) o;
+        return getHasFoil() == that.getHasFoil() && isAlternative == that.isAlternative && isFullArt == that.isFullArt && isPromo == that.isPromo && isReprint == that.isReprint && getArtist().equals(that.getArtist()) && getRarity().equals(that.getRarity());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getArtist(), getRarity(), getHasFoil(), isAlternative, isFullArt, isPromo, isReprint);
     }
 }
