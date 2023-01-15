@@ -73,7 +73,7 @@ package  uc05 [
 **Preconditions**: L'utente è registrato e loggato al sistema.
 **Trigger**: /
 **Normal Flow**:
- - Il visitatore può aggiungere/togliere le carte che possiede fisicamente ad un mazzo chiamato 'carte possedute'.
+ - L'utente può aggiungere/togliere le carte che possiede fisicamente ad un mazzo chiamato 'carte possedute'.
 **Alternative flows and exceptions**: /
 **Postcondition**: L'informazione verrà registrata e resa persistente.
 **Non funcional requirements**:
