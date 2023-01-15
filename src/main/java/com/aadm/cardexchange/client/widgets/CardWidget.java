@@ -41,7 +41,7 @@ public class CardWidget extends Composite {
             val += "<br>Rarity: " + ((PokemonCardDecorator) card).getRarity();
             val += "<br>" + (((PokemonCardDecorator) card).getIsFirstEdition() ? "<b>First edition</b>" : "<s>First edition</s>");
             val += "<br>" + (((PokemonCardDecorator) card).getIsHolo() ? "<b>Holo</b>" : "<s>Holo</s>");
-            val += "<br>" + (((PokemonCardDecorator) card).getIsNormal() ? "<b>Normal</b>" : "<s>Normal</s>") ;
+            val += "<br>" + (((PokemonCardDecorator) card).getIsNormal() ? "<b>Normal</b>" : "<s>Normal</s>");
             val += "<br>" + (((PokemonCardDecorator) card).getIsReverse() ? "<b>Reverse</b>" : "<s>Reverse</s>");
             val += "<br>" + (((PokemonCardDecorator) card).getIsPromo() ? "<b>Promo</b>" : "<s>Promo</s>");
             details.setInnerHTML(val);
@@ -63,6 +63,7 @@ public class CardWidget extends Composite {
             imageDiv.setPixelSize(90, 131);
         }
     }
+
     interface CardUIBinder extends UiBinder<Widget, CardWidget> {
     }
 }
