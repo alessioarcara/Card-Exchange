@@ -5,6 +5,7 @@
 % \author{Alessia Crimaldi}
 \date{January 2023}
 
+\usepackage{blindtext}\usepackage[a4paper, total={6in, 8in}]{geometry}
 \begin{document}
 
     \maketitle
@@ -36,48 +37,96 @@
         \textbf{Stato iniziale:}
         \newline
         \newline
-        \begin{tabular}{ |c|c|c|c|c| }
+        \begin{tabular}{ | p{2.5cm} | p{4cm} | p{2.6cm} | p{1.6cm} | p{1.6cm} | }
             \hline
-            UC raffinati      &   Product Backlog                         &   UC Effort   &   Sprint Backlog   &   Task Effort \\
+            \textbf{UC raffinati}
+            & \textbf{Product Backlog}
+            & \textbf{Sprint Backlog}
+            & \textbf{Sprint In progress}
+            & \textbf{Sprint Done} \\
             \hline
-                              &   \textbf{UC01:} Come visitatore voglio   &               &                    &               \\
-            \tababularnewline &   selezionare un gioco e vedere           &               &                    &               \\
-            \tababularnewline &   l'elenco di tutte le sue carte          &               &                    &               \\
+            & \textbf{UC01:} Come visitatore voglio selezionare un gioco e vedere l'elenco di tutte le sue carte & & & \\
             \hline
-                              &   \textbf{UC02:} Come visitatore voglio   &               &                    &               \\
-            \tababularnewline &   poter fare delle ricerche per           &               &                    &               \\
-            \tababularnewline &   vedere un elenco di carte filtrato      &               &                    &               \\
+            & \textbf{UC02:} Come visitatore voglio poter fare delle ricerche per vedere un elenco di carte filtrato & & & \\
             \hline
-                              &   \textbf{UC03:} Come visitatore voglio   &               &                    &               \\
-            \tababularnewline &   selezionare una carta e                 &               &                    &               \\
-            \tababularnewline &   vederne i dettagli                      &               &                    &               \\
+            & \textbf{UC03:} Come visitatore voglio selezionare una carta e vederne i dettagli & & & \\
             \hline
         \end{tabular}
         \newpage
-        \textbf{Stato dopo lo sprint planning}
+        \textbf{Stato dopo lo Sprint Planning:}
         \newline
         \newline
-        \begin{tabular}{ |c|c|c|c|c| }
+        \begin{tabular}{ | p{3.5cm} | p{1.5cm} | p{5cm} | p{1.6cm} | p{1.6cm} | }
             \hline
-            UC raffinati   &   Product Backlog   &   UC Effort   &   Sprint Backlog   &   Task Effort \\
+            \textbf{UC raffinati}
+            & \textbf{Product Backlog}
+            & \textbf{Sprint Backlog}
+            & \textbf{Sprint In progress}
+            & \textbf{Sprint Done} \\
             \hline
-            UC01           &                     &               &   Task 1 per UC1   &               \\
+            \textbf{UC01:} Come visitatore voglio selezionare un gioco e vedere l'elenco di tutte le sue carte
+            & & \textbf{Task1 [UC01]\#2:} Creare il modello per le carte di tutti i giochi & & \\
             \hline
-                           &                     &               &   Task 2 per UC1   &               \\
+            \textbf{UC02:} Come visitatore voglio poter fare delle ricerche per vedere un elenco di carte filtrato
+            & & \textbf{Task2 [UC01]\#3:} Importare dai JSON le carte dei giochi & & \\
             \hline
-                           &                     &               &   Task 3 per UC1   &               \\
+            \textbf{UC03:} Come visitatore voglio selezionare una carta e vederne i dettagli
+            & & \textbf{Task3 [UC01]\#4:} Inizializzare il DB con i JSON caricati & & \\
             \hline
-            UC02           &                     &               &   Task 1 per UC2   &               \\
+            & & \textbf{Task4 [UC01]\#5:} Creare RemoteService per fetch delle carte di quel gioco & & \\
             \hline
-                           &                     &               &   Task 2 per UC2   &               \\
+            & & \textbf{Task5 [UC01]\#6:} Creare HomeView per la visualizzazione delle carte & & \\
             \hline
-                           &                     &               &   Task 3 per UC2   &               \\
+            & & \textbf{Task6 [UC01]\#7:} Creare Composite Card per la visualizzazione carta & & \\
             \hline
-            UC03           &                     &               &   Task 1 per UC3   &               \\
+            & & \textbf{Task1 [UC02]\#10:} Creare filtri specifici di quel gioco & & \\
             \hline
-                           &                     &               &   Task 2 per UC3   &               \\
+            & & \textbf{Task2 [UC02]\#11:} Filtrare l'array delle carte in base ai filtri specificati & & \\
             \hline
-                           &                     &               &   Task 3 per UC3   &               \\
+            & & \textbf{Task3 [UC02]\#12:} Rimuovere dalla pagina HomeView le carte che non corrispondono ai filtri & & \\
+            \hline
+            & & \textbf{Task1 [UC03]\#14:} Creazione CardPlace & & \\
+            \hline
+            & & \textbf{Task2 [UC03]\#15:} Connessione RemoteService FetchCard nel caso l'assunzione sia errata & & \\
+            \hline
+            & & \textbf{Task3 [UC03]\#16:} Creazione CardView e popolamento delle informazioni & & \\
+            \hline
+            & & \textbf{Task4 [UC03]\#17:} Gestione del cambio di pagina da HomeView a CardView & & \\
+            \hline
+        \end{tabular}
+        \newpage
+        \textbf{Stato finale:}
+        \newline
+        \newline
+        \begin{tabular}{ | p{2.4cm} | p{1.4cm} | p{2.7cm} | p{3.4cm} | p{3cm} | }
+            \hline
+            \textbf{UC raffinati}
+            & \textbf{Product Backlog}
+            & \textbf{Sprint Backlog}
+            & \textbf{Sprint In progress}
+            & \textbf{Sprint Done} \\
+            \hline
+            \textbf{UC01:} Come visitatore voglio selezionare un gioco e vedere l'elenco di tutte le sue carte
+            & & \textbf{Task1 [UC03]\#14:} Creazione CardPlace
+            & \textbf{Task2 [UC02]\#11:} Filtrare l'array delle carte in base ai filtri specificati
+            & \textbf{Task1 [UC01]\#2:} Creare il modello per le carte di tutti i giochi \\
+            \hline
+            \textbf{UC02:} Come visitatore voglio poter fare delle ricerche per vedere un elenco di carte filtrato
+            & & \textbf{Task2 [UC03]\#15:} Connessione RemoteService FetchCard nel caso l'assunzione sia errata
+            & \textbf{Task3 [UC02]\#12:} Rimuovere dalla pagina HomeView le carte che non corrispondono ai filtri
+            & \textbf{Task4 [UC01]\#5:} Creare RemoteService per fetch delle carte di quel gioco \\
+            \hline
+            \textbf{UC03:} Come visitatore voglio selezionare una carta e vederne i dettagli
+            & & \textbf{Task3 [UC03]\#16:} Creazione CardView e popolamento delle informazioni
+            & \textbf{Task6 [UC01]\#7:} Creare Composite Card per la visualizzazione carta
+            & \textbf{Task5 [UC01]\#6:} Creare HomeView per la visualizzazione delle carte \\
+            \hline
+            & & \textbf{Task4 [UC03]\#17:} Gestione del cambio di pagina da HomeView a CardView
+            & & \textbf{Task2 [UC01]\#3:} Importare dai JSON le carte dei giochi \\
+            \hline
+            & & & & \textbf{Task1 [UC02]\#10:} Creare filtri specifici di quel gioco  \\
+            \hline
+            & & & & \textbf{Task3 [UC01]\#4:} Inizializzare il DB con i JSON caricati \\
             \hline
         \end{tabular}
     \end{itemize}
