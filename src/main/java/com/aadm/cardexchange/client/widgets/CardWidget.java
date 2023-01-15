@@ -18,10 +18,8 @@ public class CardWidget extends Composite {
     DivElement descDiv;
     @UiField
     DivElement typeDiv;
-
     @UiField
     DivElement details;
-
     @UiField
     Image imageDiv;
     @UiField
@@ -41,32 +39,30 @@ public class CardWidget extends Composite {
             imageDiv.setUrl(((PokemonCardDecorator) card).getImageUrl());
             String val = "<br>Artist: " + ((PokemonCardDecorator) card).getArtist();
             val += "<br>Rarity: " + ((PokemonCardDecorator) card).getRarity();
-            val += "<br>First edition: " + ((PokemonCardDecorator) card).getIsFirstEdition();
-            val += "<br>Holo: " + ((PokemonCardDecorator) card).getIsHolo();
-            val += "<br>Normal: " + ((PokemonCardDecorator) card).getIsNormal();
-            val += "<br>Reverse: " + ((PokemonCardDecorator) card).getIsReverse();
-            val += "<br>Promo: " + ((PokemonCardDecorator) card).getIsPromo();
+            val += "<br>" + (((PokemonCardDecorator) card).getIsFirstEdition() ? "<b>First edition</b>" : "<s>First edition</s>");
+            val += "<br>" + (((PokemonCardDecorator) card).getIsHolo() ? "<b>Holo</b>" : "<s>Holo</s>");
+            val += "<br>" + (((PokemonCardDecorator) card).getIsNormal() ? "<b>Normal</b>" : "<s>Normal</s>") ;
+            val += "<br>" + (((PokemonCardDecorator) card).getIsReverse() ? "<b>Reverse</b>" : "<s>Reverse</s>");
+            val += "<br>" + (((PokemonCardDecorator) card).getIsPromo() ? "<b>Promo</b>" : "<s>Promo</s>");
             details.setInnerHTML(val);
         }
         if (card instanceof MagicCardDecorator) {
             String val = "<br>Artist: " + ((MagicCardDecorator) card).getArtist();
             val += "<br>Rarity: " + ((MagicCardDecorator) card).getRarity();
-            val += "<br>Foil: " + ((MagicCardDecorator) card).getHasFoil();
-            val += "<br>Alternative: " + ((MagicCardDecorator) card).getIsAlternative();
-            val += "<br>Full Art: " + ((MagicCardDecorator) card).getIsFullArt();
-            val += "<br>Promo: " + ((MagicCardDecorator) card).getIsPromo();
+            val += "<br>" + (((MagicCardDecorator) card).getHasFoil() ? "<b>Foil</b>" : "<s>Foil</s>");
+            val += "<br>" + (((MagicCardDecorator) card).getIsAlternative() ? "<b>Alternative</b>" : "<s>Alternative</s>");
+            val += "<br>" + (((MagicCardDecorator) card).getIsFullArt() ? "<b>Full Art</b>" : "<s>Full Art</s>");
+            val += "<br>" + (((MagicCardDecorator) card).getIsPromo() ? "<b>Promo</b>" : "<s>Promo</s>");
             details.setInnerHTML(val);
+            imageDiv.setPixelSize(0, 0);
         }
 
         detailsButton.addClickHandler(clickEvent -> parent.handleClickCard());
 
         if (!(card instanceof MagicCardDecorator)) {
-            imageDiv.setPixelSize(69, 100);
-        } else {
-            imageDiv.setPixelSize(0, 0);
+            imageDiv.setPixelSize(90, 131);
         }
     }
-
     interface CardUIBinder extends UiBinder<Widget, CardWidget> {
     }
 }
