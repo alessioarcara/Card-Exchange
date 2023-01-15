@@ -1,13 +1,12 @@
 package com.aadm.cardexchange.client;
 
+import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.presenters.HomeActivity;
 import com.aadm.cardexchange.client.views.HomeView;
 import com.aadm.cardexchange.server.MockCardData;
 import com.aadm.cardexchange.shared.CardServiceAsync;
-import com.aadm.cardexchange.shared.models.CardDecorator;
-import com.aadm.cardexchange.shared.models.Game;
-import com.aadm.cardexchange.shared.models.MagicCardDecorator;
-import com.aadm.cardexchange.shared.models.PokemonCardDecorator;
+import com.aadm.cardexchange.shared.models.*;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.easymock.IMocksControl;
@@ -28,6 +27,7 @@ public class HomeActivityTest {
     IMocksControl ctrl;
     HomeView mockView;
     CardServiceAsync mockRpcService;
+    PlaceController placeController;
     HomeActivity homeActivity;
 
     private static Stream<Arguments> provideMockCards() {
@@ -43,8 +43,17 @@ public class HomeActivityTest {
         ctrl = createStrictControl();
         mockView = ctrl.createMock(HomeView.class);
         mockRpcService = ctrl.createMock(CardServiceAsync.class);
-        PlaceController placeController = ctrl.createMock(PlaceController.class);
+        placeController = ctrl.createMock(PlaceController.class);
         homeActivity = new HomeActivity(mockView, mockRpcService, placeController);
+    }
+
+    @Test
+    public void testForGoTo() {
+        placeController.goTo(isA(Place.class));
+        expectLastCall();
+        ctrl.replay();
+        homeActivity.goTo(new CardPlace());
+        ctrl.verify();
     }
 
     @Test
@@ -120,6 +129,30 @@ public class HomeActivityTest {
         setupFetchGameCardsTest(Game.Pokemon, mockCards);
         Assertions.assertEquals(homeActivity.filterGameCards("all", "all",
                 "Artist", ((PokemonCardDecorator) expectedCard).getArtist(),
+                Collections.emptyList(), Collections.emptyList()).get(0), expectedCard);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideMockCards")
+    public void testFilterGameCardsForSpecialAttributeParameter(Game game, List<CardDecorator> mockCards) {
+        CardDecorator expectedCard = mockCards.get(mockCards.size() - 1);
+        String specialAttribute = expectedCard instanceof MagicCardDecorator ?
+                ((MagicCardDecorator) expectedCard).getRarity() : expectedCard instanceof PokemonCardDecorator ?
+                ((PokemonCardDecorator) expectedCard).getRarity() : ((YuGiOhCardDecorator) expectedCard).getRace();
+
+        setupFetchGameCardsTest(game, mockCards);
+        Assertions.assertEquals(homeActivity.filterGameCards(specialAttribute, "all",
+                "Description", "",
+                Collections.emptyList(), Collections.emptyList()).get(0), expectedCard);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideMockCards")
+    public void testFilterGameCardsForTypeParameter(Game game, List<CardDecorator> mockCards) {
+        CardDecorator expectedCard = mockCards.get(mockCards.size() - 1);
+        setupFetchGameCardsTest(game, mockCards);
+        Assertions.assertEquals(homeActivity.filterGameCards("all", expectedCard.getType(),
+                "Description", "",
                 Collections.emptyList(), Collections.emptyList()).get(0), expectedCard);
     }
 }

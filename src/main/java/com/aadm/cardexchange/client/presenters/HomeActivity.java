@@ -3,10 +3,7 @@ package com.aadm.cardexchange.client.presenters;
 import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.HomeView;
 import com.aadm.cardexchange.shared.CardServiceAsync;
-import com.aadm.cardexchange.shared.models.CardDecorator;
-import com.aadm.cardexchange.shared.models.Game;
-import com.aadm.cardexchange.shared.models.MagicCardDecorator;
-import com.aadm.cardexchange.shared.models.PokemonCardDecorator;
+import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
@@ -61,20 +58,32 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
                         cardText = card.getDescription();
                         break;
                     case "Artist":
-                        if (card instanceof MagicCardDecorator) {
-                            cardText = ((MagicCardDecorator) card).getArtist();
-                        } else if (card instanceof PokemonCardDecorator) {
-                            cardText = ((PokemonCardDecorator) card).getArtist();
-                        }
+                        cardText = card instanceof MagicCardDecorator ?
+                                ((MagicCardDecorator) card).getArtist() :
+                                card instanceof PokemonCardDecorator ?
+                                        ((PokemonCardDecorator) card).getArtist() : "";
                         break;
                 }
                 if (!cardText.toLowerCase().contains(textInputValue.toLowerCase())) {
                     continue;
                 }
+            } else if (!specialAttributeValue.equals("all")) {
+                if (card instanceof MagicCardDecorator ?
+                        !specialAttributeValue.equals(((MagicCardDecorator) card).getRarity()) :
+                        card instanceof PokemonCardDecorator ?
+                                !specialAttributeValue.equals(((PokemonCardDecorator) card).getRarity()) :
+                                card instanceof YuGiOhCardDecorator &&
+                                        !specialAttributeValue.equals(((YuGiOhCardDecorator) card).getRace())
+                ) {
+                    continue;
+                }
+            } else if (!typeValue.equals("all")) {
+                if (!typeValue.equals(card.getType())) {
+                    continue;
+                }
+            } else if (!(booleanInputNames.isEmpty() && booleanInputValues.isEmpty())) {
+
             }
-            // special attribute
-            // type
-            // boolean fields
             filteredCards.add(card);
         }
         return filteredCards;
