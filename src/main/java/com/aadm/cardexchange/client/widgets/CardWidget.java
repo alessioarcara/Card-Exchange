@@ -58,14 +58,13 @@ public class CardWidget extends Composite {
             details.setInnerHTML(val);
         }
 
-
         detailsButton.addClickHandler(clickEvent -> parent.handleClickCard());
+
         if (!(card instanceof MagicCardDecorator)) {
             imageDiv.setPixelSize(69, 100);
         } else {
             imageDiv.setPixelSize(0, 0);
         }
-
     }
 
     interface CardUIBinder extends UiBinder<Widget, CardWidget> {
