@@ -2,18 +2,6 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <ui:style>
-        /*.card {*/
-        /*    position: relative;*/
-        /*    border-style: dotted;*/
-        /*    border-color: black;*/
-        /*    width: 20rem;*/
-        /*    height: 450px;*/
-        /*    display: flex;*/
-        /*    flex-direction: column;*/
-        /*    align-items: center;*/
-        /*    justify-content: space-around;*/
-        /*}*/
-
         .card {
             width: 20rem;
             height: 420px;
@@ -28,12 +16,10 @@
             align-items: center;
             justify-content: space-between;
         }
-
         .card img {
             width: 100%;
             height: auto;
         }
-
         .name {
             color: #222;
             position: absolute;
@@ -41,7 +27,6 @@
             text-align: center;
             top: 15px;
         }
-
         .description {
             color: #222;
             font-size: 13px;
@@ -49,61 +34,42 @@
             margin-block: 10px;
             margin-inline: .5rem;
             width: 90%;
-            line-height: 1em;
-            max-height: 5em;
+            line-height: 14px;
+            max-height: 84px;
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: pre-wrap;
         }
-
-        .description::before {
-            content: "Description: \A";
-            font-style: italic;
-            white-space: pre-line;
-            color: #222;
-        }
-
         .type {
             font-size: 13px;
-            font-style: italic;
             color: #222;
+            text-align: right;
         }
-
-        .type::before {
-            content: "Type: \A";
-            white-space: pre-line;
-            font-size: 11px;
-        }
-
         .separator {
             height: 1px;
             width: 90%;
             background-color: #999;
             position: absolute;
-
             align-self: center;
         }
-
         .separator-1 {
             top: 210px;
         }
-
         .separator-2 {
-            bottom: 80px;
+            bottom: 60px;
         }
-
         .button {
             background-color: #555;
             color: white;
             border: none;
             cursor: pointer;
-            height: 30px;
-            line-height: 30px;
+            height: 25px;
+            line-height: 25px;
             align-self: center;
             text-align: center;
             border-radius: 10px;
-            width: 80%;
+            width: 60%;
         }
-
         .firstRow {
             display: flex;
             flex-direction: row;
@@ -111,26 +77,26 @@
             width: 85%;
             margin-top: 30px;
         }
-
         .detailsCol {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
-
         .details {
             font-size: 13px;
-            font-style: italic;
             color: #444;
             text-align: right;
         }
-
+        .height {
+            height:131px
+        }
     </ui:style>
     <g:HTMLPanel>
         <div class="{style.card}">
             <div class="{style.name}" ui:field="nameDiv">placeholder</div>
             <div class="{style.firstRow}">
                 <g:Image ui:field="imageDiv" />
+                <div class="{style.height}" />
                 <div class="{style.detailsCol}">
                     <div class="{style.type}" ui:field="typeDiv">placeholder</div>
                     <div class="{style.details}" ui:field="details">placeholder</div>
