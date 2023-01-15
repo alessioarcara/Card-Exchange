@@ -3,23 +3,109 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <ui:style>
         .card {
-            position: relative;
-            border-style: dotted;
-            border-color: black;
             width: 20rem;
-            height: 450px;
+            height: 420px;
+            border-radius: 10px;
+            background-color: #e8e8e8;
+            box-shadow: 2px 2px 5px #a8a8a8;
+            position: relative;
+            padding-inline: 1em;
+            padding-block: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-around;
+            justify-content: space-between;
+        }
+        .card img {
+            width: 100%;
+            height: auto;
+        }
+        .name {
+            color: #222;
+            position: absolute;
+            font-size: 18px;
+            text-align: center;
+            top: 15px;
+        }
+        .description {
+            color: #222;
+            font-size: 13px;
+            text-align: justify;
+            margin-block: 10px;
+            margin-inline: .5rem;
+            width: 90%;
+            line-height: 14px;
+            max-height: 84px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: pre-wrap;
+        }
+        .type {
+            font-size: 13px;
+            color: #222;
+            text-align: right;
+        }
+        .separator {
+            height: 1px;
+            width: 90%;
+            background-color: #999;
+            position: absolute;
+            align-self: center;
+        }
+        .separator-1 {
+            top: 210px;
+        }
+        .separator-2 {
+            bottom: 60px;
+        }
+        .button {
+            background-color: #555;
+            color: white;
+            border: none;
+            cursor: pointer;
+            height: 25px;
+            line-height: 25px;
+            align-self: center;
+            text-align: center;
+            border-radius: 10px;
+            width: 60%;
+        }
+        .firstRow {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 85%;
+            margin-top: 30px;
+        }
+        .detailsCol {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .details {
+            font-size: 13px;
+            color: #444;
+            text-align: right;
+        }
+        .height {
+            height:131px
         }
     </ui:style>
     <g:HTMLPanel>
         <div class="{style.card}">
-            <div ui:field="nameDiv">placeholder</div>
-            <div ui:field="descDiv">placeholder</div>
-            <div ui:field="typeDiv">placeholder</div>
-            <g:PushButton ui:field="detailsButton">Open Details</g:PushButton>
+            <div class="{style.name}" ui:field="nameDiv">placeholder</div>
+            <div class="{style.firstRow}">
+                <g:Image ui:field="imageDiv" />
+                <div class="{style.height}" />
+                <div class="{style.detailsCol}">
+                    <div class="{style.type}" ui:field="typeDiv">placeholder</div>
+                    <div class="{style.details}" ui:field="details">placeholder</div>
+                </div>
+            </div>
+            <div class="{style.separator} {style.separator-1}"/>
+            <div class="{style.description}" ui:field="descDiv">placeholder</div>
+            <div class="{style.separator} {style.separator-2}"/>
+            <g:PushButton styleName="{style.button}" ui:field="detailsButton">Open Details</g:PushButton>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder>
