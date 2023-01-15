@@ -36,7 +36,7 @@ public class CardWidget extends Composite {
             imageDiv.setUrl(((YuGiOhCardDecorator) card).getSmallImageUrl());
             details.setInnerHTML("<b>Race</b>: " + ((YuGiOhCardDecorator) card).getRace());
         }
-        if (card instanceof PokemonCardDecorator) {
+        else if (card instanceof PokemonCardDecorator) {
             imageDiv.setUrl(((PokemonCardDecorator) card).getImageUrl());
             String val = "<br><b>Artist</b>: " + ((PokemonCardDecorator) card).getArtist();
             val += "<br><b>Rarity</b>: " + ((PokemonCardDecorator) card).getRarity();
@@ -47,7 +47,7 @@ public class CardWidget extends Composite {
             val += (((PokemonCardDecorator) card).getIsPromo() ? "<br><b>Promo</b>" : "");
             details.setInnerHTML(val);
         }
-        if (card instanceof MagicCardDecorator) {
+        else if (card instanceof MagicCardDecorator) {
             String val = "<br><b>Artist</b>: " + ((MagicCardDecorator) card).getArtist();
             val += "<br><b>Rarity</b>: " + ((MagicCardDecorator) card).getRarity();
             val += (((MagicCardDecorator) card).getHasFoil() ? "<br><b>Foil</b>" : "");
