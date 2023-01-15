@@ -1,0 +1,34 @@
+@startuml
+'left to right direction
+
+class carta
+class cartaGioco1
+class cartaGioco2
+class cartaGioco3
+class utente
+class mazzo
+class mazzoPreferite
+class mazzoDesiderate
+class mazzoPersonalizzato
+class itemCarta
+
+itemCarta : status()
+itemCarta : descrizione()
+carta : id()
+carta : artist()
+mazzo : type()
+mazzoPersonalizzato : name()
+utente : mail()
+utente : password()
+
+
+cartaGioco1 --> carta
+cartaGioco2 --> carta
+cartaGioco3--> carta
+utente "1"-d-- "0..*" mazzo
+mazzoPreferite "1"-->"1" mazzo
+mazzoDesiderate "1"--> "1"mazzo
+mazzoPersonalizzato "0..*"--> "1"mazzo
+mazzo *-d- itemCarta
+itemCarta "1"--^ "1"carta
+@enduml
