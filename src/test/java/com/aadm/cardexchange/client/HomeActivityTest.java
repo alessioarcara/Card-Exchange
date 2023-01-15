@@ -17,6 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
@@ -29,14 +30,8 @@ public class HomeActivityTest {
     CardServiceAsync mockRpcService;
     PlaceController placeController;
     HomeActivity homeActivity;
-
-    private static Stream<Arguments> provideMockCards() {
-        return Stream.of(
-                Arguments.of(Game.Magic, MockCardData.createMagicDummyList()),
-                Arguments.of(Game.Pokemon, MockCardData.createPokemonDummyList()),
-                Arguments.of(Game.YuGiOh, MockCardData.createYuGiOhDummyList())
-        );
-    }
+    private final static List<String> MAGIC_BOOLEAN_FIELDS = Arrays.asList("hasFoil", "isAlternative", "isFullArt", "isPromo", "isReprint");
+    private final static List<String> POKEMON_BOOLEAN_FIELDS = Arrays.asList("isFirstEdition", "isHolo", "isNormal", "isReverse", "isPromo");
 
     @BeforeEach
     public void initialize() {
@@ -75,6 +70,14 @@ public class HomeActivityTest {
         ctrl.replay();
         homeActivity.fetchGameCards(game);
         ctrl.verify();
+    }
+
+    private static Stream<Arguments> provideMockCards() {
+        return Stream.of(
+                Arguments.of(Game.Magic, MockCardData.createMagicDummyList()),
+                Arguments.of(Game.Pokemon, MockCardData.createPokemonDummyList()),
+                Arguments.of(Game.YuGiOh, MockCardData.createYuGiOhDummyList())
+        );
     }
 
     @ParameterizedTest
@@ -154,5 +157,53 @@ public class HomeActivityTest {
         Assertions.assertEquals(homeActivity.filterGameCards("all", expectedCard.getType(),
                 "Description", "",
                 Collections.emptyList(), Collections.emptyList()).get(0), expectedCard);
+    }
+
+    private static Stream<Arguments> provideMockCardsAndBooleanFields() {
+        return Stream.of(
+                Arguments.of(
+                        Game.Magic, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(0),
+                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(true, false, false, false, false)),
+                Arguments.of(
+                        Game.Magic, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(1),
+                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, true, false, false, false)),
+                Arguments.of(
+                        Game.Magic, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(2),
+                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, false, true, false, false)),
+                Arguments.of(
+                        Game.Magic, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(3),
+                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, false, false, true, false)),
+                Arguments.of(
+                        Game.Magic, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(4),
+                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, false, false, false, true)),
+                Arguments.of(
+                        Game.Pokemon, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(0),
+                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(true, false, false, false, false)),
+                Arguments.of(
+                        Game.Pokemon, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(1),
+                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(false, true, false, false, false)),
+                Arguments.of(
+                        Game.Pokemon, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(2),
+                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(false, false, true, false, false)),
+                Arguments.of(
+                        Game.Pokemon, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(3),
+                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(false, false, false, true, false)),
+                Arguments.of(
+                        Game.Pokemon, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(4),
+                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(false, false, false, false, true)),
+                Arguments.of(
+                        Game.YuGiOh, MockCardData.createYuGiOhDummyList(), MockCardData.createYuGiOhDummyList().get(0),
+                        Collections.emptyList(), Collections.emptyList())
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideMockCardsAndBooleanFields")
+    public void testFilterGameCardsForBooleanParameters(Game game, List<CardDecorator> mockCards, CardDecorator expectedCard,
+                                                        List<String> booleanNames, List<Boolean> booleanValues) {
+        setupFetchGameCardsTest(game, mockCards);
+        Assertions.assertEquals(homeActivity.filterGameCards("all", "all",
+                "Name", "",
+                booleanNames, booleanValues).get(0), expectedCard);
     }
 }

@@ -44,6 +44,76 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
         });
     }
 
+    private boolean shouldSkipMagicCard(MagicCardDecorator card, List<String> booleanInputNames, List<Boolean> booleanInputValues) {
+        for (int i = 0; i < booleanInputNames.size(); i++) {
+            String name = booleanInputNames.get(i);
+            Boolean value = booleanInputValues.get(i);
+            switch (name) {
+                case "hasFoil":
+                    if (card.getHasFoil() != value) {
+                        return true;
+                    }
+                    break;
+                case "isAlternative":
+                    if (card.getIsAlternative() != value) {
+                        return true;
+                    }
+                    break;
+                case "isFullArt":
+                    if (card.getIsFullArt() != value) {
+                        return true;
+                    }
+                    break;
+                case "isPromo":
+                    if (card.getIsPromo() != value) {
+                        return true;
+                    }
+                    break;
+                case "isReprint":
+                    if (card.getIsReprint() != value) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+        return false;
+    }
+
+    private boolean shouldSkipPokemonCard(PokemonCardDecorator card, List<String> booleanInputNames, List<Boolean> booleanInputValues) {
+        for (int i = 0; i < booleanInputNames.size(); i++) {
+            String name = booleanInputNames.get(i);
+            Boolean value = booleanInputValues.get(i);
+            switch (name) {
+                case "isFirstEdition":
+                    if (card.getIsFirstEdition() == value) {
+                        return true;
+                    }
+                    break;
+                case "isHolo":
+                    if (card.getIsHolo() == value) {
+                        return true;
+                    }
+                    break;
+                case "isNormal":
+                    if (card.getIsNormal() == value) {
+                        return true;
+                    }
+                    break;
+                case "isReverse":
+                    if (card.getIsReverse() == value) {
+                        return true;
+                    }
+                    break;
+                case "isPromo":
+                    if (card.getIsPromo() == value) {
+                        return true;
+                    }
+                    break;
+            }
+        }
+        return false;
+    }
+
     public List<CardDecorator> filterGameCards(String specialAttributeValue, String typeValue, String textInputName, String textInputValue,
                                                List<String> booleanInputNames, List<Boolean> booleanInputValues) {
         List<CardDecorator> filteredCards = new ArrayList<>();
@@ -82,7 +152,15 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
                     continue;
                 }
             } else if (!(booleanInputNames.isEmpty() && booleanInputValues.isEmpty())) {
-
+                if (card instanceof MagicCardDecorator) {
+                    if (!shouldSkipMagicCard((MagicCardDecorator) card, booleanInputNames, booleanInputValues)) {
+                        continue;
+                    }
+                } else if (card instanceof PokemonCardDecorator) {
+                    if (!shouldSkipPokemonCard((PokemonCardDecorator) card, booleanInputNames, booleanInputValues)) {
+                        continue;
+                    }
+                }
             }
             filteredCards.add(card);
         }

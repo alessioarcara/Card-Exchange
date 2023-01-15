@@ -13,10 +13,7 @@ import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 public class HomeViewImpl extends Composite implements HomeView, ImperativeHandleCard, ImperativeHandleFilters {
@@ -76,7 +73,7 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
                 uniqueSpecialAttributes.add(((MagicCardDecorator) card).getRarity());
             } else if (card instanceof PokemonCardDecorator) {
                 uniqueSpecialAttributes.add(((PokemonCardDecorator) card).getRarity());
-            } else {
+            } else if (card instanceof YuGiOhCardDecorator) {
                 uniqueSpecialAttributes.add(((YuGiOhCardDecorator) card).getRace());
             }
             cardsPanel.add(new CardWidget(this, card));
@@ -94,13 +91,14 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
         filters.typeOptions.setItemSelected(0, true);
         filters.textOptions.setItemSelected(0, true);
         filters.textInput.setText("");
+        filters.checkBoxes.forEach(checkBox -> checkBox.setValue(false));
         setData(presenter.filterGameCards(
                 filters.specialAttributeOptions.getSelectedValue(),
                 filters.typeOptions.getSelectedValue(),
                 filters.textOptions.getSelectedValue(),
                 filters.textInput.getText(),
-                new ArrayList<>(),
-                new ArrayList<>()
+                Collections.emptyList(),
+                Collections.emptyList()
         ));
     }
 
