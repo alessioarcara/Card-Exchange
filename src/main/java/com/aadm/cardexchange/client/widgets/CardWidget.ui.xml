@@ -2,24 +2,145 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <ui:style>
+        /*.card {*/
+        /*    position: relative;*/
+        /*    border-style: dotted;*/
+        /*    border-color: black;*/
+        /*    width: 20rem;*/
+        /*    height: 450px;*/
+        /*    display: flex;*/
+        /*    flex-direction: column;*/
+        /*    align-items: center;*/
+        /*    justify-content: space-around;*/
+        /*}*/
+
         .card {
-            position: relative;
-            border-style: dotted;
-            border-color: black;
             width: 20rem;
-            height: 450px;
+            height: 420px;
+            border-radius: 10px;
+            background-color: #f5f5f5;
+            box-shadow: 2px 2px 5px #ccc;
+            position: relative;
+            padding-inline: 1em;
+            padding-block: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-around;
+            justify-content: space-between;
         }
+
+        .card img {
+            width: 100%;
+            height: auto;
+        }
+
+        .name {
+            color: #222;
+            position: absolute;
+            font-size: 18px;
+            text-align: center;
+            top: 15px;
+        }
+
+        .description {
+            color: #222;
+            font-size: 12px;
+            text-align: justify;
+            margin-block: 10px;
+            margin-inline: .5rem;
+            width: 90%;
+            line-height: 1em;
+            max-height: 5em;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .description::before {
+            content: "Description: \A";
+            font-style: italic;
+            white-space: pre-line;
+            color: #222;
+        }
+
+        .type {
+            font-size: 13px;
+            font-style: italic;
+            color: #222;
+        }
+
+        .type::before {
+            content: "Type: \A";
+            white-space: pre-line;
+            font-size: 11px;
+        }
+
+        .separator-1 {
+            height: 1px;
+            width: 90%;
+            background-color: #999;
+            position: absolute;
+            top: 210px;
+            align-self: center;
+        }
+
+        .separator-2 {
+            height: 1px;
+            width: 90%;
+            background-color: #999;
+            position: absolute;
+            bottom: 80px;
+            align-self: center;
+        }
+
+        .button {
+            background-color: #555;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 80%;
+            height: 30px;
+            line-height: 30px;
+            align-self: center;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        .firstRow {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 85%;
+            margin-top: 30px;
+        }
+
+        .detailsCol {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .details {
+            font-size: 13px;
+            font-style: italic;
+            color: #444;
+            text-align: right;
+        }
+
     </ui:style>
     <g:HTMLPanel>
         <div class="{style.card}">
-            <div ui:field="nameDiv">placeholder</div>
-            <div ui:field="descDiv">placeholder</div>
-            <div ui:field="typeDiv">placeholder</div>
-            <g:PushButton ui:field="detailsButton">Open Details</g:PushButton>
+            <div class="{style.name}" ui:field="nameDiv">placeholder</div>
+            <div class="{style.firstRow}">
+                <g:Image ui:field="imageDiv" />
+                <div class="{style.detailsCol}">
+                    <div class="{style.type}" ui:field="typeDiv">placeholder</div>
+                    <div class="{style.details}" ui:field="details">placeholder</div>
+                </div>
+            </div>
+            <div class="{style.separator-1}"/>
+            <div class="{style.description}" ui:field="descDiv">placeholder</div>
+            <div class="{style.separator-2}"/>
+            <g:PushButton styleName="{style.button}" ui:field="detailsButton">Open Details</g:PushButton>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder>
