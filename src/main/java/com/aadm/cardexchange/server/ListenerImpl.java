@@ -16,9 +16,9 @@ import java.util.Map;
 public class ListenerImpl implements ServletContextListener, MapDBConstants {
     private final static String PATH_TO_JSON = "CardExchange-1.0-SNAPSHOT/WEB-INF/classes/json/";
 
-    private void uploadDataToDB(int count, Map<Integer, CardDecorator> map, CardDecorator[] cards) {
+    private void uploadDataToDB(Map<Integer, CardDecorator> map, CardDecorator[] cards) {
         for (CardDecorator card : cards) {
-            map.put(count++, card);
+            map.put(card.getId(), card);
         }
     }
 
@@ -30,7 +30,6 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         Gson gson = new Gson();
         GsonSerializer<CardDecorator> cardSerializer = new GsonSerializer<>(gson);
         MapDB DB = new MapDBImpl();
-        int count = 0;
 
         Map<Integer, CardDecorator> yuGiOhMap = DB.getCachedMap(sce.getServletContext(), YUGIOH_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
@@ -41,11 +40,11 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
 
         JSONParser parser = new JSONParser(new YuGiOhCardParseStrategy(), gson);
         try {
-            uploadDataToDB(count, yuGiOhMap, parser.parseJSON(PATH_TO_JSON + "yugioh_cards.json"));
+            uploadDataToDB(yuGiOhMap, parser.parseJSON(PATH_TO_JSON + "yugioh_cards.json"));
             parser.setParseStrategy(new MagicCardParseStrategy());
-            uploadDataToDB(count, magicMap, parser.parseJSON(PATH_TO_JSON + "magic_cards.json"));
+            uploadDataToDB(magicMap, parser.parseJSON(PATH_TO_JSON + "magic_cards.json"));
             parser.setParseStrategy(new PokemonCardParseStrategy());
-            uploadDataToDB(count, pokemonMap, parser.parseJSON(PATH_TO_JSON + "pokemon_cards.json"));
+            uploadDataToDB(pokemonMap, parser.parseJSON(PATH_TO_JSON + "pokemon_cards.json"));
         } catch (FileNotFoundException e) {
             System.out.println("Error");
             System.out.println(e.getMessage());
