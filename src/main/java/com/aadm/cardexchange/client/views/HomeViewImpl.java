@@ -33,6 +33,7 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
     @UiField
     PushButton cleanFiltersButton;
     private Presenter presenter;
+    private boolean isGameChanged;
 
     public HomeViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -78,7 +79,10 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
             }
             cardsPanel.add(new CardWidget(this, card));
         });
-        setFilters(uniqueSpecialAttributes, uniqueTypes);
+        if (!isGameChanged) {
+            setFilters(uniqueSpecialAttributes, uniqueTypes);
+            isGameChanged = true;
+        }
     }
 
     @Override
@@ -126,5 +130,6 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
     private void onGameChanged(ValueChangeEvent<Boolean> e, Game game) {
         presenter.fetchGameCards(game);
         filters.handleGameChange(game);
+        isGameChanged = false;
     }
 }
