@@ -45,73 +45,72 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
     }
 
     private boolean shouldSkipMagicCard(MagicCardDecorator card, List<String> booleanInputNames, List<Boolean> booleanInputValues) {
+        boolean shouldSkip = false;
         for (int i = 0; i < booleanInputNames.size(); i++) {
             String name = booleanInputNames.get(i);
             Boolean value = booleanInputValues.get(i);
             switch (name) {
                 case "hasFoil":
-                    if (card.getHasFoil() != value) {
-                        return true;
+                    if (value && !card.getHasFoil()) {
+                        shouldSkip = true;
                     }
                     break;
                 case "isAlternative":
-                    if (card.getIsAlternative() != value) {
-                        return true;
+                    if (value && !card.getIsAlternative()) {
+                        shouldSkip = true;
                     }
                     break;
                 case "isFullArt":
-                    if (card.getIsFullArt() != value) {
-                        return true;
+                    if (value && !card.getIsFullArt()) {
+                        shouldSkip = true;
                     }
                     break;
                 case "isPromo":
-                    if (card.getIsPromo() != value) {
-                        return true;
+                    if (value && !card.getIsPromo()) {
+                        shouldSkip = true;
                     }
                     break;
                 case "isReprint":
-                    if (card.getIsReprint() != value) {
-                        return true;
+                    if (value && !card.getIsReprint()) {
+                        shouldSkip = true;
                     }
                     break;
             }
         }
-        return false;
+        return shouldSkip;
     }
 
     private boolean shouldSkipPokemonCard(PokemonCardDecorator card, List<String> booleanInputNames, List<Boolean> booleanInputValues) {
+        boolean shouldSkip = false;
         for (int i = 0; i < booleanInputNames.size(); i++) {
             String name = booleanInputNames.get(i);
             Boolean value = booleanInputValues.get(i);
             switch (name) {
                 case "isFirstEdition":
-                    if (card.getIsFirstEdition() == value) {
-                        return true;
+                    if (value && !card.getIsFirstEdition()) {
+                        shouldSkip = true;
                     }
                     break;
                 case "isHolo":
-                    if (card.getIsHolo() == value) {
-                        return true;
+                    if (value && !card.getIsHolo()) {
+                        shouldSkip = true;
                     }
                     break;
                 case "isNormal":
-                    if (card.getIsNormal() == value) {
-                        return true;
-                    }
+                    if (value && !card.getIsNormal())
+                        shouldSkip = true;
                     break;
                 case "isReverse":
-                    if (card.getIsReverse() == value) {
-                        return true;
-                    }
+                    if (value && !card.getIsReverse())
+                        shouldSkip = true;
                     break;
                 case "isPromo":
-                    if (card.getIsPromo() == value) {
-                        return true;
-                    }
+                    if (value && !card.getIsPromo())
+                        shouldSkip = true;
                     break;
             }
         }
-        return false;
+        return shouldSkip;
     }
 
     public List<CardDecorator> filterGameCards(String specialAttributeValue, String typeValue, String textInputName, String textInputValue,
@@ -153,11 +152,11 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
                 }
             } else if (!(booleanInputNames.isEmpty() && booleanInputValues.isEmpty())) {
                 if (card instanceof MagicCardDecorator) {
-                    if (!shouldSkipMagicCard((MagicCardDecorator) card, booleanInputNames, booleanInputValues)) {
+                    if (shouldSkipMagicCard((MagicCardDecorator) card, booleanInputNames, booleanInputValues)) {
                         continue;
                     }
                 } else if (card instanceof PokemonCardDecorator) {
-                    if (!shouldSkipPokemonCard((PokemonCardDecorator) card, booleanInputNames, booleanInputValues)) {
+                    if (shouldSkipPokemonCard((PokemonCardDecorator) card, booleanInputNames, booleanInputValues)) {
                         continue;
                     }
                 }
