@@ -1,0 +1,31 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:style>
+        .layout {
+            display: flex;
+            flex: 1;
+            justify-content: center;
+        }
+        .auth {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .authButtons {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+    </ui:style>
+    <g:HTMLPanel styleName="{style.layout}">
+        <div class="{style.auth}">
+            <g:TextBox ui:field="emailField" />
+            <g:PasswordTextBox ui:field="passwordField" />
+            <div class="{style.authButtons}">
+                <g:PushButton ui:field="loginButton">Button 1</g:PushButton>
+                <g:PushButton>Button 2</g:PushButton>
+            </div>
+        </div>
+    </g:HTMLPanel>
+</ui:UiBinder>
