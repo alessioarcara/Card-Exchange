@@ -10,7 +10,7 @@ public class CardImpl implements Card {
     public CardImpl(String name, String description, String type) {
         this.name = name;
         this.description = description;
-        this.type = type;
+        this.type = type.trim().equals("") ? "Unknown" : type;
     }
 
     public CardImpl() {

@@ -16,5 +16,7 @@ public interface HomeView extends IsWidget {
         void goTo(Place place);
 
         void fetchGameCards(Game game);
+
+        List<CardDecorator> filterGameCards(String selectedValue, String value, String textOptionsSelectedValue, String text, List<String> booleanInputNames, List<Boolean> booleanInputValues);
     }
 }

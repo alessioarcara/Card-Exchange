@@ -39,7 +39,7 @@ public class CardExchange implements EntryPoint {
     PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
     historyHandler.register(placeController, eventBus, defaultPlace);
 
-      RootPanel root = RootPanel.get("layout");
+    RootPanel root = RootPanel.get("layout");
     appWidget.setStyleName("main");
 
     HTMLPanel appSidebar = new HTMLPanel("");
