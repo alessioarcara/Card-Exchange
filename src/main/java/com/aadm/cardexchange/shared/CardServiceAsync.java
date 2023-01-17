@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface CardServiceAsync {
     void getGameCards(Game game, AsyncCallback<List<CardDecorator>> callback);
+
+    void getGameCard(Game game, int cardId, AsyncCallback<CardDecorator> async);
 }
