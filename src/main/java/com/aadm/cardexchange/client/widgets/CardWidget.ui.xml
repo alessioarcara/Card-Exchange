@@ -95,7 +95,7 @@
         <div class="{style.card}">
             <div class="{style.name}" ui:field="nameDiv">placeholder</div>
             <div class="{style.firstRow}">
-                <g:Image ui:field="imageDiv" />
+                <g:Image ui:field="image"/>
                 <div class="{style.height}" />
                 <div class="{style.detailsCol}">
                     <div class="{style.type}" ui:field="typeDiv">placeholder</div>
