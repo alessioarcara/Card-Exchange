@@ -5,24 +5,32 @@
          version="2.5"
          xmlns="http://java.sun.com/xml/ns/javaee">
 
-  <!-- Servlets -->
+    <!-- Servlets -->
 
-  <servlet>
-    <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>
-    <servlet-class>com.aadm.cardexchange.server.CardServiceImpl</servlet-class>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>
-    <url-pattern>/cardexchange/cards</url-pattern>
-  </servlet-mapping>
+    <servlet>
+        <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>
+        <servlet-class>com.aadm.cardexchange.server.CardServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>com.aadm.cardexchange.CardExchange UserService</servlet-name>
+        <servlet-class>com.aadm.cardexchange.server.UserServiceImpl</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>
+        <url-pattern>/cardexchange/cards</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>com.aadm.cardexchange.CardExchange UserService</servlet-name>
+        <url-pattern>/cardexchange/users</url-pattern>
+    </servlet-mapping>
 
-  <listener>
-    <listener-class>com.aadm.cardexchange.server.ListenerImpl</listener-class>
-  </listener>
+    <listener>
+        <listener-class>com.aadm.cardexchange.server.ListenerImpl</listener-class>
+    </listener>
 
-  <!-- Default page to serve -->
-  <welcome-file-list>
-    <welcome-file>CardExchange.html</welcome-file>
-  </welcome-file-list>
+    <!-- Default page to serve -->
+    <welcome-file-list>
+        <welcome-file>CardExchange.html</welcome-file>
+    </welcome-file-list>
 
 </web-app>
