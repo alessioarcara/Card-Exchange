@@ -1,5 +1,7 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.shared.models.Game;
+
 public interface ImperativeHandleCard {
-    void onOpenDetailsClick(String id);
+    void onOpenDetailsClick(Game game, int id);
 }
