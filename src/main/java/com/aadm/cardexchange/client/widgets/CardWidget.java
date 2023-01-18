@@ -60,7 +60,7 @@ public class CardWidget extends Composite {
         }
         image.setUrl(imageUrl);
         details.setInnerHTML(html);
-        detailsButton.addClickHandler(clickEvent -> parent.handleClickCard());
+        detailsButton.addClickHandler(clickEvent -> parent.onOpenDetailsClick(String.valueOf(card.getId())));
         image.addErrorHandler((errorEvent) -> image.setUrl(DEFAULT_IMAGE));
     }
 

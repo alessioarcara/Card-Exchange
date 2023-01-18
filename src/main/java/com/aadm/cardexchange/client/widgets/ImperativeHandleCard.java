@@ -1,5 +1,5 @@
 package com.aadm.cardexchange.client.widgets;
 
 public interface ImperativeHandleCard {
-    void handleClickCard();
+    void onOpenDetailsClick(String id);
 }
