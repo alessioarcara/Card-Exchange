@@ -29,7 +29,7 @@ public class AppActivityMapper implements ActivityMapper {
         if (place instanceof CardPlace)
             return new CardActivity(clientFactory.getCardView(), GWT.create(CardService.class));
         if (place instanceof AuthenticationPlace)
-            return new AuthenticationActivity(clientFactory.getAuthenticationView());
+            return new AuthenticationActivity(clientFactory.getAuthenticationView(), clientFactory.getPlaceController());
         return null;
     }
 }
