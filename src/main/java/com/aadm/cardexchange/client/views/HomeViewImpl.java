@@ -4,19 +4,17 @@ import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.widgets.CardWidget;
 import com.aadm.cardexchange.client.widgets.GameFiltersWidget;
 import com.aadm.cardexchange.client.widgets.ImperativeHandleCard;
-import com.aadm.cardexchange.client.widgets.ImperativeHandleFilters;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiFactory;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.*;
 
 
-public class HomeViewImpl extends Composite implements HomeView, ImperativeHandleCard, ImperativeHandleFilters {
+public class HomeViewImpl extends Composite implements HomeView, ImperativeHandleCard {
     private static final HomeViewImplUIBinder uiBinder = GWT.create(HomeViewImplUIBinder.class);
     @UiField
     RadioButton magicRadio;
@@ -49,20 +47,6 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
         this.presenter = presenter;
     }
 
-    @UiFactory
-    GameFiltersWidget makeGameFilters() {
-        return new GameFiltersWidget(this);
-    }
-
-    private void setFilters(Set<String> uniqueSpecialAttributes, Set<String> uniqueTypes) {
-        filters.specialAttributeOptions.clear();
-        filters.typeOptions.clear();
-        filters.specialAttributeOptions.addItem("all");
-        filters.typeOptions.addItem("all");
-        uniqueSpecialAttributes.forEach(specialAttribute -> filters.specialAttributeOptions.addItem(specialAttribute));
-        uniqueTypes.forEach(type -> filters.typeOptions.addItem(type));
-    }
-
     @Override
     public void setData(List<CardDecorator> data) {
         cardsPanel.clear();
@@ -85,12 +69,16 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
         }
     }
 
-    @Override
-    public void handleClickCard() {
-        presenter.goTo(new CardPlace());
+    private void setFilters(Set<String> uniqueSpecialAttributes, Set<String> uniqueTypes) {
+        filters.specialAttributeOptions.clear();
+        filters.typeOptions.clear();
+        filters.specialAttributeOptions.addItem("all");
+        filters.typeOptions.addItem("all");
+        uniqueSpecialAttributes.forEach(specialAttribute -> filters.specialAttributeOptions.addItem(specialAttribute));
+        uniqueTypes.forEach(type -> filters.typeOptions.addItem(type));
     }
 
-    public void handleFiltersClean() {
+    private void handleFiltersClean() {
         filters.specialAttributeOptions.setItemSelected(0, true);
         filters.typeOptions.setItemSelected(0, true);
         filters.textOptions.setItemSelected(0, true);
@@ -106,8 +94,7 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
         ));
     }
 
-    @Override
-    public void handleFiltersApply() {
+    private void handleFiltersApply() {
         List<String> booleanInputNames = new ArrayList<>();
         List<Boolean> booleanInputValues = new ArrayList<>();
         for (CheckBox checkBox : filters.checkBoxes) {
@@ -124,12 +111,17 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
         ));
     }
 
-    interface HomeViewImplUIBinder extends UiBinder<Widget, HomeViewImpl> {
+    @Override
+    public void onOpenDetailsClick(String id) {
+        presenter.goTo(new CardPlace(id));
     }
 
     private void onGameChanged(ValueChangeEvent<Boolean> e, Game game) {
         presenter.fetchGameCards(game);
         filters.handleGameChange(game);
         isGameChanged = false;
+    }
+
+    interface HomeViewImplUIBinder extends UiBinder<Widget, HomeViewImpl> {
     }
 }

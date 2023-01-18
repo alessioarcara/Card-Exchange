@@ -17,6 +17,11 @@ public class CardDecoratorTest implements CardTestConstants {
     }
 
     @Test
+    public void testGetId() {
+        Assertions.assertEquals(3, new CardDecorator(new CardImpl("test", "test", "test")).getId());
+    }
+
+    @Test
     public void testGetName() {
         Assertions.assertEquals(cardName, card.getName());
     }
