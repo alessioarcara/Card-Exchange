@@ -7,11 +7,11 @@ public class CardDecorator implements Card {
     private static final long serialVersionUID = -6914752354287411438L;
     private static final AtomicInteger uniqueId = new AtomicInteger();
     private int id;
-    private CardImpl wrappee;
+    private CardImpl wrapped;
 
     public CardDecorator(CardImpl card) {
         this.id = uniqueId.incrementAndGet();
-        wrappee = card;
+        wrapped = card;
     }
 
     protected CardDecorator() {
@@ -23,17 +23,17 @@ public class CardDecorator implements Card {
 
     @Override
     public String getName() {
-        return wrappee.getName();
+        return wrapped.getName();
     }
 
     @Override
     public String getDescription() {
-        return wrappee.getDescription();
+        return wrapped.getDescription();
     }
 
     @Override
     public String getType() {
-        return wrappee.getType();
+        return wrapped.getType();
     }
 
     @Override
