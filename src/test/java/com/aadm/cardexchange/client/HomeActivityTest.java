@@ -47,7 +47,7 @@ public class HomeActivityTest {
         placeController.goTo(isA(Place.class));
         expectLastCall();
         ctrl.replay();
-        homeActivity.goTo(new CardPlace());
+        homeActivity.goTo(new CardPlace(null));
         ctrl.verify();
     }
 

@@ -14,11 +14,22 @@ import java.io.FileNotFoundException;
 import java.util.Map;
 
 public class ListenerImpl implements ServletContextListener, MapDBConstants {
-    private final static String PATH_TO_JSON = "CardExchange-1.0-SNAPSHOT/WEB-INF/classes/json/";
+    private final MapDB db;
+    private final String path;
 
-    private void uploadDataToDB(int count, Map<Integer, CardDecorator> map, CardDecorator[] cards) {
+    public ListenerImpl() {
+        db = new MapDBImpl();
+        path = "CardExchange-1.0-SNAPSHOT/WEB-INF/classes/json/";
+    }
+
+    public ListenerImpl(MapDB db, String path) {
+        this.db = db;
+        this.path = path;
+    }
+
+    private void uploadDataToDB(Map<Integer, CardDecorator> map, CardDecorator[] cards) {
         for (CardDecorator card : cards) {
-            map.put(count++, card);
+            map.put(card.getId(), card);
         }
     }
 
@@ -29,23 +40,21 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
 
         Gson gson = new Gson();
         GsonSerializer<CardDecorator> cardSerializer = new GsonSerializer<>(gson);
-        MapDB DB = new MapDBImpl();
-        int count = 0;
 
-        Map<Integer, CardDecorator> yuGiOhMap = DB.getCachedMap(sce.getServletContext(), YUGIOH_MAP_NAME,
+        Map<Integer, CardDecorator> yuGiOhMap = db.getCachedMap(sce.getServletContext(), YUGIOH_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
-        Map<Integer, CardDecorator> magicMap = DB.getCachedMap(sce.getServletContext(), MAGIC_MAP_NAME,
+        Map<Integer, CardDecorator> magicMap = db.getCachedMap(sce.getServletContext(), MAGIC_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
-        Map<Integer, CardDecorator> pokemonMap = DB.getCachedMap(sce.getServletContext(), POKEMON_MAP_NAME,
+        Map<Integer, CardDecorator> pokemonMap = db.getCachedMap(sce.getServletContext(), POKEMON_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
 
         JSONParser parser = new JSONParser(new YuGiOhCardParseStrategy(), gson);
         try {
-            uploadDataToDB(count, yuGiOhMap, parser.parseJSON(PATH_TO_JSON + "yugioh_cards.json"));
+            uploadDataToDB(yuGiOhMap, parser.parseJSON(path + "yugioh_cards.json"));
             parser.setParseStrategy(new MagicCardParseStrategy());
-            uploadDataToDB(count, magicMap, parser.parseJSON(PATH_TO_JSON + "magic_cards.json"));
+            uploadDataToDB(magicMap, parser.parseJSON(path + "magic_cards.json"));
             parser.setParseStrategy(new PokemonCardParseStrategy());
-            uploadDataToDB(count, pokemonMap, parser.parseJSON(PATH_TO_JSON + "pokemon_cards.json"));
+            uploadDataToDB(pokemonMap, parser.parseJSON(path + "pokemon_cards.json"));
         } catch (FileNotFoundException e) {
             System.out.println("Error");
             System.out.println(e.getMessage());

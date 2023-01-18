@@ -30,7 +30,7 @@ public class GameFiltersWidget extends Composite {
     Map<Game, List<String>> gameBooleanFieldsMap;
 
     @UiConstructor
-    public GameFiltersWidget(ImperativeHandleFilters parent) {
+    public GameFiltersWidget() {
         initWidget(uiBinder.createAndBindUi(this));
         gameTextFieldsMap = new HashMap<>();
         gameTextFieldsMap.put(Game.Magic, Arrays.asList("Name", "Artist", "Description"));

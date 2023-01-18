@@ -25,7 +25,7 @@ public class AppActivityMapper implements ActivityMapper {
         if (place instanceof HomePlace)
             return new HomeActivity(clientFactory.getHomeView(), GWT.create(CardService.class), clientFactory.getPlaceController());
         if (place instanceof CardPlace)
-            return new CardActivity(clientFactory.getCardView(), GWT.create(CardService.class));
+            return new CardActivity((CardPlace) place, clientFactory.getCardView(), GWT.create(CardService.class));
         return null;
     }
 }

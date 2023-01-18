@@ -1,31 +1,39 @@
 package com.aadm.cardexchange.shared.models;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class CardDecorator implements Card {
     private static final long serialVersionUID = -6914752354287411438L;
-    private CardImpl wrappee;
+    private static final AtomicInteger uniqueId = new AtomicInteger();
+    private int id;
+    private CardImpl wrapped;
 
     public CardDecorator(CardImpl card) {
-        wrappee = card;
+        this.id = uniqueId.incrementAndGet();
+        wrapped = card;
     }
 
     protected CardDecorator() {
     }
 
+    public int getId() {
+        return id;
+    }
+
     @Override
     public String getName() {
-        return wrappee.getName();
+        return wrapped.getName();
     }
 
     @Override
     public String getDescription() {
-        return wrappee.getDescription();
+        return wrapped.getDescription();
     }
 
     @Override
     public String getType() {
-        return wrappee.getType();
+        return wrapped.getType();
     }
 
     @Override
