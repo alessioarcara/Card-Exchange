@@ -2,10 +2,7 @@ package com.aadm.cardexchange;
 
 import com.aadm.cardexchange.client.CardActivityTest;
 import com.aadm.cardexchange.client.HomeActivityTest;
-import com.aadm.cardexchange.server.CardSerializerTest;
-import com.aadm.cardexchange.server.CardServiceTest;
-import com.aadm.cardexchange.server.JSONParserTest;
-import com.aadm.cardexchange.server.ListenerImplTest;
+import com.aadm.cardexchange.server.*;
 import com.aadm.cardexchange.shared.*;
 import org.junit.platform.suite.api.SelectClasses;
 import org.junit.platform.suite.api.Suite;
@@ -13,6 +10,8 @@ import org.junit.platform.suite.api.Suite;
 @Suite
 @SelectClasses({
         CardTest.class,
+        UserTest.class,
+        LoginInfoTest.class,
         CardDecoratorTest.class,
         YuGiOhCardDecoratorTest.class,
         PokemonCardDecoratorTest.class,
@@ -20,6 +19,7 @@ import org.junit.platform.suite.api.Suite;
         CardSerializerTest.class,
         JSONParserTest.class,
         CardServiceTest.class,
+        AuthServiceTest.class,
         ListenerImplTest.class,
         HomeActivityTest.class,
         CardActivityTest.class,

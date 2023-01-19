@@ -13,13 +13,13 @@ public class User implements Serializable {
     private String username;
     private String password;
 
-    public User() {
-    }
-
     public User(String username, String password) {
         this.id = uniqueId.getAndIncrement();
         this.username = username;
         this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+    }
+
+    public User() {
     }
 
     public int getId() {

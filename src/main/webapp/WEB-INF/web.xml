@@ -13,7 +13,7 @@
     </servlet>
     <servlet>
         <servlet-name>com.aadm.cardexchange.CardExchange UserService</servlet-name>
-        <servlet-class>com.aadm.cardexchange.server.UserServiceImpl</servlet-class>
+        <servlet-class>com.aadm.cardexchange.server.AuthServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>
