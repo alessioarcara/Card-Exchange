@@ -6,7 +6,6 @@ import com.aadm.cardexchange.client.widgets.GameFiltersWidget;
 import com.aadm.cardexchange.client.widgets.ImperativeHandleCard;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.event.logical.shared.ValueChangeEvent;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
@@ -35,9 +34,9 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
 
     public HomeViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
-        magicRadio.addValueChangeHandler(e -> onGameChanged(e, Game.Magic));
-        pokemonRadio.addValueChangeHandler(e -> onGameChanged(e, Game.Pokemon));
-        yugiohRadio.addValueChangeHandler(e -> onGameChanged(e, Game.YuGiOh));
+        magicRadio.addValueChangeHandler(e -> onGameChanged(Game.Magic));
+        pokemonRadio.addValueChangeHandler(e -> onGameChanged(Game.Pokemon));
+        yugiohRadio.addValueChangeHandler(e -> onGameChanged(Game.YuGiOh));
         applyFiltersButton.addClickHandler(e -> handleFiltersApply());
         cleanFiltersButton.addClickHandler(e -> handleFiltersClean());
     }
@@ -112,11 +111,11 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
     }
 
     @Override
-    public void onOpenDetailsClick(String id) {
-        presenter.goTo(new CardPlace(id));
+    public void onOpenDetailsClick(Game game, int id) {
+        presenter.goTo(new CardPlace(game, id));
     }
 
-    private void onGameChanged(ValueChangeEvent<Boolean> e, Game game) {
+    private void onGameChanged(Game game) {
         presenter.fetchGameCards(game);
         filters.handleGameChange(game);
         isGameChanged = false;
