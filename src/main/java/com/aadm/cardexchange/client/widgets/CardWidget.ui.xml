@@ -27,37 +27,37 @@
             text-align: center;
             top: 15px;
         }
-        .description {
-            color: #222;
-            font-size: 13px;
-            text-align: justify;
-            margin-block: 10px;
-            margin-inline: .5rem;
-            width: 90%;
-            line-height: 14px;
-            max-height: 84px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: pre-wrap;
-        }
+        /*.description {*/
+        /*    color: #222;*/
+        /*    font-size: 13px;*/
+        /*    text-align: justify;*/
+        /*    margin-block: 10px;*/
+        /*    margin-inline: .5rem;*/
+        /*    width: 90%;*/
+        /*    line-height: 14px;*/
+        /*    max-height: 84px;*/
+        /*    overflow: hidden;*/
+        /*    text-overflow: ellipsis;*/
+        /*    white-space: pre-wrap;*/
+        /*}*/
         .type {
             font-size: 13px;
             color: #222;
             text-align: right;
         }
-        .separator {
-            height: 1px;
-            width: 90%;
-            background-color: #999;
-            position: absolute;
-            align-self: center;
-        }
-        .separator-1 {
-            top: 210px;
-        }
-        .separator-2 {
-            bottom: 60px;
-        }
+        /*.separator {*/
+        /*    height: 1px;*/
+        /*    width: 90%;*/
+        /*    background-color: #999;*/
+        /*    position: absolute;*/
+        /*    align-self: center;*/
+        /*}*/
+        /*.separator-1 {*/
+        /*    top: 210px;*/
+        /*}*/
+        /*.separator-2 {*/
+        /*    bottom: 60px;*/
+        /*}*/
         .button {
             background-color: #555;
             color: white;
@@ -102,9 +102,9 @@
                     <div class="{style.details}" ui:field="details">placeholder</div>
                 </div>
             </div>
-            <div class="{style.separator} {style.separator-1}"/>
-            <div class="{style.description}" ui:field="descDiv">placeholder</div>
-            <div class="{style.separator} {style.separator-2}"/>
+<!--            <div class="{style.separator} {style.separator-1}"/>-->
+<!--            <div class="{style.description}" ui:field="descDiv">placeholder</div>-->
+<!--            <div class="{style.separator} {style.separator-2}"/>-->
             <g:PushButton styleName="{style.button}" ui:field="detailsButton">Open Details</g:PushButton>
         </div>
     </g:HTMLPanel>

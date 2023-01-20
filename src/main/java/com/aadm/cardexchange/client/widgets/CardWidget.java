@@ -12,11 +12,10 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class CardWidget extends Composite {
     private static final CardUIBinder uiBinder = GWT.create(CardUIBinder.class);
-    private static final String DEFAULT_IMAGE = "https://orig10.deviantart.net/69f2/f/2016/289/4/1/ygo_card_backing__final__by_icycatelf-dal6wsb.png";
     @UiField
     DivElement nameDiv;
-    @UiField
-    DivElement descDiv;
+    //@UiField
+    //DivElement descDiv;
     @UiField
     DivElement typeDiv;
     @UiField
@@ -29,19 +28,22 @@ public class CardWidget extends Composite {
     public CardWidget(ImperativeHandleCard parent, CardDecorator card) {
         initWidget(uiBinder.createAndBindUi(this));
         nameDiv.setInnerHTML(card.getName());
-        descDiv.setInnerHTML("<b>Description:</b><br>" + card.getDescription());
+        //descDiv.setInnerHTML("<b>Description:</b><br>" + card.getDescription());
         typeDiv.setInnerHTML("<b>Type:</b><br>" + card.getType());
         image.setPixelSize(90, 131);
 
         String html = "";
         String imageUrl = "";
+        String errorImage = "placeholders/";
         Game game;
         if (card instanceof YuGiOhCardDecorator) {
             imageUrl = ((YuGiOhCardDecorator) card).getImageUrl();
+            errorImage += "yugioh-placeholder.png";
             html += "<b>Race</b>: " + ((YuGiOhCardDecorator) card).getRace();
             game = Game.YuGiOh;
         } else if (card instanceof PokemonCardDecorator) {
             imageUrl = ((PokemonCardDecorator) card).getImageUrl();
+            errorImage += "pokemon-placeholder.png";
             html += "<br><b>Artist</b>: " + ((PokemonCardDecorator) card).getArtist();
             html += "<br><b>Rarity</b>: " + ((PokemonCardDecorator) card).getRarity();
             html += (((PokemonCardDecorator) card).getIsFirstEdition() ? "<br><b>First edition</b>" : "");
@@ -51,6 +53,7 @@ public class CardWidget extends Composite {
             html += (((PokemonCardDecorator) card).getIsPromo() ? "<br><b>Promo</b>" : "");
             game = Game.Pokemon;
         } else if (card instanceof MagicCardDecorator) {
+            errorImage += "magic-placeholder.png";
             html += "<br><b>Artist</b>: " + ((MagicCardDecorator) card).getArtist();
             html += "<br><b>Rarity</b>: " + ((MagicCardDecorator) card).getRarity();
             html += (((MagicCardDecorator) card).getHasFoil() ? "<br><b>Foil</b>" : "");
@@ -65,7 +68,8 @@ public class CardWidget extends Composite {
         image.setUrl(imageUrl);
         details.setInnerHTML(html);
         detailsButton.addClickHandler(clickEvent -> parent.onOpenDetailsClick(game, card.getId()));
-        image.addErrorHandler((errorEvent) -> image.setUrl(DEFAULT_IMAGE));
+        String finalErrorImage = errorImage;
+        image.addErrorHandler((errorEvent) -> image.setUrl(GWT.getHostPageBaseURL() + finalErrorImage));
     }
 
     interface CardUIBinder extends UiBinder<Widget, CardWidget> {
