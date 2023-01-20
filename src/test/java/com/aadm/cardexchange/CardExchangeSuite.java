@@ -1,6 +1,6 @@
 package com.aadm.cardexchange;
 
-import com.aadm.cardexchange.client.AuthenticationActivityTest;
+import com.aadm.cardexchange.client.AuthActivityTest;
 import com.aadm.cardexchange.client.CardActivityTest;
 import com.aadm.cardexchange.client.HomeActivityTest;
 import com.aadm.cardexchange.server.*;
@@ -24,7 +24,7 @@ import org.junit.platform.suite.api.Suite;
         ListenerImplTest.class,
         HomeActivityTest.class,
         CardActivityTest.class,
-        AuthenticationActivityTest.class
+        AuthActivityTest.class
 })
 public class CardExchangeSuite {
 }
