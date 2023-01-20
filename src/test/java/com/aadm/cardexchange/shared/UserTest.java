@@ -11,7 +11,7 @@ public class UserTest implements UserTestConstants {
 
     @BeforeEach
     public void initialize() {
-        user = new User(username, password);
+        user = new User(username, BCrypt.hashpw(password, BCrypt.gensalt()));
     }
 
     @Test

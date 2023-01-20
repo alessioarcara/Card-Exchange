@@ -6,6 +6,7 @@ import com.aadm.cardexchange.shared.models.User;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -52,7 +53,7 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
         }
         Map<String, User> userMap = db.getPersistentMap(
                 getServletContext(), USER_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
-        User user = new User(email, password);
+        User user = new User(email, BCrypt.hashpw(password, BCrypt.gensalt()));
         if (userMap.putIfAbsent(email, user) != null) {
             throw new IllegalArgumentException("User already exists");
         }
@@ -60,7 +61,6 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
                 getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
         String token = generateHash(user.getId());
         loginMap.put(token, new LoginInfo(user.getId(), System.currentTimeMillis()));
-        db.flush(getServletContext());
         return token;
     }
 }

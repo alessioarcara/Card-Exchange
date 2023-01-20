@@ -1,7 +1,5 @@
 package com.aadm.cardexchange.shared.models;
 
-import org.mindrot.jbcrypt.BCrypt;
-
 import java.io.Serializable;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -16,7 +14,7 @@ public class User implements Serializable {
     public User(String username, String password) {
         this.id = uniqueId.getAndIncrement();
         this.username = username;
-        this.password = BCrypt.hashpw(password, BCrypt.gensalt());
+        this.password = password;
     }
 
     public User() {

@@ -9,11 +9,11 @@ import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
-public class AuthenticationActivity extends AbstractActivity implements AuthenticationView.Presenter {
+public class AuthActivity extends AbstractActivity implements AuthenticationView.Presenter {
     private final AuthenticationView view;
     private final PlaceController placeController;
 
-    public AuthenticationActivity(AuthenticationView view, PlaceController placeController) {
+    public AuthActivity(AuthenticationView view, PlaceController placeController) {
         this.view = view;
         this.placeController = placeController;
     }
@@ -39,7 +39,7 @@ public class AuthenticationActivity extends AbstractActivity implements Authenti
     }
 
     public void signup(String email, String password) {
-        if (email.contains("@") && password.length()>=8) {
+        if (email.contains("@") && password.length() >= 8) {
             goTo(new HomePlace());
         } else {
             Window.alert("Signup failed. Please enter a valid email and a password with a minimum length of 8 characters");
