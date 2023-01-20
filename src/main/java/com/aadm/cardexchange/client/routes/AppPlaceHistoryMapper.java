@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client.routes;
 
+import com.aadm.cardexchange.client.places.AuthenticationPlace;
 import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.places.HomePlace;
 import com.aadm.cardexchange.shared.models.Game;
@@ -14,6 +15,8 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper {
     public Place getPlace(String token) {
         if (token.isEmpty()) {
             return defaultPlace;
+        } else if (token.equals("auth")) {
+            return new AuthenticationPlace();
         } else {
             try {
                 String[] parts = token.split(DELIMITER);
@@ -29,6 +32,8 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper {
     @Override
     public String getToken(Place place) {
         if (place instanceof HomePlace) {
+            return "";
+        } else if (place instanceof AuthenticationPlace) {
             return "";
         } else if (place instanceof CardPlace) {
             CardPlace cardPlace = (CardPlace) place;
