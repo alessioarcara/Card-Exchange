@@ -12,13 +12,13 @@
     </ui:style>
     <g:HTMLPanel styleName="{style.filters}">
         <div>
-            Attributo Speciale
+            <span ui:field="specialAttributeSpan">Special Attribute</span>
             <g:ListBox ui:field="specialAttributeOptions">
                 <g:item>/</g:item>
             </g:ListBox>
         </div>
         <div>
-            Tipo
+            Type
             <g:ListBox ui:field="typeOptions">
                 <g:item>/</g:item>
             </g:ListBox>
@@ -29,6 +29,6 @@
             </g:ListBox>
             <g:TextBox ui:field="textInput"/>
         </div>
-        <g:HTMLPanel ui:field="checkboxes"/>
+        <g:HTMLPanel ui:field="checkboxesPanel"/>
     </g:HTMLPanel>
 </ui:UiBinder>

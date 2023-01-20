@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client;
 
+import com.aadm.cardexchange.client.places.AuthenticationPlace;
 import com.aadm.cardexchange.client.places.HomePlace;
 import com.aadm.cardexchange.client.routes.AppActivityMapper;
 import com.aadm.cardexchange.client.routes.AppPlaceHistoryMapper;
@@ -15,6 +16,9 @@ import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.web.bindery.event.shared.EventBus;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class CardExchange implements EntryPoint {
   private final Place defaultPlace = new HomePlace();
@@ -35,13 +39,16 @@ public class CardExchange implements EntryPoint {
     PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
     historyHandler.register(placeController, eventBus, defaultPlace);
 
-      RootPanel root = RootPanel.get("layout");
+    RootPanel root = RootPanel.get("layout");
     appWidget.setStyleName("main");
 
     HTMLPanel appSidebar = new HTMLPanel("");
     appSidebar.addStyleName("sidebar");
-    Hyperlink homeLink = new Hyperlink("Home", historyMapper.getToken(defaultPlace));
-    appSidebar.add(homeLink);
+    List<Hyperlink> links = Arrays.asList(
+            new Hyperlink("Home", historyMapper.getToken(defaultPlace)),
+            new Hyperlink("Auth", historyMapper.getToken(new AuthenticationPlace()))
+    );
+    links.forEach(appSidebar::add);
 
     root.add(appSidebar);
     root.add(appWidget);

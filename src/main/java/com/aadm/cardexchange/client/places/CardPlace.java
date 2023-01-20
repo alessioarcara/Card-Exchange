@@ -1,25 +1,22 @@
 package com.aadm.cardexchange.client.places;
 
+import com.aadm.cardexchange.shared.models.Game;
 import com.google.gwt.place.shared.Place;
-import com.google.gwt.place.shared.PlaceTokenizer;
-import com.google.gwt.place.shared.Prefix;
 
 public class CardPlace extends Place {
+    private final Game game;
+    private final int cardId;
 
-    public CardPlace() {
+    public CardPlace(Game game, int cardId) {
+        this.game = game;
+        this.cardId = cardId;
     }
 
-    @Prefix("Card")
-    public static class Tokenizer implements PlaceTokenizer<CardPlace> {
+    public Game getGame() {
+        return game;
+    }
 
-        @Override
-        public String getToken(CardPlace place) {
-            return null;
-        }
-
-        @Override
-        public CardPlace getPlace(String token) {
-            return new CardPlace();
-        }
+    public int getCardId() {
+        return cardId;
     }
 }

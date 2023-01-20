@@ -12,38 +12,41 @@ import java.util.List;
 import java.util.Map;
 
 public class CardServiceImpl extends RemoteServiceServlet implements CardService, MapDBConstants {
-    private static final long serialVersionUID = 873638478071540464L;
-    private MapDB db;
+    private static final long serialVersionUID = -45618221088536472L;
+    private final MapDB db;
+    private final GsonSerializer<CardDecorator> serializer = new GsonSerializer<>(new Gson());
 
     public CardServiceImpl() {
+        db = new MapDBImpl();
     }
 
     public CardServiceImpl(MapDB db) {
         this.db = db;
     }
 
-    public MapDB getDb() {
-        if (db == null) {
-            db = new MapDBImpl();
-        }
-        return db;
+    private String getMapName(Game game) {
+        return game == Game.Magic ? MAGIC_MAP_NAME :
+                game == Game.Pokemon ? POKEMON_MAP_NAME :
+                        YUGIOH_MAP_NAME;
     }
 
     @Override
     public List<CardDecorator> getGameCards(Game game) {
-        if (game == null) {
+        if (game == null)
             throw new IllegalArgumentException("game cannot be null");
-        }
-
-        MapDB DB = getDb();
-        final String mapName = game == Game.Magic ? MAGIC_MAP_NAME :
-                game == Game.Pokemon ? POKEMON_MAP_NAME :
-                        YUGIOH_MAP_NAME;
-
-        Gson gson = new Gson();
-        Map<Integer, CardDecorator> map = DB.getCachedMap(getServletContext(), mapName,
-                Serializer.INTEGER, new GsonSerializer<>(gson));
-
+        Map<Integer, CardDecorator> map = db.getCachedMap(getServletContext(), getMapName(game),
+                Serializer.INTEGER, serializer);
         return new ArrayList<>(map.values());
+    }
+
+    @Override
+    public CardDecorator getGameCard(Game game, int cardId) {
+        if (game == null)
+            throw new IllegalArgumentException("game cannot be null");
+        if (cardId <= 0)
+            throw new IllegalArgumentException("Invalid cardId provided. cardId must be a positive integer greater than 0");
+        Map<Integer, CardDecorator> map = db.getCachedMap(getServletContext(), getMapName(game),
+                Serializer.INTEGER, serializer);
+        return map.get(cardId);
     }
 }

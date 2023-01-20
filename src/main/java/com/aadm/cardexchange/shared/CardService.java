@@ -10,4 +10,6 @@ import java.util.List;
 @RemoteServiceRelativePath("cards")
 public interface CardService extends RemoteService {
     List<CardDecorator> getGameCards(Game game);
+
+    CardDecorator getGameCard(Game game, int cardId);
 }

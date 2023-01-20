@@ -81,4 +81,25 @@ public class CardServiceTest {
         ctrl.verify();
         Assertions.assertEquals(new ArrayList<>(expectedMap.values()), cards);
     }
+
+    @Test
+    public void testGetGameCardForNullGameParameter() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> cardService.getGameCard(null, 2));
+    }
+
+    @Test
+    public void testGetGameCardForLessThan0CardIdParameter() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> cardService.getGameCard(Game.Magic, -5));
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideMockData")
+    public void testGetGameCardForIdParameter(Game game, Map<Integer, CardDecorator> expectedMap) {
+        expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(expectedMap);
+        ctrl.replay();
+        CardDecorator actualCard = cardService.getGameCard(game, 2);
+        ctrl.verify();
+        Assertions.assertEquals(expectedMap.get(2), actualCard);
+    }
 }
