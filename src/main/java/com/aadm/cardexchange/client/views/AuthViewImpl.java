@@ -6,7 +6,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
-public class AuthenticationViewImpl extends Composite implements AuthenticationView {
+public class AuthViewImpl extends Composite implements AuthView {
     private static final AuthenticationViewImplUIBinder uiBinder = GWT.create(AuthenticationViewImplUIBinder.class);
     Presenter presenter;
     @UiField
@@ -18,7 +18,7 @@ public class AuthenticationViewImpl extends Composite implements AuthenticationV
     @UiField
     PushButton switchModeButton;
 
-    public AuthenticationViewImpl() {
+    public AuthViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
 
         switchModeButton.addClickHandler((ClickEvent) -> {
@@ -51,8 +51,10 @@ public class AuthenticationViewImpl extends Composite implements AuthenticationV
     }
 
     @Override
-    public void setPresenter(Presenter presenter) {this.presenter = presenter;}
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
+    }
 
-    interface AuthenticationViewImplUIBinder extends UiBinder<Widget, AuthenticationViewImpl> {
+    interface AuthenticationViewImplUIBinder extends UiBinder<Widget, AuthViewImpl> {
     }
 }
