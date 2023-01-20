@@ -1,9 +1,6 @@
 package com.aadm.cardexchange.client.widgets;
 
-import com.aadm.cardexchange.shared.models.CardDecorator;
-import com.aadm.cardexchange.shared.models.MagicCardDecorator;
-import com.aadm.cardexchange.shared.models.PokemonCardDecorator;
-import com.aadm.cardexchange.shared.models.YuGiOhCardDecorator;
+import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -38,9 +35,11 @@ public class CardWidget extends Composite {
 
         String html = "";
         String imageUrl = "";
+        Game game;
         if (card instanceof YuGiOhCardDecorator) {
             imageUrl = ((YuGiOhCardDecorator) card).getImageUrl();
             html += "<b>Race</b>: " + ((YuGiOhCardDecorator) card).getRace();
+            game = Game.YuGiOh;
         } else if (card instanceof PokemonCardDecorator) {
             imageUrl = ((PokemonCardDecorator) card).getImageUrl();
             html += "<br><b>Artist</b>: " + ((PokemonCardDecorator) card).getArtist();
@@ -50,6 +49,7 @@ public class CardWidget extends Composite {
             html += (((PokemonCardDecorator) card).getIsNormal() ? "<br><b>Normal</b>" : "");
             html += (((PokemonCardDecorator) card).getIsReverse() ? "<br><b>Reverse</b>" : "");
             html += (((PokemonCardDecorator) card).getIsPromo() ? "<br><b>Promo</b>" : "");
+            game = Game.Pokemon;
         } else if (card instanceof MagicCardDecorator) {
             html += "<br><b>Artist</b>: " + ((MagicCardDecorator) card).getArtist();
             html += "<br><b>Rarity</b>: " + ((MagicCardDecorator) card).getRarity();
@@ -57,10 +57,14 @@ public class CardWidget extends Composite {
             html += (((MagicCardDecorator) card).getIsAlternative() ? "<br><b>Alternative</b>" : "");
             html += (((MagicCardDecorator) card).getIsFullArt() ? "<br><b>Full Art</b>" : "");
             html += (((MagicCardDecorator) card).getIsPromo() ? "<br><b>Promo</b>" : "");
+            game = Game.Pokemon;
+        } else {
+            game = null;
         }
+
         image.setUrl(imageUrl);
         details.setInnerHTML(html);
-        detailsButton.addClickHandler(clickEvent -> parent.onOpenDetailsClick(String.valueOf(card.getId())));
+        detailsButton.addClickHandler(clickEvent -> parent.onOpenDetailsClick(game, card.getId()));
         image.addErrorHandler((errorEvent) -> image.setUrl(DEFAULT_IMAGE));
     }
 
