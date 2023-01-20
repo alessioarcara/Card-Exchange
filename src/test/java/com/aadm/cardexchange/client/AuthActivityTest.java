@@ -1,8 +1,8 @@
 package com.aadm.cardexchange.client;
 
-import com.aadm.cardexchange.client.presenters.AuthenticationActivity;
+import com.aadm.cardexchange.client.presenters.AuthActivity;
 import com.aadm.cardexchange.client.views.AuthMode;
-import com.aadm.cardexchange.client.views.AuthenticationView;
+import com.aadm.cardexchange.client.views.AuthView;
 import com.google.gwt.place.shared.PlaceController;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
@@ -10,17 +10,18 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class AuthenticationActivityTest {
+public class AuthActivityTest {
     IMocksControl ctrl;
-    AuthenticationView mockView;
+    AuthView mockView;
     PlaceController mockPlaceController;
-    AuthenticationActivity authenticationActivity;
+    AuthActivity authenticationActivity;
+
     @BeforeEach
     public void initialize() {
         ctrl = EasyMock.createStrictControl();
-        mockView = ctrl.createMock(AuthenticationView.class);
+        mockView = ctrl.createMock(AuthView.class);
         mockPlaceController = ctrl.createMock(PlaceController.class);
-        authenticationActivity = new AuthenticationActivity(mockView, mockPlaceController);
+        authenticationActivity = new AuthActivity(mockView, mockPlaceController);
     }
 
     @Test
@@ -41,11 +42,11 @@ public class AuthenticationActivityTest {
 
     @Test
     public void testAuthenticateForAuthModeLoginParameter() {
-        Assertions.assertDoesNotThrow(() ->authenticationActivity.authenticate(AuthMode.Login, "test@test.it", "88888888"));
+        Assertions.assertDoesNotThrow(() -> authenticationActivity.authenticate(AuthMode.Login, "test@test.it", "88888888"));
     }
 
     @Test
     public void testAuthenticateForAuthModeSignupParameter() {
-        Assertions.assertDoesNotThrow(() ->authenticationActivity.authenticate(AuthMode.Signup, "test@test.it", "88888888"));
+        Assertions.assertDoesNotThrow(() -> authenticationActivity.authenticate(AuthMode.Signup, "test@test.it", "88888888"));
     }
 }
