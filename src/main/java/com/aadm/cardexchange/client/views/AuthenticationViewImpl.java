@@ -3,9 +3,10 @@ package com.aadm.cardexchange.client.views;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
-public class AuthenticationViewImpl extends Composite implements AuthenticationView{
+public class AuthenticationViewImpl extends Composite implements AuthenticationView {
     private static final AuthenticationViewImplUIBinder uiBinder = GWT.create(AuthenticationViewImplUIBinder.class);
     Presenter presenter;
     @UiField
@@ -13,7 +14,7 @@ public class AuthenticationViewImpl extends Composite implements AuthenticationV
     @UiField
     PasswordTextBox passwordField;
     @UiField
-    PushButton loginOrSignupButton;
+    PushButton authButton;
     @UiField
     PushButton switchModeButton;
 
@@ -21,22 +22,27 @@ public class AuthenticationViewImpl extends Composite implements AuthenticationV
         initWidget(uiBinder.createAndBindUi(this));
 
         switchModeButton.addClickHandler((ClickEvent) -> {
-            if (loginOrSignupButton.getText().equals("Login")) {
-                loginOrSignupButton.setText("Signup");
-                switchModeButton.getUpFace().setText("Switch to Login");
+            if (authButton.getText().equals(AuthMode.Login.name())) {
+                authButton.setText(AuthMode.Signup.name());
+                switchModeButton.getUpFace().setText("Switch to " + AuthMode.Login.name());
             } else {
-                loginOrSignupButton.setText("Login");
-                switchModeButton.getUpFace().setText("Switch to Signup");
+                authButton.setText(AuthMode.Login.name());
+                switchModeButton.getUpFace().setText("Switch to " + AuthMode.Signup.name());
             }
         });
 
-        loginOrSignupButton.addClickHandler((ClickEvent) -> {
-            if (loginOrSignupButton.getText().equals("Login")) {
-                presenter.login(emailField.getText(), passwordField.getText());
+        authButton.addClickHandler((ClickEvent) -> {
+            if (authButton.getText().equals(AuthMode.Login.name())) {
+                presenter.authenticate(AuthMode.Login, emailField.getText(), passwordField.getText());
             } else {
-                presenter.signup(emailField.getText(), passwordField.getText());
+                presenter.authenticate(AuthMode.Signup, emailField.getText(), passwordField.getText());
             }
         });
+    }
+
+    @Override
+    public void displayIncorrectCredentialsAlert() {
+        Window.alert("Incorrect credentials.");
     }
 
     public void resetFields() {
