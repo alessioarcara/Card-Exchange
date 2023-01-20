@@ -16,7 +16,7 @@ import org.junit.platform.suite.api.Suite;
         YuGiOhCardDecoratorTest.class,
         PokemonCardDecoratorTest.class,
         MagicCardDecoratorTest.class,
-        CardSerializerTest.class,
+        GsonSerializerTest.class,
         JSONParserTest.class,
         CardServiceTest.class,
         AuthServiceTest.class,
