@@ -7,13 +7,12 @@ public interface AuthenticationView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
+    void displayIncorrectCredentialsAlert();
+
     void resetFields();
     
     interface Presenter {
-        void login(String email, String password);
-
-        void signup(String email, String password);
-
+        void authenticate(AuthMode authMode, String email, String password);
         void goTo(Place place);
     }
 }
