@@ -20,7 +20,7 @@
         }
 
         .field {
-            width: 100%;
+            width: 16rem;
         }
 
         .title {
@@ -53,7 +53,7 @@
                 <g:PasswordTextBox styleName="{style.field}" ui:field="passwordField"/>
             </div>
             <div class="{style.authButtons}">
-                <g:PushButton addStyleNames="{style.button}" ui:field="loginOrSignupButton">Login</g:PushButton>
+                <g:PushButton addStyleNames="{style.button}" ui:field="authButton">Login</g:PushButton>
                 <g:PushButton addStyleNames="{style.button}" ui:field="switchModeButton">Switch to Signup</g:PushButton>
             </div>
         </div>
