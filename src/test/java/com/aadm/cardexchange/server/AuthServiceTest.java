@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.server;
 
+import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
@@ -152,6 +153,22 @@ public class AuthServiceTest {
         ctrl.replay();
         Assertions.assertThrows(IllegalArgumentException.class, () ->
                 authService.signin("test@test.it", "password"));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testLogoutForNullParameter() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> authService.logout(null));
+    }
+
+    @Test
+    public void testLogoutForToken() {
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(new HashMap<String, LoginInfo>() {{
+                    put("test", new LoginInfo(1, System.currentTimeMillis()));
+                }});
+        ctrl.replay();
+        Assertions.assertTrue(authService.logout("test"));
         ctrl.verify();
     }
 }

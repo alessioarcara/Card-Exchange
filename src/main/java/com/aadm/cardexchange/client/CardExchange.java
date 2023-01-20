@@ -11,6 +11,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.RootPanel;
@@ -25,7 +26,8 @@ public class CardExchange implements EntryPoint {
     private final SimplePanel appWidget = new SimplePanel();
 
     public void onModuleLoad() {
-        ClientFactory clientFactory = new ClientFactoryImpl();
+        String token = Cookies.getCookie("token");
+        ClientFactory clientFactory = new ClientFactoryImpl(token);
         EventBus eventBus = clientFactory.getEventBus();
         PlaceController placeController = clientFactory.getPlaceController();
 

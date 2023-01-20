@@ -9,4 +9,6 @@ public interface AuthService extends RemoteService {
     String signup(String email, String password);
 
     String signin(String email, String password);
+
+    Boolean logout(String token);
 }

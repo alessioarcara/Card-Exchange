@@ -98,4 +98,18 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
         }
         return generateAndStoreLoginToken(user);
     }
+
+    @Override
+    public Boolean logout(String token) {
+        if (token == null) {
+            throw new IllegalArgumentException("Invalid token");
+        }
+        Map<String, LoginInfo> loginMap = db.getPersistentMap(
+                getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        LoginInfo removedLoginInfo = loginMap.remove(token);
+        if (removedLoginInfo == null) {
+            throw new IllegalArgumentException("User not found");
+        }
+        return true;
+    }
 }
