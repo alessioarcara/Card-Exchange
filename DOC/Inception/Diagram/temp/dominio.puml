@@ -51,7 +51,7 @@ object CartaFisica {
   +descrizione: string
 }
 
-object MazzoPersonalizzato {
+object Mazzo {
   +emailUtente: string
   +nome: string
   -carte: List<idCarta>
@@ -75,7 +75,7 @@ CartaPokemon ..^ Carta
 
 CartaFisica -^ Carta : implementa
 
-MazzoPersonalizzato --o CartaFisica
+Mazzo --o CartaFisica
 
 Scambio ---> Carta : coinvolge
 
@@ -84,7 +84,7 @@ Catalogo --* Carta
 Utente --> CartaFisica : possiede
 Utente --> Carta : desidera
 Utente ..> Scambio : <<use>>
-Utente -> MazzoPersonalizzato : organizza carte
+Utente -> Mazzo : organizza carte
 
 Visitatore -^ Utente
 Visitatore --> Catalogo : visualizza
