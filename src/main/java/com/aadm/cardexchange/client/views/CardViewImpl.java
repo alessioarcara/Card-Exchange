@@ -16,7 +16,7 @@ public class CardViewImpl extends Composite implements CardView {
 
     public CardViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
-        userLists.add(new UserListWidget("Owned by", new String[]{"alessio.arcara@hotmail.com", "davide.fermi@gmail.com", "alessia.crimaldi@virgilio.it"}));
+        userLists.add(new UserListWidget("Owned by", new String[]{"alessio.arcara@hotmail.com", "davide.fermi@gmail.com", "alessia.crimaldi@virgilio.it", "alessio.arcara@hotmail.com", "davide.fermi@gmail.com", "alessia.crimaldi@virgilio.it"}));
         userLists.add(new UserListWidget("Desired by", new String[]{"matteo.sacco04@studio.unibo.it"}));
     }
 
