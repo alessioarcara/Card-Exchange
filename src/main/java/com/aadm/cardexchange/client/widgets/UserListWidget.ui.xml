@@ -2,56 +2,53 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <ui:style>
-        .userList > h2 {
+        .tableHeading {
             text-align: center;
         }
 
-        .userList > table {
+        .table {
             border-radius: 5px;
             box-shadow: 2px 2px 5px #aaa;
             text-align: left;
             border-spacing: 0;
         }
 
-        .userList th, td {
-            padding: 0.2rem 1.5rem;
+        .table th, td {
+            padding: 0.2rem 0.7rem;
         }
 
-        .userList thead {
+        .table thead {
             background-color: #ccc;
+            font-weight: bold;
         }
 
-        /*noinspection ALL*/
-        .userList tbody > tr:nth-child\(odd\) {
-            background-color: #eee;
-        }
-
-        .userList thead th:first-child {
+        .table thead td:first-child {
             border-top-left-radius: 5px;
         }
 
-        .userList thead th:last-child {
+        .table thead td:last-child {
             border-top-right-radius: 5px;
         }
 
-        .userList tbody > tr:last-child > td:first-child {
+        /*noinspection ALL*/
+        .table tbody > tr:nth-child\(odd\) {
+            background-color: #eee;
+        }
+
+        .table tbody > tr:last-child > td:first-child {
             border-bottom-left-radius: 5px;
         }
 
-        .userList tbody > tr:last-child > td:last-child {
+        .table tbody > tr:last-child > td:last-child {
             border-bottom-right-radius: 5px;
         }
+
+        button {
+            border-radius: 0.6rem;
+        }
     </ui:style>
-    <g:HTMLPanel>
-        <div class="{style.userList}">
-            <h2 ui:field="tableHeading"/>
-            <table>
-                <thead>
-                    <tr><th colspan="2">User</th><th>State</th></tr>
-                </thead>
-                <tbody ui:field="tableBody">
-                </tbody>
-            </table>
-        </div>
-    </g:HTMLPanel>
+        <g:HTMLPanel>
+            <h2 ui:field="tableHeading" class="{style.tableHeading}"/>
+            <g:FlexTable ui:field="table" styleName="{style.table}" />
+        </g:HTMLPanel>
 </ui:UiBinder>
