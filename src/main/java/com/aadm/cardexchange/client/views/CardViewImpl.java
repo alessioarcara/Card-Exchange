@@ -6,10 +6,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
 public class CardViewImpl extends Composite implements CardView {
-
     private static final CardsViewImplUIBinder uiBinder = GWT.create(CardsViewImplUIBinder.class);
-
-    private Presenter presenter;
+    @UiField
+    HTMLPanel userLists;
+    Presenter presenter;
 
     public CardViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
