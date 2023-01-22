@@ -34,7 +34,9 @@ public class Deck {
     }
 
     public void setName(String name) {
-        this.name = name;
+        if (!isDefault){
+            this.name = name;
+        }
     }
 
     public boolean isDefault() {
