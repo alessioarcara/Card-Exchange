@@ -1,56 +1,119 @@
 package com.aadm.cardexchange.client;
 
+import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
 import com.aadm.cardexchange.client.presenters.AuthActivity;
 import com.aadm.cardexchange.client.views.AuthMode;
 import com.aadm.cardexchange.client.views.AuthView;
 import com.aadm.cardexchange.shared.AuthServiceAsync;
+import com.aadm.cardexchange.shared.models.AuthException;
+import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.easymock.EasyMock;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+
+import static org.easymock.EasyMock.*;
 
 public class AuthActivityTest {
     IMocksControl ctrl;
     AuthView mockView;
+    AuthServiceAsync mockRpcService;
+    AuthSubject mockSubject;
     PlaceController mockPlaceController;
-    AuthActivity authenticationActivity;
+    AuthActivity authActivity;
+
+    private static Stream<Arguments> provideExceptions() {
+        return Stream.of(
+                Arguments.of(new AuthException("User not found")),
+                Arguments.of(new Exception("Internal server error"))
+        );
+    }
 
     @BeforeEach
     public void initialize() {
         ctrl = EasyMock.createStrictControl();
         mockView = ctrl.createMock(AuthView.class);
-        AuthServiceAsync mockRpcService = ctrl.createMock(AuthServiceAsync.class);
+        mockRpcService = ctrl.createMock(AuthServiceAsync.class);
+        mockSubject = new AuthSubject(null);
         mockPlaceController = ctrl.createMock(PlaceController.class);
-        authenticationActivity = new AuthActivity(mockView, mockRpcService, mockPlaceController);
+        authActivity = new AuthActivity(mockView, mockRpcService, mockSubject, mockPlaceController);
     }
 
     @Test
     public void testAuthenticateForIncorrectEmails() {
+        mockView.displayAlert(anyString());
+        expectLastCall().times(7);
+        ctrl.replay();
         Assertions.assertAll(() -> {
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authenticationActivity.authenticate(AuthMode.Login, "", "88888888"));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authenticationActivity.authenticate(AuthMode.Login, "test", "88888888"));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authenticationActivity.authenticate(AuthMode.Login, "test@", "88888888"));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authenticationActivity.authenticate(AuthMode.Login, "test@test", "88888888"));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authenticationActivity.authenticate(AuthMode.Login, "test@test.", "88888888"));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authenticationActivity.authenticate(AuthMode.Login, "test@test.it ", "88888888"));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authenticationActivity.authenticate(AuthMode.Login, " test@test.it", "88888888"));
+            authActivity.authenticate(AuthMode.Login, "", "password");
+            authActivity.authenticate(AuthMode.Login, "test", "password");
+            authActivity.authenticate(AuthMode.Login, "test@", "password");
+            authActivity.authenticate(AuthMode.Login, "test@test", "password");
+            authActivity.authenticate(AuthMode.Login, "test@test.", "password");
+            authActivity.authenticate(AuthMode.Login, "test@test.it ", "password");
+            authActivity.authenticate(AuthMode.Login, " test@test.it", "password");
         });
+        ctrl.verify();
     }
 
     @Test
     public void testAuthenticateForIncorrectPassword() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> authenticationActivity.authenticate(AuthMode.Login, "test@test.it", "4444"));
+        mockView.displayAlert(anyString());
+        expectLastCall();
+        ctrl.replay();
+        authActivity.authenticate(AuthMode.Login, "test@test.it", "pass");
+        ctrl.verify();
     }
 
-    @Test
-    public void testAuthenticateForAuthModeLoginParameter() {
-        Assertions.assertDoesNotThrow(() -> authenticationActivity.authenticate(AuthMode.Login, "test@test.it", "88888888"));
+    @ParameterizedTest
+    @EnumSource(AuthMode.class)
+    public void testAuthenticateSuccessForAuthModeParameter(AuthMode authMode) {
+        String token = "this_is_a_token";
+        if (authMode == AuthMode.Login) {
+            mockRpcService.signin(anyString(), anyString(), isA(AsyncCallback.class));
+        } else {
+            mockRpcService.signup(anyString(), anyString(), isA(AsyncCallback.class));
+        }
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<String> callback = (AsyncCallback<String>) args[args.length - 1];
+            callback.onSuccess(token);
+            return null;
+        });
+        mockView.setAuthToken(token);
+        expectLastCall();
+        mockSubject.setToken(token);
+        expectLastCall();
+        mockPlaceController.goTo(isA(Place.class));
+        expectLastCall();
+        ctrl.replay();
+        authActivity.authenticate(authMode, "test@test.it", "password");
+        ctrl.verify();
     }
 
-    @Test
-    public void testAuthenticateForAuthModeSignupParameter() {
-        Assertions.assertDoesNotThrow(() -> authenticationActivity.authenticate(AuthMode.Signup, "test@test.it", "88888888"));
+    @ParameterizedTest
+    @MethodSource("provideExceptions")
+    public void testAuthenticateFailure(Exception e) {
+        mockRpcService.signup(anyString(), anyString(), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<String> callback = (AsyncCallback<String>) args[args.length - 1];
+            callback.onFailure(e);
+            return null;
+        });
+        mockView.displayAlert(anyString());
+        expectLastCall();
+        ctrl.replay();
+        authActivity.authenticate(AuthMode.Signup, "test@test.it", "password");
+        ctrl.verify();
     }
 }

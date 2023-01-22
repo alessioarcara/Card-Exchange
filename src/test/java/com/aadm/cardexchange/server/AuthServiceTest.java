@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.server;
 
+import com.aadm.cardexchange.shared.models.AuthException;
 import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;
 import org.easymock.IMocksControl;
@@ -36,33 +37,42 @@ public class AuthServiceTest {
     }
 
     @Test
+    public void testAuthException() {
+        try {
+            throw new AuthException("test");
+        } catch (AuthException e) {
+            Assertions.assertEquals("test", e.getErrorMessage());
+        }
+    }
+
+    @Test
     public void testSignupForNullEmail() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signup(null, "password"));
+        Assertions.assertThrows(AuthException.class, () -> authService.signup(null, "password"));
     }
 
     @Test
     public void testSignupForEmptyStringEmail() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signup("", "password"));
+        Assertions.assertThrows(AuthException.class, () -> authService.signup("", "password"));
     }
 
     @Test
     public void testSignupForIncorrectEmails() {
         Assertions.assertAll(() -> {
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signup("test", "password"));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signup("test@", "password"));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signup("test@test", "password"));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signup("test@test.", "password"));
+            Assertions.assertThrows(AuthException.class, () -> authService.signup("test", "password"));
+            Assertions.assertThrows(AuthException.class, () -> authService.signup("test@", "password"));
+            Assertions.assertThrows(AuthException.class, () -> authService.signup("test@test", "password"));
+            Assertions.assertThrows(AuthException.class, () -> authService.signup("test@test.", "password"));
         });
     }
 
     @Test
     public void testSignupForNullPassword() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signup("test@test.it", ""));
+        Assertions.assertThrows(AuthException.class, () -> authService.signup("test@test.it", ""));
     }
 
     @Test
     public void testSignupForLessThan8CharactersPassword() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signup("test@test.it", "passwor"));
+        Assertions.assertThrows(AuthException.class, () -> authService.signup("test@test.it", "passwor"));
     }
 
     @Test
@@ -72,12 +82,12 @@ public class AuthServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(userMap);
         ctrl.replay();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signup("test@test.it", "password"));
+        Assertions.assertThrows(AuthException.class, () -> authService.signup("test@test.it", "password"));
         ctrl.verify();
     }
 
     @Test
-    public void testSignupForCorrectEmailAndPassword() {
+    public void testSignupForCorrectEmailAndPassword() throws AuthException {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(new HashMap<>());
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
@@ -91,36 +101,36 @@ public class AuthServiceTest {
 
     @Test
     public void testSigninForNullEmail() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signin(null, "password"));
+        Assertions.assertThrows(AuthException.class, () -> authService.signin(null, "password"));
     }
 
     @Test
     public void testSigninForEmptyStringEmail() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signin("", "password"));
+        Assertions.assertThrows(AuthException.class, () -> authService.signin("", "password"));
     }
 
     @Test
     public void testSigninForIncorrectEmails() {
         Assertions.assertAll(() -> {
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signin("test", "password"));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signin("test@", "password"));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signin("test@test", "password"));
-            Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signin("test@test.", "password"));
+            Assertions.assertThrows(AuthException.class, () -> authService.signin("test", "password"));
+            Assertions.assertThrows(AuthException.class, () -> authService.signin("test@", "password"));
+            Assertions.assertThrows(AuthException.class, () -> authService.signin("test@test", "password"));
+            Assertions.assertThrows(AuthException.class, () -> authService.signin("test@test.", "password"));
         });
     }
 
     @Test
     public void testSigninForNullPassword() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signin("test@test.it", ""));
+        Assertions.assertThrows(AuthException.class, () -> authService.signin("test@test.it", ""));
     }
 
     @Test
     public void testSigninForLessThan8CharactersPassword() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> authService.signin("test@test.it", "passwor"));
+        Assertions.assertThrows(AuthException.class, () -> authService.signin("test@test.it", "passwor"));
     }
 
     @Test
-    public void testSigninForCorrectEmailAndPassword() {
+    public void testSigninForCorrectEmailAndPassword() throws AuthException {
         Map<String, User> userMap = new HashMap<>();
         userMap.put("test@test.it", new User("test@test.it", BCrypt.hashpw("password", BCrypt.gensalt())));
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
@@ -139,7 +149,7 @@ public class AuthServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(new HashMap<>());
         ctrl.replay();
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
+        Assertions.assertThrows(AuthException.class, () ->
                 authService.signin("test@test.it", "password"));
         ctrl.verify();
     }
@@ -151,24 +161,33 @@ public class AuthServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(userMap);
         ctrl.replay();
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
+        Assertions.assertThrows(AuthException.class, () ->
                 authService.signin("test@test.it", "password"));
         ctrl.verify();
     }
 
     @Test
-    public void testLogoutForNullParameter() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> authService.logout(null));
+    public void testLogoutForNullToken() {
+        Assertions.assertThrows(AuthException.class, () -> authService.logout(null));
     }
 
     @Test
-    public void testLogoutForToken() {
+    public void testLogoutForInvalidToken() {
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(new HashMap<>());
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> authService.logout("invalidToken"));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testLogoutForValidToken() throws AuthException {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(new HashMap<String, LoginInfo>() {{
-                    put("test", new LoginInfo(1, System.currentTimeMillis()));
+                    put("validToken", new LoginInfo(1, System.currentTimeMillis()));
                 }});
         ctrl.replay();
-        Assertions.assertTrue(authService.logout("test"));
+        Assertions.assertTrue(authService.logout("validToken"));
         ctrl.verify();
     }
 }

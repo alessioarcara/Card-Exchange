@@ -15,11 +15,9 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.Place;
 
 public class AppActivityMapper implements ActivityMapper {
-
     private final ClientFactory clientFactory;
 
     public AppActivityMapper(ClientFactory clientFactory) {
-        super();
         this.clientFactory = clientFactory;
     }
 
@@ -30,7 +28,7 @@ public class AppActivityMapper implements ActivityMapper {
         if (place instanceof CardPlace)
             return new CardActivity((CardPlace) place, clientFactory.getCardView(), GWT.create(CardService.class));
         if (place instanceof AuthPlace)
-            return new AuthActivity(clientFactory.getAuthView(), GWT.create(AuthService.class), clientFactory.getPlaceController());
+            return new AuthActivity(clientFactory.getAuthView(), GWT.create(AuthService.class), clientFactory.getAuthSubject(), clientFactory.getPlaceController());
         return null;
     }
 }

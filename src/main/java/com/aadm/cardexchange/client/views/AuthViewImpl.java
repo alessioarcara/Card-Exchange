@@ -3,8 +3,11 @@ package com.aadm.cardexchange.client.views;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+
+import java.util.Date;
 
 public class AuthViewImpl extends Composite implements AuthView {
     private static final AuthenticationViewImplUIBinder uiBinder = GWT.create(AuthenticationViewImplUIBinder.class);
@@ -41,10 +44,18 @@ public class AuthViewImpl extends Composite implements AuthView {
     }
 
     @Override
-    public void displayIncorrectCredentialsAlert() {
-        Window.alert("Incorrect credentials.");
+    public void setAuthToken(String token) {
+        final long DURATION = 1000 * 60 * 60 * 24 * 7;
+        Date expires = new Date(System.currentTimeMillis() + DURATION);
+        Cookies.setCookie("token", token, expires, null, "/", false);
     }
 
+    @Override
+    public void displayAlert(String message) {
+        Window.alert(message);
+    }
+
+    @Override
     public void resetFields() {
         emailField.setText("");
         passwordField.setText("");
