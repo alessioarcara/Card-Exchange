@@ -5,8 +5,7 @@ object Visitatore
 object Utente {
   +email: string
   +password: string
-  -cartePossedute: List<Carta>
-  -carteDesiderate: List<Carta>
+  -mazziUtente: List<Mazzo>
 }
 
 object Carta {
@@ -14,8 +13,6 @@ object Carta {
   +nome: string
   +descrizione: string
   +tipo: string
-  -utentiCheLaPossiedono: List<Utente>
-  -utentiCheLaDesiderano: List<Utente>
 }
 
 object CartaYuGiOh {
@@ -52,8 +49,10 @@ object CartaFisica {
 }
 
 object Mazzo {
+  +id: integer
   +emailUtente: string
   +nome: string
+  +isDefault: boolean
   -carte: List<idCarta>
 }
 
@@ -73,11 +72,11 @@ CartaYuGiOh ..^ Carta
 CartaMagic ..^ Carta
 CartaPokemon ..^ Carta
 
-CartaFisica -^ Carta : implementa
+CartaFisica "*"-"1" Carta
 
 Mazzo --o CartaFisica
 
-Scambio ---> Carta : coinvolge
+Scambio --> Carta : coinvolge
 
 Catalogo --* Carta
 

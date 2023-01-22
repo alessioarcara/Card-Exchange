@@ -19,6 +19,7 @@
         .card img {
             width: 100%;
             max-height: auto;
+            border-radius: 5px;
         }
         .name {
             color: #222;
