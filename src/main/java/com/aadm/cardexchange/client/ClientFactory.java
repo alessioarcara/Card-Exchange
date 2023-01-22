@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client;
 
+import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
 import com.aadm.cardexchange.client.views.AuthView;
 import com.aadm.cardexchange.client.views.CardView;
 import com.aadm.cardexchange.client.views.HomeView;
@@ -16,4 +17,6 @@ public interface ClientFactory {
     CardView getCardView();
 
     AuthView getAuthView();
+
+    AuthSubject getAuthSubject();
 }

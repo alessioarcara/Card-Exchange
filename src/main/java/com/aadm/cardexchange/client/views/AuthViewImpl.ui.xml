@@ -20,7 +20,7 @@
         }
 
         .field {
-            width: 16rem;
+            width: 100%;
         }
 
         .title {

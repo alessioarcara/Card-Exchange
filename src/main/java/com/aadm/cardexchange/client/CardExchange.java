@@ -1,33 +1,40 @@
 package com.aadm.cardexchange.client;
 
-import com.aadm.cardexchange.client.places.AuthPlace;
+import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
+import com.aadm.cardexchange.client.AuthSubject.Observer;
 import com.aadm.cardexchange.client.places.HomePlace;
 import com.aadm.cardexchange.client.routes.AppActivityMapper;
 import com.aadm.cardexchange.client.routes.AppPlaceHistoryMapper;
+import com.aadm.cardexchange.client.utils.IgnoreAsyncCallback;
+import com.aadm.cardexchange.client.widgets.ImperativeHandleSidebar;
+import com.aadm.cardexchange.client.widgets.SidebarWidget;
+import com.aadm.cardexchange.shared.AuthService;
+import com.aadm.cardexchange.shared.AuthServiceAsync;
 import com.google.gwt.activity.shared.ActivityManager;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Hyperlink;
+import com.google.gwt.user.client.Cookies;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.web.bindery.event.shared.EventBus;
 
-import java.util.Arrays;
-import java.util.List;
 
-public class CardExchange implements EntryPoint {
-    private final Place defaultPlace = new HomePlace();
+public class CardExchange implements EntryPoint, Observer, ImperativeHandleSidebar {
     private final SimplePanel appWidget = new SimplePanel();
+    private final SidebarWidget appSidebar = new SidebarWidget(this);
+    private AuthServiceAsync authService;
+    private AuthSubject authSubject;
 
     public void onModuleLoad() {
         ClientFactory clientFactory = new ClientFactoryImpl();
         EventBus eventBus = clientFactory.getEventBus();
         PlaceController placeController = clientFactory.getPlaceController();
+        authService = GWT.create(AuthService.class);
+        authSubject = clientFactory.getAuthSubject();
+        authSubject.attach(this);
 
         // Start ActivityManager for the main widget with our ActivityMapper
         ActivityMapper activityMapper = new AppActivityMapper(clientFactory);
@@ -35,25 +42,30 @@ public class CardExchange implements EntryPoint {
         activityManager.setDisplay(appWidget);
 
         // Start PlaceHistoryHandler with our PlaceHistoryMapper
-        AppPlaceHistoryMapper historyMapper = GWT.create(AppPlaceHistoryMapper.class);
+        AppPlaceHistoryMapper historyMapper = new AppPlaceHistoryMapper(authSubject);
         PlaceHistoryHandler historyHandler = new PlaceHistoryHandler(historyMapper);
-        historyHandler.register(placeController, eventBus, defaultPlace);
+        historyHandler.register(placeController, eventBus, new HomePlace());
 
         RootPanel root = RootPanel.get("layout");
         appWidget.setStyleName("main");
-
-        HTMLPanel appSidebar = new HTMLPanel("");
-        appSidebar.addStyleName("sidebar");
-        List<Hyperlink> links = Arrays.asList(
-                new Hyperlink("Home", historyMapper.getToken(defaultPlace)),
-                new Hyperlink("Auth", historyMapper.getToken(new AuthPlace()))
-        );
-        links.forEach(appSidebar::add);
+        update();
 
         root.add(appSidebar);
         root.add(appWidget);
 
         // Goes to place represented on URL or default place
         historyHandler.handleCurrentHistory();
+    }
+
+    @Override
+    public void onClickLogout() {
+        authService.logout(authSubject.getToken(), new IgnoreAsyncCallback<>());
+        Cookies.removeCookie("token");
+        authSubject.setToken(null);
+    }
+
+    @Override
+    public void update() {
+        appSidebar.setLinks(authSubject.isLoggedIn());
     }
 }

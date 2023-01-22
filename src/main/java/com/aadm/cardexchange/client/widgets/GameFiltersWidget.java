@@ -25,7 +25,6 @@ public class GameFiltersWidget extends Composite {
     SpanElement specialAttributeSpan;
     @UiField
     HTMLPanel checkboxesPanel;
-
     Map<Game, List<String>> gameTextFieldsMap;
     Map<Game, List<String>> gameBooleanFieldsMap;
 
