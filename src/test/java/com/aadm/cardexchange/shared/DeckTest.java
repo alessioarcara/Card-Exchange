@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
+import java.util.LinkedHashSet;
 
 import static com.aadm.cardexchange.shared.UserTestConstants.password;
 import static com.aadm.cardexchange.shared.UserTestConstants.username;
@@ -43,6 +43,9 @@ public class DeckTest {
     public void testSetName() {
         deck.setName("deletable_deck");
         Assertions.assertEquals("deletable_deck", deck.getName());
+
+        defaultDeck.setName("new_name");
+        Assertions.assertEquals("Deck_default", defaultDeck.getName());
     }
 
     @Test
@@ -68,11 +71,11 @@ public class DeckTest {
     public void testGetPhysicalCards() {
         deck.addPhysicalCard(pCard.getId());
         deck.addPhysicalCard(pCard2.getId());
-        ArrayList<Integer> cards = deck.getPhysicalCards();
+        LinkedHashSet<Integer> cards = deck.getPhysicalCards();
 
         Assertions.assertEquals(2, cards.size());
-        Assertions.assertEquals(pCard.getId(), cards.get(0));
-        Assertions.assertEquals(pCard2.getId(), cards.get(1));
+        Assertions.assertTrue(cards.contains(pCard.getId()));
+        Assertions.assertTrue(cards.contains(pCard2.getId()));
     }
 
     @Test

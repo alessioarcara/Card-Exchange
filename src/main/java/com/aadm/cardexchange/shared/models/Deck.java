@@ -1,25 +1,27 @@
 package com.aadm.cardexchange.shared.models;
 
-import java.util.ArrayList;
+import java.io.Serializable;
+import java.util.LinkedHashSet;
 
-public class Deck {
+public class Deck implements Serializable {
+    private static final long serialVersionUID = -3036168098606868237L;
     private String userEmail;
     private String name;
     private boolean isDefault;
-    private ArrayList<Integer> physicalCards;
+    private LinkedHashSet<Integer> physicalCards;
 
     public Deck(String userEmail, String name) {
         this.userEmail = userEmail;
         this.name = name;
         this.isDefault = false;
-        physicalCards = new ArrayList<>();
+        physicalCards = new LinkedHashSet<>();
     }
 
     public Deck(String userEmail, String name, boolean isDefault) {
         this.userEmail = userEmail;
         this.name = name;
         this.isDefault = isDefault;
-        physicalCards = new ArrayList<>();
+        physicalCards = new LinkedHashSet<>();
     }
 
     public Deck() {
@@ -43,29 +45,20 @@ public class Deck {
         return isDefault;
     }
 
-    public ArrayList<Integer> getPhysicalCards() {
+    public LinkedHashSet<Integer> getPhysicalCards() {
         return physicalCards;
     }
 
     public boolean addPhysicalCard(Integer physicalCardId) {
-        if (!physicalCards.contains(physicalCardId)) {
-            physicalCards.add(physicalCardId);
-            return true;
-        }
-        return false;
+        return physicalCards.add(physicalCardId);
     }
 
     public boolean removePhysicalCard(Integer physicalCardId) {
-        if (physicalCards.contains(physicalCardId)) {
-            physicalCards.remove(physicalCardId);
-            return true;
-        }
-        return false;
+        return physicalCards.remove(physicalCardId);
     }
 
      public boolean containsPhysicalCard(Integer physicalCardId) {
         return physicalCards.contains(physicalCardId);
      }
-
 }
 
