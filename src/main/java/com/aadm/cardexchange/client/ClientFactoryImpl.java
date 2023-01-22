@@ -10,7 +10,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private static final PlaceController placeController = new PlaceController(eventBus);
     private static final HomeView helloView = new HomeViewImpl();
     private static final CardView cardView = new CardViewImpl();
-    private static final AuthenticationView authenticationView = new AuthenticationViewImpl();
+    private static final AuthView authView = new AuthViewImpl();
 
     @Override
     public EventBus getEventBus() {
@@ -33,7 +33,7 @@ public class ClientFactoryImpl implements ClientFactory {
     }
 
     @Override
-    public AuthenticationView getAuthenticationView() {
-        return authenticationView;
+    public AuthView getAuthView() {
+        return authView;
     }
 }

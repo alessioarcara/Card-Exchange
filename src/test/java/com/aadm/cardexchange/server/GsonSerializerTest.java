@@ -14,7 +14,7 @@ import org.mapdb.DataOutput2;
 import java.io.IOException;
 import java.util.stream.Stream;
 
-public class CardSerializerTest implements CardTestConstants {
+public class GsonSerializerTest implements CardTestConstants {
 
     private static Stream<Arguments> provideSubClasses() {
         return Stream.of(
@@ -49,9 +49,11 @@ public class CardSerializerTest implements CardTestConstants {
         Gson gson = new Gson();
         GsonSerializer<CardDecorator> serializer = new GsonSerializer<>(gson);
 
-        DataOutput2 out = new DataOutput2();
-        out.writeUTF("{\"classType\":\"com.aadm.NonExistentClass\"}");
-        byte[] data = out.copyBytes();
+        byte[] data;
+        try (DataOutput2 out = new DataOutput2()) {
+            out.writeUTF("{\"classType\":\"com.aadm.NonExistentClass\"}");
+            data = out.copyBytes();
+        }
         Assertions.assertThrows(IOException.class, () -> serializer.deserialize(new DataInput2.ByteArray(data), 0));
     }
 }
