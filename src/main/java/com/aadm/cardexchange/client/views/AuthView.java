@@ -7,7 +7,9 @@ public interface AuthView extends IsWidget {
 
     void setPresenter(Presenter presenter);
 
-    void displayIncorrectCredentialsAlert();
+    void displayAlert(String message);
+
+    void setAuthToken(String token);
 
     void resetFields();
 
