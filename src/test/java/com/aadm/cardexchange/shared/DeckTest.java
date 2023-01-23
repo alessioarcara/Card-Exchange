@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.LinkedHashSet;
 
-import static com.aadm.cardexchange.shared.UserTestConstants.password;
-import static com.aadm.cardexchange.shared.UserTestConstants.username;
+import static com.aadm.cardexchange.shared.UserTestConstants.*;
 
 public class DeckTest {
 
@@ -29,8 +28,8 @@ public class DeckTest {
 
     @Test
     public void testGetUserEmail() {
-        Assertions.assertEquals(username, deck.getUserEmail());
-        Assertions.assertEquals(username, defaultDeck.getUserEmail());
+        Assertions.assertEquals(email, deck.getUserEmail());
+        Assertions.assertEquals(email, defaultDeck.getUserEmail());
     }
 
     @Test
