@@ -184,10 +184,52 @@ public class AuthServiceTest {
     public void testLogoutForValidToken() throws AuthException {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(new HashMap<String, LoginInfo>() {{
-                    put("validToken", new LoginInfo(1, System.currentTimeMillis()));
+                    put("validToken", new LoginInfo("test@test.it", System.currentTimeMillis()));
                 }});
         ctrl.replay();
         Assertions.assertTrue(authService.logout("validToken"));
         ctrl.verify();
     }
+
+    @Test
+    public void testCheckTokenValidityForInvalidToken() {
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> authService.checkTokenValidity("invalidToken", new HashMap<>() {{
+            put("validToken1", new LoginInfo("test1@test.it", System.currentTimeMillis()));
+            put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis()-2000));
+            put("validToken3", new LoginInfo("test3@test.it", System.currentTimeMillis()-4000));
+        }}));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testCheckTokenValidityForNullToken() {
+        Assertions.assertThrows(AuthException.class, () -> authService.checkTokenValidity(null, new HashMap<>()));
+    }
+
+    @Test
+    //Token scaduto da 7 gg + 10 secondi
+    public void testCheckTokenValidityForExpiredToken() {
+        ctrl.replay();
+        try {
+            authService.checkTokenValidity("validToken1", new HashMap<>() {{
+                put("validToken1", new LoginInfo("test1@test.it", System.currentTimeMillis()-(1000*60*60*24*7+1000*10)));
+            }});
+        } catch(AuthException e) {
+            Assertions.assertEquals("Expired token", e.getErrorMessage());
+        }
+        ctrl.verify();
+    }
+
+    @Test
+    public void testCheckTokenValidityForValidToken() throws AuthException {
+        ctrl.replay();
+        Assertions.assertEquals("test1@test.it", authService.checkTokenValidity("validToken1", new HashMap<>() {{
+            put("validToken1", new LoginInfo("test1@test.it", System.currentTimeMillis()));
+        }}));
+        ctrl.verify();
+    }
+
+
+
 }

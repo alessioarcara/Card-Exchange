@@ -19,9 +19,9 @@ public class DeckTest {
 
     @BeforeEach
     public void initialize() {
-        User user = new User(username, password);
-        deck = new Deck(user.getUsername(), "Deck_name");
-        defaultDeck = new Deck(user.getUsername(), "Deck_default", true);
+        User user = new User(email, password);
+        deck = new Deck(user.getEmail(), "Deck_name");
+        defaultDeck = new Deck(user.getEmail(), "Deck_default", true);
         CardDecorator card = new CardDecorator(new CardImpl("DUMMY_NAME", "DUMMY_TYPE", "DUMMY_DESCRIPTION"));
         pCard = new PhysicalCard(card.getId(), "1 (Very Good)", "test description card");
         pCard2 = new PhysicalCard(card.getId(), "2 (Good)", "test card 2");

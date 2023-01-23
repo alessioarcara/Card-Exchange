@@ -41,10 +41,11 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
                 (password == null || password.isBlank() || password.length() < 8);
     }
 
-    private static String generateHash(int userId) {
+    //Generazione token tramite hashing
+    private static String generateHash(String userEmail) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedHash = digest.digest((userId + SECRET).getBytes());
+            byte[] encodedHash = digest.digest((userEmail + SECRET).getBytes());
             return bytesToHex(encodedHash);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -64,9 +65,14 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
     private String generateAndStoreLoginToken(User user) {
         Map<String, LoginInfo> loginMap = db.getPersistentMap(
                 getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
-        String token = generateHash(user.getId());
-        loginMap.put(token, new LoginInfo(user.getId(), System.currentTimeMillis()));
+        String token = generateHash(user.getEmail());
+        loginMap.put(token, new LoginInfo(user.getEmail(), System.currentTimeMillis()));
         return token;
+    }
+
+    private boolean checkTokenExpiration(long loginTime) {
+        final long EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
+        return loginTime > System.currentTimeMillis() - EXPIRATION_TIME;
     }
 
     @Override
@@ -112,4 +118,25 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
         }
         return true;
     }
+
+    public String checkTokenValidity(String token, Map<String, LoginInfo> loginMap) throws AuthException {
+        if (token == null) {
+            throw new AuthException("Invalid token");
+        }
+        LoginInfo loginInfo = loginMap.get(token);
+        if (loginInfo == null) {
+            throw new AuthException("Invalid token");
+        } else if (!checkTokenExpiration(loginInfo.getLoginTime())) {
+            throw new AuthException("Expired token");
+        }
+        return loginInfo.getUserEmail();
+    }
+
+    // [UC04#33] Implemented RPC Signup() for user registration in the application #46
+
+    /*
+    This PR implements #33, adding the necessary RPC for visitors to register through the application's user interface
+    in future updates. It also includes the implementation of two new models, one for the user and one for storing registration
+     data in MapDB. Supplied with coverage for unit testing.
+    */
 }
