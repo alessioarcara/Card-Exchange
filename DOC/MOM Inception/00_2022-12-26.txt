@@ -1,0 +1,15 @@
+###### Inception - 26-12-2022 ######
+
+Identificazione e assegnazione attività preliminari:
+
+- JUnit: programmare un test case come proof of concept da mostrare 
+al gruppo utilizzando il repository remoto su GitHub? Test Driven 
+Design da adottare? [Alessia]
+- GWT: creare un api semplicissima da contattare tramite un’interfaccia
+- MapDB: caricare un JSON quando il server viene avviato, o un dump 
+file, e persistere i dati [Davide]
+- GitHub: strategie di versionamento per GitHub e automatizzazione dei 
+developer workflow [Matteo]
+- Inizializzazione dell’ambiente di sviluppo
+- Conoscere approfonditamente gli eventi, ruoli e strumenti del 
+framework di sviluppo Scrum [Alessio]

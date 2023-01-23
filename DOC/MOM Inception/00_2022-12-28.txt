@@ -1,0 +1,3 @@
+###### Inception - 28-12-2022 ######
+
+Condivisione analisi GitHub: strategie di versionamento per GitHub e automatizzazione dei developer workflow [Matteo]

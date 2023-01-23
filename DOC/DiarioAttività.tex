@@ -1,0 +1,166 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+
+\title{Diario del progetto}
+% \author{Alessia Crimaldi}
+\date{January 2023}
+
+\usepackage{blindtext}\usepackage[a4paper, total={6in, 8in}]{geometry}
+\begin{document}
+
+    \maketitle
+
+    \section{SPRINT 01}
+
+    \begin{itemize}
+        \item Inizio sprint: \textit{08/01/2023}
+        \item Fine sprint: \textit{14/01/2023}
+    \end{itemize}
+
+    \begin{itemize}
+        \item \textbf{Sprint Goal:}
+        \begin{indent}
+            \newline Permettere ad un visitatore di effettuare tutte le funzionalita' base dell'app, ossia di avere una corretta ed efficace importazione e gestione del catalogo carte con le relative ricerche e dettagli.
+        \end{indent}
+    \end{itemize}
+
+    \begin{itemize}
+        \item \textbf{RUOLI.}
+        \newline \textbf{Product Owner:} Davide Fermi
+        \newline \textbf{Scrum Master:} Alessia Crimaldi
+        \newline \textbf{Development team:} Alessio Arcara, Matteo Sacco
+    \end{itemize}
+
+    \begin{itemize}
+        \item \textbf{BOARD}.
+        \newline
+        \textbf{Stato iniziale:}
+        \newline
+        \newline
+        \begin{tabular}{ | p{2.5cm} | p{4cm} | p{2.6cm} | p{1.6cm} | p{1.6cm} | }
+            \hline
+            \textbf{UC raffinati}
+            & \textbf{Product Backlog}
+            & \textbf{Sprint Backlog}
+            & \textbf{Sprint In progress}
+            & \textbf{Sprint Done} \\
+            \hline
+            & \textbf{UC01:} Come visitatore voglio selezionare un gioco e vedere l'elenco di tutte le sue carte & & & \\
+            \hline
+            & \textbf{UC02:} Come visitatore voglio poter fare delle ricerche per vedere un elenco di carte filtrato & & & \\
+            \hline
+            & \textbf{UC03:} Come visitatore voglio selezionare una carta e vederne i dettagli & & & \\
+            \hline
+        \end{tabular}
+        \newpage
+        \textbf{Stato dopo lo Sprint Planning:}
+        \newline
+        \newline
+        \begin{tabular}{ | p{3.5cm} | p{1.5cm} | p{5cm} | p{1.6cm} | p{1.6cm} | }
+            \hline
+            \textbf{UC raffinati}
+            & \textbf{Product Backlog}
+            & \textbf{Sprint Backlog}
+            & \textbf{Sprint In progress}
+            & \textbf{Sprint Done} \\
+            \hline
+            \textbf{UC01:} Come visitatore voglio selezionare un gioco e vedere l'elenco di tutte le sue carte
+            & & \textbf{Task1 [UC01]\#2:} Creare il modello per le carte di tutti i giochi & & \\
+            \hline
+            \textbf{UC02:} Come visitatore voglio poter fare delle ricerche per vedere un elenco di carte filtrato
+            & & \textbf{Task2 [UC01]\#3:} Importare dai JSON le carte dei giochi & & \\
+            \hline
+            \textbf{UC03:} Come visitatore voglio selezionare una carta e vederne i dettagli
+            & & \textbf{Task3 [UC01]\#4:} Inizializzare il DB con i JSON caricati & & \\
+            \hline
+            & & \textbf{Task4 [UC01]\#5:} Creare RemoteService per fetch delle carte di quel gioco & & \\
+            \hline
+            & & \textbf{Task5 [UC01]\#6:} Creare HomeView per la visualizzazione delle carte & & \\
+            \hline
+            & & \textbf{Task6 [UC01]\#7:} Creare Composite Card per la visualizzazione carta & & \\
+            \hline
+            & & \textbf{Task1 [UC02]\#10:} Creare filtri specifici di quel gioco & & \\
+            \hline
+            & & \textbf{Task2 [UC02]\#11:} Filtrare l'array delle carte in base ai filtri specificati & & \\
+            \hline
+            & & \textbf{Task3 [UC02]\#12:} Rimuovere dalla pagina HomeView le carte che non corrispondono ai filtri & & \\
+            \hline
+            & & \textbf{Task1 [UC03]\#14:} Creazione CardPlace & & \\
+            \hline
+            & & \textbf{Task2 [UC03]\#15:} Connessione RemoteService FetchCard nel caso l'assunzione sia errata & & \\
+            \hline
+            & & \textbf{Task3 [UC03]\#16:} Creazione CardView e popolamento delle informazioni & & \\
+            \hline
+            & & \textbf{Task4 [UC03]\#17:} Gestione del cambio di pagina da HomeView a CardView & & \\
+            \hline
+        \end{tabular}
+        \newpage
+        \textbf{Stato finale:}
+        \newline
+        \newline
+        \begin{tabular}{ | p{2.4cm} | p{1.4cm} | p{2.7cm} | p{3.4cm} | p{3cm} | }
+            \hline
+            \textbf{UC raffinati}
+            & \textbf{Product Backlog}
+            & \textbf{Sprint Backlog}
+            & \textbf{Sprint In progress}
+            & \textbf{Sprint Done} \\
+            \hline
+            \textbf{UC01:} Come visitatore voglio selezionare un gioco e vedere l'elenco di tutte le sue carte
+            & & \textbf{Task1 [UC03]\#14:} Creazione CardPlace
+            & \textbf{Task2 [UC02]\#11:} Filtrare l'array delle carte in base ai filtri specificati
+            & \textbf{Task1 [UC01]\#2:} Creare il modello per le carte di tutti i giochi \\
+            \hline
+            \textbf{UC02:} Come visitatore voglio poter fare delle ricerche per vedere un elenco di carte filtrato
+            & & \textbf{Task2 [UC03]\#15:} Connessione RemoteService FetchCard nel caso l'assunzione sia errata
+            & \textbf{Task3 [UC02]\#12:} Rimuovere dalla pagina HomeView le carte che non corrispondono ai filtri
+            & \textbf{Task4 [UC01]\#5:} Creare RemoteService per fetch delle carte di quel gioco \\
+            \hline
+            \textbf{UC03:} Come visitatore voglio selezionare una carta e vederne i dettagli
+            & & \textbf{Task3 [UC03]\#16:} Creazione CardView e popolamento delle informazioni
+            & \textbf{Task6 [UC01]\#7:} Creare Composite Card per la visualizzazione carta
+            & \textbf{Task5 [UC01]\#6:} Creare HomeView per la visualizzazione delle carte \\
+            \hline
+            & & \textbf{Task4 [UC03]\#17:} Gestione del cambio di pagina da HomeView a CardView
+            & & \textbf{Task2 [UC01]\#3:} Importare dai JSON le carte dei giochi \\
+            \hline
+            & & & & \textbf{Task1 [UC02]\#10:} Creare filtri specifici di quel gioco  \\
+            \hline
+            & & & & \textbf{Task3 [UC01]\#4:} Inizializzare il DB con i JSON caricati \\
+            \hline
+        \end{tabular}
+    \end{itemize}
+
+    \subsection{Daily Scrum}
+    \begin{itemize}
+        \item \textbf{Data:} 09/01/2023
+        \newline \textbf{Durata:} 15 min.
+        \newline \textbf{Partecipanti:} Scrum Master (Alessia Crimaldi), Dev 1 (Alessio Arcara)
+        \newline \textbf{Percezione attuale dello SG:} Positiva (Dev 1)
+    \end{itemize}
+    \begin{itemize}
+        \item \textbf{Data:} 10/01/2023
+        \newline \textbf{Durata:} 15 min.
+        \newline \textbf{Partecipanti:} Scrum Master (Alessia Crimaldi), Dev 1 (Alessio Arcara), Dev 2 (Matteo Sacco)
+        \newline \textbf{Percezione attuale dello SG:} Negativa (Dev 1), Positiva (Dev 2)
+    \end{itemize}
+    \begin{itemize}
+        \item \textbf{Data:} 11/01/2023
+        \newline \textbf{Durata:} 15 min.
+        \newline \textbf{Partecipanti:} Scrum Master (Alessia Crimaldi), Dev 1 (Alessio Arcara), Dev 2 (Matteo Sacco)
+        \newline \textbf{Percezione attuale dello SG:} Negativa (Dev 1), Negativa (Dev 2)
+    \end{itemize}
+    \begin{itemize}
+        \item \textbf{Data:} 12/01/2023
+        \newline \textbf{Durata:} 15 min.
+        \newline \textbf{Partecipanti:} Scrum Master (Alessia Crimaldi), Dev 1 (Alessio Arcara), Dev 2 (Matteo Sacco)
+        \newline \textbf{Percezione attuale dello SG:} Negativa (Dev 1), Negativa (Dev 2)
+    \end{itemize}
+    \begin{itemize}
+        \item \textbf{Data:} 13/01/2023
+        \newline \textbf{Durata:} 12 min.
+        \newline \textbf{Partecipanti:} Scrum Master (Alessia Crimaldi), Dev 1 (Alessio Arcara), Dev 2 (Matteo Sacco)
+        \newline \textbf{Percezione attuale dello SG:} Negativa (Dev 1), Negativa (Dev 2)
+    \end{itemize}
+
+\end{document}

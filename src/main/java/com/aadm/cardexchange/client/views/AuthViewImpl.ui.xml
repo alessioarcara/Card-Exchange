@@ -1,0 +1,61 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
+             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+    <ui:style>
+        .layout {
+            display: flex;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .auth {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin: 2rem auto;
+            padding: 2rem;
+            max-width: 50vw;
+            border-radius: 5px;
+            box-shadow: 2px 2px 5px #aaa;
+        }
+
+        .field {
+            width: 100%;
+        }
+
+        .title {
+            position: absolute;
+            top: 5rem;
+        }
+
+        .authButtons {
+            width: 100%;
+            margin-top: 2rem;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+
+        .button {
+            border-radius: 0.7rem;
+            padding: 0.2rem 0.5rem;
+        }
+    </ui:style>
+    <g:HTMLPanel styleName="{style.layout}">
+        <h1 class="{style.title}">User Authentication</h1>
+        <div class="{style.auth}">
+            <div>
+                Email
+                <g:TextBox styleName="{style.field}" ui:field="emailField"/>
+            </div>
+            <div>
+                Password
+                <g:PasswordTextBox styleName="{style.field}" ui:field="passwordField"/>
+            </div>
+            <div class="{style.authButtons}">
+                <g:PushButton addStyleNames="{style.button}" ui:field="authButton">Login</g:PushButton>
+                <g:PushButton addStyleNames="{style.button}" ui:field="switchModeButton">Switch to Signup</g:PushButton>
+            </div>
+        </div>
+    </g:HTMLPanel>
+</ui:UiBinder>

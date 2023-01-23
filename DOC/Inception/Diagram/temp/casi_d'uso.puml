@@ -1,0 +1,183 @@
+@startuml Casi d'uso
+left to right direction
+
+actor Utente as U
+actor Visitatore as  V
+
+'U --down--> V
+
+App -d[hidden]-> Detail
+
+
+rectangle Detail {
+
+package  uc01 [
+**Title**: Visualizza i dettagli di una carta
+**Actor**: Visitatore
+**Preconditions**: Il visitatore seleziona uno dei giochi disponibili
+**Trigger**:
+**Normal Flow**:
+ - Il visitatore visualizza l'elenco di tutte le carte del gioco scelto
+**Alternative flows and exceptions**:
+**Postcondition**:
+**Non functional requirements**:
+]
+
+package  uc02 [
+**Title**: Effettua delle ricerche
+**Actor**: Visitatore
+**Preconditions**: Il visitatore seleziona uno dei giochi disponibili
+**Trigger**:
+**Normal Flow**:
+ - Il visitatore seleziona dei filtri a seconda del gioco scelto
+**Alternative flows and exceptions**:
+**Postcondition**:
+ Viene visualizzato l'elenco delle card del gioco scelto con l'applicazione dei filtri
+**Non functional requirements**:
+]
+
+package  uc03 [
+**Title**: Visualizza i dettagli di una carta
+**Actor**: Visitatore
+**Preconditions**: Il visitatore seleziona uno dei giochi disponibili
+**Trigger**:
+**Normal Flow**:
+ - Il visitatore cliccando su una carta in elenco, ne visualizza i dettagli
+**Alternative flows and exceptions**:
+**Postcondition**:
+ Viene visualizzato l'elenco delle card del gioco scelto con l'applicazione dei filtri
+**Non functional requirements**:
+]
+
+package  uc04 [
+**Title**: Si autentica
+**Actor**: Utente
+**Preconditions**: L'utente è registrato e loggato al sistema.
+**Trigger**:
+**Normal Flow**:
+ - L'utente si autentica nel sistema per accedere ai dettagli del proprio profilo
+**Alternative flows and exceptions**:
+**Postcondition**: 
+**Non functional requirements**:
+]
+
+package  uc05 [
+**Title**: Gestisce mazzo carte possedute
+**Actor**: Utente
+**Preconditions**: L'utente è registrato e loggato al sistema.
+**Trigger**:
+**Normal Flow**:
+ - L'utente può aggiungere/togliere le carte che possiede
+   fisicamente ad un mazzo chiamato 'carte possedute'.
+**Alternative flows and exceptions**:
+**Postcondition**:
+ L'informazione verrà registrata e resa persistente. Viene 
+ mostrato il nome dell'utente nella lista relativa a chi possiede
+ la carta nella pagina di dettaglio della carta. 
+**Non functional requirements**:
+]
+
+package  uc06 [
+**Title**: Organizza le carte in mazzi
+**Actor**: Utente
+**Preconditions**: L'utente è registrato e loggato al sistema.
+**Trigger**:
+**Normal Flow**:
+ - L'utente può organizzare le proprie carte possedute in diversi mazzi personalizzati.
+**Alternative flows and exceptions**:
+**Postcondition**: 
+**Non functional requirements**:
+]
+
+package  uc07 [
+**Title**: Gestisce mazzo carte desiderate
+**Actor**: Utente
+**Preconditions**: L'utente è registrato e loggato al sistema.
+**Trigger**:
+**Normal Flow**:
+ - L'utente può aggiungere/togliere le carte dal mazzo
+   delle 'carte desiderate'.
+**Alternative flows and exceptions**:
+**Postcondition**:
+ L'informazione verrà registrata e resa persistente. 
+ Viene mostrato il nome dell'utente nella lista relativa a
+ chi desidera la carta nella pagina di dettaglio della carta.
+**Non functional requirements**:
+]
+
+package  uc08 [
+**Title**: Proporre uno scambio
+**Actor**: Utente
+**Preconditions**: L'utente è registrato e loggato al sistema e possiede delle carte.
+**Trigger**:
+**Normal Flow**:
+ - L'utente ricerca e seleziona una carta che desidera e seleziona
+   un altro utente dalla lista di quelli che la possiedono per poi
+   proporre uno scambio offrendo una o più carte dalle proprie possedute.
+**Alternative flows and exceptions**:
+**Postcondition**:
+ L'utente che riceve la proposta vedrà la proposta in una pagina apposita.
+**Non functional requirements**:
+]
+
+package  uc09 [
+**Title**: Accettare uno scambio
+**Actor**: Utente
+**Preconditions**: L'utente è registrato e loggato al sistema e possiede delle carte.
+**Trigger**:
+**Normal Flow**:
+ - L'utente riceve una proposta di scambio da un altro utente e decide di accettarla.
+**Alternative flows and exceptions**:
+**Postcondition**:
+ Vengono aggiornati i proprietari delle carte e l'informazione viene resa persistente.
+**Non functional requirements**:
+]
+
+package  uc10 [
+**Title**: Rifiutare uno scambio
+**Actor**: Utente
+**Preconditions**: L'utente è registrato e loggato al sistema e possiede delle carte.
+**Trigger**:
+**Normal Flow**:
+ - L'utente riceve una proposta di scambio da un altro utente e decide di rifiutarla.
+**Alternative flows and exceptions**:
+**Postcondition**:
+ Viene eliminata la proposta senza nessuna azione sulle carte.
+**Non functional requirements**:
+]
+
+}
+
+rectangle App {
+  ([UC01] Visualizza tutte le carte di un gioco) as UC1
+  ([UC02] Effettua delle ricerche) as UC2
+  ([UC03] Visualizza i dettagli di una carta) as UC3
+  ([UC04] Organizza le carte in mazzi) as UC4
+  ([UC05] Gestisce mazzo carte possedute) as UC5
+  ([UC06] Gestisce mazzo carte desiderate) as UC6
+  ([UC07] Gestisce mazzo/i personalizzato/i) as UC7
+  ([UC08] Propone uno scambio) as UC8
+  ([UC09] Accetta la proposta di scambio) as UC9
+  ([UC10] Rifiuta la proposta di scambio) as UC10
+}
+
+
+U  -> V
+U ----> UC4
+V ----> UC2
+U ----> UC8
+
+UC2 ^-- UC1
+UC2 ^-- UC3
+
+UC4 ^-- UC5
+UC4 ^-- UC6
+UC4 ^-- UC7
+
+UC8 <.. UC9 : <<include>>
+UC8 <.. UC10 : <<include>>
+
+uc01 -d[hidden]-> uc02
+uc01 -l[hidden]-> uc03
+
+@enduml
