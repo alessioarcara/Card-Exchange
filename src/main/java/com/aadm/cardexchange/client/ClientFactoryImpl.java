@@ -1,14 +1,17 @@
 package com.aadm.cardexchange.client;
 
+import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
 import com.aadm.cardexchange.client.views.*;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Cookies;
 import com.google.web.bindery.event.shared.EventBus;
 
 public class ClientFactoryImpl implements ClientFactory {
     private static final EventBus eventBus = new SimpleEventBus();
     private static final PlaceController placeController = new PlaceController(eventBus);
-    private static final HomeView helloView = new HomeViewImpl();
+    private static final AuthSubject authSubject = new AuthSubject(Cookies.getCookie("token"));
+    private static final HomeView homeView = new HomeViewImpl();
     private static final CardView cardView = new CardViewImpl();
     private static final AuthView authView = new AuthViewImpl();
 
@@ -24,7 +27,7 @@ public class ClientFactoryImpl implements ClientFactory {
 
     @Override
     public HomeView getHomeView() {
-        return helloView;
+        return homeView;
     }
 
     @Override
@@ -35,5 +38,10 @@ public class ClientFactoryImpl implements ClientFactory {
     @Override
     public AuthView getAuthView() {
         return authView;
+    }
+
+    @Override
+    public AuthSubject getAuthSubject() {
+        return authSubject;
     }
 }

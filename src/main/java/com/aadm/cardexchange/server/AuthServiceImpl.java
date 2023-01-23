@@ -1,6 +1,7 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.AuthService;
+import com.aadm.cardexchange.shared.models.AuthException;
 import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;
 import com.google.gson.Gson;
@@ -69,33 +70,46 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
     }
 
     @Override
-    public String signup(String email, String password) {
+    public String signup(String email, String password) throws AuthException {
         if (validateCredentials(email, password)) {
-            throw new IllegalArgumentException("Invalid credentials");
+            throw new AuthException("Invalid credentials");
         }
         Map<String, User> userMap = db.getPersistentMap(
                 getServletContext(), USER_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
         User user = new User(email, BCrypt.hashpw(password, BCrypt.gensalt()));
         if (userMap.putIfAbsent(email, user) != null) {
-            throw new IllegalArgumentException("User already exists");
+            throw new AuthException("User already exists");
         }
         return generateAndStoreLoginToken(user);
     }
 
     @Override
-    public String signin(String email, String password) {
+    public String signin(String email, String password) throws AuthException {
         if (validateCredentials(email, password)) {
-            throw new IllegalArgumentException("Invalid credentials");
+            throw new AuthException("Invalid credentials");
         }
         Map<String, User> userMap = db.getPersistentMap(
                 getServletContext(), USER_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
         User user = userMap.get(email);
         if (user == null) {
-            throw new IllegalArgumentException("User not found");
+            throw new AuthException("User not found");
         }
         if (!BCrypt.checkpw(password, user.getPassword())) {
-            throw new IllegalArgumentException("Password don't match");
+            throw new AuthException("Password don't match");
         }
         return generateAndStoreLoginToken(user);
+    }
+
+    @Override
+    public Boolean logout(String token) throws AuthException {
+        if (token == null) {
+            throw new AuthException("Invalid token");
+        }
+        Map<String, LoginInfo> loginMap = db.getPersistentMap(
+                getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        if (loginMap.remove(token) == null) {
+            throw new AuthException("User not found");
+        }
+        return true;
     }
 }
