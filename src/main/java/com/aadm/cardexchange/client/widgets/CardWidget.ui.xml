@@ -28,7 +28,7 @@
             justify-content: space-around;
         }
 
-        .details {
+        .mainProperties {
             display: flex;
             flex-direction: column;
             gap: 0.5rem;
@@ -50,7 +50,7 @@
             width: 60%;
         }
 
-        .properties {
+        .otherProperties {
             display: flex;
             flex-wrap: wrap;
             width: 100%;
@@ -63,7 +63,7 @@
             text-transform: uppercase;
         }
 
-        .properties > div {
+        .otherProperties > div {
             height: 24px;
             width: 50%;
         }
@@ -74,10 +74,10 @@
             <div class="{style.firstRow}">
                 <g:Image ui:field="image"/>
                 <div>
-                    <div class="{style.details}" ui:field="detailsDiv"/>
+                    <div class="{style.mainProperties}" ui:field="mainPropertiesDiv"/>
                 </div>
             </div>
-            <div class="{style.properties}" ui:field="propertiesDiv"/>
+            <div class="{style.otherProperties}" ui:field="otherPropertiesDiv"/>
             <g:PushButton styleName="{style.button}" ui:field="detailsButton">Open Details</g:PushButton>
         </div>
     </g:HTMLPanel>

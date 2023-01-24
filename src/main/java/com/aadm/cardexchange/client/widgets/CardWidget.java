@@ -23,9 +23,9 @@ public class CardWidget extends Composite {
     @UiField
     DivElement nameDiv;
     @UiField
-    DivElement detailsDiv;
+    DivElement mainPropertiesDiv;
     @UiField
-    DivElement propertiesDiv;
+    DivElement otherPropertiesDiv;
     @UiField
     Image image;
     @UiField
@@ -36,51 +36,51 @@ public class CardWidget extends Composite {
         nameDiv.setInnerHTML(card.getName());
         image.setPixelSize(90, 131);
 
-        String details = createDetailHTML("Type", card.getType());
-        String properties = "";
+        String mainProperties = createMainPropertyHTML("Type", card.getType());
+        String otherProperties = "";
         String imageUrl = "";
         Game game;
         if (card instanceof YuGiOhCardDecorator) {
             imageUrl = ((YuGiOhCardDecorator) card).getImageUrl();
-            details += createDetailHTML("Race", ((YuGiOhCardDecorator) card).getRace());
+            mainProperties += createMainPropertyHTML("Race", ((YuGiOhCardDecorator) card).getRace());
             game = Game.YuGiOh;
         } else if (card instanceof PokemonCardDecorator) {
             imageUrl = ((PokemonCardDecorator) card).getImageUrl();
-            details += createDetailHTML("Artist", ((PokemonCardDecorator) card).getArtist());
-            details += createDetailHTML("Rarity", ((PokemonCardDecorator) card).getRarity());
-            properties += createPropertyHTML("First Edition", ((PokemonCardDecorator) card).getIsFirstEdition());
-            properties += createPropertyHTML("Holo", ((PokemonCardDecorator) card).getIsHolo());
-            properties += createPropertyHTML("Normal", ((PokemonCardDecorator) card).getIsNormal());
-            properties += createPropertyHTML("Reverse", ((PokemonCardDecorator) card).getIsReverse());
-            properties += createPropertyHTML("Promo", ((PokemonCardDecorator) card).getIsPromo());
+            mainProperties += createMainPropertyHTML("Artist", ((PokemonCardDecorator) card).getArtist());
+            mainProperties += createMainPropertyHTML("Rarity", ((PokemonCardDecorator) card).getRarity());
+            otherProperties += createOtherPropertyHTML("First Edition", ((PokemonCardDecorator) card).getIsFirstEdition());
+            otherProperties += createOtherPropertyHTML("Holo", ((PokemonCardDecorator) card).getIsHolo());
+            otherProperties += createOtherPropertyHTML("Normal", ((PokemonCardDecorator) card).getIsNormal());
+            otherProperties += createOtherPropertyHTML("Reverse", ((PokemonCardDecorator) card).getIsReverse());
+            otherProperties += createOtherPropertyHTML("Promo", ((PokemonCardDecorator) card).getIsPromo());
             game = Game.Pokemon;
         } else if (card instanceof MagicCardDecorator) {
-            details += createDetailHTML("Artist", ((MagicCardDecorator) card).getArtist());
-            details += createDetailHTML("Rarity", ((MagicCardDecorator) card).getRarity());
-            properties += createPropertyHTML("Foil", ((MagicCardDecorator) card).getHasFoil());
-            properties += createPropertyHTML("Alternative", ((MagicCardDecorator) card).getIsAlternative());
-            properties += createPropertyHTML("Full Art", ((MagicCardDecorator) card).getIsFullArt());
-            properties += createPropertyHTML("Promo", ((MagicCardDecorator) card).getIsPromo());
-            properties += createPropertyHTML("Reprint", ((MagicCardDecorator) card).getIsReprint());
+            mainProperties += createMainPropertyHTML("Artist", ((MagicCardDecorator) card).getArtist());
+            mainProperties += createMainPropertyHTML("Rarity", ((MagicCardDecorator) card).getRarity());
+            otherProperties += createOtherPropertyHTML("Foil", ((MagicCardDecorator) card).getHasFoil());
+            otherProperties += createOtherPropertyHTML("Alternative", ((MagicCardDecorator) card).getIsAlternative());
+            otherProperties += createOtherPropertyHTML("Full Art", ((MagicCardDecorator) card).getIsFullArt());
+            otherProperties += createOtherPropertyHTML("Promo", ((MagicCardDecorator) card).getIsPromo());
+            otherProperties += createOtherPropertyHTML("Reprint", ((MagicCardDecorator) card).getIsReprint());
             game = Game.Magic;
         } else {
             game = null;
         }
         image.setUrl(imageUrl);
-        detailsDiv.setInnerHTML(details);
-        propertiesDiv.setInnerHTML(properties);
+        mainPropertiesDiv.setInnerHTML(mainProperties);
+        otherPropertiesDiv.setInnerHTML(otherProperties);
         detailsButton.addClickHandler(clickEvent -> parent.onOpenDetailsClick(game, card.getId()));
         image.addErrorHandler((errorEvent) -> image.setUrl(GWT.getHostPageBaseURL() + DEFAULT_IMAGE_PATHS.get(game)));
     }
 
-    private String createDetailHTML(String detail, String text) {
+    private String createMainPropertyHTML(String detail, String text) {
         return "<div>" +
                 "<div style=\"font-weight: bold\">" + detail + ":</div>" +
                 text +
                 "</div>";
     }
 
-    private String createPropertyHTML(String property, boolean isTrue) {
+    private String createOtherPropertyHTML(String property, boolean isTrue) {
         return isTrue ? "<div>" + property + "</div>" : "";
     }
 
