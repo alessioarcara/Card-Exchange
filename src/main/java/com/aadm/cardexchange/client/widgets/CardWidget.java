@@ -10,15 +10,20 @@ import com.google.gwt.user.client.ui.Image;
 import com.google.gwt.user.client.ui.PushButton;
 import com.google.gwt.user.client.ui.Widget;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class CardWidget extends Composite {
     private static final CardUIBinder uiBinder = GWT.create(CardUIBinder.class);
+    private static final Map<Game, String> DEFAULT_IMAGE_PATHS = new HashMap<Game, String>() {{
+        put(Game.Magic, "placeholders/magic-placeholder.png");
+        put(Game.Pokemon, "placeholders/pokemon-placeholder.png");
+        put(Game.YuGiOh, "placeholders/yugioh-placeholder.png");
+    }};
     @UiField
     DivElement nameDiv;
     @UiField
-    DivElement typeDiv;
-    @UiField
     DivElement detailsDiv;
-
     @UiField
     DivElement propertiesDiv;
     @UiField
@@ -29,49 +34,54 @@ public class CardWidget extends Composite {
     public CardWidget(ImperativeHandleCard parent, CardDecorator card) {
         initWidget(uiBinder.createAndBindUi(this));
         nameDiv.setInnerHTML(card.getName());
-        typeDiv.setInnerHTML("<b>Type:</b><br>" + card.getType());
         image.setPixelSize(90, 131);
 
-        String details = "";
+        String details = createDetailHTML("Type", card.getType());
         String properties = "";
         String imageUrl = "";
-        String errorImage = "placeholders/";
         Game game;
         if (card instanceof YuGiOhCardDecorator) {
             imageUrl = ((YuGiOhCardDecorator) card).getImageUrl();
-            errorImage += "yugioh-placeholder.png";
-            details += "<br><b>Race</b>:<br>" + ((YuGiOhCardDecorator) card).getRace();
+            details += createDetailHTML("Race", ((YuGiOhCardDecorator) card).getRace());
             game = Game.YuGiOh;
         } else if (card instanceof PokemonCardDecorator) {
             imageUrl = ((PokemonCardDecorator) card).getImageUrl();
-            errorImage += "pokemon-placeholder.png";
-            details += "<br><b>Artist</b>:<br>" + ((PokemonCardDecorator) card).getArtist();
-            details += "<br><br><b>Rarity</b>:<br>" + ((PokemonCardDecorator) card).getRarity();
-            properties += (((PokemonCardDecorator) card).getIsFirstEdition() ? "<div><b>First edition</b></div>" : "");
-            properties += (((PokemonCardDecorator) card).getIsHolo() ? "<div><b>Holo</b></div>" : "");
-            properties += (((PokemonCardDecorator) card).getIsNormal() ? "<div><b>Normal</b></div>" : "");
-            properties += (((PokemonCardDecorator) card).getIsReverse() ? "<div><b>Reverse</b></div>" : "");
-            properties += (((PokemonCardDecorator) card).getIsPromo() ? "<div><b>Promo</b></div>" : "");
+            details += createDetailHTML("Artist", ((PokemonCardDecorator) card).getArtist());
+            details += createDetailHTML("Rarity", ((PokemonCardDecorator) card).getRarity());
+            properties += createPropertyHTML("First Edition", ((PokemonCardDecorator) card).getIsFirstEdition());
+            properties += createPropertyHTML("Holo", ((PokemonCardDecorator) card).getIsHolo());
+            properties += createPropertyHTML("Normal", ((PokemonCardDecorator) card).getIsNormal());
+            properties += createPropertyHTML("Reverse", ((PokemonCardDecorator) card).getIsReverse());
+            properties += createPropertyHTML("Promo", ((PokemonCardDecorator) card).getIsPromo());
             game = Game.Pokemon;
         } else if (card instanceof MagicCardDecorator) {
-            errorImage += "magic-placeholder.png";
-            details += "<br><b>Artist</b>:<br>" + ((MagicCardDecorator) card).getArtist();
-            details += "<br><br><b>Rarity</b>:<br>" + ((MagicCardDecorator) card).getRarity();
-            properties += (((MagicCardDecorator) card).getHasFoil() ? "<div><b>Foil</b></div>" : "");
-            properties += (((MagicCardDecorator) card).getIsAlternative() ? "<div><b>Alternative</b></div>" : "");
-            properties += (((MagicCardDecorator) card).getIsFullArt() ? "<div><b>Full Art</b></div>" : "");
-            properties += (((MagicCardDecorator) card).getIsPromo() ? "<div><b>Promo</b></div>" : "");
-            game = Game.Pokemon;
+            details += createDetailHTML("Artist", ((MagicCardDecorator) card).getArtist());
+            details += createDetailHTML("Rarity", ((MagicCardDecorator) card).getRarity());
+            properties += createPropertyHTML("Foil", ((MagicCardDecorator) card).getHasFoil());
+            properties += createPropertyHTML("Alternative", ((MagicCardDecorator) card).getIsAlternative());
+            properties += createPropertyHTML("Full Art", ((MagicCardDecorator) card).getIsFullArt());
+            properties += createPropertyHTML("Promo", ((MagicCardDecorator) card).getIsPromo());
+            properties += createPropertyHTML("Reprint", ((MagicCardDecorator) card).getIsReprint());
+            game = Game.Magic;
         } else {
             game = null;
         }
-
         image.setUrl(imageUrl);
         detailsDiv.setInnerHTML(details);
         propertiesDiv.setInnerHTML(properties);
         detailsButton.addClickHandler(clickEvent -> parent.onOpenDetailsClick(game, card.getId()));
-        String finalErrorImage = errorImage;
-        image.addErrorHandler((errorEvent) -> image.setUrl(GWT.getHostPageBaseURL() + finalErrorImage));
+        image.addErrorHandler((errorEvent) -> image.setUrl(GWT.getHostPageBaseURL() + DEFAULT_IMAGE_PATHS.get(game)));
+    }
+
+    private String createDetailHTML(String detail, String text) {
+        return "<div>" +
+                "<div style=\"font-weight: bold\">" + detail + ":</div>" +
+                text +
+                "</div>";
+    }
+
+    private String createPropertyHTML(String property, boolean isTrue) {
+        return isTrue ? "<div>" + property + "</div>" : "";
     }
 
     interface CardUIBinder extends UiBinder<Widget, CardWidget> {
