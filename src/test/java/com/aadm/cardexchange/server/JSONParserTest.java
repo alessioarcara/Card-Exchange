@@ -88,8 +88,8 @@ public class JSONParserTest {
         Assertions.assertTrue(((PokemonCardDecorator) pokemonCards[0]).getIsNormal());
         Assertions.assertTrue(((PokemonCardDecorator) pokemonCards[0]).getIsReverse());
         Assertions.assertFalse(((PokemonCardDecorator) pokemonCards[0]).getIsPromo());
-        Assertions.assertEquals(pokemonCards[0].getType(), "Unknown");
-        Assertions.assertEquals(pokemonCards[0].getDescription(), "");
+        Assertions.assertEquals(pokemonCards[0].getType(), "unknown");
+        Assertions.assertEquals(pokemonCards[0].getDescription(), "unknown");
 
         Assertions.assertEquals(((PokemonCardDecorator) pokemonCards[11]).getArtist(), "5ban Graphics"); // illustrator
         Assertions.assertEquals(((PokemonCardDecorator) pokemonCards[11]).getImageUrl(), "https://assets.tcgdex.net/en/xy/xy4/70");
@@ -101,7 +101,7 @@ public class JSONParserTest {
         Assertions.assertTrue(((PokemonCardDecorator) pokemonCards[11]).getIsReverse());
         Assertions.assertFalse(((PokemonCardDecorator) pokemonCards[11]).getIsPromo());
         Assertions.assertEquals(pokemonCards[11].getType(), "Fairy");
-        Assertions.assertEquals(pokemonCards[11].getDescription(), "");
+        Assertions.assertEquals(pokemonCards[11].getDescription(), "unknown");
 
         Assertions.assertEquals(pokemonCards.length, 200);
     }
