@@ -131,12 +131,4 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
         }
         return loginInfo.getUserEmail();
     }
-
-    // [UC04#33] Implemented RPC Signup() for user registration in the application #46
-
-    /*
-    This PR implements #33, adding the necessary RPC for visitors to register through the application's user interface
-    in future updates. It also includes the implementation of two new models, one for the user and one for storing registration
-     data in MapDB. Supplied with coverage for unit testing.
-    */
 }
