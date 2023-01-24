@@ -12,7 +12,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 public class CardWidget extends Composite {
     private static final CardUIBinder uiBinder = GWT.create(CardUIBinder.class);
-    private static final String DEFAULT_IMAGE = "https://orig10.deviantart.net/69f2/f/2016/289/4/1/ygo_card_backing__final__by_icycatelf-dal6wsb.png";
+    public static final String DEFAULT_IMAGE = "https://orig10.deviantart.net/69f2/f/2016/289/4/1/ygo_card_backing__final__by_icycatelf-dal6wsb.png";
     @UiField
     DivElement nameDiv;
     @UiField
@@ -57,7 +57,7 @@ public class CardWidget extends Composite {
             html += (((MagicCardDecorator) card).getIsAlternative() ? "<br><b>Alternative</b>" : "");
             html += (((MagicCardDecorator) card).getIsFullArt() ? "<br><b>Full Art</b>" : "");
             html += (((MagicCardDecorator) card).getIsPromo() ? "<br><b>Promo</b>" : "");
-            game = Game.Pokemon;
+            game = Game.Magic;
         } else {
             game = null;
         }

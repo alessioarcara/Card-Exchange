@@ -66,15 +66,9 @@
     </ui:style>
     <g:HTMLPanel styleName="{style.wrapper}">
         <div class="{style.headerGrid}">
-            <div class="{style.game}">
-                <p>Game: YuGiOh</p>
-            </div>
-            <div>
-                <h1>Gryphon Wing</h1>
-            </div>
-            <div>
-                <img src="https://images.ygoprodeck.com/images/cards/55608151.jpg"/>
-            </div>
+            <p class="{style.game}">Game: <span ui:field="cardGame"/></p>
+            <h1 ui:field="cardName"/>
+            <g:Image ui:field="cardImage"/>
             <div class="{style.cardInformation}">
                 <div>When your opponent activates "Harpie's Feather Duster": Negate its effect, and if you do, destroy all Spell and Trap Cards your opponent controls.</div>
                 <div class="{style.cardOptions}">

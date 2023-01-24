@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client;
 
+import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
 import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.presenters.CardActivity;
 import com.aadm.cardexchange.client.views.CardView;
@@ -24,6 +25,6 @@ public class CardActivityTest {
         mockPlace = new CardPlace(Game.Magic, CARD_ID);
         mockView = ctrl.createMock(CardView.class);
         mockRpcService = ctrl.mock(CardServiceAsync.class);
-        cardActivity = new CardActivity(mockPlace, mockView, mockRpcService);
+        cardActivity = new CardActivity(mockPlace, mockView, mockRpcService, new AuthSubject(null));
     }
 }
