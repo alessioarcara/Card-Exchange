@@ -11,18 +11,12 @@ public class UserTest implements UserTestConstants {
 
     @BeforeEach
     public void initialize() {
-        user = new User(username, BCrypt.hashpw(password, BCrypt.gensalt()));
+        user = new User(email, BCrypt.hashpw(password, BCrypt.gensalt()));
     }
 
     @Test
-    public void testGetId() {
-        User user2 = new User("gattopardo2@test.it", "gattopardo");
-        Assertions.assertEquals(2, user2.getId());
-    }
-
-    @Test
-    public void testGetUsername() {
-        Assertions.assertEquals(username, user.getUsername());
+    public void testGetEmail() {
+        Assertions.assertEquals(email, user.getEmail());
     }
 
     @Test

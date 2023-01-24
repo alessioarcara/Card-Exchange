@@ -23,9 +23,9 @@ jobs:
          - [ ]  Il codice si compila senza errori
          - [ ]  Gli Unit Tests sono stati scritti e passati 
          - [ ]  Gli Unit Tests esistenti sono stati passati
-         - [ ]  La documentazione è stata aggiornata
          - [ ]  Il Code Review è stato fatto
          - [ ]  La pull request è stata accettata e fatto merge sul branch development.
+         - [ ]  La documentazione è stata aggiornata
          
           **Effort effettivo:** 
         update-mode: 'replace'
