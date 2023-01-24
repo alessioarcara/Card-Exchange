@@ -40,10 +40,11 @@
         .cardOptions {
             display: flex;
             flex-direction: row;
-            gap: 5rem;
+            gap: 3.5rem;
         }
 
-        .cardType, .cardRace {
+        .cardOption {
+            justify-self: end;
             font-weight: bold;
             text-transform: uppercase;
         }
@@ -70,14 +71,35 @@
             <h1 ui:field="cardName"/>
             <g:Image ui:field="cardImage"/>
             <div class="{style.cardInformation}">
-                <div>When your opponent activates "Harpie's Feather Duster": Negate its effect, and if you do, destroy all Spell and Trap Cards your opponent controls.</div>
+                <div ui:field="cardDescription"/>
                 <div class="{style.cardOptions}">
-                    <div>Type:<div class="{style.cardType}">Trap Card</div></div>
-                    <div>Race:<div class="{style.cardRace}">Normal</div></div>
+                    <!--all cards-->
+                    <div>Type:<div class="{style.cardOption}" ui:field="cardOptionType"/></div>
+                    <!--Magic and Pokemon cards-->
+                    <div ui:field="optionArtist">Artist:<div class="{style.cardOption}" ui:field="cardOptionArtist"/></div>
+                    <div ui:field="optionRarity">Rarity:<div class="{style.cardOption}" ui:field="cardOptionRarity"/></div>
+                    <!--YuGiOh cards-->
+                    <div ui:field="optionRace">Race:<div class="{style.cardOption}" ui:field="cardOptionRace"/></div>
+
+                    <div ui:field="optionOtherProperties">Other properties:
+                        <!--Magic cards-->
+                        <div class="{style.cardOption}" ui:field="cardOptionFoil">foil</div>
+                        <div class="{style.cardOption}" ui:field="cardOptionAlternative">alternative</div>
+                        <div class="{style.cardOption}" ui:field="cardOptionFullArt">full art</div>
+                        <div class="{style.cardOption}" ui:field="cardOptionReprint">reprint</div>
+                        <!--Pokemon cards-->
+                        <div class="{style.cardOption}" ui:field="cardOptionFirstEd">first edition</div>
+                        <div class="{style.cardOption}" ui:field="cardOptionHolo">holo</div>
+                        <div class="{style.cardOption}" ui:field="cardOptionNormal">normal</div>
+                        <div class="{style.cardOption}" ui:field="cardOptionReverse">reverse</div>
+                        <!--Magic and Pokemon cards-->
+                        <div class="{style.cardOption}" ui:field="cardOptionPromo">promo</div>
+                    </div>
+
                 </div>
             </div>
         </div>
-        <div class="{style.deckSection}">
+        <div class="{style.deckSection}" ui:field="addToDeckSection">
             <select name="deck">
                 <option value="">-- select a deck --</option>
                 <option value="owned">Owned</option>

@@ -8,6 +8,6 @@ public interface CardView extends IsWidget {
     void setPresenter(Presenter presenter);
 
     interface Presenter {
-        void fetchCardDetails();
+        void fetchCard();
     }
 }

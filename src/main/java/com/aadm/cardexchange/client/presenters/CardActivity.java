@@ -28,10 +28,10 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
-        fetchCardDetails();
+        fetchCard();
     }
 
-    public void fetchCardDetails() {
+    public void fetchCard() {
         rpcService.getGameCard(place.getGame(), place.getCardId(), new BaseAsyncCallback<CardDecorator>() {
             @Override
             public void onSuccess(CardDecorator result) {
