@@ -61,7 +61,7 @@ public class CardWidget extends Composite {
             properties += (((MagicCardDecorator) card).getIsAlternative() ? "<div><b>Alternative</b></div>" : "");
             properties += (((MagicCardDecorator) card).getIsFullArt() ? "<div><b>Full Art</b></div>" : "");
             properties += (((MagicCardDecorator) card).getIsPromo() ? "<div><b>Promo</b></div>" : "");
-            game = Game.Pokemon;
+            game = Game.Magic;
         } else {
             game = null;
         }
