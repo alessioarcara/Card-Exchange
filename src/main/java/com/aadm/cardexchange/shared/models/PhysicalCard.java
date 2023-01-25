@@ -8,7 +8,7 @@ public class PhysicalCard implements Serializable {
     private static final AtomicInteger uniqueId = new AtomicInteger();
     private int id;
     private int cardId;
-    private String status;
+    private Status status;
     private String description;
 
     public PhysicalCard(int cardId, String status, String description) {
