@@ -3,7 +3,7 @@ package com.aadm.cardexchange.shared.models;
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 
-public class Deck implements Serializable {
+public class Deck extends LinkedHashSet<Deck> implements Serializable {
     private static final long serialVersionUID = -3036168098606868237L;
     private String userEmail;
     private String name;
