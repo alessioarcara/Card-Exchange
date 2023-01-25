@@ -40,6 +40,7 @@ public class CardWidget extends Composite {
         String properties = "";
         String imageUrl = "";
         Game game;
+
         if (card instanceof YuGiOhCardDecorator) {
             imageUrl = ((YuGiOhCardDecorator) card).getImageUrl();
             details += createDetailHTML("Race", ((YuGiOhCardDecorator) card).getRace());
@@ -66,6 +67,7 @@ public class CardWidget extends Composite {
         } else {
             game = null;
         }
+
         image.setUrl(imageUrl);
         detailsDiv.setInnerHTML(details);
         propertiesDiv.setInnerHTML(properties);
@@ -83,6 +85,7 @@ public class CardWidget extends Composite {
     private String createPropertyHTML(String property, boolean isTrue) {
         return isTrue ? "<div>" + property + "</div>" : "";
     }
+
 
     interface CardUIBinder extends UiBinder<Widget, CardWidget> {
     }
