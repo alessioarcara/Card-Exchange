@@ -5,6 +5,7 @@ import com.google.gwt.user.client.ui.IsWidget;
 
 public interface CardView extends IsWidget {
     void setData(CardDecorator data);
+    void createUserWidgets(boolean isLoggedIn);
     void setPresenter(Presenter presenter);
 
     interface Presenter {

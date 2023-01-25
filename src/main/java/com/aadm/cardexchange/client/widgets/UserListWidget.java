@@ -16,8 +16,10 @@ public class UserListWidget extends Composite {
     HeadingElement tableHeading;
     @UiField(provided = true)
     FlexTable table;
+    boolean showExchangeButton;
 
-    @UiConstructor public UserListWidget(String title, String[] users) {
+    @UiConstructor public UserListWidget(String title, String[] users, boolean showExchangeButton) {
+        this.showExchangeButton = showExchangeButton;
         setupTable();
         initWidget(uiBinder.createAndBindUi(this));
         tableHeading.setInnerText(title);
@@ -32,14 +34,14 @@ public class UserListWidget extends Composite {
         TableRowElement row = tHead.insertRow(0);
         row.insertCell(0).setInnerText("User");
         row.insertCell(1).setInnerText("State");
-        row.insertCell(2).setInnerText("");
+        if (showExchangeButton) row.insertCell(2).setInnerText("");
     }
 
     private void addRow(String email) {
         int numRows = (table.getRowCount());
         table.setText(numRows, 0, email);
         table.setText(numRows, 1, "1 (Ottimo)");
-        table.setWidget(numRows, 2, new Button("Exchange"));
+        if (showExchangeButton) table.setWidget(numRows, 2, new Button("Exchange"));
     }
 
     interface UserListUIBinder extends UiBinder<Widget, UserListWidget> {

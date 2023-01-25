@@ -33,6 +33,15 @@ public class CardActivityTest {
     }
 
     @Test
+    public void testUpdate() {
+        mockView.createUserWidgets(anyBoolean());
+        expectLastCall();
+        ctrl.replay();
+        cardActivity.update();
+        ctrl.verify();
+    }
+
+    @Test
     public void testFetchCardForOnSuccess() {
         CardDecorator cardDecorator = new CardDecorator(new CardImpl("Charizard", "Un pokemon di fuoco", "Fuoco"));
         mockRpcService.getGameCard(isA(Game.class), anyInt(), isA(AsyncCallback.class));

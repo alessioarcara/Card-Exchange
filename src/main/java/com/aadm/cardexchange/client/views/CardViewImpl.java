@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client.views;
 
+import com.aadm.cardexchange.client.widgets.AddCardToDeckWidget;
 import com.aadm.cardexchange.client.widgets.UserListWidget;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
@@ -58,15 +59,13 @@ public class CardViewImpl extends Composite implements CardView {
     @UiField
     DivElement cardOptionPromo;
     @UiField
-    DivElement addToDeckSection;
+    HTMLPanel addCardToDeckContainer;
     @UiField
     HTMLPanel userLists;
     Presenter presenter;
 
     public CardViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
-        userLists.add(new UserListWidget("Owned by", new String[]{"alessio.arcara@hotmail.com", "davide.fermi@gmail.com", "alessia.crimaldi@virgilio.it", "alessio.arcara@hotmail.com", "davide.fermi@gmail.com", "alessia.crimaldi@virgilio.it"}));
-        userLists.add(new UserListWidget("Desired by", new String[]{"matteo.sacco04@studio.unibo.it"}));
     }
 
     public void setData(CardDecorator data) {
@@ -76,72 +75,31 @@ public class CardViewImpl extends Composite implements CardView {
         String artist = "";
         String rarity = "";
         String race = "";
-        boolean hasOptions = false;
-        optionArtist.setAttribute("style", "display: none");
-        optionRarity.setAttribute("style", "display: none");
-        optionRace.setAttribute("style", "display: none");
-        optionOtherProperties.setAttribute("style", "display: none");
-        cardOptionFoil.setAttribute("style", "display: none");
-        cardOptionAlternative.setAttribute("style", "display: none");
-        cardOptionFullArt.setAttribute("style", "display: none");
-        cardOptionReprint.setAttribute("style", "display: none");
-        cardOptionFirstEd.setAttribute("style", "display: none");
-        cardOptionHolo.setAttribute("style", "display: none");
-        cardOptionNormal.setAttribute("style", "display: none");
-        cardOptionReverse.setAttribute("style", "display: none");
-        cardOptionPromo.setAttribute("style", "display: none");
+        boolean hasOtherProperties = false;
+
+        setPropertiesUnvisible();
 
         if (data instanceof MagicCardDecorator) {
             gameType = "Magic";
             errorImage += "magic-placeholder.png";
             artist = ((MagicCardDecorator) data).getArtist();
             rarity = ((MagicCardDecorator) data).getRarity();
-            if (((MagicCardDecorator) data).getHasFoil()) {
-                hasOptions = true;
-                cardOptionFoil.getStyle().clearDisplay();
-            }
-            if (((MagicCardDecorator) data).getIsAlternative()) {
-                hasOptions = true;
-                cardOptionAlternative.getStyle().clearDisplay();
-            }
-            if (((MagicCardDecorator) data).getIsFullArt()) {
-                hasOptions = true;
-                cardOptionFullArt.getStyle().clearDisplay();
-            }
-            if (((MagicCardDecorator) data).getIsPromo()) {
-                hasOptions = true;
-                cardOptionPromo.getStyle().clearDisplay();
-            }
-            if (((MagicCardDecorator) data).getIsReprint()) {
-                hasOptions = true;
-                cardOptionReprint.getStyle().clearDisplay();
-            }
+            hasOtherProperties = isOtherPropertyVisible(((MagicCardDecorator) data).getHasFoil(), false, cardOptionFoil);
+            hasOtherProperties = isOtherPropertyVisible(((MagicCardDecorator) data).getIsAlternative(), hasOtherProperties, cardOptionAlternative);
+            hasOtherProperties = isOtherPropertyVisible(((MagicCardDecorator) data).getIsFullArt(), hasOtherProperties, cardOptionFullArt);
+            hasOtherProperties = isOtherPropertyVisible(((MagicCardDecorator) data).getIsPromo(), hasOtherProperties, cardOptionPromo);
+            hasOtherProperties = isOtherPropertyVisible(((MagicCardDecorator) data).getIsReprint(), hasOtherProperties, cardOptionReprint);
         } else if (data instanceof PokemonCardDecorator) {
             gameType = "Pokemon";
             errorImage += "pokemon-placeholder.png";
             imageUrl = ((PokemonCardDecorator) data).getImageUrl();
             artist = ((PokemonCardDecorator) data).getArtist();
             rarity = ((PokemonCardDecorator) data).getRarity();
-            if (((PokemonCardDecorator) data).getIsFirstEdition()) {
-                hasOptions = true;
-                cardOptionFirstEd.getStyle().clearDisplay();
-            }
-            if (((PokemonCardDecorator) data).getIsHolo()) {
-                hasOptions = true;
-                cardOptionHolo.getStyle().clearDisplay();
-            }
-            if (((PokemonCardDecorator) data).getIsNormal()) {
-                hasOptions = true;
-                cardOptionNormal.getStyle().clearDisplay();
-            }
-            if (((PokemonCardDecorator) data).getIsReverse()) {
-                hasOptions = true;
-                cardOptionReverse.getStyle().clearDisplay();
-            }
-            if (((PokemonCardDecorator) data).getIsPromo()) {
-                hasOptions = true;
-                cardOptionPromo.getStyle().clearDisplay();
-            }
+            hasOtherProperties = isOtherPropertyVisible(((PokemonCardDecorator) data).getIsFirstEdition(), false, cardOptionFirstEd);
+            hasOtherProperties = isOtherPropertyVisible(((PokemonCardDecorator) data).getIsHolo(), hasOtherProperties, cardOptionHolo);
+            hasOtherProperties = isOtherPropertyVisible(((PokemonCardDecorator) data).getIsNormal(), hasOtherProperties, cardOptionNormal);
+            hasOtherProperties = isOtherPropertyVisible(((PokemonCardDecorator) data).getIsReverse(), hasOtherProperties, cardOptionReverse);
+            hasOtherProperties = isOtherPropertyVisible(((PokemonCardDecorator) data).getIsPromo(), hasOtherProperties, cardOptionPromo);
         } else if (data instanceof YuGiOhCardDecorator) {
             gameType = "YuGiOh";
             errorImage += "yugiho-placeholder.png";
@@ -159,10 +117,52 @@ public class CardViewImpl extends Composite implements CardView {
         cardOptionArtist.setInnerHTML(artist);
         cardOptionRarity.setInnerHTML(rarity);
         cardOptionRace.setInnerHTML(race);
-        if (!artist.isEmpty()) { optionArtist.getStyle().clearDisplay(); }
-        if (!rarity.isEmpty()) { optionRarity.getStyle().clearDisplay(); }
-        if (!race.isEmpty()) { optionRace.getStyle().clearDisplay(); }
-        if (hasOptions) { optionOtherProperties.getStyle().clearDisplay(); }
+        if (!artist.isEmpty()) optionArtist.getStyle().clearDisplay();
+        if (!rarity.isEmpty()) optionRarity.getStyle().clearDisplay();
+        if (!race.isEmpty()) optionRace.getStyle().clearDisplay();
+        if (hasOtherProperties) optionOtherProperties.getStyle().clearDisplay();
+    }
+
+    private void setPropertiesUnvisible() {
+        optionArtist.setAttribute("style", "display: none");
+        optionRarity.setAttribute("style", "display: none");
+        optionRace.setAttribute("style", "display: none");
+        optionOtherProperties.setAttribute("style", "display: none");
+        cardOptionFoil.setAttribute("style", "display: none");
+        cardOptionAlternative.setAttribute("style", "display: none");
+        cardOptionFullArt.setAttribute("style", "display: none");
+        cardOptionReprint.setAttribute("style", "display: none");
+        cardOptionFirstEd.setAttribute("style", "display: none");
+        cardOptionHolo.setAttribute("style", "display: none");
+        cardOptionNormal.setAttribute("style", "display: none");
+        cardOptionReverse.setAttribute("style", "display: none");
+        cardOptionPromo.setAttribute("style", "display: none");
+    }
+
+    private boolean isOtherPropertyVisible(boolean propertyIsTrue, boolean hasOtherProperties, DivElement elem) {
+        if (propertyIsTrue) {
+            hasOtherProperties = true;
+            elem.getStyle().clearDisplay();
+        }
+        return hasOtherProperties;
+    }
+
+    @Override
+    public void createUserWidgets(boolean isLoggedIn) {
+        addCardToDeckContainer.clear();
+        userLists.clear();
+        // create AddCartToDeckWidget
+        if (isLoggedIn) addCardToDeckContainer.add(new AddCardToDeckWidget());
+        // create UserListWidget 'Exchange' buttons
+        userLists.add(new UserListWidget(
+                "Owned by",
+                new String[]{"alessio.arcara@hotmail.com", "davide.fermi@gmail.com", "alessia.crimaldi@virgilio.it", "alessio.arcara@hotmail.com", "davide.fermi@gmail.com", "alessia.crimaldi@virgilio.it"},
+                isLoggedIn
+        ));
+        userLists.add(new UserListWidget(
+                "Desired by",
+                new String[]{"matteo.sacco04@studio.unibo.it"},
+                isLoggedIn));
     }
 
     @Override
