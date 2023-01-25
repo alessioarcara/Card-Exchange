@@ -31,8 +31,16 @@
         \newline \textbf{Development team:} Alessio Arcara, Matteo Sacco
     \end{itemize}
 
+    \subsection{Sprint Planning}
+    \item \textbf{Data:} 08/01/2023
+    \newline \textbf{Durata:} 95 min.
+    \newline \textbf{Partecipanti:} Scrum Master (Alessia Crimaldi), Product Owner (Davide Fermi) Dev 1 (Alessio Arcara), Dev 2 (Matteo Sacco)
+    \newline \textbf{Note:} Spiegazione del Product Backlog da parte del PO (user stories e relative priorità). Poker Planning tra i membri del team utilizzando sequenza di Fibonacci modificata (0  1/2  1  2  3  5  8  13  20  40  100  ?  -tazzina di caffè-). Stima dell'effort delle user stories da parte di tutto il team. opolamento dello Sprint Backlog (tasks) a cura degli sviluppatori e dello SM. Stima dell'effort dei singoli task relativi ad ogni user story da parte di tutto il team.
+
+    \newpage
+
+    \subsection{BOARD}
     \begin{itemize}
-        \item \textbf{BOARD}.
         \newline
         \textbf{Stato iniziale:}
         \newline
@@ -163,6 +171,26 @@
         \newline \textbf{Percezione attuale dello SG:} Negativa (Dev 1), Negativa (Dev 2)
     \end{itemize}
 
+    \subsection{Sprint Review}
+    \begin{itemize}
+        \item \textbf{Data:} 15/01/2023
+        \newline \textbf{Durata:} 65 min.
+        \newline \textbf{Partecipanti:} TODO Scrum Master (Davide Fermi), Product Owner (Matteo Sacco) Dev 1 (Alessia Crimaldi), Dev 2 (Alessio Arcara)
+        \newline \textbf{Note:} TODO Viene prima effettuata la demo da parte dei Devs. Nella discussione sull'andamento dello Sprint, emerge come sia necessario migliorare la definizione dei tasks, aumentandone il dettaglio e quindi suddividendo task grandi in molti sub-tasks. Questo anche per evitare Pull request troppo grosse (e più complicate da gestire). Si evidenzia che il Product Backlog andrebbe continuamente raffinato durante sprint. Ci sono critiche e chiarimenti rigurardo effort di alcuni elementi del team (in particolare verso Matteo e Davide). Viene chiesta in generale anche più precisione durante Sprint Planning, in quanto anche questa settimana si stava rischiando di non rilasciare. Viene da alcuni membri sottolineato come il livello di dettaglio dell'attuale manuale utente sia troppo profondo, richiedendo sforzi per taluni eccessivi rispetto a quanto preventivato. Il PO al termine della riunione, decide che si provvede a rilasciare e incarica i Devs delle pratiche formali di rilascio.
+    \end{itemize}
+
+    \subsection{Sprint Retrospective}
+    \begin{itemize}
+        \item \textbf{Data:} 15/01/2023
+        \newline \textbf{Durata:} 70 min.
+        \newline \textbf{Partecipanti:}  TODO Scrum Master (Davide Fermi), Product Owner (Matteo Sacco) Dev 1 (Alessia Crimaldi), Dev 2 (Alessio Arcara)
+        \newline \textbf{Note:} TODO Viene proposta un nuovo ordine e dettaglio della D.O.D. (tutti si concorda e viene subito attuato nelle actions di GitHub), viene proposto di effettuare "pair programming" per agevolare i nuovi sviluppatori. Viene confermata l'importanza del TDD nonostante l'ingente quantità di effort che richiede e si decide concordi di effettuare i prossimi Sprint Planning con il metodo "velocity" per cercare di organizzare al meglio lo Sprint successivo.
+    \end{itemize}
+
+
+
+    \newpage
+
     \section{SPRINT 02}
 
     \begin{itemize}
@@ -195,7 +223,7 @@
 
     \begin{itemize}
         \newpage
-        \item \textbf{BOARD}.
+        \subsection{BOARD}
         \textbf{Stato dopo lo Sprint Planning:}
         \newline
         \newline
@@ -207,34 +235,36 @@
             & \textbf{Sprint In progress}
             & \textbf{Sprint Done} \\
             \hline
-            \textbf{UC01:} Come visitatore voglio selezionare un gioco e vedere l'elenco di tutte le sue carte
-            & & \textbf{Task1 [UC01]\#2:} Creare il modello per le carte di tutti i giochi & & \\
-            \hline
-            \textbf{UC02:} Come visitatore voglio poter fare delle ricerche per vedere un elenco di carte filtrato
-            & & \textbf{Task2 [UC01]\#3:} Importare dai JSON le carte dei giochi & & \\
-            \hline
-            \textbf{UC03:} Come visitatore voglio selezionare una carta e vederne i dettagli
-            & & \textbf{Task3 [UC01]\#4:} Inizializzare il DB con i JSON caricati & & \\
-            \hline
-            & & \textbf{Task4 [UC01]\#5:} Creare RemoteService per fetch delle carte di quel gioco & & \\
-            \hline
-            & & \textbf{Task5 [UC01]\#6:} Creare HomeView per la visualizzazione delle carte & & \\
-            \hline
-            & & \textbf{Task6 [UC01]\#7:} Creare Composite Card per la visualizzazione carta & & \\
-            \hline
-            & & \textbf{Task1 [UC02]\#10:} Creare filtri specifici di quel gioco & & \\
-            \hline
-            & & \textbf{Task2 [UC02]\#11:} Filtrare l'array delle carte in base ai filtri specificati & & \\
-            \hline
-            & & \textbf{Task3 [UC02]\#12:} Rimuovere dalla pagina HomeView le carte che non corrispondono ai filtri & & \\
-            \hline
+            \textbf{UC03:}  Come visitatore voglio selezionare una carta e vederne i dettagli
             & & \textbf{Task1 [UC03]\#14:} Creazione CardPlace & & \\
             \hline
+            \textbf{UC04:}  Come utente voglio potermi autenticare per gestire i miei mazzi di carte
             & & \textbf{Task2 [UC03]\#15:} Connessione RemoteService FetchCard nel caso l'assunzione sia errata & & \\
             \hline
+            \textbf{UC05:}  Come utente voglio poter aggiungere le mie carte reali al mazzo delle possedute
             & & \textbf{Task3 [UC03]\#16:} Creazione CardView e popolamento delle informazioni & & \\
             \hline
             & & \textbf{Task4 [UC03]\#17:} Gestione del cambio di pagina da HomeView a CardView & & \\
+            \hline
+            & & \textbf{Task1 [UC04]\#32:} Creare Authentication view per Login/registrazione  & & \\
+            \hline
+            & & \textbf{Task2 [UC04]\#33:} Creare RPC SignUp & & \\
+            \hline
+            & & \textbf{Task3 [UC04]\#34:} Creare RPC SignIn  & & \\
+            \hline
+            & & \textbf{Task4 [UC04]\#35:} Gestire la sessione  & & \\
+            \hline
+            & & \textbf{Task1 [UC05]\#36:} Creare modello per strutturare i mazzi predefiniti (possedute/desiderate) e il loro contenuto  & & \\
+            \hline
+            & & \textbf{Task2 [UC05]\#54:}Creare mappa dei mazzi su MapDB  & & \\
+            \hline
+            & & \textbf{Task3 [UC05]\#63:} Creare metodo statico in AuthService per controllare validità token e restituire email utente  & & \\
+            \hline
+            & & \textbf{Task4 [UC05]\#55:} Modificare RPC signup per aggiungere il mazzo delle possedute alla creazione dell'utente  & & \\
+            \hline
+            & & \textbf{Task5 [UC05]\#56:} Creare RPC per inserire una carta fisica nel mazzo delle possedute dell'utente  & & \\
+            \hline
+            & & \textbf{Task6 [UC05]\#57:} Modificare CardView per poter aggiungere la carta al mazzo delle possedute [UC05] #57 & & \\
             \hline
         \end{tabular}
         \newpage

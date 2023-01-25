@@ -14,13 +14,13 @@ public class LoginInfoTest {
     public void initialize() {
         mockLoginTime = System.currentTimeMillis();
         loginInfo = new LoginInfo(
-                new User("test@test.it", "password").getId(),
+                new User("test@test.it", "password").getEmail(),
                 mockLoginTime);
     }
 
     @Test
-    public void testGetUserId() {
-        Assertions.assertEquals(5, loginInfo.getUserId());
+    public void testGetUserEmail() {
+        Assertions.assertEquals("test@test.it", loginInfo.getUserEmail());
     }
 
     @Test
