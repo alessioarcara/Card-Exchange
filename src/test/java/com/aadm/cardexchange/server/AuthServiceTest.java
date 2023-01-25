@@ -29,9 +29,11 @@ public class AuthServiceTest {
     public void initialize() throws ServletException {
         ctrl = createStrictControl();
         mockDB = ctrl.createMock(MapDB.class);
-        authService = new AuthServiceImpl(mockDB);
         mockConfig = ctrl.createMock(ServletConfig.class);
         mockCtx = ctrl.createMock(ServletContext.class);
+        DeckServiceImpl mockDeckService = new DeckServiceImpl(mockDB);
+        authService = new AuthServiceImpl(mockDB, mockDeckService);
+        mockDeckService.init(mockConfig);
         authService.init(mockConfig);
     }
 
@@ -88,12 +90,11 @@ public class AuthServiceTest {
 
     @Test
     public void testSignupForCorrectEmailAndPassword() throws AuthException {
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(new HashMap<>());
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(new HashMap<>());
+        for (int i = 0; i < 4; i++) {
+            expect(mockConfig.getServletContext()).andReturn(mockCtx);
+            expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                    .andReturn(new HashMap<>());
+        }
         ctrl.replay();
         String token = authService.signup("test@test.it", "password");
         ctrl.verify();
