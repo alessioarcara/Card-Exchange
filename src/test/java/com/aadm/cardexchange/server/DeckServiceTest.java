@@ -63,9 +63,13 @@ public class DeckServiceTest {
         Map<String, LinkedHashSet<Deck>> deckMap = new HashMap<>();
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andStubReturn(deckMap);
+                .andReturn(deckMap);
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(deckMap);
         ctrl.replay();
-        Assertions.assertTrue(deckService.createDefaultDecks("test@test.it"));
+        Assertions.assertTrue(deckService.createDefaultDecks("testbis@test.it"));
+        //deckService.createDefaultDecks("test@test.it");
         ctrl.verify();
     }
 }
