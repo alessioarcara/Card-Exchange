@@ -1,7 +1,6 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.models.Deck;
-import com.aadm.cardexchange.shared.models.DeckException;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
