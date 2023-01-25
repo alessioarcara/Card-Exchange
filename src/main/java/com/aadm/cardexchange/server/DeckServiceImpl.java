@@ -40,17 +40,30 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             }
         }
          */
+        Boolean DeckForUserExist = deckMap.containsKey(email);
+        if (DeckForUserExist != null && DeckForUserExist ) {
+            for (Deck item : deckMap.get(email)) {
+                if (item.getName().equals(deckName)) {
+                    throw new DeckException("Deck already exists");
+                    }
+            }
+        } else {
+            LinkedHashSet mockDecks =  new LinkedHashSet<Deck>();
+            deckMap.putIfAbsent(email, mockDecks);
+        }
+        return deckMap.get(email).add(new Deck(email, deckName, isDefault));
+    }
+        /*
         if (!deckMap.get(email).add(new Deck(email, deckName, isDefault))) {
             throw new DeckException("Deck already exists");
         }
-        return true;
-    }
+        return true; */
 
     public boolean createDefaultDecks(String email) throws DeckException {
-        Map<String, LinkedHashSet<Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        /*Map<String, LinkedHashSet<Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
         if (deckMap.putIfAbsent(email, new LinkedHashSet<>()) != null) {
-            throw new DeckException("Deck already exists");
-        }
+            throw new DeckException("Deck of this user already exists");
+        }*/
         //return (addDeck(email, "Owned", true) && addDeck(email, "Wished", true));
         return (addDeck(email, "Owned", true));
     }
