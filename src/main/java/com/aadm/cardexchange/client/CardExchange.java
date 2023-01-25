@@ -27,11 +27,12 @@ public class CardExchange implements EntryPoint, Observer, ImperativeHandleSideb
     private final SidebarWidget appSidebar = new SidebarWidget(this);
     private AuthServiceAsync authService;
     private AuthSubject authSubject;
+    private PlaceController placeController;
 
     public void onModuleLoad() {
         ClientFactory clientFactory = new ClientFactoryImpl();
         EventBus eventBus = clientFactory.getEventBus();
-        PlaceController placeController = clientFactory.getPlaceController();
+        placeController = clientFactory.getPlaceController();
         authService = GWT.create(AuthService.class);
         authSubject = clientFactory.getAuthSubject();
         authSubject.attach(this);
@@ -62,6 +63,7 @@ public class CardExchange implements EntryPoint, Observer, ImperativeHandleSideb
         authService.logout(authSubject.getToken(), new IgnoreAsyncCallback<>());
         Cookies.removeCookie("token");
         authSubject.setToken(null);
+        placeController.goTo(new HomePlace());
     }
 
     @Override
