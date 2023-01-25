@@ -5,6 +5,7 @@
         .layout {
             display: flex;
             flex: 1;
+            flex-direction: column;
             justify-content: center;
         }
 
@@ -19,13 +20,12 @@
             box-shadow: 2px 2px 5px #aaa;
         }
 
-        .field {
-            width: 100%;
+        .title {
+            align-self: center;
         }
 
-        .title {
-            position: absolute;
-            top: 5rem;
+        .field {
+            width: 100%;
         }
 
         .authButtons {
@@ -42,7 +42,9 @@
         }
     </ui:style>
     <g:HTMLPanel styleName="{style.layout}">
-        <h1 class="{style.title}">User Authentication</h1>
+        <div class="{style.title}">
+            <h1>User Authentication</h1>
+        </div>
         <div class="{style.auth}">
             <div>
                 Email
