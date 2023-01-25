@@ -11,7 +11,7 @@ public class PhysicalCard implements Serializable {
     private Status status;
     private String description;
 
-    public PhysicalCard(int cardId, String status, String description) {
+    public PhysicalCard(int cardId, Status status, String description) {
         this.id = uniqueId.getAndIncrement();
         this.cardId = cardId;
         this.status = status;
@@ -29,7 +29,7 @@ public class PhysicalCard implements Serializable {
         return cardId;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
