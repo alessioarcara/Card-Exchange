@@ -5,9 +5,10 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.LinkedHashSet;
+import java.util.Set;
 
-import static com.aadm.cardexchange.shared.UserTestConstants.*;
+import static com.aadm.cardexchange.shared.UserTestConstants.email;
+import static com.aadm.cardexchange.shared.UserTestConstants.password;
 
 public class DeckTest {
 
@@ -70,7 +71,7 @@ public class DeckTest {
     public void testGetPhysicalCards() {
         deck.addPhysicalCard(pCard.getId());
         deck.addPhysicalCard(pCard2.getId());
-        LinkedHashSet<Integer> cards = deck.getPhysicalCards();
+        Set<Integer> cards = deck.getPhysicalCards();
 
         Assertions.assertEquals(2, cards.size());
         Assertions.assertTrue(cards.contains(pCard.getId()));
