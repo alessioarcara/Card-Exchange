@@ -8,6 +8,7 @@ import org.mapdb.Serializer;
 
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 
 public class DeckServiceImpl extends RemoteServiceServlet implements DeckService, MapDBConstants {
@@ -24,45 +25,17 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     }
 
     @Override
-    public boolean addDeck(String email, String deckName) throws DeckException   {
+    public boolean addDeck(String email, String deckName) {
         return addDeck(email,deckName, false);
     }
 
-    public boolean addDeck(String email, String deckName, boolean isDefault) throws DeckException {
-        Map<String, LinkedHashSet<Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
-        Boolean DeckForUserExist = deckMap.containsKey(email);
-        if (DeckForUserExist != null && DeckForUserExist ) {
-            for (Deck item : deckMap.get(email)) {
-                if (item.getName().equals(deckName)) {
-                    throw new DeckException("Deck already exists");
-                    }
-            }
-        } else {
-            LinkedHashSet mockDecks =  new LinkedHashSet<Deck>();
-            deckMap.putIfAbsent(email, mockDecks);
-        }
-
-        System.out.println(deckMap.get(email).toString());
-        return deckMap.get(email).add(new Deck(email, deckName, isDefault));
-
-    }
-        /*
-        if (!deckMap.get(email).add(new Deck(email, deckName, isDefault))) {
-            throw new DeckException("Deck already exists");
-        }
-        return true; */
-
-    public boolean createDefaultDecks(String email) throws DeckException {
-        /*Map<String, LinkedHashSet<Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
-        if (deckMap.putIfAbsent(email, new LinkedHashSet<>()) != null) {
-            throw new DeckException("Deck of this user already exists");
-        }*/
-        System.out.println(addDeck(email, "Owned", true));
-        System.out.println(addDeck(email, "Wished", true));
-
-        //return (addDeck(email, "Owned", true) && addDeck(email, "Wished", true));
-        //return (addDeck(email, "Owned", true));
-        return true;
+    public boolean addDeck(String email, String deckName, boolean isDefault) {
+        Map<String, Set<Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        Set<Deck> userDecks = deckMap.computeIfAbsent(email, k -> new LinkedHashSet<>());
+        return userDecks.add(new Deck(email, deckName, isDefault));
     }
 
+    public boolean createDefaultDecks(String email) {
+        return addDeck(email, "Owned", true) && addDeck(email, "Wished", true);
+    }
 }

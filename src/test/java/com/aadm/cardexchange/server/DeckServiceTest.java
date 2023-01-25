@@ -13,6 +13,7 @@ import javax.servlet.ServletException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import static org.easymock.EasyMock.*;
 
@@ -32,19 +33,11 @@ public class DeckServiceTest {
         mockCtx = ctrl.createMock(ServletContext.class);
         deckService.init(mockConfig);
     }
-    @Test
-    public void testDeckException() {
-        try {
-            throw new DeckException("test");
-        } catch (DeckException e) {
-            Assertions.assertEquals("test", e.getErrorMessage());
-        }
-    }
 
     @Test
-    public void testIfDeckAlreadyExist() throws DeckException {
-        Map<String, LinkedHashSet <Deck>> deckMap = new HashMap<>();
-        LinkedHashSet mockDecks =  new LinkedHashSet<Deck>();
+    public void testIfDeckAlreadyExist() {
+        Map<String, Set<Deck>> deckMap = new HashMap<>();
+        Set<Deck> mockDecks =  new LinkedHashSet<>();
         mockDecks.add(new Deck("test@test.it", "Owned"));
         mockDecks.add(new Deck("test@test.it", "Wished"));
         deckMap.put("test@test.it", mockDecks);
@@ -52,13 +45,13 @@ public class DeckServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(deckMap);
         ctrl.replay();
-        Assertions.assertThrows(DeckException.class, () -> deckService.createDefaultDecks("test@test.it"));
+        Assertions.assertFalse(deckService.createDefaultDecks("test@test.it"));
         ctrl.verify();
     }
 
     @Test
-    public void testDefaultDeckCreation() throws DeckException {
-        Map<String, LinkedHashSet <Deck>> deckMap = new HashMap<>();
+    public void testDefaultDeckCreation() {
+        Map<String, Set<Deck>> deckMap = new HashMap<>();
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(deckMap);
@@ -67,7 +60,15 @@ public class DeckServiceTest {
                 .andReturn(deckMap);
         ctrl.replay();
         Assertions.assertTrue(deckService.createDefaultDecks("testbis@test.it"));
-        //deckService.createDefaultDecks("test@test.it");
         ctrl.verify();
+        // check if last default deck is "Wished"
+        boolean isTrue = false;
+        for (Deck deck: deckMap.get("testbis@test.it")) {
+            if (deck.getName().equals("Wished")) {
+                isTrue = true;
+                break;
+            }
+        }
+        Assertions.assertTrue(isTrue);
     }
 }

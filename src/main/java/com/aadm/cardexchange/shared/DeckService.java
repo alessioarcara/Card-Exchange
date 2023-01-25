@@ -6,7 +6,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 @RemoteServiceRelativePath("users")
 public interface DeckService extends RemoteService {
 
-     boolean addDeck(String email, String deckName) throws DeckException;
+     boolean addDeck(String email, String deckName);
 
     //String signin(String email, String password) throws AuthException;
 
