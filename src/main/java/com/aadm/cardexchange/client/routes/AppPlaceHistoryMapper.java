@@ -3,6 +3,7 @@ package com.aadm.cardexchange.client.routes;
 import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
 import com.aadm.cardexchange.client.places.AuthPlace;
 import com.aadm.cardexchange.client.places.CardPlace;
+import com.aadm.cardexchange.client.places.DecksPlace;
 import com.aadm.cardexchange.client.places.HomePlace;
 import com.aadm.cardexchange.shared.models.Game;
 import com.google.gwt.place.shared.Place;
@@ -23,6 +24,8 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
             return defaultPlace;
         } else if (token.equals(authLink) && !authSubject.isLoggedIn()) {
             return new AuthPlace();
+        } else if (token.equals(decksLink) && authSubject.isLoggedIn()) {
+            return new DecksPlace();
         } else {
             try {
                 String[] parts = token.split(DELIMITER);
@@ -41,6 +44,8 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
             return homeLink;
         } else if (place instanceof AuthPlace) {
             return authLink;
+        } else if (place instanceof DecksPlace) {
+            return decksLink;
         } else if (place instanceof CardPlace) {
             CardPlace cardPlace = (CardPlace) place;
             return "cards" + DELIMITER + cardPlace.getGame().name().toLowerCase() + DELIMITER + cardPlace.getCardId();
