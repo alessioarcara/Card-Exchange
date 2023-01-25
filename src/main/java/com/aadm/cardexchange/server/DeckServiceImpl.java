@@ -2,7 +2,6 @@ package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.DeckService;
 import com.aadm.cardexchange.shared.models.Deck;
-import com.aadm.cardexchange.shared.models.DeckException;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
