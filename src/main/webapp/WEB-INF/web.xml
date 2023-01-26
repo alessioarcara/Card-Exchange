@@ -29,7 +29,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>com.aadm.cardexchange.CardExchange DeckService</servlet-name>
-        <url-pattern>/cardexchange/users</url-pattern>
+        <url-pattern>/cardexchange/decks</url-pattern>
     </servlet-mapping>
 
     <listener>
