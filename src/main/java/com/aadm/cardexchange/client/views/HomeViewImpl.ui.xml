@@ -39,7 +39,7 @@
             flex-wrap: wrap;
             gap: 2rem;
             justify-content: space-around;
-            padding: 0 3rem 0 3rem;
+            padding: 0 3rem 3rem 3rem;
         }
     </ui:style>
     <g:HTMLPanel styleName="{style.wrapper}">
