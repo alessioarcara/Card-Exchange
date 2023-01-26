@@ -2,7 +2,7 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <ui:style>
         .sidebar {
-            width: 25%;
+            width: 15%;
             height: 100vh;
             position: sticky;
             top: 0;

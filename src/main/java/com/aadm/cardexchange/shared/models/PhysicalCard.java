@@ -8,10 +8,10 @@ public class PhysicalCard implements Serializable {
     private static final AtomicInteger uniqueId = new AtomicInteger();
     private int id;
     private int cardId;
-    private Status status;
+    private String status;
     private String description;
 
-    public PhysicalCard(int cardId, Status status, String description) {
+    public PhysicalCard(int cardId, String status, String description) {
         this.id = uniqueId.getAndIncrement();
         this.cardId = cardId;
         this.status = status;
@@ -29,7 +29,7 @@ public class PhysicalCard implements Serializable {
         return cardId;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
