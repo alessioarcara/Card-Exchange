@@ -1,6 +1,7 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.models.Deck;
+import com.aadm.cardexchange.shared.models.Status;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -72,3 +73,14 @@ public class DeckServiceTest {
         Assertions.assertTrue(isTrue);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
