@@ -28,7 +28,6 @@
 
         img {
             width: 100%;
-            height: 100%;
         }
 
         .cardInformation {
@@ -60,19 +59,29 @@
     </ui:style>
     <g:HTMLPanel styleName="{style.wrapper}">
         <div class="{style.detailsGrid}">
-            <p class="{style.game}">Game: <span ui:field="cardGame"/></p>
+            <p class="{style.game}">Game:
+                <span ui:field="cardGame"/>
+            </p>
             <h1 ui:field="cardName"/>
             <g:Image ui:field="cardImage"/>
             <div class="{style.cardInformation}">
                 <div ui:field="cardDescription"/>
                 <div class="{style.cardOptions}">
                     <!--all cards-->
-                    <div>Type:<div class="{style.cardOption}" ui:field="cardOptionType"/></div>
+                    <div>Type:
+                        <div class="{style.cardOption}" ui:field="cardOptionType"/>
+                    </div>
                     <!--Magic and Pokemon cards-->
-                    <div ui:field="optionArtist">Artist:<div class="{style.cardOption}" ui:field="cardOptionArtist"/></div>
-                    <div ui:field="optionRarity">Rarity:<div class="{style.cardOption}" ui:field="cardOptionRarity"/></div>
+                    <div ui:field="optionArtist">Artist:
+                        <div class="{style.cardOption}" ui:field="cardOptionArtist"/>
+                    </div>
+                    <div ui:field="optionRarity">Rarity:
+                        <div class="{style.cardOption}" ui:field="cardOptionRarity"/>
+                    </div>
                     <!--YuGiOh cards-->
-                    <div ui:field="optionRace">Race:<div class="{style.cardOption}" ui:field="cardOptionRace"/></div>
+                    <div ui:field="optionRace">Race:
+                        <div class="{style.cardOption}" ui:field="cardOptionRace"/>
+                    </div>
 
                     <div ui:field="optionOtherProperties">Other properties:
                         <!--Magic cards-->
