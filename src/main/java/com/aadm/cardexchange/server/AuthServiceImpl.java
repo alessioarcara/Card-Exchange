@@ -1,7 +1,6 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.AuthService;
-import com.aadm.cardexchange.shared.DeckService;
 import com.aadm.cardexchange.shared.models.AuthException;
 import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;
@@ -23,16 +22,13 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
             "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private final MapDB db;
     private final Gson gson = new Gson();
-    private final DeckServiceImpl deckService;
 
     public AuthServiceImpl() {
         db = new MapDBImpl();
-        deckService =  new DeckServiceImpl();
     }
 
-    public AuthServiceImpl(MapDB mockDB, DeckServiceImpl mockService) {
+    public AuthServiceImpl(MapDB mockDB) {
         db = mockDB;
-        deckService = mockService;
     }
 
     private boolean validateEmail(String email) {
@@ -90,7 +86,6 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
         if (userMap.putIfAbsent(email, user) != null) {
             throw new AuthException("User already exists");
         }
-        deckService.createDefaultDecks(email);
         return generateAndStoreLoginToken(user);
     }
 
