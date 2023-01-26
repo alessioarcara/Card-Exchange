@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.server;
 
+import com.aadm.cardexchange.shared.models.AuthException;
 import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.Status;
 import org.easymock.IMocksControl;
@@ -71,6 +72,13 @@ public class DeckServiceTest {
             }
         }
         Assertions.assertTrue(isTrue);
+    }
+
+    @Test
+    public void testAddPhysicalCardToDeckForNullToken() {
+        Assertions.assertThrows(AuthException.class, () -> {
+            deckService.addPhysicalCardToDeck(null, "Owned", 111, Status.Damaged, "Carta forte");
+        });
     }
 }
 

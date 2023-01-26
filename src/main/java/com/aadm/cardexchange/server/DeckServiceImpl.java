@@ -1,7 +1,9 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.DeckService;
+import com.aadm.cardexchange.shared.models.AuthException;
 import com.aadm.cardexchange.shared.models.Deck;
+import com.aadm.cardexchange.shared.models.Status;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
@@ -37,5 +39,13 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
 
     public boolean createDefaultDecks(String email) {
         return addDeck(email, "Owned", true) && addDeck(email, "Wished", true);
+    }
+
+    @Override
+    public boolean addPhysicalCardToDeck(String token, String deckName, int cardId, Status status, String description) throws AuthException {
+        if (token==null) {
+            throw new AuthException("Invalid token");
+        }
+        return false;
     }
 }

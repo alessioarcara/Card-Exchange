@@ -5,12 +5,10 @@ import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
-@RemoteServiceRelativePath("users")
+@RemoteServiceRelativePath("decks")
 public interface DeckService extends RemoteService {
 
      boolean addDeck(String email, String deckName);
 
-    //String signin(String email, String password) throws AuthException;
-
-    //Boolean logout(String token) throws AuthException;
+     boolean addPhysicalCardToDeck(String token, String deckName, int cardId, Status status, String description) throws AuthException;
 }
