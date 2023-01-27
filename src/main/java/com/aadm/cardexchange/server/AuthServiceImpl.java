@@ -1,7 +1,6 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.AuthService;
-import com.aadm.cardexchange.shared.DeckService;
 import com.aadm.cardexchange.shared.models.AuthException;
 import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;
@@ -17,8 +16,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class AuthServiceImpl extends RemoteServiceServlet implements AuthService, AuthDBConstants {
+public class AuthServiceImpl extends RemoteServiceServlet implements AuthService, MapDBConstants {
     private static final long serialVersionUID = 5646081795222815765L;
+    private static final String SECRET = "sadhgsahdgsahghjgjddshsadhjsajkhdkjhsadsavbnxznvcnbxzvdgsad";
     private static final Pattern emailPattern = Pattern.compile(
             "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private final MapDB db;
@@ -74,9 +74,22 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
         return token;
     }
 
-    private boolean checkTokenExpiration(long loginTime) {
+    private static boolean checkTokenExpiration(long loginTime) {
         final long EXPIRATION_TIME = 1000 * 60 * 60 * 24 * 7;
         return loginTime > System.currentTimeMillis() - EXPIRATION_TIME;
+    }
+
+    public static String checkTokenValidity(String token, Map<String, LoginInfo> loginMap) throws AuthException {
+        if (token == null) {
+            throw new AuthException("Invalid token");
+        }
+        LoginInfo loginInfo = loginMap.get(token);
+        if (loginInfo == null) {
+            throw new AuthException("Invalid token");
+        } else if (!checkTokenExpiration(loginInfo.getLoginTime())) {
+            throw new AuthException("Expired token");
+        }
+        return loginInfo.getUserEmail();
     }
 
     @Override
@@ -122,18 +135,5 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
             throw new AuthException("User not found");
         }
         return true;
-    }
-
-    public String checkTokenValidity(String token, Map<String, LoginInfo> loginMap) throws AuthException {
-        if (token == null) {
-            throw new AuthException("Invalid token");
-        }
-        LoginInfo loginInfo = loginMap.get(token);
-        if (loginInfo == null) {
-            throw new AuthException("Invalid token");
-        } else if (!checkTokenExpiration(loginInfo.getLoginTime())) {
-            throw new AuthException("Expired token");
-        }
-        return loginInfo.getUserEmail();
     }
 }

@@ -24,7 +24,6 @@ public class PhysicalCardTest {
         PhysicalCard pCard2 = new PhysicalCard(card.getId(), Status.Good, "test description card");
         Assertions.assertEquals(card.getId(), pCard.getCardId());
         Assertions.assertEquals(card.getId(), pCard2.getCardId());
-
         Assertions.assertNotEquals(pCard.getId(), pCard2.getId());
     }
 
