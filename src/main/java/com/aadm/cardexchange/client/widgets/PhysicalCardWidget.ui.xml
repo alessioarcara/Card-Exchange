@@ -1,0 +1,31 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <ui:style>
+        .card {
+            height: 30vh;
+            position: relative;
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            background: green;
+            border-radius: 10px;
+        }
+        .deleteButton {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            color: red;
+            padding: 5px;
+            background: #eee;
+        }
+    </ui:style>
+    <g:HTMLPanel styleName="{style.card}" ui:field="cardContainer">
+        <h2>Titolo</h2>
+        <div>Stato</div>
+        <div>Descrizione</div>
+        <g:Button title="Rimuovi carta dal mazzo" styleName="{style.deleteButton}" ui:field="deleteButton">X</g:Button>
+    </g:HTMLPanel>
+</ui:UiBinder>
