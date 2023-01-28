@@ -1,10 +1,7 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.DeckService;
-import com.aadm.cardexchange.shared.models.AuthException;
-import com.aadm.cardexchange.shared.models.Deck;
-import com.aadm.cardexchange.shared.models.PhysicalCard;
-import com.aadm.cardexchange.shared.models.Status;
+import com.aadm.cardexchange.shared.models.*;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
@@ -92,6 +89,6 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             return false;
         }
         // physical card addition
-        return foundDeck.addPhysicalCard(new PhysicalCard(cardId, status, description));
+        return foundDeck.addPhysicalCard(new PhysicalCard(game, cardId, status, description));
     }
 }

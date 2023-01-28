@@ -1,10 +1,7 @@
 package com.aadm.cardexchange.shared;
 
 import com.aadm.cardexchange.server.GsonSerializer;
-import com.aadm.cardexchange.shared.models.CardDecorator;
-import com.aadm.cardexchange.shared.models.CardImpl;
-import com.aadm.cardexchange.shared.models.PhysicalCard;
-import com.aadm.cardexchange.shared.models.Status;
+import com.aadm.cardexchange.shared.models.*;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,7 +21,7 @@ public class PhysicalCardTest {
     @BeforeEach
     public void initialize() {
         card = new CardDecorator(new CardImpl("DUMMY_NAME", "DUMMY_TYPE", "DUMMY_DESCRIPTION"));
-        pCard = new PhysicalCard(card.getId(), Status.Excellent, "well handled card during almost 10 years");
+        pCard = new PhysicalCard(Game.Magic, card.getId(), Status.Excellent, "well handled card during almost 10 years");
     }
 
     @ParameterizedTest
@@ -39,12 +36,21 @@ public class PhysicalCardTest {
     }
 
     @Test
-    public void testGetCardId_getId() {
-        PhysicalCard pCard2 = new PhysicalCard(card.getId(), Status.Good, "this is a valid description");
-        Assertions.assertEquals(card.getId(), pCard.getCardId());
-        Assertions.assertEquals(card.getId(), pCard2.getCardId());
-        Assertions.assertNotEquals(pCard.getId(), pCard2.getId());
+    public void testGetCardId() {
+        PhysicalCard pCard2 = new PhysicalCard(Game.Magic, card.getId(), Status.Good, "this is a valid description");
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(card.getId(), pCard.getCardId());
+            Assertions.assertEquals(card.getId(), pCard2.getCardId());
+        });
     }
+
+    @ParameterizedTest
+    @EnumSource(Game.class)
+    public void testGetGameType(Game game) {
+        PhysicalCard pCard2 = new PhysicalCard(game, card.getId(), Status.VeryDamaged, "this is a valid description");
+        Assertions.assertEquals(game, pCard2.getGameType());
+    }
+
 
     @Test
     public void testGetStatus() {

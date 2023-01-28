@@ -23,8 +23,8 @@ public class DeckTest {
         deck = new Deck(user.getEmail(), "Deck_name");
         defaultDeck = new Deck(user.getEmail(), "Deck_default", true);
         CardDecorator card = new CardDecorator(new CardImpl("DUMMY_NAME", "DUMMY_TYPE", "DUMMY_DESCRIPTION"));
-        pCard = new PhysicalCard(card.getId(), Status.Excellent, "test description card");
-        pCard2 = new PhysicalCard(card.getId(), Status.Good, "test card 2");
+        pCard = new PhysicalCard(Game.Magic, card.getId(), Status.Excellent, "test description card");
+        pCard2 = new PhysicalCard(Game.Magic, card.getId(), Status.Good, "test card 2");
     }
 
     @Test

@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PhysicalCard implements Serializable {
     private static final long serialVersionUID = -8705711710936945407L;
     private static final AtomicInteger uniqueId = new AtomicInteger();
-    private int id;
+    private String id;
     private int cardId;
     private Status status;
     private String description;
@@ -37,6 +37,13 @@ public class PhysicalCard implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    public Game getGameType() {
+        return id.charAt(0) == 'm' ? Game.Magic :
+                id.charAt(0) == 'y' ? Game.YuGiOh :
+                        id.charAt(0) == 'p' ? Game.Pokemon :
+                                null;
     }
 
     @Override
