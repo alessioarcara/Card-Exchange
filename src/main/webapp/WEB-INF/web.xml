@@ -6,7 +6,6 @@
          xmlns="http://java.sun.com/xml/ns/javaee">
 
     <!-- Servlets -->
-
     <servlet>
         <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>
         <servlet-class>com.aadm.cardexchange.server.CardServiceImpl</servlet-class>

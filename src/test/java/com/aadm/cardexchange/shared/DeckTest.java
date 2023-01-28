@@ -14,8 +14,8 @@ public class DeckTest {
 
     private Deck deck;
     private Deck defaultDeck;
-    private PhysicalCard pCard;
-    private PhysicalCard pCard2;
+    private PhysicalCardImpl pCard;
+    private PhysicalCardImpl pCard2;
 
     @BeforeEach
     public void initialize() {
@@ -23,8 +23,8 @@ public class DeckTest {
         deck = new Deck(user.getEmail(), "Deck_name");
         defaultDeck = new Deck(user.getEmail(), "Deck_default", true);
         CardDecorator card = new CardDecorator(new CardImpl("DUMMY_NAME", "DUMMY_TYPE", "DUMMY_DESCRIPTION"));
-        pCard = new PhysicalCard(card.getId(), Status.Excellent, "test description card");
-        pCard2 = new PhysicalCard(card.getId(), Status.Good, "test card 2");
+        pCard = new PhysicalCardImpl(Game.Magic, card.getId(), Status.Excellent, "test description card");
+        pCard2 = new PhysicalCardImpl(Game.Magic, card.getId(), Status.Good, "test card 2");
     }
 
     @Test
@@ -56,34 +56,34 @@ public class DeckTest {
 
     @Test
     public void testAddPhysicalCard() {
-        Assertions.assertTrue(deck.addPhysicalCard(pCard.getId()));
-        Assertions.assertFalse(deck.addPhysicalCard(pCard.getId()));
+        Assertions.assertTrue(deck.addPhysicalCard(pCard));
+        Assertions.assertFalse(deck.addPhysicalCard(pCard));
     }
 
     @Test
     public void testContainsPhysicalCard() {
-        deck.addPhysicalCard(pCard.getId());
-        Assertions.assertTrue(deck.containsPhysicalCard(pCard.getId()));
-        Assertions.assertFalse(deck.containsPhysicalCard(pCard2.getId()));
+        deck.addPhysicalCard(pCard);
+        Assertions.assertTrue(deck.containsPhysicalCard(pCard));
+        Assertions.assertFalse(deck.containsPhysicalCard(pCard2));
     }
 
     @Test
     public void testGetPhysicalCards() {
-        deck.addPhysicalCard(pCard.getId());
-        deck.addPhysicalCard(pCard2.getId());
-        Set<Integer> cards = deck.getPhysicalCards();
+        deck.addPhysicalCard(pCard);
+        deck.addPhysicalCard(pCard2);
+        Set<PhysicalCardImpl> cards = deck.getPhysicalCards();
 
         Assertions.assertEquals(2, cards.size());
-        Assertions.assertTrue(cards.contains(pCard.getId()));
-        Assertions.assertTrue(cards.contains(pCard2.getId()));
+        Assertions.assertTrue(cards.contains(pCard));
+        Assertions.assertTrue(cards.contains(pCard2));
     }
 
     @Test
     public void testRemovePhysicalCard() {
-        deck.addPhysicalCard(pCard.getId());
-        deck.addPhysicalCard(pCard2.getId());
-        Assertions.assertTrue(deck.removePhysicalCard(pCard.getId()));
+        deck.addPhysicalCard(pCard);
+        deck.addPhysicalCard(pCard2);
+        Assertions.assertTrue(deck.removePhysicalCard(pCard));
         Assertions.assertEquals(1, deck.getPhysicalCards().size());
-        Assertions.assertFalse(deck.removePhysicalCard(pCard.getId()));
+        Assertions.assertFalse(deck.removePhysicalCard(pCard));
     }
 }
