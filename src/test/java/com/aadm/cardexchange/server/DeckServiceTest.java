@@ -40,10 +40,11 @@ public class DeckServiceTest {
 
     @Test
     public void testIfDeckAlreadyExist() {
-        Map<String, Set<Deck>> deckMap = new HashMap<>();
-        Set<Deck> mockDecks = new LinkedHashSet<>();
-        mockDecks.add(new Deck("test@test.it", "Owned"));
-        mockDecks.add(new Deck("test@test.it", "Wished"));
+        Map<String, Map<String, Deck>> deckMap = new HashMap<>();
+        Map<String, Deck> mockDecks = new HashMap<>() {{
+            put("Owned", new Deck("test@test.it", "Owned"));
+            put("Wished", new Deck("test@test.it", "Wished"));
+        }};
         deckMap.put("test@test.it", mockDecks);
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
@@ -55,7 +56,7 @@ public class DeckServiceTest {
 
     @Test
     public void testDefaultDeckCreation() {
-        Map<String, Set<Deck>> deckMap = new HashMap<>();
+        Map<String, Map<String, Deck>> deckMap = new HashMap<>();
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(deckMap);
