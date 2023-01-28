@@ -42,9 +42,9 @@ public class PhysicalCardWidget extends Composite {
             this.removeFromParent();
         });
 
-        titleDiv.setInnerHTML(title);
-        statusDiv.setInnerHTML(pcard.getStatus().toString());
-        descriptionDiv.setInnerHTML(pcard.getDescription());
+        titleDiv.setInnerHTML("title");
+        statusDiv.setInnerHTML("pcard.getStatus().toString()");
+        descriptionDiv.setInnerHTML("pcard.getDescription()");
 
     }
 
