@@ -13,7 +13,7 @@ import org.mapdb.DataOutput2;
 
 import java.io.IOException;
 
-public class PhysicalCardImplTest {
+public class PhysicalCardTest {
 
     private CardDecorator card;
     private PhysicalCardImpl pCard;

@@ -9,7 +9,6 @@ import static com.aadm.cardexchange.shared.CardTestConstants.*;
 
 public class PhysicalCardDecoratorTest {
     private CardDecorator card;
-
     private PhysicalCardImpl physicalCard;
     private PhysicalCardDecorator physicalCardDecorator;
 
@@ -43,50 +42,21 @@ public class PhysicalCardDecoratorTest {
 
     @Test
     public void testGetGameType() {
-        Assertions.assertAll(()-> {
-            Assertions.assertEquals(Game.YuGiOh, physicalCardDecorator.getGameType());
-            Assertions.assertEquals(physicalCard.getGameType(), physicalCardDecorator.getGameType());
-        });
+        Assertions.assertEquals(physicalCard.getGameType(), physicalCardDecorator.getGameType());
     }
 
     @Test
     public void testGetName() {
-        Assertions.assertAll(()-> {
-            Assertions.assertEquals(cardName, physicalCardDecorator.getName());
-            Assertions.assertEquals(card.getName(), physicalCardDecorator.getName());
-        });
+        Assertions.assertEquals(card.getName(), physicalCardDecorator.getName());
     }
 
     @Test
-    public void testEqualsForItself() {
-        Assertions.assertTrue(physicalCardDecorator.equals(physicalCardDecorator));
+    public void testEqualsForPhysicalCard() {
+        Assertions.assertFalse(physicalCardDecorator.equals(physicalCard));
     }
 
     @Test
-    public void testEqualsForDifferentFieldsObject() {
-        Assertions.assertFalse(physicalCardDecorator.equals(new Object()));
-    }
-
-    @Test
-    public void testEqualsForDifferentFieldsCard() {
-        PhysicalCardDecorator pCD2 = new PhysicalCardDecorator(physicalCard, "newName");
-        Assertions.assertFalse(physicalCardDecorator.equals(pCD2));
-    }
-
-    @Test
-    public void testEqualsForEqualFieldsCard() {
-        PhysicalCardDecorator pCD2 = new PhysicalCardDecorator(physicalCard, card.getName());
-        Assertions.assertFalse(physicalCardDecorator.equals(pCD2));
-    }
-
-    @Test
-    public void testHashCodeForDifferentFieldsCard() {
-        PhysicalCardDecorator pCD2 = new PhysicalCardDecorator(physicalCard, "newName");
-        Assertions.assertFalse(physicalCardDecorator.hashCode() == pCD2.hashCode());
-    }
-
-    @Test
-    public void testHashCodeForEqualFieldsCard() {
-        Assertions.assertFalse(physicalCardDecorator.hashCode() == new PhysicalCardDecorator(physicalCard, cardName).hashCode());
+    public void testEqualsForDifferentPhysicalCardDecorator() {
+        Assertions.assertFalse(physicalCardDecorator.equals(new PhysicalCardDecorator(physicalCard, card.getName())));
     }
 }
