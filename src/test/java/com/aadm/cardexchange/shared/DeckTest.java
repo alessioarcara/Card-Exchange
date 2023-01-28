@@ -71,7 +71,7 @@ public class DeckTest {
     public void testGetPhysicalCards() {
         deck.addPhysicalCard(pCard);
         deck.addPhysicalCard(pCard2);
-        Set<PhysicalCardImpl> cards = deck.getPhysicalCards();
+        Set<PhysicalCard> cards = deck.getPhysicalCards();
 
         Assertions.assertEquals(2, cards.size());
         Assertions.assertTrue(cards.contains(pCard));
