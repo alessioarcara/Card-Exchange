@@ -1,5 +1,7 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.shared.models.Deck;
+import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -15,14 +17,15 @@ public class DeckWidget extends Composite {
     @UiField
     HTMLPanel cardsContainer;
 
-    public DeckWidget(String name) {
+
+    public DeckWidget(Deck deck) {
         initWidget(uiBinder.createAndBindUi(this));
-        deckName.setInnerText(name);
-        for (int i = 0; i < 20; i++) {
-            cardsContainer.add(new PhysicalCardWidget());
-        }
+        /*for (PhysicalCard card : deck.getPhysicalCards()) {
+            cardsContainer.add(new PhysicalCardWidget(card, ));
+        }*/
+        deckName.setInnerText(deck.getName());
     }
-    
+
     interface DeckUIBinder extends UiBinder<Widget, DeckWidget> {
     }
 }

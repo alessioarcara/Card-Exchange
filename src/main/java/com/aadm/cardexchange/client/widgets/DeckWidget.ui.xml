@@ -11,13 +11,14 @@
             width: 100%;
             justify-content: flex-start;
             align-items: center;
-            background: aqua;
+            background: #CBEDD5;
             overflow: auto;
             max-width: 85vw;
+            padding: 15px;
         }
     </ui:style>
     <g:HTMLPanel styleName="{style.deck}">
         <h1 ui:field="deckName"/>
-        <g:HTMLPanel class="{style.cards}" ui:field="cardsContainer"/>
+        <g:HTMLPanel styleName="{style.cards}" ui:field="cardsContainer"/>
     </g:HTMLPanel>
 </ui:UiBinder>

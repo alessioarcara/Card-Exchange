@@ -8,6 +8,7 @@ public class PhysicalCard implements Serializable {
     private static final AtomicInteger uniqueId = new AtomicInteger();
     private int id;
     private int cardId;
+    private Game cardGame;
     private Status status;
     private String description;
 
@@ -29,6 +30,8 @@ public class PhysicalCard implements Serializable {
         return cardId;
     }
 
+    public Game getCardGame() {return cardGame;}
+
     public Status getStatus() {
         return status;
     }
@@ -36,4 +39,5 @@ public class PhysicalCard implements Serializable {
     public String getDescription() {
         return description;
     }
+
 }
