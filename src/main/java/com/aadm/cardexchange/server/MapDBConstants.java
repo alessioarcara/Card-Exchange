@@ -8,5 +8,6 @@ public interface MapDBConstants {
     String POKEMON_MAP_NAME = "POKEMON_MAP";
     String YUGIOH_MAP_NAME = "YUGIOH_MAP";
     String DECK_MAP_NAME = "DECK_MAP";
-
+    String USER_MAP_NAME = "USER_MAP";
+    String LOGIN_MAP_NAME = "LOGIN_MAP";
 }

@@ -1,6 +1,7 @@
 package com.aadm.cardexchange.shared.models;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class PhysicalCard implements Serializable {
@@ -35,5 +36,18 @@ public class PhysicalCard implements Serializable {
 
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PhysicalCard that = (PhysicalCard) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
