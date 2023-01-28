@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 
+import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -76,6 +77,13 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         if (decks == null) {
             throw new RuntimeException("Not existing decks");
         }
+        Deck foundDeck = null;
+        for (Deck deck: decks) {
+            if (deck.getName().equals(deckName)) {
+                foundDeck = deck;
+            }
+        }
+//        if (decks.contains(dec))
 //        // TO DO
 //        if (decks instanceof HashSet<Deck>) {
 //

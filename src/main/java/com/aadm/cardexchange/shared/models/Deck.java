@@ -10,7 +10,7 @@ public class Deck implements Serializable {
     private String userEmail;
     private String name;
     private boolean isDefault;
-    private Set<Integer> physicalCards;
+    private Set<PhysicalCard> physicalCards;
 
     public Deck(String userEmail, String name) {
         this.userEmail = userEmail;
@@ -47,19 +47,19 @@ public class Deck implements Serializable {
         return isDefault;
     }
 
-    public Set<Integer> getPhysicalCards() {
+    public Set<PhysicalCard> getPhysicalCards() {
         return physicalCards;
     }
 
-    public boolean addPhysicalCard(Integer physicalCardId) {
-        return physicalCards.add(physicalCardId);
+    public boolean addPhysicalCard(PhysicalCard physicalCard) {
+        return physicalCards.add(physicalCard);
     }
 
-    public boolean removePhysicalCard(Integer physicalCardId) {
+    public boolean removePhysicalCard(PhysicalCard physicalCardId) {
         return physicalCards.remove(physicalCardId);
     }
 
-     public boolean containsPhysicalCard(Integer physicalCardId) {
+     public boolean containsPhysicalCard(PhysicalCard physicalCardId) {
         return physicalCards.contains(physicalCardId);
      }
 
@@ -68,12 +68,12 @@ public class Deck implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Deck deck = (Deck) o;
-        return userEmail.equals(deck.userEmail) && name.equals(deck.name);
+        return name.equals(deck.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userEmail, name);
+        return name.hashCode();
     }
 }
 

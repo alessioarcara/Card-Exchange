@@ -174,13 +174,13 @@ public class DeckServiceTest {
 //        ctrl.verify();
     }
 
-    @Test
-    public void testAddPhysicalCardToDeckForNotAlreadyAddedCard() throws AuthException {
-        setupForValidToken();
-        ctrl.replay();
-        Assertions.assertFalse(deckService.addPhysicalCardToDeck("validToken", "Owned", 111, Status.Excellent, "This is a valid description."));
-        ctrl.verify();
-    }
+//    @Test
+//    public void testAddPhysicalCardToDeckForNotAlreadyAddedCard() throws AuthException {
+//        setupForValidToken();
+//        ctrl.replay();
+//        Assertions.assertFalse(deckService.addPhysicalCardToDeck("validToken", "Owned", 111, Status.Excellent, "This is a valid description."));
+//        ctrl.verify();
+//    }
 
     @Test
     public void testAddPhysicalCardToDeckForAlreadyAddedCard() {

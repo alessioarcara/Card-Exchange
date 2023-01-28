@@ -55,34 +55,44 @@ public class DeckTest {
 
     @Test
     public void testAddPhysicalCard() {
-        Assertions.assertTrue(deck.addPhysicalCard(pCard.getId()));
-        Assertions.assertFalse(deck.addPhysicalCard(pCard.getId()));
+        Assertions.assertTrue(deck.addPhysicalCard(pCard));
+        Assertions.assertFalse(deck.addPhysicalCard(pCard));
     }
 
     @Test
     public void testContainsPhysicalCard() {
-        deck.addPhysicalCard(pCard.getId());
-        Assertions.assertTrue(deck.containsPhysicalCard(pCard.getId()));
-        Assertions.assertFalse(deck.containsPhysicalCard(pCard2.getId()));
+        deck.addPhysicalCard(pCard);
+        Assertions.assertTrue(deck.containsPhysicalCard(pCard));
+        Assertions.assertFalse(deck.containsPhysicalCard(pCard2));
     }
 
     @Test
     public void testGetPhysicalCards() {
-        deck.addPhysicalCard(pCard.getId());
-        deck.addPhysicalCard(pCard2.getId());
-        Set<Integer> cards = deck.getPhysicalCards();
+        deck.addPhysicalCard(pCard);
+        deck.addPhysicalCard(pCard2);
+        Set<PhysicalCard> cards = deck.getPhysicalCards();
 
         Assertions.assertEquals(2, cards.size());
-        Assertions.assertTrue(cards.contains(pCard.getId()));
-        Assertions.assertTrue(cards.contains(pCard2.getId()));
+        Assertions.assertTrue(cards.contains(pCard));
+        Assertions.assertTrue(cards.contains(pCard2));
     }
 
     @Test
     public void testRemovePhysicalCard() {
-        deck.addPhysicalCard(pCard.getId());
-        deck.addPhysicalCard(pCard2.getId());
-        Assertions.assertTrue(deck.removePhysicalCard(pCard.getId()));
+        deck.addPhysicalCard(pCard);
+        deck.addPhysicalCard(pCard2);
+        Assertions.assertTrue(deck.removePhysicalCard(pCard));
         Assertions.assertEquals(1, deck.getPhysicalCards().size());
-        Assertions.assertFalse(deck.removePhysicalCard(pCard.getId()));
+        Assertions.assertFalse(deck.removePhysicalCard(pCard));
     }
+
+//    @Test
+//    public void testDeckEqualsForString() {
+//        Assertions.assertTrue(deck.equals("Deck_name"));
+//    }
+//
+//    @Test
+//    public void testDeckHashForString() {
+//        Assertions.assertEquals(deck.hashCode(), "deck_name".hashCode());
+//    }
 }
