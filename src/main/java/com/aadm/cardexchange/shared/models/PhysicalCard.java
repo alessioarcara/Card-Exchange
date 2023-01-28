@@ -7,13 +7,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class PhysicalCard implements Serializable {
     private static final long serialVersionUID = -8705711710936945407L;
     private static final AtomicInteger uniqueId = new AtomicInteger();
-    private int id;
+    private String id;
     private int cardId;
     private Status status;
     private String description;
 
-    public PhysicalCard(int cardId, Status status, String description) {
-        this.id = uniqueId.getAndIncrement();
+    public PhysicalCard(Game game, int cardId, Status status, String description) {
+        this.id = (game == Game.Magic ? "m" : game == Game.Pokemon ? "p" : game == Game.YuGiOh ? "y" : "")
+                + uniqueId.getAndIncrement();
         this.cardId = cardId;
         this.status = status;
         this.description = description;
@@ -22,7 +23,7 @@ public class PhysicalCard implements Serializable {
     public PhysicalCard() {
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
@@ -38,16 +39,23 @@ public class PhysicalCard implements Serializable {
         return description;
     }
 
+    public Game getGameType() {
+        return id.charAt(0) == 'm' ? Game.Magic :
+                id.charAt(0) == 'y' ? Game.YuGiOh :
+                        id.charAt(0) == 'p' ? Game.Pokemon :
+                                null;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof PhysicalCard)) return false;
         PhysicalCard that = (PhysicalCard) o;
-        return id == that.id;
+        return getId().equals(that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(getId());
     }
 }
