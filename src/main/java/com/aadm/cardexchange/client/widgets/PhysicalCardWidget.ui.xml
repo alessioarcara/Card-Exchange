@@ -1,21 +1,27 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
-    <ui:style>
+    <ui:style type='com.aadm.cardexchange.client.widgets.PhysicalCardWidget.PhysicalCardStyle'>
+        .cardSelected {
+            box-shadow: 0 0 0 4px yellow inset;
+        }
+
+        .cardDiscarded {
+            border: none;
+        }
+
         .card {
-            height: 30vh;
-            max-height: 250px;
             position: relative;
             display: flex;
-            flex: 0 1 15rem;
+            flex-basis: 10rem;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 1rem;
+            padding: 2rem;
             background: #62B6B7;
             border-radius: 10px;
-            padding: 20px;
         }
+
         .deleteButton {
             position: absolute;
             top: 5px;
