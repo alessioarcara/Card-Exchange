@@ -9,20 +9,20 @@ public class Deck implements Serializable {
     private String userEmail;
     private String name;
     private boolean isDefault;
-    private Set<PhysicalCard> physicalCards;
+    private Set<PhysicalCardImpl> physicalCardImpls;
 
     public Deck(String userEmail, String name) {
         this.userEmail = userEmail;
         this.name = name;
         this.isDefault = false;
-        physicalCards = new LinkedHashSet<>();
+        physicalCardImpls = new LinkedHashSet<>();
     }
 
     public Deck(String userEmail, String name, boolean isDefault) {
         this.userEmail = userEmail;
         this.name = name;
         this.isDefault = isDefault;
-        physicalCards = new LinkedHashSet<>();
+        physicalCardImpls = new LinkedHashSet<>();
     }
 
     public Deck() {
@@ -46,20 +46,20 @@ public class Deck implements Serializable {
         return isDefault;
     }
 
-    public Set<PhysicalCard> getPhysicalCards() {
-        return physicalCards;
+    public Set<PhysicalCardImpl> getPhysicalCards() {
+        return physicalCardImpls;
     }
 
-    public boolean addPhysicalCard(PhysicalCard physicalCard) {
-        return physicalCards.add(physicalCard);
+    public boolean addPhysicalCard(PhysicalCardImpl physicalCardImpl) {
+        return physicalCardImpls.add(physicalCardImpl);
     }
 
-    public boolean removePhysicalCard(PhysicalCard physicalCardId) {
-        return physicalCards.remove(physicalCardId);
+    public boolean removePhysicalCard(PhysicalCardImpl physicalCardImplId) {
+        return physicalCardImpls.remove(physicalCardImplId);
     }
 
-     public boolean containsPhysicalCard(PhysicalCard physicalCardId) {
-        return physicalCards.contains(physicalCardId);
+     public boolean containsPhysicalCard(PhysicalCardImpl physicalCardImplId) {
+        return physicalCardImpls.contains(physicalCardImplId);
      }
 
     @Override
