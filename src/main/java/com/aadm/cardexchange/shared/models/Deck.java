@@ -2,7 +2,6 @@ package com.aadm.cardexchange.shared.models;
 
 import java.io.Serializable;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Set;
 
 public class Deck implements Serializable {
@@ -76,5 +75,3 @@ public class Deck implements Serializable {
         return name.hashCode();
     }
 }
-
-

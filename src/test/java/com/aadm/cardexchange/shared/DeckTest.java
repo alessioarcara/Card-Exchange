@@ -85,14 +85,4 @@ public class DeckTest {
         Assertions.assertEquals(1, deck.getPhysicalCards().size());
         Assertions.assertFalse(deck.removePhysicalCard(pCard));
     }
-
-//    @Test
-//    public void testDeckEqualsForString() {
-//        Assertions.assertTrue(deck.equals("Deck_name"));
-//    }
-//
-//    @Test
-//    public void testDeckHashForString() {
-//        Assertions.assertEquals(deck.hashCode(), "deck_name".hashCode());
-//    }
 }

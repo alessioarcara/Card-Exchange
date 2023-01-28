@@ -3,12 +3,12 @@ package com.aadm.cardexchange.server;
 import com.aadm.cardexchange.shared.DeckService;
 import com.aadm.cardexchange.shared.models.AuthException;
 import com.aadm.cardexchange.shared.models.Deck;
+import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
@@ -77,20 +77,17 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         if (decks == null) {
             throw new RuntimeException("Not existing decks");
         }
+        // selection of deck with deckName
         Deck foundDeck = null;
         for (Deck deck: decks) {
             if (deck.getName().equals(deckName)) {
                 foundDeck = deck;
             }
         }
-//        if (decks.contains(dec))
-//        // TO DO
-//        if (decks instanceof HashSet<Deck>) {
-//
-//        }
-//        Deck currentDeck = decks.get(deckName);
-//        // TO REFACTOR
-//        return currentDeck.addPhysicalCard(new PhysicalCard(cardId, status, description));
-        return false;
+        if (foundDeck == null) {
+            return false;
+        }
+        // physical card addition
+        return foundDeck.addPhysicalCard(new PhysicalCard(cardId, status, description));
     }
 }

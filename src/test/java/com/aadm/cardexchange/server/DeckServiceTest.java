@@ -1,9 +1,6 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.shared.models.AuthException;
-import com.aadm.cardexchange.shared.models.Deck;
-import com.aadm.cardexchange.shared.models.LoginInfo;
-import com.aadm.cardexchange.shared.models.Status;
+import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -167,26 +164,33 @@ public class DeckServiceTest {
     }
 
     @Test
-    public void testAddPhysicalCardToDeckForNotExistingDeck() {
-//        setupForValidToken();
-//        ctrl.replay();
-//
-//        ctrl.verify();
+    public void testAddPhysicalCardToDeckForNotExistingDeck() throws AuthException {
+        setupForValidToken();
+        Set<Deck> decksSet = new LinkedHashSet<>();
+        Map<String, Set<Deck>> mockDeckMap = new HashMap<>(){{
+            put("test@test.it", decksSet);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertFalse(deckService.addPhysicalCardToDeck("validToken", "Owned", 111, Status.Excellent, "This is a valid description."));
+        ctrl.verify();
     }
 
-//    @Test
-//    public void testAddPhysicalCardToDeckForNotAlreadyAddedCard() throws AuthException {
-//        setupForValidToken();
-//        ctrl.replay();
-//        Assertions.assertFalse(deckService.addPhysicalCardToDeck("validToken", "Owned", 111, Status.Excellent, "This is a valid description."));
-//        ctrl.verify();
-//    }
-
     @Test
-    public void testAddPhysicalCardToDeckForAlreadyAddedCard() {
-//        setupForValidToken();
-//        ctrl.replay();
-//
-//        ctrl.verify();
+    public void testAddPhysicalCardToDeckForCardAddition() throws AuthException {
+        setupForValidToken();
+        Set<Deck> decksSet = new LinkedHashSet<>();
+        decksSet.add(new Deck("test@test.it", "Owned", true));
+        Map<String, Set<Deck>> mockDeckMap = new HashMap<>(){{
+            put("test@test.it", decksSet);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertTrue(deckService.addPhysicalCardToDeck("validToken", "Owned", 111, Status.Excellent, "This is a valid description."));
+        ctrl.verify();
     }
 }
