@@ -9,7 +9,7 @@ public class Deck implements Serializable {
     private String userEmail;
     private String name;
     private boolean isDefault;
-    private Set<PhysicalCardImpl> physicalCardImpls;
+    private Set<PhysicalCard> physicalCardImpls;
 
     public Deck(String userEmail, String name) {
         this.userEmail = userEmail;
@@ -37,7 +37,7 @@ public class Deck implements Serializable {
     }
 
     public void setName(String name) {
-        if (!isDefault){
+        if (!isDefault) {
             this.name = name;
         }
     }
@@ -46,21 +46,21 @@ public class Deck implements Serializable {
         return isDefault;
     }
 
-    public Set<PhysicalCardImpl> getPhysicalCards() {
+    public Set<PhysicalCard> getPhysicalCards() {
         return physicalCardImpls;
     }
 
-    public boolean addPhysicalCard(PhysicalCardImpl physicalCardImpl) {
-        return physicalCardImpls.add(physicalCardImpl);
+    public boolean addPhysicalCard(PhysicalCard physicalCard) {
+        return physicalCardImpls.add(physicalCard);
     }
 
-    public boolean removePhysicalCard(PhysicalCardImpl physicalCardImplId) {
-        return physicalCardImpls.remove(physicalCardImplId);
+    public boolean removePhysicalCard(PhysicalCard physicalCard) {
+        return physicalCardImpls.remove(physicalCard);
     }
 
-     public boolean containsPhysicalCard(PhysicalCardImpl physicalCardImplId) {
-        return physicalCardImpls.contains(physicalCardImplId);
-     }
+    public boolean containsPhysicalCard(PhysicalCard physicalCard) {
+        return physicalCardImpls.contains(physicalCard);
+    }
 
     @Override
     public boolean equals(Object o) {
