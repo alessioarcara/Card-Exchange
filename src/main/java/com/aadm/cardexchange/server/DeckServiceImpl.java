@@ -89,6 +89,6 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             return false;
         }
         // physical card addition
-        return foundDeck.addPhysicalCard(new PhysicalCard(game, cardId, status, description));
+        return foundDeck.addPhysicalCard(new PhysicalCardImpl(game, cardId, status, description));
     }
 }

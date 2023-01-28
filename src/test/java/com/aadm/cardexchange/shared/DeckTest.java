@@ -14,8 +14,8 @@ public class DeckTest {
 
     private Deck deck;
     private Deck defaultDeck;
-    private PhysicalCard pCard;
-    private PhysicalCard pCard2;
+    private PhysicalCardImpl pCard;
+    private PhysicalCardImpl pCard2;
 
     @BeforeEach
     public void initialize() {
@@ -23,8 +23,8 @@ public class DeckTest {
         deck = new Deck(user.getEmail(), "Deck_name");
         defaultDeck = new Deck(user.getEmail(), "Deck_default", true);
         CardDecorator card = new CardDecorator(new CardImpl("DUMMY_NAME", "DUMMY_TYPE", "DUMMY_DESCRIPTION"));
-        pCard = new PhysicalCard(Game.Magic, card.getId(), Status.Excellent, "test description card");
-        pCard2 = new PhysicalCard(Game.Magic, card.getId(), Status.Good, "test card 2");
+        pCard = new PhysicalCardImpl(Game.Magic, card.getId(), Status.Excellent, "test description card");
+        pCard2 = new PhysicalCardImpl(Game.Magic, card.getId(), Status.Good, "test card 2");
     }
 
     @Test
@@ -71,7 +71,7 @@ public class DeckTest {
     public void testGetPhysicalCards() {
         deck.addPhysicalCard(pCard);
         deck.addPhysicalCard(pCard2);
-        Set<PhysicalCard> cards = deck.getPhysicalCards();
+        Set<PhysicalCardImpl> cards = deck.getPhysicalCards();
 
         Assertions.assertEquals(2, cards.size());
         Assertions.assertTrue(cards.contains(pCard));

@@ -16,18 +16,18 @@ import java.io.IOException;
 public class PhysicalCardTest {
 
     private CardDecorator card;
-    private PhysicalCard pCard;
+    private PhysicalCardImpl pCard;
 
     @BeforeEach
     public void initialize() {
         card = new CardDecorator(new CardImpl("DUMMY_NAME", "DUMMY_TYPE", "DUMMY_DESCRIPTION"));
-        pCard = new PhysicalCard(Game.Magic, card.getId(), Status.Excellent, "well handled card during almost 10 years");
+        pCard = new PhysicalCardImpl(Game.Magic, card.getId(), Status.Excellent, "well handled card during almost 10 years");
     }
 
     @ParameterizedTest
     @EnumSource(Game.class)
     public void testGetId(Game game) {
-        PhysicalCard pCard2 = new PhysicalCard(game, card.getId(), Status.Good, "this is a valid description");
+        PhysicalCardImpl pCard2 = new PhysicalCardImpl(game, card.getId(), Status.Good, "this is a valid description");
         Assertions.assertAll(() -> {
             Assertions.assertEquals(game.name().toLowerCase().charAt(0), pCard2.getId().charAt(0));
             Assertions.assertDoesNotThrow(() -> Integer.parseInt(pCard.getId().substring(1)));
@@ -37,7 +37,7 @@ public class PhysicalCardTest {
 
     @Test
     public void testGetCardId() {
-        PhysicalCard pCard2 = new PhysicalCard(Game.Magic, card.getId(), Status.Good, "this is a valid description");
+        PhysicalCardImpl pCard2 = new PhysicalCardImpl(Game.Magic, card.getId(), Status.Good, "this is a valid description");
         Assertions.assertAll(() -> {
             Assertions.assertEquals(card.getId(), pCard.getCardId());
             Assertions.assertEquals(card.getId(), pCard2.getCardId());
@@ -47,7 +47,7 @@ public class PhysicalCardTest {
     @ParameterizedTest
     @EnumSource(Game.class)
     public void testGetGameType(Game game) {
-        PhysicalCard pCard2 = new PhysicalCard(game, card.getId(), Status.VeryDamaged, "this is a valid description");
+        PhysicalCardImpl pCard2 = new PhysicalCardImpl(game, card.getId(), Status.VeryDamaged, "this is a valid description");
         Assertions.assertEquals(game, pCard2.getGameType());
     }
 
@@ -65,14 +65,14 @@ public class PhysicalCardTest {
     @Test
     public void testEqualsAfterSerializeAndDeserialize() throws IOException {
         Gson gson = new Gson();
-        GsonSerializer<PhysicalCard> serializer = new GsonSerializer<>(gson);
+        GsonSerializer<PhysicalCardImpl> serializer = new GsonSerializer<>(gson);
 
         DataOutput2 out = new DataOutput2();
         serializer.serialize(out, pCard);
 
         byte[] data = out.copyBytes();
-        GsonSerializer<PhysicalCard> deserializer = new GsonSerializer<>(gson);
-        PhysicalCard deserializedPCard = deserializer.deserialize(new DataInput2.ByteArray(data), 0);
+        GsonSerializer<PhysicalCardImpl> deserializer = new GsonSerializer<>(gson);
+        PhysicalCardImpl deserializedPCard = deserializer.deserialize(new DataInput2.ByteArray(data), 0);
 
         Assertions.assertEquals(pCard, deserializedPCard);
     }
