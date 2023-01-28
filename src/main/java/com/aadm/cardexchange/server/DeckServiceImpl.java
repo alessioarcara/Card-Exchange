@@ -62,9 +62,12 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     }
 
     @Override
-    public boolean addPhysicalCardToDeck(String token, String deckName, int cardId, Status status, String description) throws AuthException {
+    public boolean addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description) throws AuthException {
         /* PARAMETERS CHECK */
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        if (game == null) {
+            throw new IllegalArgumentException("Invalid game");
+        }
         if (deckName == null || deckName.isEmpty()) {
             throw new IllegalArgumentException("Invalid deck name");
         }

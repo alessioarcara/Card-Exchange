@@ -1,9 +1,6 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.shared.models.AuthException;
-import com.aadm.cardexchange.shared.models.Deck;
-import com.aadm.cardexchange.shared.models.LoginInfo;
-import com.aadm.cardexchange.shared.models.Status;
+import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -87,7 +84,7 @@ public class DeckServiceTest {
                 .andReturn(mockLoginMap);
         ctrl.replay();
         Assertions.assertThrows(AuthException.class, () ->
-                deckService.addPhysicalCardToDeck(input, "Owned", 111, Status.Damaged, "This is a valid description.")
+                deckService.addPhysicalCardToDeck(input, Game.Magic, "Owned", 111, Status.Damaged, "This is a valid description.")
         );
         ctrl.verify();
     }
@@ -101,13 +98,23 @@ public class DeckServiceTest {
                 .andReturn(mockLoginMap);
     }
 
+    @Test
+    public void testAddPhysicalCardToDeckForInvalidGame() {
+        setupForValidToken();
+        ctrl.replay();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            deckService.addPhysicalCardToDeck("validToken", null, "Owned", 111, Status.Excellent, "This is a valid description.");
+        });
+        ctrl.verify();
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     public void testAddPhysicalCardToDeckForInvalidDeckName(String input) {
         setupForValidToken();
         ctrl.replay();
         Assertions.assertThrows(IllegalArgumentException.class, () ->
-                deckService.addPhysicalCardToDeck("validToken", input, 111, Status.Excellent, "This is a valid description.")
+                deckService.addPhysicalCardToDeck("validToken", Game.Magic, input, 111, Status.Excellent, "This is a valid description.")
         );
         ctrl.verify();
     }
@@ -118,7 +125,7 @@ public class DeckServiceTest {
         setupForValidToken();
         ctrl.replay();
         Assertions.assertThrows(IllegalArgumentException.class, () ->
-                deckService.addPhysicalCardToDeck("validToken", "Owned", input, Status.Excellent, "This is a valid description.")
+                deckService.addPhysicalCardToDeck("validToken", Game.Magic, "Owned", input, Status.Excellent, "This is a valid description.")
         );
         ctrl.verify();
     }
@@ -128,7 +135,7 @@ public class DeckServiceTest {
         setupForValidToken();
         ctrl.replay();
         Assertions.assertThrows(IllegalArgumentException.class, () ->
-                deckService.addPhysicalCardToDeck("validToken", "Owned", 111, null, "This is a valid description.")
+                deckService.addPhysicalCardToDeck("validToken", Game.Magic, "Owned", 111, null, "This is a valid description.")
         );
         ctrl.verify();
     }
@@ -140,7 +147,7 @@ public class DeckServiceTest {
         setupForValidToken();
         ctrl.replay();
         Assertions.assertThrows(IllegalArgumentException.class, () ->
-                deckService.addPhysicalCardToDeck("validToken", "Owned", 111, Status.Excellent, input)
+                deckService.addPhysicalCardToDeck("validToken", Game.Magic, "Owned", 111, Status.Excellent, input)
         );
         ctrl.verify();
     }
@@ -156,7 +163,7 @@ public class DeckServiceTest {
                 .andReturn(mockDeckMap);
         ctrl.replay();
         Assertions.assertThrows(RuntimeException.class, () ->
-                deckService.addPhysicalCardToDeck("validToken", "Owned", 111, Status.Excellent, "This is a valid description.")
+                deckService.addPhysicalCardToDeck("validToken", Game.Magic, "Owned", 111, Status.Excellent, "This is a valid description.")
         );
         ctrl.verify();
     }
@@ -172,7 +179,7 @@ public class DeckServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(mockDeckMap);
         ctrl.replay();
-        Assertions.assertFalse(deckService.addPhysicalCardToDeck("validToken", "Owned", 111, Status.Excellent, "This is a valid description."));
+        Assertions.assertFalse(deckService.addPhysicalCardToDeck("validToken", Game.Magic, "Owned", 111, Status.Excellent, "This is a valid description."));
         ctrl.verify();
     }
 
@@ -189,7 +196,7 @@ public class DeckServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(mockDeckMap);
         ctrl.replay();
-        Assertions.assertTrue(deckService.addPhysicalCardToDeck("validToken", "Owned", 111, Status.Excellent, "This is a valid description."));
+        Assertions.assertTrue(deckService.addPhysicalCardToDeck("validToken", Game.Magic, "Owned", 111, Status.Excellent, "This is a valid description."));
         ctrl.verify();
     }
 

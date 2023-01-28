@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 
@@ -23,6 +25,17 @@ public class PhysicalCardTest {
     public void initialize() {
         card = new CardDecorator(new CardImpl("DUMMY_NAME", "DUMMY_TYPE", "DUMMY_DESCRIPTION"));
         pCard = new PhysicalCard(card.getId(), Status.Excellent, "well handled card during almost 10 years");
+    }
+
+    @ParameterizedTest
+    @EnumSource(Game.class)
+    public void testGetId(Game game) {
+        PhysicalCard pCard2 = new PhysicalCard(game, card.getId(), Status.Good, "this is a valid description");
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(game.name().toLowerCase().charAt(0), pCard2.getId().charAt(0));
+            Assertions.assertDoesNotThrow(() -> Integer.parseInt(pCard.getId().substring(1)));
+            Assertions.assertNotEquals(pCard.getId(), pCard2.getId());
+        });
     }
 
     @Test
