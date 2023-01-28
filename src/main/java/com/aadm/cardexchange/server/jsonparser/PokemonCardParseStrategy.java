@@ -8,12 +8,12 @@ public class PokemonCardParseStrategy implements CardParseStrategy {
 
     public PokemonCardDecorator execute(JsonObject json) {
         // fields
-        String name = json.has("name") ? json.get("name").getAsString() : "";
-        String description = json.has("description") ? json.get("description").getAsString() : "";
-        String types = json.has("types") ? json.get("types").getAsString() : "";
-        String illustrator = json.has("illustrator") ? json.get("illustrator").getAsString() : "";
+        String name = json.has("name") ? json.get("name").getAsString() : "unknown";
+        String description = json.has("description") ? json.get("description").getAsString() : "unknown";
+        String types = json.has("types") ? json.get("types").getAsString() : "unknown";
+        String illustrator = json.has("illustrator") ? json.get("illustrator").getAsString() : "unknown";
         String image = json.has("image") ? json.get("image").getAsString() : "";
-        String rarity = json.has("rarity") ? json.get("rarity").getAsString() : "";
+        String rarity = json.has("rarity") ? json.get("rarity").getAsString() : "unknown";
 
         JsonObject variants = json.has("variants") ? json.getAsJsonObject("variants") : null;
         boolean isFirstEdition = false;

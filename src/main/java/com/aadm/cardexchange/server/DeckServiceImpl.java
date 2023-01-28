@@ -29,7 +29,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
 
     @Override
     public boolean addDeck(String email, String deckName) {
-        return addDeck(email,deckName, false);
+        return addDeck(email, deckName, false);
     }
 
     public boolean addDeck(String email, String deckName, boolean isDefault) {

@@ -236,10 +236,10 @@
             & \textbf{Sprint Done} \\
             \hline
             \textbf{UC03:}  Come visitatore voglio selezionare una carta e vederne i dettagli
-            & & \textbf{Task1 [UC03]\#14:} Creazione CardPlace & \textbf{Task2 [UC02]#11:} Filtrare l'array delle carte in base ai filtri specificati   & \\
+            & & \textbf{Task1 [UC03]\#14:} Creazione CardPlace & \textbf{Task2 [UC02]#\11:} Filtrare l'array delle carte in base ai filtri specificati   & \\
             \hline
             \textbf{UC04:}  Come utente voglio potermi autenticare per gestire i miei mazzi di carte
-            &  & \textbf{Task2 [UC03]\#15:} Connessione RemoteService FetchCard nel caso l'assunzione sia errata &  \textbf{Task3 [UC02]#12:} Rimuovere dalla pagina HomeView le carte che non corrispondono ai filtri & \\
+            &  & \textbf{Task2 [UC03]\#15:} Connessione RemoteService FetchCard nel caso l'assunzione sia errata &  \textbf{Task3 [UC02]\#12:} Rimuovere dalla pagina HomeView le carte che non corrispondono ai filtri & \\
             \hline
             \textbf{UC05:}  Come utente voglio poter aggiungere le mie carte reali al mazzo delle possedute
             &  & \textbf{Task3 [UC03]\#16:} Creazione CardView e popolamento delle informazioni  & \textbf{Task6 [UC01]\#7:}  Creare Composite Card per la visualizzazione carta &\\
@@ -271,7 +271,7 @@
         \textbf{Stato finale:}
         \newline
         \newline
-        \begin{tabular}{ | p{2.4cm} | p{1.4cm} | p{2.7cm} | p{3.4cm} | p{3cm} | }
+        \begin{tabular}{ | p{3.5cm} | p{1.5cm} | p{1.5cm} | p{2.6cm} | p{3.1cm} | }
             \hline
             \textbf{UC raffinati}
             & \textbf{Product Backlog}
@@ -279,27 +279,35 @@
             & \textbf{Sprint In progress}
             & \textbf{Sprint Done} \\
             \hline
-            \textbf{UC01:} Come visitatore voglio selezionare un gioco e vedere l'elenco di tutte le sue carte
-            & & \textbf{Task1 [UC03]\#14:} Creazione CardPlace
-            & \textbf{Task2 [UC02]\#11:} Filtrare l'array delle carte in base ai filtri specificati
-            & \textbf{Task1 [UC01]\#2:} Creare il modello per le carte di tutti i giochi \\
+            \textbf{UC03:}  Come visitatore voglio selezionare una carta e vederne i dettagli
+            & & \textbf{Task2 [UC05]\#54:}Creare mappa dei mazzi su MapDB &   \textbf{Task3 [UC03]\#16:} Creazione CardView e popolamento delle informazioni  & \textbf{Task6 [UC01]\#7:}  Creare Composite Card per la visualizzazione carta \\
             \hline
-            \textbf{UC02:} Come visitatore voglio poter fare delle ricerche per vedere un elenco di carte filtrato
-            & & \textbf{Task2 [UC03]\#15:} Connessione RemoteService FetchCard nel caso l'assunzione sia errata
-            & \textbf{Task3 [UC02]\#12:} Rimuovere dalla pagina HomeView le carte che non corrispondono ai filtri
-            & \textbf{Task4 [UC01]\#5:} Creare RemoteService per fetch delle carte di quel gioco \\
+            \textbf{UC04:}  Come utente voglio potermi autenticare per gestire i miei mazzi di carte
+            & & \textbf{Task3 [UC05]\#63:} Creare metodo statico in AuthService per controllare validità token e restituire email utente  &   & \textbf{Task2 [UC02]#11:} Filtrare l'array delle carte in base ai filtri specificati \\
             \hline
-            \textbf{UC03:} Come visitatore voglio selezionare una carta e vederne i dettagli
-            & & \textbf{Task3 [UC03]\#16:} Creazione CardView e popolamento delle informazioni
-            & \textbf{Task6 [UC01]\#7:} Creare Composite Card per la visualizzazione carta
-            & \textbf{Task5 [UC01]\#6:} Creare HomeView per la visualizzazione delle carte \\
+            \textbf{UC05:}  Come utente voglio poter aggiungere le mie carte reali al mazzo delle possedute & & \textbf{Task5 [UC05]\#56:} Creare RPC per inserire una carta fisica nel mazzo delle possedute dell'utente & & \textbf{Task3 [UC02]\#12:} Rimuovere dalla pagina HomeView le carte che non corrispondono ai filtri \\
             \hline
-            & & \textbf{Task4 [UC03]\#17:} Gestione del cambio di pagina da HomeView a CardView
-            & & \textbf{Task2 [UC01]\#3:} Importare dai JSON le carte dei giochi \\
+            &  & \textbf{Task4 [UC05]\#55:} Modificare RPC signup per aggiungere il mazzo delle possedute alla creazione dell'utente & & \textbf{Task2 [UC03]\#15:} Connessione RemoteService FetchCard nel caso l'assunzione sia errata \\
             \hline
-            & & & & \textbf{Task1 [UC02]\#10:} Creare filtri specifici di quel gioco  \\
+            & & \textbf{Task6 [UC05]\#57:} Modificare CardView per poter aggiungere la carta al mazzo delle possedute [UC05] #57   & & \textbf{Task4 [UC03]\#17:} Gestione del cambio di pagina da HomeView a CardView \\
             \hline
-            & & & & \textbf{Task3 [UC01]\#4:} Inizializzare il DB con i JSON caricati \\
+            & &  & & \textbf{Task1 [UC03]\#14:} Creazione CardPlace \\
+            \hline
+            & &  & & \textbf{Task1 [UC04]\#32:} Creare Authentication view per Login/registrazione \\
+            \hline
+            & &   & & \textbf{Task2 [UC04]\#33:} Creare RPC SignUp \\
+            \hline
+            & &   & & \textbf{Task3 [UC04]\#34:} Creare RPC SignIn  \\
+            \hline
+            & &   & & \textbf{Task4 [UC04]\#35:} Gestire la sessione\\
+            \hline
+            & &   & & \textbf{Task1 [UC05]\#36:} Creare modello per strutturare i mazzi predefiniti (possedute/desiderate) e il loro contenuto\\
+            \hline
+            & &   & & \\
+            \hline
+            & &   & & \\
+            \hline
+            & & & & \\
             \hline
         \end{tabular}
     \end{itemize}

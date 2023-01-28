@@ -27,7 +27,7 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
 
     public AuthServiceImpl() {
         db = new MapDBImpl();
-        deckService =  new DeckServiceImpl();
+        deckService = new DeckServiceImpl();
     }
 
     public AuthServiceImpl(MapDB mockDB, DeckServiceImpl mockService) {

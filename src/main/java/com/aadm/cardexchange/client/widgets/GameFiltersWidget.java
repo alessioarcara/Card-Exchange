@@ -32,9 +32,9 @@ public class GameFiltersWidget extends Composite {
     public GameFiltersWidget() {
         initWidget(uiBinder.createAndBindUi(this));
         gameTextFieldsMap = new HashMap<>();
-        gameTextFieldsMap.put(Game.Magic, Arrays.asList("Name", "Artist", "Description"));
-        gameTextFieldsMap.put(Game.Pokemon, Arrays.asList("Name", "Artist", "Description"));
-        gameTextFieldsMap.put(Game.YuGiOh, Arrays.asList("Name", "Description"));
+        gameTextFieldsMap.put(Game.Magic, Arrays.asList("Name", "Artist"));
+        gameTextFieldsMap.put(Game.Pokemon, Arrays.asList("Name", "Artist"));
+        gameTextFieldsMap.put(Game.YuGiOh, Collections.singletonList("Name"));
 
         gameBooleanFieldsMap = new HashMap<>();
         gameBooleanFieldsMap.put(Game.Magic, Arrays.asList("hasFoil", "isAlternative", "isFullArt", "isPromo", "isReprint"));

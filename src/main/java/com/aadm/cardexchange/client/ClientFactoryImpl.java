@@ -14,6 +14,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private static final HomeView homeView = new HomeViewImpl();
     private static final CardView cardView = new CardViewImpl();
     private static final AuthView authView = new AuthViewImpl();
+    private static final DecksView decksView = new DecksViewImpl();
 
     @Override
     public EventBus getEventBus() {
@@ -39,6 +40,9 @@ public class ClientFactoryImpl implements ClientFactory {
     public AuthView getAuthView() {
         return authView;
     }
+
+    @Override
+    public DecksView getDecksView() { return decksView; }
 
     @Override
     public AuthSubject getAuthSubject() {

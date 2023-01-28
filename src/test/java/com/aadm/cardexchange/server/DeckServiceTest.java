@@ -40,7 +40,7 @@ public class DeckServiceTest {
     @Test
     public void testIfDeckAlreadyExist() {
         Map<String, Set<Deck>> deckMap = new HashMap<>();
-        Set<Deck> mockDecks =  new LinkedHashSet<>();
+        Set<Deck> mockDecks = new LinkedHashSet<>();
         mockDecks.add(new Deck("test@test.it", "Owned"));
         mockDecks.add(new Deck("test@test.it", "Wished"));
         deckMap.put("test@test.it", mockDecks);
@@ -66,7 +66,7 @@ public class DeckServiceTest {
         ctrl.verify();
         // check if last default deck is "Wished"
         boolean isTrue = false;
-        for (Deck deck: deckMap.get("testbis@test.it")) {
+        for (Deck deck : deckMap.get("testbis@test.it")) {
             if (deck.getName().equals("Wished")) {
                 isTrue = true;
                 break;

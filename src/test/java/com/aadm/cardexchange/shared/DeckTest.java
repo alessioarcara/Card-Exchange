@@ -7,7 +7,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static com.aadm.cardexchange.shared.UserTestConstants.*;
+import static com.aadm.cardexchange.shared.UserTestConstants.email;
+import static com.aadm.cardexchange.shared.UserTestConstants.password;
 
 public class DeckTest {
 

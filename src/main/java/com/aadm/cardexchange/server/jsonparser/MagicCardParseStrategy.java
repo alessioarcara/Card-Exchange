@@ -8,11 +8,11 @@ public class MagicCardParseStrategy implements CardParseStrategy{
 
     public MagicCardDecorator execute(JsonObject json) {
         // fields
-        String name = json.has("name") ? json.get("name").getAsString() : "";
-        String description = json.has("text") ? json.get("text").getAsString() : "";
-        String types = json.has("types") ? json.get("types").getAsString() : "";
-        String artist = json.has("artist") ? json.get("artist").getAsString() : "";
-        String rarity = json.has("rarity") ? json.get("rarity").getAsString() : "";
+        String name = json.has("name") ? json.get("name").getAsString() : "unknown";
+        String description = json.has("text") ? json.get("text").getAsString() : "unknown";
+        String types = json.has("types") ? json.get("types").getAsString() : "unknown";
+        String artist = json.has("artist") ? json.get("artist").getAsString() : "unknown";
+        String rarity = json.has("rarity") ? json.get("rarity").getAsString() : "unknown";
         boolean hasFoil = (json.has("hasFoil")) && (json.get("hasFoil").getAsInt() != 0);
         boolean isAlternative = (json.has("isAlternative")) && (json.get("isAlternative").getAsInt() != 0);
         boolean isFullArt = (json.has("isFullArt")) && (json.get("isFullArt").getAsInt() != 0);
