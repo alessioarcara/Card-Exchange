@@ -9,9 +9,8 @@ import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 
-import java.util.LinkedHashSet;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 
 public class DeckServiceImpl extends RemoteServiceServlet implements DeckService, MapDBConstants {
@@ -28,14 +27,21 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     }
 
     @Override
-    public boolean addDeck(String email, String deckName) {
+    public boolean addDeck(String token, String deckName) throws AuthException {
+        String email = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         return addDeck(email, deckName, false);
     }
 
-    public boolean addDeck(String email, String deckName, boolean isDefault) {
-        Map<String, Set<Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
-        Set<Deck> userDecks = deckMap.computeIfAbsent(email, k -> new LinkedHashSet<>());
-        return userDecks.add(new Deck(email, deckName, isDefault));
+    private boolean addDeck(String email, String deckName, boolean isDefault) {
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        Map<String, Deck> userDecks = deckMap.computeIfAbsent(email, k -> new HashMap<>());
+        // if deck already exists in decks container do nothing
+        if (userDecks.get(deckName) != null) {
+            return false;
+        }
+        userDecks.put(deckName, new Deck(email, deckName, isDefault));
+        return true;
     }
 
     public boolean createDefaultDecks(String email) {
@@ -44,7 +50,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
 
     private boolean checkDescriptionValidity(String description) {
         int count = 0;
-        for(int i=0; i<description.length(); i++) {
+        for (int i = 0; i < description.length(); i++) {
             if (description.charAt(i) != ' ') {
                 count++;
             }
@@ -72,18 +78,13 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             throw new IllegalArgumentException("Invalid description");
         }
         /* PHYSICAL CARD ADDITION TO DECK*/
-        Map<String, Set<Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
-        Set<Deck> decks = deckMap.get(userEmail);
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        Map<String, Deck> decks = deckMap.get(userEmail);
         if (decks == null) {
             throw new RuntimeException("Not existing decks");
         }
         // selection of deck with deckName
-        Deck foundDeck = null;
-        for (Deck deck: decks) {
-            if (deck.getName().equals(deckName)) {
-                foundDeck = deck;
-            }
-        }
+        Deck foundDeck = decks.get(deckName);
         if (foundDeck == null) {
             return false;
         }
