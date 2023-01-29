@@ -314,8 +314,14 @@ public class DeckServiceTest {
         //deckService.addPhysicalCardToDeck("validToken", Game.Magic, "Owned", 111, Status.Excellent, "This is a valid description.");
 
         ctrl.replay();
-        Assertions.assertEquals(new ArrayList<>(mockDeckMap.values()), deckService.getDeckByName("validToken", "Owned"));
+        //Assertions.assertArrayEquals(ArrayList<>(deckMap.values()), deckService.getDeckByName("validToken", "Owned"));
+        List<PhysicalCardDecorator> decoratedCards = deckService.getDeckByName("validToken", "Owned");
         ctrl.verify();
-        Assertions.assertEquals(new ArrayList<>(expectedMap.values()), cards);        ctrl.verify();
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(2, decoratedCards.size());
+            Assertions.assertEquals("Nome1", decoratedCards.get(0).getName());
+            Assertions.assertEquals("Nome2", decoratedCards.get(1).getName());
+
+        });
     }
 }

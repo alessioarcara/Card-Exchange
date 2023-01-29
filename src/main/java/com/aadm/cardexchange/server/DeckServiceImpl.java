@@ -14,8 +14,6 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     private final MapDB db;
     private final Gson gson = new Gson();
 
-    private CardServiceImpl cardService;
-
     public DeckServiceImpl() { db = new MapDBImpl(); }
 
     public DeckServiceImpl(MapDB mockDB) {
@@ -99,8 +97,17 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         Deck thisUserDeck = allUserDecks.get(deckName);
         List<PhysicalCardDecorator> pDecoratedCards = new ArrayList<>();
         for ( PhysicalCard physicalCard : thisUserDeck.getPhysicalCards()) {
-            String cardName = cardService.getNameCard(physicalCard.getGameType(), physicalCard.getCardId());
-            PhysicalCardDecorator thisPhysicalDecoratorCard = new PhysicalCardDecorator(new PhysicalCardImpl(physicalCard.getGameType(), physicalCard.getCardId(), physicalCard.getStatus(), physicalCard.getDescription()), cardName);
+            System.out.println(physicalCard.getCardId());
+            String cardName = CardServiceImpl.getNameCard(
+                    physicalCard.getGameType(),
+                    physicalCard.getCardId(),
+                    db.getCachedMap(
+                            getServletContext(),
+                            CardServiceImpl.getCardMap(physicalCard.getGameType()),
+                            Serializer.INTEGER,
+                            new GsonSerializer<>(gson)));
+            PhysicalCardDecorator thisPhysicalDecoratorCard = new PhysicalCardDecorator(
+                    new PhysicalCardImpl(physicalCard.getGameType(), physicalCard.getCardId(), physicalCard.getStatus(), physicalCard.getDescription()), cardName);
             pDecoratedCards.add(thisPhysicalDecoratorCard);
             }
         return pDecoratedCards;
