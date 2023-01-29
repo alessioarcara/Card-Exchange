@@ -13,7 +13,9 @@ import org.mapdb.Serializer;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.easymock.EasyMock.*;
@@ -254,5 +256,74 @@ public class DeckServiceTest {
         ctrl.replay();
         Assertions.assertTrue(deckService.addDeck("validToken", customDeckName));
         ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testGetDecksForInvalidToken(String input) {
+        Map<String, LoginInfo> loginInfoMap = new HashMap<>() {{
+            put("validToken1", new LoginInfo("test@test.it", System.currentTimeMillis() - 10000));
+            put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 20000));
+            put("validToken3", new LoginInfo("test3@test.it", System.currentTimeMillis() - 30000));
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(loginInfoMap);
+
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> deckService.getDecks(input));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetDecksForNotExistingDeck() throws AuthException {
+        setupForValidToken();
+        Map<String, Deck> deckMap = new HashMap<>();
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", deckMap);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertThrows(IllegalArgumentException.class, () -> deckService.getDecks("validToken"));
+        ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testGetDecksForInvalidUser(String input) {
+        Map<String, LoginInfo> loginInfoMap = new HashMap<>() {{
+            put("validToken1", new LoginInfo("test@test.it", System.currentTimeMillis() - 10000));
+            put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 20000));
+            put("validToken3", new LoginInfo("test3@test.it", System.currentTimeMillis() - 30000));
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(loginInfoMap);
+
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> deckService.getDecks(input));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testAddPhysicalCardToDeckForCardAddition(Map<String, PhysicalCardDecorator> expectedMap) throws AuthException {
+        setupForValidToken();
+        Map<String, Deck> deckMap = new HashMap<>() {{
+            put("Owned", new Deck("test@test.it", "Owned", true));
+        }};
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", deckMap);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(expectedMap);
+        ctrl.replay();
+        List<PhysicalCardDecorator> cards = deckService.getDecks("validToken");
+        ctrl.verify();
+        Assertions.assertEquals(new ArrayList<>(expectedMap.values()), cards);        ctrl.verify();
     }
 }

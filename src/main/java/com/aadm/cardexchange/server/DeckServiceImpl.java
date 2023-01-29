@@ -6,8 +6,7 @@ import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 public class DeckServiceImpl extends RemoteServiceServlet implements DeckService, MapDBConstants {
@@ -91,4 +90,28 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         // physical card addition
         return foundDeck.addPhysicalCard(new PhysicalCardImpl(game, cardId, status, description));
     }
+
+    public List<PhysicalCardDecorator> getDecks (String token, String deckName) throws AuthException {
+        String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        Map<String, Deck> allUserDecks = deckMap.get(userEmail);
+        Deck thisUserDeck = allUserDecks.get(deckName);
+        List<PhysicalCardDecorator> pDecoratedCards;
+        for ( PhysicalCard physicalCard : thisUserDeck.getPhysicalCards()) {
+            CardDecorator.getStaticName(physicalCard.getCardId());
+            CardDecorator()
+
+        }
+
+
+        title = metodoStaticoPerPrendereIlTitoloDallaCartaVera(physicalCard.getCardId())
+        pDecoratedCards.add(physicalCard, title)
+
+        return pDecoratedCards;
+
+    }
+
+
+
+
 }
