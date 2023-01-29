@@ -6,8 +6,7 @@ import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 public class DeckServiceImpl extends RemoteServiceServlet implements DeckService, MapDBConstants {
@@ -27,11 +26,11 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     public boolean addDeck(String token, String deckName) throws AuthException {
         String email = AuthServiceImpl.checkTokenValidity(token,
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        return addDeck(email, deckName, false);
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        return addDeck(email, deckName, false, deckMap);
     }
 
-    private boolean addDeck(String email, String deckName, boolean isDefault) {
-        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+    private boolean addDeck(String email, String deckName, boolean isDefault, Map<String, Map<String, Deck>> deckMap) {
         Map<String, Deck> userDecks = deckMap.computeIfAbsent(email, k -> new HashMap<>());
         // if deck already exists in decks container do nothing
         if (userDecks.get(deckName) != null) {
@@ -41,8 +40,8 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return true;
     }
 
-    public boolean createDefaultDecks(String email) {
-        return addDeck(email, "Owned", true) && addDeck(email, "Wished", true);
+    public boolean createDefaultDecks(String email, Map<String, Map<String, Deck>> deckMap) {
+        return addDeck(email, "Owned", true, deckMap) && addDeck(email, "Wished", true, deckMap);
     }
 
     private boolean checkDescriptionValidity(String description) {
@@ -90,5 +89,13 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         }
         // physical card addition
         return foundDeck.addPhysicalCard(new PhysicalCardImpl(game, cardId, status, description));
+    }
+
+    @Override
+    public List<String> getUserDecks(String token) throws AuthException {
+        String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        Map<String, Deck> decks = deckMap.get(userEmail);
+        return decks == null ? Collections.emptyList() : new ArrayList<>(decks.keySet());
     }
 }

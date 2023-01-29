@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.client.widgets;
 
-import com.aadm.cardexchange.shared.models.PhysicalCard;
+import com.aadm.cardexchange.shared.models.PhysicalCardDecorator;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.HeadingElement;
@@ -15,22 +15,21 @@ public class PhysicalCardWidget extends Composite {
 
     @UiField
     PhysicalCardStyle style;
-
     @UiField
     HTMLPanel cardContainer;
     @UiField
+    HeadingElement cardName;
+    @UiField
+    DivElement cardStatus;
+    @UiField
+    DivElement cardDescription;
+    @UiField
     Button deleteButton;
     boolean selected = true;
-    @UiField
-    HeadingElement titleDiv;
-    @UiField
-    DivElement statusDiv;
-    @UiField
-    DivElement descriptionDiv;
 
-    public PhysicalCardWidget(Integer physicalCardInteger) {
+    public PhysicalCardWidget(PhysicalCardDecorator pCard) {
         initWidget(uiBinder.createAndBindUi(this));
-        cardContainer.add(new Hyperlink("Open Details", "cards/yugioh/" + physicalCardInteger));
+        cardContainer.add(new Hyperlink("Open Details", "cards/yugioh/" + pCard.getCardId()));
         cardContainer.addDomHandler(e -> {
             getElement().addClassName(selected ? style.cardSelected() : style.cardDiscarded());
             getElement().removeClassName(selected ? style.cardDiscarded() : style.cardSelected());
@@ -42,9 +41,9 @@ public class PhysicalCardWidget extends Composite {
             this.removeFromParent();
         });
 
-        titleDiv.setInnerHTML("title");
-        statusDiv.setInnerHTML("pcard.getStatus().toString()");
-        descriptionDiv.setInnerHTML("pcard.getDescription()");
+        cardName.setInnerText(pCard.getName());
+        cardStatus.setInnerHTML(pCard.getStatus().name());
+        cardDescription.setInnerText(pCard.getDescription());
 
     }
 

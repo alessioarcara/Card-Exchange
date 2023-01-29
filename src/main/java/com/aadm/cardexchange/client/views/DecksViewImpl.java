@@ -1,7 +1,6 @@
 package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.widgets.DeckWidget;
-import com.aadm.cardexchange.shared.models.Deck;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -23,10 +22,9 @@ public class DecksViewImpl extends Composite implements DecksView {
     }
 
     @Override
-    public void setData(List<Deck> data) {
-        decksContainer.clear();
-        for (Deck deck : data) {
-            decksContainer.add(new DeckWidget(deck));
+    public void setData(List<String> data) {
+        for (String deckName : data) {
+            decksContainer.add(new DeckWidget(deckName));
         }
     }
 

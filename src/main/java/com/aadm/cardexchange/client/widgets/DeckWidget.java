@@ -1,6 +1,5 @@
 package com.aadm.cardexchange.client.widgets;
 
-import com.aadm.cardexchange.shared.models.Deck;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -20,12 +19,10 @@ public class DeckWidget extends Composite {
     Button showButton;
     boolean isVisible = false;
 
-    public DeckWidget(Deck deck) {
+    public DeckWidget(String name) {
         initWidget(uiBinder.createAndBindUi(this));
-        deckName.setInnerText(deck.getName());
-        for (Integer physicalCardInteger : deck.getPhysicalCards()) {
-            cards.add(new PhysicalCardWidget(physicalCardInteger));
-        }
+        deckName.setInnerText(name);
+
         cards.setVisible(isVisible);
         showButton.addClickHandler(e -> {
             cards.setVisible(!isVisible);

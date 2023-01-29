@@ -9,20 +9,20 @@ public class Deck implements Serializable {
     private String userEmail;
     private String name;
     private boolean isDefault;
-    private Set<PhysicalCard> physicalCardImpls;
+    private Set<PhysicalCard> physicalCards;
 
     public Deck(String userEmail, String name) {
         this.userEmail = userEmail;
         this.name = name;
         this.isDefault = false;
-        physicalCardImpls = new LinkedHashSet<>();
+        physicalCards = new LinkedHashSet<>();
     }
 
     public Deck(String userEmail, String name, boolean isDefault) {
         this.userEmail = userEmail;
         this.name = name;
         this.isDefault = isDefault;
-        physicalCardImpls = new LinkedHashSet<>();
+        physicalCards = new LinkedHashSet<>();
     }
 
     public Deck() {
@@ -47,19 +47,19 @@ public class Deck implements Serializable {
     }
 
     public Set<PhysicalCard> getPhysicalCards() {
-        return physicalCardImpls;
+        return physicalCards;
     }
 
     public boolean addPhysicalCard(PhysicalCard physicalCard) {
-        return physicalCardImpls.add(physicalCard);
+        return physicalCards.add(physicalCard);
     }
 
     public boolean removePhysicalCard(PhysicalCard physicalCard) {
-        return physicalCardImpls.remove(physicalCard);
+        return physicalCards.remove(physicalCard);
     }
 
     public boolean containsPhysicalCard(PhysicalCard physicalCard) {
-        return physicalCardImpls.contains(physicalCard);
+        return physicalCards.contains(physicalCard);
     }
 
     @Override

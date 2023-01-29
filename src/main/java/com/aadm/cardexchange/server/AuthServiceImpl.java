@@ -9,6 +9,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 import org.mindrot.jbcrypt.BCrypt;
 
+import javax.servlet.ServletException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -25,9 +26,10 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
     private final Gson gson = new Gson();
     private final DeckServiceImpl deckService;
 
-    public AuthServiceImpl() {
+    public AuthServiceImpl() throws ServletException {
         db = new MapDBImpl();
         deckService = new DeckServiceImpl();
+        deckService.init(getServletConfig());
     }
 
     public AuthServiceImpl(MapDB mockDB, DeckServiceImpl mockService) {
@@ -103,7 +105,8 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
         if (userMap.putIfAbsent(email, user) != null) {
             throw new AuthException("User already exists");
         }
-        deckService.createDefaultDecks(email);
+        deckService.createDefaultDecks(email,
+                db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         return generateAndStoreLoginToken(user);
     }
 

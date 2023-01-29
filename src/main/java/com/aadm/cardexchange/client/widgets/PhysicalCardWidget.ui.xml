@@ -28,13 +28,13 @@
             right: 5px;
             color: white;
             padding: 5px;
-            background: #439A97;
+            background: green;
         }
     </ui:style>
     <g:HTMLPanel styleName="{style.card}" ui:field="cardContainer">
-        <h2 ui:field="titleDiv" />
-        <div ui:field="statusDiv" />
-        <div ui:field="descriptionDiv" />
+        <h2 ui:field="cardName"/>
+        <div ui:field="cardStatus"/>
+        <div ui:field="cardDescription"/>
         <g:Button title="Rimuovi carta dal mazzo" styleName="{style.deleteButton}" ui:field="deleteButton">X</g:Button>
     </g:HTMLPanel>
 </ui:UiBinder>
