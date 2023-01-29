@@ -14,9 +14,9 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     private final MapDB db;
     private final Gson gson = new Gson();
 
-    public DeckServiceImpl() {
-        db = new MapDBImpl();
-    }
+    private CardServiceImpl cardService;
+
+    public DeckServiceImpl() { db = new MapDBImpl(); }
 
     public DeckServiceImpl(MapDB mockDB) {
         db = mockDB;
@@ -91,27 +91,18 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return foundDeck.addPhysicalCard(new PhysicalCardImpl(game, cardId, status, description));
     }
 
-    public List<PhysicalCardDecorator> getDecks (String token, String deckName) throws AuthException {
+    @Override
+    public List<PhysicalCardDecorator> getDeckByName(String token, String deckName) throws AuthException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
         Map<String, Deck> allUserDecks = deckMap.get(userEmail);
         Deck thisUserDeck = allUserDecks.get(deckName);
-        List<PhysicalCardDecorator> pDecoratedCards;
+        List<PhysicalCardDecorator> pDecoratedCards = new ArrayList<>();
         for ( PhysicalCard physicalCard : thisUserDeck.getPhysicalCards()) {
-            CardDecorator.getStaticName(physicalCard.getCardId());
-            CardDecorator()
-
-        }
-
-
-        title = metodoStaticoPerPrendereIlTitoloDallaCartaVera(physicalCard.getCardId())
-        pDecoratedCards.add(physicalCard, title)
-
+            String cardName = cardService.getNameCard(physicalCard.getGameType(), physicalCard.getCardId());
+            PhysicalCardDecorator thisPhysicalDecoratorCard = new PhysicalCardDecorator(new PhysicalCardImpl(physicalCard.getGameType(), physicalCard.getCardId(), physicalCard.getStatus(), physicalCard.getDescription()), cardName);
+            pDecoratedCards.add(thisPhysicalDecoratorCard);
+            }
         return pDecoratedCards;
-
     }
-
-
-
-
 }

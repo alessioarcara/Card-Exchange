@@ -13,7 +13,7 @@ public interface DeckService extends RemoteService {
 
     boolean addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description) throws AuthException;
 
-    List<PhysicalCardDecorator> getDecks(String token) throws AuthException;
+    List<PhysicalCardDecorator> getDeckByName(String token, String deckName) throws AuthException;
 
 
 }

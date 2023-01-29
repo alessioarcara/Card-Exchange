@@ -39,6 +39,20 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
         return new ArrayList<>(map.values());
     }
 
+    public String getNameCard(Game game, int idCard) {
+        if (game == null)
+            throw new IllegalArgumentException("game cannot be null");
+        if (idCard <= 0)
+            throw new IllegalArgumentException("Invalid cardId provided. cardId must be a positive integer greater than 0");
+        Map<Integer, CardDecorator> map = db.getCachedMap(getServletContext(), getMapName(game),
+                Serializer.INTEGER, serializer);
+        try {
+            return map.get(idCard).getName();
+        } catch (Exception e) {
+            return "No Name";
+        }
+    }
+
     @Override
     public CardDecorator getGameCard(Game game, int cardId) {
         if (game == null)
