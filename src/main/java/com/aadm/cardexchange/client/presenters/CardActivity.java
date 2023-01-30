@@ -74,8 +74,12 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
                     }
                     @Override
                     public void onSuccess(Boolean result) {
-                        view.displaySuccessAlert();
-                        view.hideModal();
+                        if (result) {
+                            view.displaySuccessAlert();
+                            view.hideModal();
+                        } else {
+                            view.displayErrorAlert("Deck not found.");
+                        }
                     }
                 }
         );
