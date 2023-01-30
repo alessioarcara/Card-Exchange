@@ -1,7 +1,7 @@
 package com.aadm.cardexchange.client.presenters;
 
-import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
-import com.aadm.cardexchange.client.AuthSubject.Observer;
+import com.aadm.cardexchange.client.auth.AuthSubject;
+import com.aadm.cardexchange.client.auth.Observer;
 import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.CardView;

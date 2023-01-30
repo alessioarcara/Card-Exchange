@@ -1,8 +1,9 @@
-package com.aadm.cardexchange.server;
+package com.aadm.cardexchange.server.gsonserializer;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import org.jetbrains.annotations.NotNull;
+import com.google.gson.JsonParseException;
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
@@ -26,10 +27,9 @@ public class GsonSerializer<T> implements Serializer<T> {
     }
 
     @Override
-    public void serialize(DataOutput2 out, @NotNull T value) throws IOException {
+    public void serialize(DataOutput2 out, T value) throws IOException {
         if (type != null) {
             String json = gson.toJson(value, type);
-            System.out.println(json);
             out.writeUTF(json);
         } else {
             JsonObject jsonObj = gson.toJsonTree(value).getAsJsonObject();
@@ -41,17 +41,18 @@ public class GsonSerializer<T> implements Serializer<T> {
     @Override
     public T deserialize(DataInput2 in, int available) throws IOException {
         JsonObject jsonObj = gson.fromJson(in.readUTF(), JsonObject.class);
-        String classType = null;
-        if (jsonObj.get("classType") == null) {
+        JsonElement classType = jsonObj.get("classType");
+        if (classType == null) {
             return gson.fromJson(jsonObj, type);
         }
-        classType = jsonObj.get("classType").getAsString();
+        return gson.fromJson(jsonObj, (Type) getObjectClass(classType.getAsString()));
+    }
+
+    private Class<?> getObjectClass(String classType) {
         try {
-            System.out.println(jsonObj);
-            Class<?> clazz = Class.forName(classType);
-            return gson.fromJson(jsonObj, (Type) clazz);
+            return Class.forName(classType);
         } catch (ClassNotFoundException e) {
-            throw new IOException("Unable to deserialize class of type " + classType);
+            throw new JsonParseException("Unable to deserialize class of type " + classType);
         }
     }
 }

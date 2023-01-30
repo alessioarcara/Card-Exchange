@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.client;
 
-import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
+import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.presenters.DecksActivity;
 import com.aadm.cardexchange.client.views.DecksView;
 import com.aadm.cardexchange.shared.DeckServiceAsync;

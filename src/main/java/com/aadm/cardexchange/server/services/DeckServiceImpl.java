@@ -1,5 +1,9 @@
-package com.aadm.cardexchange.server;
+package com.aadm.cardexchange.server.services;
 
+import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
+import com.aadm.cardexchange.server.mapdb.MapDB;
+import com.aadm.cardexchange.server.mapdb.MapDBConstants;
+import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.DeckService;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gson.Gson;
@@ -30,17 +34,17 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return addDeck(email, deckName, false, deckMap);
     }
 
-    private boolean addDeck(String email, String deckName, boolean isDefault, Map<String, Map<String, Deck>> deckMap) {
+    private static boolean addDeck(String email, String deckName, boolean isDefault, Map<String, Map<String, Deck>> deckMap) {
         Map<String, Deck> userDecks = deckMap.computeIfAbsent(email, k -> new HashMap<>());
         // if deck already exists in decks container do nothing
         if (userDecks.get(deckName) != null) {
             return false;
         }
-        userDecks.put(deckName, new Deck(email, deckName, isDefault));
+        userDecks.put(deckName, new Deck(deckName, isDefault));
         return true;
     }
 
-    public boolean createDefaultDecks(String email, Map<String, Map<String, Deck>> deckMap) {
+    public static boolean createDefaultDecks(String email, Map<String, Map<String, Deck>> deckMap) {
         return addDeck(email, "Owned", true, deckMap) && addDeck(email, "Wished", true, deckMap);
     }
 

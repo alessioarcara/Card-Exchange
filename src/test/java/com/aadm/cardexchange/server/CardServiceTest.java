@@ -1,5 +1,7 @@
 package com.aadm.cardexchange.server;
 
+import com.aadm.cardexchange.server.mapdb.MapDB;
+import com.aadm.cardexchange.server.services.CardServiceImpl;
 import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;

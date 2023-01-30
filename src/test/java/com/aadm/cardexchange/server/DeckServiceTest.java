@@ -1,5 +1,7 @@
 package com.aadm.cardexchange.server;
 
+import com.aadm.cardexchange.server.mapdb.MapDB;
+import com.aadm.cardexchange.server.services.DeckServiceImpl;
 import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
@@ -41,8 +43,8 @@ public class DeckServiceTest {
     public void testIfDeckAlreadyExist() {
         Map<String, Map<String, Deck>> deckMap = new HashMap<>();
         Map<String, Deck> mockDecks = new HashMap<>() {{
-            put("Owned", new Deck("test@test.it", "Owned"));
-            put("Wished", new Deck("test@test.it", "Wished"));
+            put("Owned", new Deck("Owned"));
+            put("Wished", new Deck("Wished"));
         }};
         deckMap.put("test@test.it", mockDecks);
 //        expect(mockConfig.getServletContext()).andReturn(mockCtx);
@@ -189,7 +191,7 @@ public class DeckServiceTest {
     public void testAddPhysicalCardToDeckForCardAddition() throws AuthException {
         setupForValidToken();
         Map<String, Deck> deckMap = new HashMap<>() {{
-            put("Owned", new Deck("test@test.it", "Owned", true));
+            put("Owned", new Deck("Owned", true));
         }};
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
             put("test@test.it", deckMap);
@@ -225,7 +227,7 @@ public class DeckServiceTest {
         String userEmail = "test@test.it";
         String deckName = "testDeckName";
         Map<String, Deck> decks = new HashMap<>();
-        decks.put(deckName, new Deck(userEmail, deckName, false));
+        decks.put(deckName, new Deck(deckName, false));
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
             put(userEmail, decks);
         }};
@@ -240,14 +242,13 @@ public class DeckServiceTest {
     @Test
     public void testAddDeckForNotAlreadyExistingDeck() throws AuthException {
         setupForValidToken();
-        String userEmail = "test@test.it";
         String customDeckName = "testDeckName";
         Map<String, Deck> decks = new HashMap<>() {{
-            put("Owned", new Deck(userEmail, "Owned", true));
-            put("Wished", new Deck(userEmail, "Wished", true));
+            put("Owned", new Deck("Owned", true));
+            put("Wished", new Deck("Wished", true));
         }};
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
-            put(userEmail, decks);
+            put("test@test.it", decks);
         }};
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
@@ -290,16 +291,15 @@ public class DeckServiceTest {
 
     @Test
     public void testGetUserDecksForReturnCorrectDeckNames() throws AuthException {
-        String userEmail = "test@test.it";
         List<String> mockDeckNames = Arrays.asList("Owned", "Wished", "Test");
         setupForValidToken();
         Map<String, Deck> decks = new HashMap<>() {{
-            put("Owned", new Deck(userEmail, "Owned", true));
-            put("Wished", new Deck(userEmail, "Wished", true));
-            put("Test", new Deck(userEmail, "Test", false));
+            put("Owned", new Deck("Owned", true));
+            put("Wished", new Deck("Wished", true));
+            put("Test", new Deck("Test", false));
         }};
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
-            put(userEmail, decks);
+            put("test@test.it", decks);
         }};
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))

@@ -1,4 +1,4 @@
-package com.aadm.cardexchange.server;
+package com.aadm.cardexchange.server.mapdb;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;

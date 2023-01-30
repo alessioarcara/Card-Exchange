@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.shared;
 
-import com.aadm.cardexchange.server.GsonSerializer;
+import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;

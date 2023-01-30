@@ -1,9 +1,13 @@
 package com.aadm.cardexchange.server;
 
+import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
 import com.aadm.cardexchange.server.jsonparser.JSONParser;
 import com.aadm.cardexchange.server.jsonparser.MagicCardParseStrategy;
 import com.aadm.cardexchange.server.jsonparser.PokemonCardParseStrategy;
 import com.aadm.cardexchange.server.jsonparser.YuGiOhCardParseStrategy;
+import com.aadm.cardexchange.server.mapdb.MapDB;
+import com.aadm.cardexchange.server.mapdb.MapDBConstants;
+import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.models.CardDecorator;
 import com.google.gson.Gson;
 import org.mapdb.Serializer;

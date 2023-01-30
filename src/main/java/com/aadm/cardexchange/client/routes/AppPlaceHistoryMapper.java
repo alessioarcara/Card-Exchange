@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.client.routes;
 
-import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
+import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.places.AuthPlace;
 import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.places.DecksPlace;

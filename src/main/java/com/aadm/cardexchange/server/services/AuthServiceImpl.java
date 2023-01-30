@@ -1,5 +1,9 @@
-package com.aadm.cardexchange.server;
+package com.aadm.cardexchange.server.services;
 
+import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
+import com.aadm.cardexchange.server.mapdb.MapDB;
+import com.aadm.cardexchange.server.mapdb.MapDBConstants;
+import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.AuthService;
 import com.aadm.cardexchange.shared.models.AuthException;
 import com.aadm.cardexchange.shared.models.LoginInfo;
@@ -9,7 +13,6 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 import org.mindrot.jbcrypt.BCrypt;
 
-import javax.servlet.ServletException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -24,17 +27,13 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
             "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private final MapDB db;
     private final Gson gson = new Gson();
-    private final DeckServiceImpl deckService;
 
-    public AuthServiceImpl() throws ServletException {
+    public AuthServiceImpl() {
         db = new MapDBImpl();
-        deckService = new DeckServiceImpl();
-        deckService.init(getServletConfig());
     }
 
-    public AuthServiceImpl(MapDB mockDB, DeckServiceImpl mockService) {
+    public AuthServiceImpl(MapDB mockDB) {
         db = mockDB;
-        deckService = mockService;
     }
 
     private boolean validateEmail(String email) {
@@ -105,7 +104,7 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
         if (userMap.putIfAbsent(email, user) != null) {
             throw new AuthException("User already exists");
         }
-        deckService.createDefaultDecks(email,
+        DeckServiceImpl.createDefaultDecks(email,
                 db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         return generateAndStoreLoginToken(user);
     }

@@ -2,7 +2,7 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <ui:style>
-        .layout {
+        .deckLayout {
             display: flex;
             flex-direction: column;
             width: 100%;
@@ -10,7 +10,7 @@
             text-align: center;
         }
     </ui:style>
-    <g:HTMLPanel styleName="{style.layout}">
+    <g:HTMLPanel styleName="{style.deckLayout}">
         <h1>User decks</h1>
         <g:HTMLPanel ui:field="decksContainer"/>
     </g:HTMLPanel>

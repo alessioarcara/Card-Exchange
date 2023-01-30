@@ -1,9 +1,11 @@
 package com.aadm.cardexchange.server;
 
+import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
 import com.aadm.cardexchange.shared.CardTestConstants;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,6 +15,7 @@ import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -57,14 +60,15 @@ public class GsonSerializerTest implements CardTestConstants {
             out.writeUTF("{\"classType\":\"com.aadm.NonExistentClass\"}");
             data = out.copyBytes();
         }
-        Assertions.assertThrows(IOException.class, () -> serializer.deserialize(new DataInput2.ByteArray(data), 0));
+        Assertions.assertThrows(JsonParseException.class, () -> serializer.deserialize(new DataInput2.ByteArray(data), 0));
     }
 
     @Test
     public void testSerializerForMapOfMapOfStrings() throws IOException {
         Gson gson = new Gson();
-        GsonSerializer<Map<String, String>> serializer = new GsonSerializer<>(gson, new TypeToken<Map<String, String>>() {
-        }.getType());
+        Type type = new TypeToken<Map<String, String>>() {
+        }.getType();
+        GsonSerializer<Map<String, String>> serializer = new GsonSerializer<>(gson, type);
         DataOutput2 out = new DataOutput2();
 
         Map<String, String> stringMap = new HashMap<>() {{
@@ -75,39 +79,70 @@ public class GsonSerializerTest implements CardTestConstants {
         serializer.serialize(out, stringMap);
 
         byte[] data = out.copyBytes();
-        GsonSerializer<Map<String, String>> deserializer = new GsonSerializer<>(gson);
+        GsonSerializer<Map<String, String>> deserializer = new GsonSerializer<>(gson, type);
         Map<String, String> deserializedDeckMap = deserializer.deserialize(new DataInput2.ByteArray(data), 0);
 
         Assertions.assertAll(() -> {
-            Assertions.assertNotNull(deserializedDeckMap.get("test1"));
-            Assertions.assertNotNull(deserializedDeckMap.get("test2"));
-            Assertions.assertNotNull(deserializedDeckMap.get("test3"));
+            Assertions.assertEquals("test1", deserializedDeckMap.get("test1"));
+            Assertions.assertEquals("test2", deserializedDeckMap.get("test2"));
+            Assertions.assertEquals("test3", deserializedDeckMap.get("test3"));
         });
-
     }
 
-//    @Test
-//    public void testSerializerForMapOfMapOfDecks() throws IOException {
-//        String userEmail = "test@test.it";
-//        Gson gson = new GsonBuilder().enableComplexMapKeySerialization().create();
-//        GsonSerializer<Map<String, Map<String, Deck>>> serializer = new GsonSerializer<>(gson);
-//        DataOutput2 out = new DataOutput2();
-//
-//        Map<String, Map<String, Deck>> deckMap = new HashMap<>();
-//        Map<String, Deck> mockDecks = new HashMap<>() {{
-//            put("Owned", new Deck(userEmail, "Owned"));
-//            put("Wished", new Deck(userEmail, "Wished"));
-//        }};
-//        deckMap.put(userEmail, mockDecks);
-//        serializer.serialize(out, deckMap);
-//
-//        byte[] data = out.copyBytes();
-//        GsonSerializer<Map<String, Map<String, Deck>>> deserializer = new GsonSerializer<>(gson);
-//        Map<String, Map<String, Deck>> deserializedDeckMap = deserializer.deserialize(new DataInput2.ByteArray(data), 0);
-//
-//        System.out.println(deserializedDeckMap.get(userEmail));
-//        Assertions.assertAll(() -> {
-//            Assertions.assertNotNull(deserializedDeckMap.get("test@test.it"));
-//        });
-//    }
+    @Test
+    public void testSerializerForDeck() throws IOException {
+        Gson gson = new Gson();
+        GsonSerializer<Deck> serializer = new GsonSerializer<>(gson);
+
+        DataOutput2 out = new DataOutput2();
+        Deck ownedDeck = new Deck("Owned");
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 111, Status.Excellent, "This is valid description");
+        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.Pokemon, 222, Status.VeryDamaged, "This is valid description");
+        ownedDeck.addPhysicalCard(mockPCard1);
+        ownedDeck.addPhysicalCard(mockPCard2);
+        serializer.serialize(out, ownedDeck);
+
+        byte[] data = out.copyBytes();
+        GsonSerializer<Deck> deserializer = new GsonSerializer<>(gson);
+        Deck deserializedDeck = deserializer.deserialize(new DataInput2.ByteArray(data), 0);
+
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(ownedDeck, deserializedDeck);
+            Assertions.assertEquals(2, ownedDeck.getPhysicalCards().size());
+            Assertions.assertTrue(ownedDeck.getPhysicalCards().contains(mockPCard1));
+            Assertions.assertTrue(ownedDeck.getPhysicalCards().contains(mockPCard2));
+        });
+    }
+
+    @Test
+    public void testSerializerForMapOfMapOfDecks() throws IOException {
+        Gson gson = new Gson();
+        Type type = new TypeToken<Map<String, Map<String, Deck>>>() {
+        }.getType();
+
+        GsonSerializer<Map<String, Map<String, Deck>>> serializer = new GsonSerializer<>(gson, type);
+        DataOutput2 out = new DataOutput2();
+
+        Map<String, Map<String, Deck>> deckMap = new HashMap<>();
+        Map<String, Deck> mockDecks = new HashMap<>() {{
+            put("Owned", new Deck("Owned"));
+            put("Wished", new Deck("Wished"));
+        }};
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 111, Status.Excellent, "This is valid description");
+        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.Pokemon, 222, Status.VeryDamaged, "This is valid description");
+        mockDecks.get("Owned").addPhysicalCard(mockPCard1);
+        mockDecks.get("Wished").addPhysicalCard(mockPCard2);
+        deckMap.put("test@test.it", mockDecks);
+        serializer.serialize(out, deckMap);
+
+        byte[] data = out.copyBytes();
+        GsonSerializer<Map<String, Map<String, Deck>>> deserializer = new GsonSerializer<>(gson, type);
+        Map<String, Map<String, Deck>> deserializedDeckMap = deserializer.deserialize(new DataInput2.ByteArray(data), 0);
+
+        Assertions.assertAll(() -> {
+            Assertions.assertNotNull(deserializedDeckMap.get("test@test.it"));
+            Assertions.assertTrue(deserializedDeckMap.get("test@test.it").get("Owned").containsPhysicalCard(mockPCard1));
+            Assertions.assertTrue(deserializedDeckMap.get("test@test.it").get("Wished").containsPhysicalCard(mockPCard2));
+        });
+    }
 }

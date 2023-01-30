@@ -1,5 +1,7 @@
 package com.aadm.cardexchange.server;
 
+import com.aadm.cardexchange.server.mapdb.MapDB;
+import com.aadm.cardexchange.server.services.AuthServiceImpl;
 import com.aadm.cardexchange.shared.models.AuthException;
 import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;
@@ -31,9 +33,7 @@ public class AuthServiceTest {
         mockDB = ctrl.createMock(MapDB.class);
         mockConfig = ctrl.createMock(ServletConfig.class);
         mockCtx = ctrl.createMock(ServletContext.class);
-        DeckServiceImpl mockDeckService = new DeckServiceImpl(mockDB);
-        authService = new AuthServiceImpl(mockDB, mockDeckService);
-        mockDeckService.init(mockConfig);
+        authService = new AuthServiceImpl(mockDB);
         authService.init(mockConfig);
     }
 

@@ -1,5 +1,9 @@
-package com.aadm.cardexchange.server;
+package com.aadm.cardexchange.server.services;
 
+import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
+import com.aadm.cardexchange.server.mapdb.MapDB;
+import com.aadm.cardexchange.server.mapdb.MapDBConstants;
+import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.CardService;
 import com.aadm.cardexchange.shared.models.CardDecorator;
 import com.aadm.cardexchange.shared.models.Game;
