@@ -368,4 +368,189 @@
         \newline \textbf{Note:}Viene proposta un nuovo ordine e dettaglio della D.O.D. (tutti si concorda e viene subito attuato nelle actions di GitHub), viene proposto di effettuare "pair programming" per agevolare i nuovi sviluppatori. Viene confermata l'importanza del TDD nonostante l'ingente quantità di effort che richiede e si decide concordi di effettuare i prossimi Sprint Planning con il metodo "velocity" per cercare di organizzare al meglio lo Sprint successivo.
     \end{itemize}
 
+
+    \newpage
+
+    \section{SPRINT 03}
+
+    \begin{itemize}
+        \item Inizio sprint: \textit{22/01/2023}
+        \item Fine sprint: \textit{29/01/2023}
+    \end{itemize}
+
+    \begin{itemize}
+        \item \textbf{Sprint Goal:}
+        \begin{indent}
+            \newline Il sistema deve permettere all’utente di aggiungere carte da gioco che possiede nella realtà al proprio account e deve permettere all’utente di visualizzare carte da gioco che possiede nella realtà aggiunte al proprio account.
+        \end{indent}
+    \end{itemize}
+
+    \begin{itemize}
+        \item \textbf{RUOLI.}
+        \newline \textbf{Product Owner:} Alessio Arcara
+        \newline \textbf{Scrum Master:} Matteo Sacco
+        \newline \textbf{Development team:} Alessia Crimaldi, Davide Fermi
+    \end{itemize}
+
+    \subsection{Sprint Planning}
+    \textbf{Data:} 22/01/2023
+    \newline \textbf{Durata:} 75 min.
+    \newline \textbf{Partecipanti:} Scrum Master (Matteo Sacco), Product Owner (Alessio Arcara), Dev 1 (Alessia Crimaldi), Dev 2 (Davide Fermi)
+    \newline \textbf{Note:} Correzione del livello di dettaglio degli UC presenti e spiegazione del Product Backlog aggiornato da parte del PO, con definizione delle priorità dei singoli UC. Poker Planning tra i membri del team utilizzando sequenza di Fibonacci modificata (0  1/2  1  2  3  5  8  13  20  40  100  ?  -tazzina di caffè-), e stima dell'effort dei task presenti in ogni UC da parte di tutto il team.
+    \newline Per la durata dello sprint \'e stata adottata una strategia di Pair Programming "Navigator-Driver" da PO ed SM verso i Dev, per permettere passaggio di conoscenza.
+    \newline \textbf{N.B. } Per questo sprint si \'e deciso di cambiare approccio e di tenere conto della velocity del team al posto della capacity: si \'e stimata una velocity di 16 SP.
+
+    \newpage
+
+    \subsection{BOARD}
+    \begin{itemize}
+        \textbf{Stato dopo lo Sprint Planning:}
+        \newline
+        \begin{tabular}{ | p{3.5cm} | p{1.5cm} | p{4.8cm} | p{2.5cm} | p{1.3cm} | }
+            \hline
+            \textbf{UC raffinati}
+            & \textbf{Product Backlog}
+            & \textbf{Sprint Backlog}
+            & \textbf{Sprint In progress}
+            & \textbf{Sprint Done} \\
+            \hline
+            \textbf{UC03:} Come visitatore voglio selezionare una carta e vederne i dettagli & & &
+            \textbf{Task1 [UC03]\#16:} Creazione CardView e popolamento delle informazioni & \\
+            \hline
+            \textbf{UC05:} Come utente voglio poter aggiungere le mie carte reali al mazzo delle possedute
+            & & \textbf{Task2 [UC05]\#54:} Creare mappa dei mazzi su MapDB & & \\
+            \hline
+            & & \textbf{Task3 [UC05]\#55:} Modificare RPC signup per aggiungere il mazzo delle possedute alla creazione dell'utente & & \\
+            \hline
+            & & \textbf{Task4 [UC05]\#56:} Creare RPC per inserire una carta fisica nel mazzo delle possedute dell'utente & & \\
+            \hline
+            & & \textbf{Task5 [UC05]\#57:} Modificare CardView per poter aggiungere la carta al mazzo delle possedute & & \\
+            \hline
+            & & \textbf{Task6 [UC05]\#63:} Creare metodo statico in AuthService per controllare validità token e restituire email utente & & \\
+            \hline
+            & & \textbf{Task7 [UC05]\#71:} Modificare modello PhysicalCard in modo che status sia un valore numerico da 1 a 5 e non una stringa & & \\
+            \hline
+            \textbf{UC06:} Come utente voglio poter visualizzare il contenuto del mazzo delle possedute
+            & & \textbf{Task8 [UC06]\#58:} Creare modello carta fisica che al posto di cardId restituirà sia il titolo della carta che cardId & & \\
+            \hline
+            & & \textbf{Task8 [UC06]\#59:} Creare RPC per poter visualizzare la lista di carte reali contenute nel mazzo delle possedute & & \\
+            \hline
+            & & \textbf{Task8 [UC06]\#60:} Inserire hyperlink nel menù laterale (visibile solo se autenticato) & & \\
+            \hline
+            & & \textbf{Task8 [UC06]\#61:} Creare pagina per visualizzare il mazzo delle possedute (Place, Activity e View) & & \\
+            \hline
+        \end{tabular}
+        \newpage
+        \textbf{Stato finale:}
+        \newline
+        \begin{tabular}{ | p{3.3cm} | p{1.3cm} | p{1.1cm} | p{4.4cm} | p{4.4cm} | }
+            \hline
+            \textbf{UC raffinati}
+            & \textbf{Product Backlog}
+            & \textbf{Sprint Backlog}
+            & \textbf{Sprint In progress}
+            & \textbf{Sprint Done} \\
+            \hline
+            \textbf{UC03:} Come visitatore voglio selezionare una carta e vederne i dettagli & & & &
+            \textbf{Task1 [UC03]\#16:} Creazione CardView e popolamento delle informazioni \\
+            \hline
+            \textbf{UC05:} Come utente voglio poter aggiungere le mie carte reali al mazzo delle possedute
+            & & & & \textbf{Task2 [UC05]\#54:} Creare mappa dei mazzi su MapDB \\
+            \hline
+            & & & & \textbf{Task3 [UC05]\#55:} Modificare RPC signup per aggiungere il mazzo delle possedute alla creazione dell'utente \\
+            \hline
+            & & & & \textbf{Task4 [UC05]\#56:} Creare RPC per inserire una carta fisica nel mazzo delle possedute dell'utente \\
+            \hline
+            & & & \textbf{Task5 [UC05]\#57:} Modificare CardView per poter aggiungere la carta al mazzo delle possedute & \\
+            \hline
+            & & & & \textbf{Task6 [UC05]\#63:} Creare metodo statico in AuthService per controllare validità token e restituire email utente \\
+            \hline
+            & & & & \textbf{Task7 [UC05]\#71:} Modificare modello PhysicalCard in modo che status sia un valore numerico da 1 a 5 e non una stringa \\
+            \hline
+            \textbf{UC06:} Come utente voglio poter visualizzare il contenuto del mazzo delle possedute
+            & & & & \textbf{Task8 [UC06]\#58:} Creare modello carta fisica che al posto di cardId restituirà sia il titolo della carta che cardId \\
+            \hline
+            & & & \textbf{Task8 [UC06]\#59:} Creare RPC per poter visualizzare la lista di carte reali contenute nel mazzo delle possedute & \\
+            \hline
+            & &  & & \textbf{Task8 [UC06]\#60:} Inserire hyperlink nel menù laterale (visibile solo se autenticato) \\
+            \hline
+            & & & \textbf{Task8 [UC06]\#61:} Creare pagina per visualizzare il mazzo delle possedute (Place, Activity e View) & \\
+            \hline
+        \end{tabular}
+    \end{itemize}
+
+
+
+    %%%%%%%%%%
+
+    \subsection{Daily Scrum}
+
+    \begin{itemize}
+        \item \textbf{Data:} 23/01/2023
+        \newline \textbf{Durata:} 15 min.
+        \newline \textbf{Partecipanti:} Scrum Master (Matteo Sacco), Dev 1 (Alessia Crimaldi), Dev 2 (Davide Fermi)
+        \newline \textbf{Percezione attuale dello SG:} Positiva (Dev 1), Positiva (Dev 2)
+    \end{itemize}
+    \begin{itemize}
+        \item \textbf{Data:} 24/01/2023
+        \newline \textbf{Durata:} 15 min.
+        \newline \textbf{Partecipanti:} Scrum Master (Matteo Sacco), Dev 1 (Alessia Crimaldi), Dev 2 (Davide Fermi)
+        \newline \textbf{Percezione attuale dello SG:} Positiva (Dev 1), Positiva (Dev 2)
+    \end{itemize}
+    \begin{itemize}
+        \item \textbf{Data:} 25/01/2023
+        \newline \textbf{Durata:} 15 min.
+        \newline \textbf{Partecipanti:} Scrum Master (Matteo Sacco), Dev 1 (Alessia Crimaldi), Dev 2 (Davide Fermi)
+        \newline \textbf{Percezione attuale dello SG:} Tendente al negativo (Dev 1), Positiva (Dev 2)
+    \end{itemize}
+    \begin{itemize}
+        \item \textbf{Data:} 26/01/2023
+        \newline \textbf{Durata:} 20 min.
+        \newline \textbf{Partecipanti:} Scrum Master (Matteo Sacco), Dev 1 (Alessia Crimaldi), Dev 2 (Davide Fermi)
+        \newline \textbf{Percezione attuale dello SG:} Positiva (Dev 1), Positiva (Dev 2)
+    \end{itemize}
+    \begin{itemize}
+        \item \textbf{Data:} 27/01/2023
+        \newline \textbf{Durata:} 15 min.
+        \newline \textbf{Partecipanti:} Scrum Master (Matteo Sacco), Dev 1 (Alessia Crimaldi), Dev 2 (Davide Fermi)
+        \newline \textbf{Percezione attuale dello SG:} Negativa (Dev 1), Negativa (Dev 2)
+    \end{itemize}
+    \begin{itemize}
+        \item \textbf{Data:} 28/01/2023
+        \newline \textbf{Durata:} 15 min.
+        \newline \textbf{Partecipanti:} Scrum Master (Matteo Sacco), Dev 1 (Alessia Crimaldi), Dev 2 (Davide Fermi)
+        \newline \textbf{Percezione attuale dello SG:} Negativa (Dev 1), Negativa (Dev 2)
+    \end{itemize}
+
+
+
+    %%%%%%%%%%
+
+    \subsection{Sprint Review}
+    \textbf{Data:} 29/01/2023
+    \newline \textbf{Durata:} 95 min.
+    \newline \textbf{Partecipanti:} TODO Scrum Master (Alessio Arcara), Product Owner (Alessia Crimaldi) Dev 1 (Davide Fermi), Dev 2 (Matteo Sacco)
+    \newline \textbf{Note:} Viene prima effettuata la demo da parte dei Devs. Il PO decide di non rilasciare viste le poche funzionalit\'a aggiunte rispetto alla precedente: si considera fallito lo sprint.
+    \newline Nella sprint review vengono evidenziati soprattutto problemi nella difficolt\'a di scrivere il codice da parte dei dev all'interno di un progetto cos\'{\i} fortemente strutturato (Davide in particolare). Allo stesso modo \'e messo in risalto che il TDD risulta a volte quasi bloccante, soprattutto quando si rende necessario creare molti mock da passare nei test. Inoltre viene fatto presente che durante la settimana si sono resi necessari diversi refactor rispetto a pattern e modelli scelti in precedenza, i quali per\'o non hanno rallentato i dev poich\'e non impattanti sui task che stavano sviluppando.
+    \newline Si concorda che spesso si sono travisati gli obiettivi definiti nei task, andando ad ampliare le funzionalit\'a descritte perch\'e ritenute troppo poche e troppo semplici; questo ha consistito in una complicazione auto imposta dai dev.
+    \newline
+    \newline \textbf{N.B.} Il principale problema riscontrato a fine settimana, trovato grazie ai test, risulta essere sul GsonSerializer. Questo infatti non sta funzionando poich\'e non riesce a serializzare le Map$<$$>$ di Java, si valutano quindi tre opzioni di soluzione del problema:
+    \begin{itemize}
+        \item Fare Refactor completo del codice per eliminare gli embedding di oggetti dentro oggetti e piuttosto utilizzare dei POJO (Plain Old Java Object).
+        \item Definire all'interno di GsonSerializer la serializzazione per le mappe di Java (Map$<$$>$).
+        \item Creare un nuovo oggetto che definisca la mappa del Deck da salvare sul DB per far riconoscere il Tipo a GsonSerializer come un primitivo.
+    \end{itemize}
+
+    %%%%%%%%%%
+
+    \subsection{Sprint Retrospective}
+    \textbf{Data:} 29/01/2023
+    \newline \textbf{Durata:} 25 min.
+    \newline \textbf{Partecipanti:} TODO Scrum Master (Alessio Arcara), Product Owner (Alessia Crimaldi) Dev 1 (Davide Fermi), Dev 2 (Matteo Sacco)
+    \newline \textbf{Note:} Si concorda che l'approccio TDD risulta efficiente soprattutto nel fare refactor del codice, quindi si decide di proseguire. Inoltre si decide di continuare a fare PP e di introdurre in parte minore rispetto a PP anche XP, poich\'e si \'e rivelato utile negli ultimi giorni di sprint per fare il refactor di alcune porzioni di codice estese.
+    \newline Viene ridiscusso l'ordine di dettaglio della D.O.D. e, la chiusura della Documentazione \'e riportata a prima dell'accettazione della PR. Questo perch\'e durante la settimana \'e stato introdotto uno strumento per creare in automatico il Burndown Chart il quale riconosce come chiuso il task dopo che la PR \'e stata accettata.
+
+
+    \newpage
+
 \end{document}

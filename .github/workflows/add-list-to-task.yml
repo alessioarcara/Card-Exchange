@@ -24,8 +24,8 @@ jobs:
          - [ ]  Gli Unit Tests sono stati scritti e passati 
          - [ ]  Gli Unit Tests esistenti sono stati passati
          - [ ]  Il Code Review è stato fatto
-         - [ ]  La pull request è stata accettata e fatto merge sul branch development.
          - [ ]  La documentazione è stata aggiornata
+         - [ ]  La pull request è stata accettata e fatto merge sul branch development.
          
           **Effort effettivo:** 
         update-mode: 'replace'
