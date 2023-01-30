@@ -1,10 +1,7 @@
 package com.aadm.cardexchange.client.routes;
 
 import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
-import com.aadm.cardexchange.client.places.AuthPlace;
-import com.aadm.cardexchange.client.places.CardPlace;
-import com.aadm.cardexchange.client.places.DecksPlace;
-import com.aadm.cardexchange.client.places.HomePlace;
+import com.aadm.cardexchange.client.places.*;
 import com.aadm.cardexchange.shared.models.Game;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceHistoryMapper;
@@ -26,16 +23,25 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
             return new AuthPlace();
         } else if (token.equals(decksLink) && authSubject.isLoggedIn()) {
             return new DecksPlace();
+        } else if (token.equals(exchangesLink) && authSubject.isLoggedIn()) {
+            return new ExchangesPlace();
         } else {
             try {
                 String[] parts = token.split(DELIMITER);
-                Game game = Game.valueOf(parts[1]);
-                int cardId = Integer.parseInt(parts[2]);
-                return new CardPlace(game, cardId);
+                if (parts[0].equals("cards")) {
+                    Game game = Game.valueOf(parts[1]);
+                    int cardId = Integer.parseInt(parts[2]);
+                    return new CardPlace(game, cardId);
+                } else if (parts[0].equals("new-exchange")) {
+                    String receiverUserEmail = parts[1];
+                    String selectedCardId = parts[2];
+                    return new NewExchangePlace(selectedCardId, receiverUserEmail);
+                }
             } catch (Exception e) {
                 return defaultPlace;
             }
         }
+        return defaultPlace;
     }
 
     @Override
@@ -46,6 +52,11 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
             return authLink;
         } else if (place instanceof DecksPlace) {
             return decksLink;
+        } else if (place instanceof ExchangesPlace) {
+            return exchangesLink;
+        } else if (place instanceof NewExchangePlace) {
+            NewExchangePlace newExchangePlace = (NewExchangePlace) place;
+            return "new-exchange" + DELIMITER + newExchangePlace.getReceiverUserEmail() + DELIMITER + newExchangePlace.getSelectedCardId();
         } else if (place instanceof CardPlace) {
             CardPlace cardPlace = (CardPlace) place;
             return "cards" + DELIMITER + cardPlace.getGame().name().toLowerCase() + DELIMITER + cardPlace.getCardId();
