@@ -1,6 +1,5 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.shared.CardService;
 import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +13,6 @@ import org.mapdb.Serializer;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -294,25 +292,35 @@ public class DeckServiceTest {
 
     @Test
     public void testGetDeckByNameForValidEntry() throws AuthException {
-        setupForValidToken();
-        PhysicalCardImpl mockPhysicalCardImpl = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
-        //PhysicalCardDecorator thisPhysicalDecoratorCard = new PhysicalCardDecorator(mockPhysicalCardImpl, "This is the card Name");
-        Map<String, Deck> deckMap = new HashMap<>() {{
+        //init Mocks
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.Magic, 1221, Status.Fair, "This is a valid bis description.");
+        CardDecorator mockCard1 = new CardDecorator(new CardImpl("Nome1", "Desc1", "Type1"));
+        CardDecorator mockCard2 = new CardDecorator(new CardImpl("Nome2", "Desc2", "Type2"));
+        Map <Integer, CardDecorator> cardMap = new HashMap<>() {{
+            put(1111, mockCard1);
+            put(1221, mockCard2);
+        }};
+        Map<String, Deck> userDecks = new HashMap<>() {{
             put("Owned", new Deck("test@test.it", "Owned", true));
         }};
-        deckMap.get("Owned").addPhysicalCard(mockPhysicalCardImpl);
-        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
-            put("test@test.it", deckMap);
+        Map<String, Map<String, Deck>> deckMap = new HashMap<>() {{
+           put("test@test.it", userDecks);
         }};
+        userDecks.get("Owned").addPhysicalCard(mockPCard1);
+        userDecks.get("Owned").addPhysicalCard(mockPCard2);
 
+        //what I expect
+        setupForValidToken();
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockDeckMap);
-
-        //CardServiceImpl cardService = new CardServiceImpl(mockDB);
-
-        //deckService.addPhysicalCardToDeck("validToken", Game.Magic, "Owned", 111, Status.Excellent, "This is a valid description.");
-
+                .andReturn(deckMap);
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(cardMap);
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(cardMap);
         ctrl.replay();
         //Assertions.assertArrayEquals(ArrayList<>(deckMap.values()), deckService.getDeckByName("validToken", "Owned"));
         List<PhysicalCardDecorator> decoratedCards = deckService.getDeckByName("validToken", "Owned");
