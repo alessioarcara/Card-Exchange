@@ -6,8 +6,7 @@ import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 
 public class DeckServiceImpl extends RemoteServiceServlet implements DeckService, MapDBConstants {
@@ -15,9 +14,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     private final MapDB db;
     private final Gson gson = new Gson();
 
-    public DeckServiceImpl() {
-        db = new MapDBImpl();
-    }
+    public DeckServiceImpl() { db = new MapDBImpl(); }
 
     public DeckServiceImpl(MapDB mockDB) {
         db = mockDB;
@@ -90,5 +87,29 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         }
         // physical card addition
         return foundDeck.addPhysicalCard(new PhysicalCardImpl(game, cardId, status, description));
+    }
+
+    @Override
+    public List<PhysicalCardDecorator> getDeckByName(String token, String deckName) throws AuthException {
+        String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        Map<String, Deck> allUserDecks = deckMap.get(userEmail);
+        Deck thisUserDeck = allUserDecks.get(deckName);
+        List<PhysicalCardDecorator> pDecoratedCards = new ArrayList<>();
+        for ( PhysicalCard physicalCard : thisUserDeck.getPhysicalCards()) {
+            System.out.println(physicalCard.getCardId());
+            String cardName = CardServiceImpl.getNameCard(
+                    physicalCard.getGameType(),
+                    physicalCard.getCardId(),
+                    db.getCachedMap(
+                            getServletContext(),
+                            CardServiceImpl.getCardMap(physicalCard.getGameType()),
+                            Serializer.INTEGER,
+                            new GsonSerializer<>(gson)));
+            PhysicalCardDecorator thisPhysicalDecoratorCard = new PhysicalCardDecorator(
+                    new PhysicalCardImpl(physicalCard.getGameType(), physicalCard.getCardId(), physicalCard.getStatus(), physicalCard.getDescription()), cardName);
+            pDecoratedCards.add(thisPhysicalDecoratorCard);
+            }
+        return pDecoratedCards;
     }
 }
