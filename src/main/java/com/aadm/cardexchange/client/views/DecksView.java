@@ -13,5 +13,6 @@ public interface DecksView extends IsWidget {
     void setPresenter(Presenter presenter);
 
     interface Presenter {
+        void fetchUserDeck();
     }
 }

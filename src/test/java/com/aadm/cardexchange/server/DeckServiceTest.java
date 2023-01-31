@@ -344,15 +344,15 @@ public class DeckServiceTest {
         PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.Magic, 1221, Status.Fair, "This is a valid bis description.");
         CardDecorator mockCard1 = new CardDecorator(new CardImpl("Nome1", "Desc1", "Type1"));
         CardDecorator mockCard2 = new CardDecorator(new CardImpl("Nome2", "Desc2", "Type2"));
-        Map <Integer, CardDecorator> cardMap = new HashMap<>() {{
+        Map<Integer, CardDecorator> cardMap = new HashMap<>() {{
             put(1111, mockCard1);
             put(1221, mockCard2);
         }};
         Map<String, Deck> userDecks = new HashMap<>() {{
-            put("Owned", new Deck("test@test.it", "Owned", true));
+            put("Owned", new Deck("Owned", true));
         }};
         Map<String, Map<String, Deck>> deckMap = new HashMap<>() {{
-           put("test@test.it", userDecks);
+            put("test@test.it", userDecks);
         }};
         userDecks.get("Owned").addPhysicalCard(mockPCard1);
         userDecks.get("Owned").addPhysicalCard(mockPCard2);
@@ -369,7 +369,6 @@ public class DeckServiceTest {
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(cardMap);
         ctrl.replay();
-        //Assertions.assertArrayEquals(ArrayList<>(deckMap.values()), deckService.getDeckByName("validToken", "Owned"));
         List<PhysicalCardDecorator> decoratedCards = deckService.getDeckByName("validToken", "Owned");
         ctrl.verify();
         Assertions.assertAll(() -> {

@@ -33,6 +33,11 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
         view.resetData();
     }
 
+    @Override
+    public void fetchUserDeck() {
+        
+    }
+
     private void fetchUserDeckNames() {
         rpcService.getUserDeckNames(authSubject.getToken(), new BaseAsyncCallback<List<String>>() {
             @Override

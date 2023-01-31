@@ -6,6 +6,7 @@ import com.aadm.cardexchange.client.views.DecksView;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.easymock.EasyMock.createStrictControl;
 
@@ -20,5 +21,11 @@ public class DecksActivityTest {
         mockRpcService = ctrl.mock(DeckServiceAsync.class);
         AuthSubject authSubject = new AuthSubject(null);
         decksActivity = new DecksActivity(decksView, mockRpcService, authSubject);
+    }
+
+    @Test
+    public void testStart() {
+//        SimpleEventBus mockEventBus = new EventBus();
+//        decksActivity.start(SimpleEventBus);
     }
 }
