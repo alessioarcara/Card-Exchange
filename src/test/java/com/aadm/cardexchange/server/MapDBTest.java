@@ -1,21 +1,28 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
+import com.aadm.cardexchange.server.mapdb.MapDB;
+import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
+import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 
+import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import static org.easymock.EasyMock.*;
 
 interface MockObject {
     int getNum();
@@ -72,6 +79,18 @@ public class MapDBTest {
         Assertions.assertEquals(1, Objects.requireNonNull(map.get("test")).getNum());
 
         db.close();
+    }
+
+    @Test
+    public void testGetCachedMapForNoValueInAttribute() {
+        ServletContext mockCtx = createStrictMock(ServletContext.class);
+        MapDB db = new MapDBImpl();
+
+        expect(mockCtx.getAttribute(anyString())).andReturn(null);
+        mockCtx.setAttribute(anyString(), isA(DB.class));
+        replay(mockCtx);
+        Assertions.assertEquals(HTreeMap.class, db.getPersistentMap(mockCtx, "map", Serializer.STRING, Serializer.STRING).getClass());
+        verify(mockCtx);
     }
 }
 
