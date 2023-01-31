@@ -1,7 +1,6 @@
 package com.aadm.cardexchange.client.views;
 
-import com.aadm.cardexchange.client.widgets.AddCardToDeckWidget;
-import com.aadm.cardexchange.client.widgets.UserListWidget;
+import com.aadm.cardexchange.client.widgets.*;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -9,12 +8,10 @@ import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
-import com.google.gwt.user.client.ui.Image;
-import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.*;
 
-public class CardViewImpl extends Composite implements CardView {
+public class CardViewImpl extends Composite implements CardView, ImperativeHandleAddCardToDeck, ImperativeHandleAddCardToDeckModal {
     private static final CardsViewImplUIBinder uiBinder = GWT.create(CardsViewImplUIBinder.class);
     @UiField
     SpanElement cardGame;
@@ -63,6 +60,8 @@ public class CardViewImpl extends Composite implements CardView {
     @UiField
     HTMLPanel userLists;
     Presenter presenter;
+    AddCardToDeckWidget addCardToDeckWidget = new AddCardToDeckWidget(this);
+    DialogBox dialog = new AddCardToDeckModalWidget(this);
 
     public CardViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -152,7 +151,9 @@ public class CardViewImpl extends Composite implements CardView {
         addCardToDeckContainer.clear();
         userLists.clear();
         // create AddCartToDeckWidget
-        if (isLoggedIn) addCardToDeckContainer.add(new AddCardToDeckWidget());
+        if (isLoggedIn) {
+            addCardToDeckContainer.add(addCardToDeckWidget);
+        }
         // create UserListWidget 'Exchange' buttons
         userLists.add(new UserListWidget(
                 "Owned by",
@@ -160,7 +161,7 @@ public class CardViewImpl extends Composite implements CardView {
                 isLoggedIn
         ));
         userLists.add(new UserListWidget(
-                "Desired by",
+                "Wished by",
                 new String[]{"matteo.sacco04@studio.unibo.it"},
                 isLoggedIn));
     }
@@ -168,6 +169,45 @@ public class CardViewImpl extends Composite implements CardView {
     @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void onClickAddToDeck() {
+        dialog.center();
+        dialog.setModal(true);
+        dialog.show();
+        if (addCardToDeckWidget.getDeckName().equals("Owned")) {
+            dialog.setText("Do you own this card?");
+        } else if(addCardToDeckWidget.getDeckName().equals("Wished")) {
+            dialog.setText("Do you wish this card?");
+        } else {
+            dialog.setText("YOU MUST SELECT A DECK!");
+        }
+    }
+
+    @Override
+    public void hideModal() {
+        dialog.hide();
+    }
+
+    @Override
+    public void onClickModalNo() {
+        hideModal();
+    }
+
+    @Override
+    public void onClickModalYes(String status, String description) {
+        presenter.addCardToDeck(addCardToDeckWidget.getDeckName(), status, description);
+    }
+
+    @Override
+    public void displayErrorAlert(String errorMessage) {
+        Window.alert(errorMessage);
+    }
+
+    @Override
+    public void displaySuccessAlert() {
+        Window.alert("Success! Card added to " + addCardToDeckWidget.getDeckName() + " deck");
     }
 
     interface CardsViewImplUIBinder extends UiBinder<Widget, CardViewImpl> {

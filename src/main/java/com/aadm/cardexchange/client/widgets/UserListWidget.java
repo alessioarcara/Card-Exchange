@@ -18,7 +18,8 @@ public class UserListWidget extends Composite {
     FlexTable table;
     boolean showExchangeButton;
 
-    @UiConstructor public UserListWidget(String title, String[] users, boolean showExchangeButton) {
+    @UiConstructor
+    public UserListWidget(String title, String[] users, boolean showExchangeButton) {
         this.showExchangeButton = showExchangeButton;
         setupTable();
         initWidget(uiBinder.createAndBindUi(this));
