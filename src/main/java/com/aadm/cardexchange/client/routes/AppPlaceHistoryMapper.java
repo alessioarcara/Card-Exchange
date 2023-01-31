@@ -32,7 +32,7 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
                     Game game = Game.valueOf(parts[1]);
                     int cardId = Integer.parseInt(parts[2]);
                     return new CardPlace(game, cardId);
-                } else if (parts[0].equals("new-exchange")) {
+                } else if (parts[0].equals("new-exchange") && authSubject.isLoggedIn()) {
                     String receiverUserEmail = parts[1];
                     String selectedCardId = parts[2];
                     return new NewExchangePlace(selectedCardId, receiverUserEmail);
