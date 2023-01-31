@@ -12,12 +12,11 @@
         }
     </ui:style>
     <g:HTMLPanel styleName="{style.addCardToDeck}">
-        <select name="deck">
-            <option value="">-- select a deck --</option>
-            <option value="owned">Owned</option>
-            <option value="desired">Desired</option>
-            <option value="custom">Custom 1</option>
-        </select>
+        <g:ListBox ui:field="deckListBox">
+            <g:item value="">-- select a deck --</g:item>
+            <g:item value="Owned">Owned</g:item>
+            <g:item value="Wished">Wished</g:item>
+        </g:ListBox>
         <g:PushButton addStyleNames="{style.deckButton}" ui:field="addToDeckButton">Add to deck</g:PushButton>
     </g:HTMLPanel>
 </ui:UiBinder>

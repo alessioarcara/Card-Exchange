@@ -11,6 +11,7 @@ import com.aadm.cardexchange.client.presenters.DecksActivity;
 import com.aadm.cardexchange.client.presenters.HomeActivity;
 import com.aadm.cardexchange.shared.AuthService;
 import com.aadm.cardexchange.shared.CardService;
+import com.aadm.cardexchange.shared.DeckService;
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;
@@ -28,7 +29,7 @@ public class AppActivityMapper implements ActivityMapper {
         if (place instanceof HomePlace)
             return new HomeActivity(clientFactory.getHomeView(), GWT.create(CardService.class), clientFactory.getPlaceController());
         if (place instanceof CardPlace)
-            return new CardActivity((CardPlace) place, clientFactory.getCardView(), GWT.create(CardService.class), clientFactory.getAuthSubject());
+            return new CardActivity((CardPlace) place, clientFactory.getCardView(), GWT.create(CardService.class), GWT.create(DeckService.class), clientFactory.getAuthSubject());
         if (place instanceof AuthPlace)
             return new AuthActivity(clientFactory.getAuthView(), GWT.create(AuthService.class), clientFactory.getAuthSubject(), clientFactory.getPlaceController());
         if (place instanceof DecksPlace)
