@@ -11,4 +11,13 @@ public enum Status {
     public int getValue() {
         return value;
     }
+
+    public static Status getStatus(int value) {
+        return value == 1 ? VeryDamaged :
+                value == 2 ? Damaged :
+                        value == 3 ? Fair :
+                                value == 4 ? Good :
+                                        value == 5 ? Excellent :
+                                                null;
+    }
 }
