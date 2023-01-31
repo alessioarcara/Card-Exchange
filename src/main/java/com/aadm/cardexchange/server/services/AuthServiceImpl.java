@@ -6,13 +6,16 @@ import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.AuthService;
 import com.aadm.cardexchange.shared.models.AuthException;
+import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.lang.reflect.Type;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Map;
@@ -27,6 +30,8 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
             "^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
     private final MapDB db;
     private final Gson gson = new Gson();
+    private final Type type = new TypeToken<Map<String, Deck>>() {
+    }.getType();
 
     public AuthServiceImpl() {
         db = new MapDBImpl();
@@ -105,7 +110,13 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
             throw new AuthException("User already exists");
         }
         DeckServiceImpl.createDefaultDecks(email,
-                db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+                db.getPersistentMap(
+                        getServletContext(),
+                        DECK_MAP_NAME,
+                        Serializer.STRING,
+                        new GsonSerializer<>(gson, type)
+                )
+        );
         return generateAndStoreLoginToken(user);
     }
 

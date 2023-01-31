@@ -47,25 +47,16 @@ public class DeckServiceTest {
             put("Wished", new Deck("Wished"));
         }};
         deckMap.put("test@test.it", mockDecks);
-//        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-//        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-//                .andReturn(deckMap);
         ctrl.replay();
-        Assertions.assertFalse(deckService.createDefaultDecks("test@test.it", deckMap));
+        Assertions.assertFalse(DeckServiceImpl.createDefaultDecks("test@test.it", deckMap));
         ctrl.verify();
     }
 
     @Test
     public void testDefaultDeckCreation() {
         Map<String, Map<String, Deck>> deckMap = new HashMap<>();
-//        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-//        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-//                .andReturn(deckMap);
-//        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-//        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-//                .andReturn(deckMap);
         ctrl.replay();
-        Assertions.assertTrue(deckService.createDefaultDecks("testbis@test.it", deckMap));
+        Assertions.assertTrue(DeckServiceImpl.createDefaultDecks("testbis@test.it", deckMap));
         ctrl.verify();
         // check if default decks "Owned", "Wished" are present
         Assertions.assertAll(() -> {

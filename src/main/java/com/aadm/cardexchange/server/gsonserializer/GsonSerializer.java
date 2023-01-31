@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import org.jetbrains.annotations.NotNull;
 import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 import org.mapdb.Serializer;
@@ -16,7 +17,6 @@ public class GsonSerializer<T> implements Serializer<T> {
     private final Gson gson;
     private Type type;
 
-
     public GsonSerializer(Gson gson) {
         this.gson = gson;
     }
@@ -27,7 +27,7 @@ public class GsonSerializer<T> implements Serializer<T> {
     }
 
     @Override
-    public void serialize(DataOutput2 out, T value) throws IOException {
+    public void serialize(@NotNull DataOutput2 out, @NotNull T value) throws IOException {
         if (type != null) {
             String json = gson.toJson(value, type);
             out.writeUTF(json);

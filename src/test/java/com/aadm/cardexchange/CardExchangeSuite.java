@@ -18,6 +18,7 @@ import org.junit.platform.suite.api.Suite;
         PhysicalCardDecoratorTest.class,
         PhysicalCardTest.class,
         DeckTest.class,
+        MapDBTest.class,
         GsonSerializerTest.class,
         JSONParserTest.class,
         CardServiceTest.class,

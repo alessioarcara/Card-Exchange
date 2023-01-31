@@ -6,10 +6,12 @@ import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.DeckService;
 import com.aadm.cardexchange.shared.models.*;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 
@@ -17,6 +19,8 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     private static final long serialVersionUID = 5868007467963819042L;
     private final MapDB db;
     private final Gson gson = new Gson();
+    private final Type type = new TypeToken<Map<String, Deck>>() {
+    }.getType();
 
     public DeckServiceImpl() {
         db = new MapDBImpl();
@@ -26,14 +30,6 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         db = mockDB;
     }
 
-    @Override
-    public boolean addDeck(String token, String deckName) throws AuthException {
-        String email = AuthServiceImpl.checkTokenValidity(token,
-                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
-        return addDeck(email, deckName, false, deckMap);
-    }
-
     private static boolean addDeck(String email, String deckName, boolean isDefault, Map<String, Map<String, Deck>> deckMap) {
         Map<String, Deck> userDecks = deckMap.computeIfAbsent(email, k -> new HashMap<>());
         // if deck already exists in decks container do nothing
@@ -41,7 +37,16 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             return false;
         }
         userDecks.put(deckName, new Deck(deckName, isDefault));
+        deckMap.put(email, userDecks);
         return true;
+    }
+
+    @Override
+    public boolean addDeck(String token, String deckName) throws AuthException {
+        String email = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
+        return addDeck(email, deckName, false, deckMap);
     }
 
     public static boolean createDefaultDecks(String email, Map<String, Map<String, Deck>> deckMap) {
@@ -81,7 +86,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             throw new IllegalArgumentException("Invalid description");
         }
         /* PHYSICAL CARD ADDITION TO DECK*/
-        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> decks = deckMap.get(userEmail);
         if (decks == null) {
             throw new RuntimeException("Not existing decks");
@@ -98,7 +103,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     @Override
     public List<String> getUserDecks(String token) throws AuthException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> decks = deckMap.get(userEmail);
         return decks == null ? Collections.emptyList() : new ArrayList<>(decks.keySet());
     }

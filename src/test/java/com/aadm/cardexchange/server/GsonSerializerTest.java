@@ -64,7 +64,7 @@ public class GsonSerializerTest implements CardTestConstants {
     }
 
     @Test
-    public void testSerializerForMapOfMapOfStrings() throws IOException {
+    public void testSerializerForMapOfStrings() throws IOException {
         Gson gson = new Gson();
         Type type = new TypeToken<Map<String, String>>() {
         }.getType();
