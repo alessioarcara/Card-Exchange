@@ -15,5 +15,5 @@ public interface DeckService extends RemoteService {
 
     boolean addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description) throws AuthException;
 
-    List<String> getUserDecks(String token) throws AuthException;
+    List<String> getUserDeckNames(String token) throws AuthException;
 }

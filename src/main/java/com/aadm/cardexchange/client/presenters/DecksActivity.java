@@ -34,7 +34,7 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
     }
 
     private void fetchUserDeckNames() {
-        rpcService.getUserDecks(authSubject.getToken(), new BaseAsyncCallback<List<String>>() {
+        rpcService.getUserDeckNames(authSubject.getToken(), new BaseAsyncCallback<List<String>>() {
             @Override
             public void onSuccess(List<String> result) {
                 view.setData(result);

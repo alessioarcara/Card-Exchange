@@ -1,7 +1,10 @@
 package com.aadm.cardexchange.shared;
 
-import com.aadm.cardexchange.server.GsonSerializer;
-import com.aadm.cardexchange.shared.models.*;
+import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
+import com.aadm.cardexchange.shared.models.Game;
+import com.aadm.cardexchange.shared.models.PhysicalCardImpl;
+import com.aadm.cardexchange.shared.models.Proposal;
+import com.aadm.cardexchange.shared.models.Status;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,12 +38,12 @@ public class ProposalTest {
         receiverCard1 = new PhysicalCardImpl(Game.YuGiOh, 333, Status.Excellent, validDesc);
         receiverCard2 = new PhysicalCardImpl(Game.Pokemon, 444, Status.Fair, validDesc);
 
-        senderCards = new ArrayList<>(){{
+        senderCards = new ArrayList<>() {{
             add(senderCard1);
             add(senderCard2);
         }};
 
-        receiversCards = new ArrayList<>(){{
+        receiversCards = new ArrayList<>() {{
             add(receiverCard1);
             add(receiverCard2);
         }};
@@ -61,6 +64,7 @@ public class ProposalTest {
     public void testGetSenderEmail() {
         Assertions.assertEquals(senderEmail, prop.getSenderUserEmail());
     }
+
     @Test
     public void testGetReceiverEmail() {
         Assertions.assertEquals(receiverEmail, prop.getReceiverUserEmail());

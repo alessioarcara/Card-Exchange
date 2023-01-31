@@ -252,7 +252,7 @@ public class DeckServiceTest {
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"invalidToken"})
-    public void testGetUserDecksForInvalidToken(String input) {
+    public void testGetUserDeckNamesForInvalidToken(String input) {
         Map<String, LoginInfo> loginInfoMap = new HashMap<>() {{
             put("validToken1", new LoginInfo("test@test.it", System.currentTimeMillis() - 10000));
             put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 20000));
@@ -262,12 +262,12 @@ public class DeckServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(loginInfoMap);
         ctrl.replay();
-        Assertions.assertThrows(AuthException.class, () -> deckService.getUserDecks(input));
+        Assertions.assertThrows(AuthException.class, () -> deckService.getUserDeckNames(input));
         ctrl.verify();
     }
 
     @Test
-    public void testGetUserDecksForNotExistingDeckMap() throws AuthException {
+    public void testGetUserDeckNamesForNotExistingDeckMap() throws AuthException {
         setupForValidToken();
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
             put("test@test.it", null);
@@ -276,12 +276,12 @@ public class DeckServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(mockDeckMap);
         ctrl.replay();
-        Assertions.assertTrue(deckService.getUserDecks("validToken").isEmpty());
+        Assertions.assertTrue(deckService.getUserDeckNames("validToken").isEmpty());
         ctrl.verify();
     }
 
     @Test
-    public void testGetUserDecksForReturnCorrectDeckNames() throws AuthException {
+    public void testGetUserDeckNamesForReturnCorrectDeckNames() throws AuthException {
         List<String> mockDeckNames = Arrays.asList("Owned", "Wished", "Test");
         setupForValidToken();
         Map<String, Deck> decks = new HashMap<>() {{
@@ -296,7 +296,7 @@ public class DeckServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(mockDeckMap);
         ctrl.replay();
-        List<String> deckNames = deckService.getUserDecks("validToken");
+        List<String> deckNames = deckService.getUserDeckNames("validToken");
         ctrl.verify();
         Assertions.assertAll(() -> {
             Assertions.assertEquals(mockDeckNames.size(), deckNames.size());
