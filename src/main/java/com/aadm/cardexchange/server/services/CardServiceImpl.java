@@ -28,7 +28,7 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
         this.db = db;
     }
 
-    private String getMapName(Game game) {
+    public static String getCardMap(Game game) {
         return game == Game.Magic ? MAGIC_MAP_NAME :
                 game == Game.Pokemon ? POKEMON_MAP_NAME :
                         YUGIOH_MAP_NAME;
@@ -38,9 +38,17 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
     public List<CardDecorator> getGameCards(Game game) {
         if (game == null)
             throw new IllegalArgumentException("game cannot be null");
-        Map<Integer, CardDecorator> map = db.getCachedMap(getServletContext(), getMapName(game),
+        Map<Integer, CardDecorator> map = db.getCachedMap(getServletContext(), getCardMap(game),
                 Serializer.INTEGER, serializer);
         return new ArrayList<>(map.values());
+    }
+
+    public static String getNameCard(Game game, int idCard, Map<Integer, CardDecorator> cardMap) {
+        try {
+            return cardMap.get(idCard).getName();
+        } catch (NullPointerException e) {
+            return "No Name Found";
+        }
     }
 
     @Override
@@ -49,7 +57,7 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
             throw new IllegalArgumentException("game cannot be null");
         if (cardId <= 0)
             throw new IllegalArgumentException("Invalid cardId provided. cardId must be a positive integer greater than 0");
-        Map<Integer, CardDecorator> map = db.getCachedMap(getServletContext(), getMapName(game),
+        Map<Integer, CardDecorator> map = db.getCachedMap(getServletContext(), getCardMap(game),
                 Serializer.INTEGER, serializer);
         return map.get(cardId);
     }

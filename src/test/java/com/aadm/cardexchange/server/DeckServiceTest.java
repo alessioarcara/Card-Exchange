@@ -303,4 +303,80 @@ public class DeckServiceTest {
             Assertions.assertIterableEquals(mockDeckNames, deckNames);
         });
     }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testGetDeckByNameForInvalidToken(String input) {
+        Map<String, LoginInfo> loginInfoMap = new HashMap<>() {{
+            put("validToken1", new LoginInfo("test@test.it", System.currentTimeMillis() - 10000));
+            put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 20000));
+            put("validToken3", new LoginInfo("test3@test.it", System.currentTimeMillis() - 30000));
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(loginInfoMap);
+
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> deckService.getDeckByName(input, "Owned"));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetDeckByNameForNotExistingDeck() {
+        setupForValidToken();
+        Map<String, Deck> deckMap = new HashMap<>();
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", deckMap);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertThrows(NullPointerException.class, () -> deckService.getDeckByName("validToken", "Owned"));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetDeckByNameForValidEntry() throws AuthException {
+        //init Mocks
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.Magic, 1221, Status.Fair, "This is a valid bis description.");
+        CardDecorator mockCard1 = new CardDecorator(new CardImpl("Nome1", "Desc1", "Type1"));
+        CardDecorator mockCard2 = new CardDecorator(new CardImpl("Nome2", "Desc2", "Type2"));
+        Map <Integer, CardDecorator> cardMap = new HashMap<>() {{
+            put(1111, mockCard1);
+            put(1221, mockCard2);
+        }};
+        Map<String, Deck> userDecks = new HashMap<>() {{
+            put("Owned", new Deck("test@test.it", "Owned", true));
+        }};
+        Map<String, Map<String, Deck>> deckMap = new HashMap<>() {{
+           put("test@test.it", userDecks);
+        }};
+        userDecks.get("Owned").addPhysicalCard(mockPCard1);
+        userDecks.get("Owned").addPhysicalCard(mockPCard2);
+
+        //what I expect
+        setupForValidToken();
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(deckMap);
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(cardMap);
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(cardMap);
+        ctrl.replay();
+        //Assertions.assertArrayEquals(ArrayList<>(deckMap.values()), deckService.getDeckByName("validToken", "Owned"));
+        List<PhysicalCardDecorator> decoratedCards = deckService.getDeckByName("validToken", "Owned");
+        ctrl.verify();
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(2, decoratedCards.size());
+            Assertions.assertEquals("Nome1", decoratedCards.get(0).getName());
+            Assertions.assertEquals("Nome2", decoratedCards.get(1).getName());
+
+        });
+    }
 }

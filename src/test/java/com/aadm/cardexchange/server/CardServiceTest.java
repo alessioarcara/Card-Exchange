@@ -16,6 +16,7 @@ import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -104,4 +105,11 @@ public class CardServiceTest {
         ctrl.verify();
         Assertions.assertEquals(expectedMap.get(2), actualCard);
     }
+
+    @Test
+    public void testGetNameCard(){
+        Assertions.assertEquals("No Name Found", CardServiceImpl.getNameCard(Game.Magic, 1111, new HashMap<>()));
+    }
+
+
 }

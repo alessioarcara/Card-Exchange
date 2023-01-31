@@ -26,6 +26,8 @@ public class CardDecorator implements Card {
         return wrapped.getName();
     }
 
+   // public static String getStaticName(int id) {return  .getName();}
+
     @Override
     public String getDescription() {
         return wrapped.getDescription();
