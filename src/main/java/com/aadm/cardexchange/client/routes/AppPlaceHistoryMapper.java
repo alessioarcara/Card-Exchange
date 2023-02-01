@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.client.routes;
 
-import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
+import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.places.*;
 import com.aadm.cardexchange.shared.models.Game;
 import com.google.gwt.place.shared.Place;
