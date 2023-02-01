@@ -13,6 +13,8 @@ public interface DeckService extends RemoteService {
 
     boolean addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description) throws AuthException;
 
+    boolean removePhysicalCardFromDeck(String token, String deckName, PhysicalCardImpl pCardImpl) throws AuthException;
+
     List<String> getUserDeckNames(String token) throws AuthException;
 
     List<PhysicalCardDecorator> getDeckByName(String token, String deckName) throws AuthException;

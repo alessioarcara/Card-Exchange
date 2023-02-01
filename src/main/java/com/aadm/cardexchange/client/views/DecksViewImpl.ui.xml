@@ -3,11 +3,11 @@
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <ui:style>
         .deckLayout {
-            display: flex;
+/*            display: flex;
             flex-direction: column;
             width: 100%;
             height: 100%;
-            text-align: center;
+            text-align: center;*/
         }
     </ui:style>
     <g:HTMLPanel styleName="{style.deckLayout}">

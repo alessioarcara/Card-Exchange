@@ -101,6 +101,29 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     }
 
     @Override
+    public boolean removePhysicalCardFromDeck(String token, String deckName, PhysicalCardImpl pCardImpl) throws AuthException {
+        String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        if (deckName == null || deckName.isEmpty()) {
+            throw new IllegalArgumentException("Invalid deck name");
+        }
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
+        Map<String, Deck> decks = new HashMap<>(deckMap.get(userEmail));
+        if (decks.size() == 0) {
+            throw new RuntimeException("Not existing decks");
+        }
+        Deck foundDeck = decks.get(deckName);
+        if (foundDeck == null) {
+            return false;
+        }
+        try {
+            return foundDeck.removePhysicalCard(pCardImpl);
+        } catch (Error e) {
+            return false;
+        }
+
+    }
+
+    @Override
     public List<String> getUserDeckNames(String token) throws AuthException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));

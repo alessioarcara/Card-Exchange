@@ -370,6 +370,7 @@ public class DeckServiceTest {
                 .andReturn(cardMap);
         ctrl.replay();
         List<PhysicalCardDecorator> decoratedCards = deckService.getDeckByName("validToken", "Owned");
+        System.out.println();
         ctrl.verify();
         Assertions.assertAll(() -> {
             Assertions.assertEquals(2, decoratedCards.size());
@@ -378,4 +379,103 @@ public class DeckServiceTest {
 
         });
     }
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void testRemovePhysicalCardFromDeckForInvalidDeckName(String input) {
+        setupForValidToken();
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
+        ctrl.replay();
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                deckService.removePhysicalCardFromDeck("validToken", input, mockPCard1)
+        );
+        ctrl.verify();
+    }
+    @Test
+    public void testRemovePhysicalCardFromDeckForNotExistingDeckMap() {
+        setupForValidToken();
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
+
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", null);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertThrows(RuntimeException.class, () ->
+                deckService.removePhysicalCardFromDeck("validToken", "Owned", mockPCard1)
+        );
+        ctrl.verify();
+    }
+
+    @Test
+    public void testRemovePhysicalCardFromDeckForNotExistingDeck() throws AuthException {
+        setupForValidToken();
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
+        Map<String, Deck> deckMap = new HashMap<>() {{
+            put("Wished", new Deck("Wished", true));
+        }};
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", deckMap);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertFalse(deckService.removePhysicalCardFromDeck("validToken", "Owned", mockPCard1));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testRemovePhysicalCardFromDeckForNotExistingPhysicalCard() throws AuthException {
+        setupForValidToken();
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.Magic, 1221, Status.Fair, "This is a valid bis description.");
+        Map<String, Deck> deckMap = new HashMap<>() {{
+            put("Owned", new Deck("Owned", true));
+        }};
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", deckMap);
+        }};
+        deckMap.get("Owned").addPhysicalCard(mockPCard2);
+
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        //.remove method of Set.java return false is object to remove is not present
+        Assertions.assertFalse(deckService.removePhysicalCardFromDeck("validToken", "Owned", mockPCard1));
+        ctrl.verify();
+    }
+/*
+    public void testRemovePhysicalCardFromDeckWithErrorInNativeMethodRemove() {
+        setupForValidToken();
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
+        ctrl.replay();
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+                deckService.removePhysicalCardFromDeck("validToken", "owned", "test")
+        );
+        ctrl.verify();
+    }
+*/
+    @Test
+    public void testRemovePhysicalCardFromDeckSuccess() throws AuthException {
+        setupForValidToken();
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
+        Map<String, Deck> deckMap = new HashMap<>() {{
+            put("Owned", new Deck("Owned", true));
+        }};
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", deckMap);
+        }};
+        deckMap.get("Owned").addPhysicalCard(mockPCard1);
+
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertTrue(deckService.removePhysicalCardFromDeck("validToken", "Owned", mockPCard1));
+        ctrl.verify();
+    }
+
 }
