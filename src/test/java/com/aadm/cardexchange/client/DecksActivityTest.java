@@ -38,7 +38,7 @@ public class DecksActivityTest {
 
     @Test
     public void testFetchUserDeckForSuccess() {
-        mockRpcService.getDeckByName(anyString(), anyString(), isA(BaseAsyncCallback.class));
+        mockRpcService.getMyDeck(anyString(), anyString(), isA(BaseAsyncCallback.class));
         List<PhysicalCardDecorator> pcards = new ArrayList<>() {{
             add(new PhysicalCardDecorator(
                     new PhysicalCardImpl(Game.MAGIC, 111, Status.Good, "This is a valid description"),

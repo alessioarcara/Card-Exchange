@@ -41,7 +41,7 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
         db = mockDB;
     }
 
-    private boolean validateEmail(String email) {
+    public static boolean validateEmail(String email) {
         Matcher matcher = emailPattern.matcher(email);
         return matcher.find();
     }

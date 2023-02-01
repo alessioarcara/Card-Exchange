@@ -16,6 +16,8 @@ import org.mapdb.Serializer;
 import java.lang.reflect.Type;
 import java.util.*;
 
+import static com.aadm.cardexchange.server.services.AuthServiceImpl.validateEmail;
+
 
 public class DeckServiceImpl extends RemoteServiceServlet implements DeckService, MapDBConstants {
     private static final long serialVersionUID = 5868007467963819042L;
@@ -114,33 +116,46 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return decks == null ? Collections.emptyList() : new ArrayList<>(decks.keySet());
     }
 
-    @Override
-    public List<PhysicalCardDecorator> getDeckByName(String token, String deckName) throws AuthException {
-        String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+    private List<PhysicalCardDecorator> getUserDeck(String userEmail, String deckName) {
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> allUserDecks = deckMap.get(userEmail);
-        Deck thisUserDeck = allUserDecks.get(deckName);
+        Deck userDeck = allUserDecks.get(deckName);
         List<PhysicalCardDecorator> pDecoratedCards = new ArrayList<>();
-        for (PhysicalCard physicalCard : thisUserDeck.getPhysicalCards()) {
+        for (PhysicalCardImpl pCard : userDeck.getPhysicalCards()) {
             String cardName = CardServiceImpl.getNameCard(
-                    physicalCard.getCardId(),
+                    pCard.getCardId(),
                     db.getCachedMap(
                             getServletContext(),
-                            CardServiceImpl.getCardMap(physicalCard.getGameType()),
+                            CardServiceImpl.getCardMap(pCard.getGameType()),
                             Serializer.INTEGER,
                             new GsonSerializer<>(gson)
                     )
             );
-            PhysicalCardDecorator thisPhysicalDecoratorCard = new PhysicalCardDecorator(
-                    new PhysicalCardImpl(
-                            physicalCard.getGameType(),
-                            physicalCard.getCardId(),
-                            physicalCard.getStatus(),
-                            physicalCard.getDescription()),
-                    cardName
-            );
-            pDecoratedCards.add(thisPhysicalDecoratorCard);
+            pDecoratedCards.add(new PhysicalCardDecorator(pCard, cardName));
         }
         return pDecoratedCards;
+    }
+
+    @Override
+    public List<PhysicalCardDecorator> getMyDeck(String token, String deckName) throws AuthException {
+        return getUserDeck(
+                AuthServiceImpl.checkTokenValidity(
+                        token,
+                        db.getPersistentMap(getServletContext(),
+                                LOGIN_MAP_NAME,
+                                Serializer.STRING,
+                                new GsonSerializer<>(gson)
+                        )
+                ),
+                deckName
+        );
+    }
+
+    @Override
+    public List<PhysicalCardDecorator> getUserOwnedDeck(String email) throws AuthException {
+        if (email == null || !validateEmail(email)) {
+            throw new AuthException("Invalid email");
+        }
+        return getUserDeck(email, "Owned");
     }
 }
