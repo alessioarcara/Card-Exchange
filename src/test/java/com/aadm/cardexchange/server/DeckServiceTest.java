@@ -398,7 +398,60 @@ public class DeckServiceTest {
     public void testGetUserOwnedDeckForValidEmail() throws AuthException {
         setupForValidCardsAndUserDecks();
         ctrl.replay();
-        Assertions.assertNotNull(deckService.getUserOwnedDeck("test@test.it"));
+        List<PhysicalCardDecorator> decoratedCards = deckService.getUserOwnedDeck("test@test.it");
         ctrl.verify();
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(2, decoratedCards.size());
+            Assertions.assertEquals("Nome1", decoratedCards.get(0).getName());
+            Assertions.assertEquals("Nome2", decoratedCards.get(1).getName());
+        });
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0})
+    public void testGetOwnedPhysicalCardsByCardIdForInvalidId(int input) {
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> deckService.getOwnedPhysicalCardsByCardId(input));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetOwnedPhysicalCardsByCardIdForValidId() throws InputException {
+        // init Mocks
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Good, "This is a valid description.");
+        PhysicalCardImpl mockPCard3 = new PhysicalCardImpl(Game.POKEMON, 2222, Status.Fair, "This is a valid description.");
+        PhysicalCardImpl mockPCard4 = new PhysicalCardImpl(Game.YUGIOH, 3333, Status.Damaged, "This is a valid description.");
+
+        Deck test1OwnedDeck = new Deck("Owned");
+        Deck test2OwnedDeck = new Deck("Owned");
+        test1OwnedDeck.addPhysicalCard(mockPCard1);
+        test1OwnedDeck.addPhysicalCard(mockPCard3);
+        test2OwnedDeck.addPhysicalCard(mockPCard2);
+        test2OwnedDeck.addPhysicalCard(mockPCard4);
+        Map<String, Deck> test1Decks = new HashMap<>() {{
+            put("Owned", test1OwnedDeck);
+        }};
+        Map<String, Deck> test2Decks = new HashMap<>() {{
+            put("Owned", test2OwnedDeck);
+        }};
+        Map<String, Map<String, Deck>> deckMap = new HashMap<>() {{
+            put("test1@test.it", test1Decks);
+            put("test2@test.it", test2Decks);
+        }};
+
+        // what I expect
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(deckMap);
+
+        ctrl.replay();
+        List<PhysicalCardImpl> decoratedCards = deckService.getOwnedPhysicalCardsByCardId(1111);
+        ctrl.verify();
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(2, decoratedCards.size());
+//            Assertions.assertEquals("Nome1", decoratedCards.get(0).getName());
+//            Assertions.assertEquals("Nome2", decoratedCards.get(1).getName());
+        });
     }
 }

@@ -158,4 +158,23 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         }
         return getUserDeck(email, "Owned");
     }
+
+    @Override
+    public List<PhysicalCardImpl> getOwnedPhysicalCardsByCardId(int cardId) throws InputException {
+        if (cardId <= 0) {
+            throw new InputException("Invalid cardId");
+        }
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
+        Set<String> userEmails = deckMap.keySet();
+        List<PhysicalCardImpl> pDecoratedCards = new ArrayList<>();
+        for (String userEmail : userEmails) {
+            Set<PhysicalCardImpl> pCards = deckMap.get(userEmail).get("Owned").getPhysicalCards();
+            for (PhysicalCardImpl pCard : pCards) {
+                if (pCard.getCardId() == cardId) {
+                    pDecoratedCards.add(pCard);
+                }
+            }
+        }
+        return pDecoratedCards;
+    }
 }
