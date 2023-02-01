@@ -1,4 +1,4 @@
-package com.aadm.cardexchange.server;
+package com.aadm.cardexchange.server.mapdb;
 
 import org.mapdb.Serializer;
 
@@ -11,6 +11,4 @@ public interface MapDB {
 
     <K, V> Map<K, V> getPersistentMap(ServletContext ctx, String mapName, Serializer<K> keySerializer,
                                       Serializer<V> valueSerializer);
-
-    void flush(ServletContext ctx);
 }

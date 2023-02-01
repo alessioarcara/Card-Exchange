@@ -1,4 +1,4 @@
-package com.aadm.cardexchange.server;
+package com.aadm.cardexchange.server.mapdb;
 
 public interface MapDBConstants {
     String DB_FILENAME = "db";
