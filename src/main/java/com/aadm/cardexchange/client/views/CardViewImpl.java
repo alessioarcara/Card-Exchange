@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client.views;
 
+import com.aadm.cardexchange.client.places.NewExchangePlace;
 import com.aadm.cardexchange.client.widgets.*;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
@@ -11,7 +12,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
-public class CardViewImpl extends Composite implements CardView, ImperativeHandleAddCardToDeck, ImperativeHandleAddCardToDeckModal {
+public class CardViewImpl extends Composite implements CardView, ImperativeHandleAddCardToDeck, ImperativeHandleAddCardToDeckModal, ImperativeHandlerExchangeCard {
     private static final CardsViewImplUIBinder uiBinder = GWT.create(CardsViewImplUIBinder.class);
     @UiField
     SpanElement cardGame;
@@ -158,12 +159,11 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
         userLists.add(new UserListWidget(
                 "Owned by",
                 new String[]{"alessio.arcara@hotmail.com", "davide.fermi@gmail.com", "alessia.crimaldi@virgilio.it", "alessio.arcara@hotmail.com", "davide.fermi@gmail.com", "alessia.crimaldi@virgilio.it"},
-                isLoggedIn
-        ));
+                isLoggedIn, this));
         userLists.add(new UserListWidget(
                 "Wished by",
                 new String[]{"matteo.sacco04@studio.unibo.it"},
-                isLoggedIn));
+                isLoggedIn, this));
     }
 
     @Override
@@ -208,6 +208,11 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
     @Override
     public void displaySuccessAlert() {
         Window.alert("Success! Card added to " + addCardToDeckWidget.getDeckName() + " deck");
+    }
+
+    @Override
+    public void onClickExchange(String receiverUserEmail, String selectedCardId) {
+        presenter.goTo(new NewExchangePlace(selectedCardId, receiverUserEmail));
     }
 
     interface CardsViewImplUIBinder extends UiBinder<Widget, CardViewImpl> {

@@ -7,6 +7,7 @@ import com.aadm.cardexchange.client.views.CardView;
 import com.aadm.cardexchange.shared.CardServiceAsync;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.models.*;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,6 +27,7 @@ public class CardActivityTest {
     CardView mockView;
     CardServiceAsync mockCardService;
     DeckServiceAsync mockDeckService;
+    PlaceController placeController;
     CardActivity cardActivity;
 
     @BeforeEach
@@ -35,7 +37,8 @@ public class CardActivityTest {
         mockView = ctrl.createMock(CardView.class);
         mockCardService = ctrl.mock(CardServiceAsync.class);
         mockDeckService = ctrl.mock(DeckServiceAsync.class);
-        cardActivity = new CardActivity(mockPlace, mockView, mockCardService, mockDeckService, new AuthSubject(null));
+        placeController = ctrl.createMock(PlaceController.class);
+        cardActivity = new CardActivity(mockPlace, mockView, mockCardService, mockDeckService, new AuthSubject(null), placeController);
     }
 
     @Test
