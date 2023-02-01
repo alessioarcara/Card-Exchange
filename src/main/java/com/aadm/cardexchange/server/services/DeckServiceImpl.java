@@ -119,27 +119,19 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     private List<PhysicalCardDecorator> getUserDeck(String userEmail, String deckName) {
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> allUserDecks = deckMap.get(userEmail);
-        Deck thisUserDeck = allUserDecks.get(deckName);
+        Deck userDeck = allUserDecks.get(deckName);
         List<PhysicalCardDecorator> pDecoratedCards = new ArrayList<>();
-        for (PhysicalCard physicalCard : thisUserDeck.getPhysicalCards()) {
+        for (PhysicalCardImpl pCard : userDeck.getPhysicalCards()) {
             String cardName = CardServiceImpl.getNameCard(
-                    physicalCard.getCardId(),
+                    pCard.getCardId(),
                     db.getCachedMap(
                             getServletContext(),
-                            CardServiceImpl.getCardMap(physicalCard.getGameType()),
+                            CardServiceImpl.getCardMap(pCard.getGameType()),
                             Serializer.INTEGER,
                             new GsonSerializer<>(gson)
                     )
             );
-            PhysicalCardDecorator thisPhysicalDecoratorCard = new PhysicalCardDecorator(
-                    new PhysicalCardImpl(
-                            physicalCard.getGameType(),
-                            physicalCard.getCardId(),
-                            physicalCard.getStatus(),
-                            physicalCard.getDescription()),
-                    cardName
-            );
-            pDecoratedCards.add(thisPhysicalDecoratorCard);
+            pDecoratedCards.add(new PhysicalCardDecorator(pCard, cardName));
         }
         return pDecoratedCards;
     }
