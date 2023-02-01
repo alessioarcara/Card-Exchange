@@ -37,7 +37,7 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
 
     @Override
     public void fetchUserDeck(String deckName, Consumer<List<PhysicalCardDecorator>> setDeckData) {
-        rpcService.getDeckByName(authSubject.getToken(), deckName, new BaseAsyncCallback<List<PhysicalCardDecorator>>() {
+        rpcService.getMyDeck(authSubject.getToken(), deckName, new BaseAsyncCallback<List<PhysicalCardDecorator>>() {
             @Override
             public void onSuccess(List<PhysicalCardDecorator> result) {
                 setDeckData.accept(result);

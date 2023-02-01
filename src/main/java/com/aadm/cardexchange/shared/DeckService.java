@@ -19,5 +19,7 @@ public interface DeckService extends RemoteService {
 
     List<String> getUserDeckNames(String token) throws AuthException;
 
-    List<PhysicalCardDecorator> getDeckByName(String token, String deckName) throws AuthException;
+    List<PhysicalCardDecorator> getMyDeck(String token, String deckName) throws AuthException;
+
+    List<PhysicalCardDecorator> getUserOwnedDeck(String email) throws AuthException;
 }
