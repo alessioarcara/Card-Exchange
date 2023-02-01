@@ -117,7 +117,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     @Override
     public List<PhysicalCardDecorator> getDeckByName(String token, String deckName) throws AuthException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> allUserDecks = deckMap.get(userEmail);
         Deck thisUserDeck = allUserDecks.get(deckName);
         List<PhysicalCardDecorator> pDecoratedCards = new ArrayList<>();
