@@ -33,10 +33,10 @@ public class ProposalTest {
     public void initialize() {
         final String validDesc = "this is a valid description!!!";
 
-        senderCard1 = new PhysicalCardImpl(Game.YuGiOh, 111, Status.Good, validDesc);
-        senderCard2 = new PhysicalCardImpl(Game.Pokemon, 222, Status.Excellent, validDesc);
-        receiverCard1 = new PhysicalCardImpl(Game.YuGiOh, 333, Status.Excellent, validDesc);
-        receiverCard2 = new PhysicalCardImpl(Game.Pokemon, 444, Status.Fair, validDesc);
+        senderCard1 = new PhysicalCardImpl(Game.YUGIOH, 111, Status.Good, validDesc);
+        senderCard2 = new PhysicalCardImpl(Game.POKEMON, 222, Status.Excellent, validDesc);
+        receiverCard1 = new PhysicalCardImpl(Game.YUGIOH, 333, Status.Excellent, validDesc);
+        receiverCard2 = new PhysicalCardImpl(Game.POKEMON, 444, Status.Fair, validDesc);
 
         senderCards = new ArrayList<>() {{
             add(senderCard1);

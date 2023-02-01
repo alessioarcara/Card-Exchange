@@ -5,7 +5,7 @@ import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.AuthService;
-import com.aadm.cardexchange.shared.models.AuthException;
+import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;

@@ -42,17 +42,17 @@ public class CardServiceTest {
 
     private static Stream<Arguments> provideClassAndMockData() {
         return Stream.of(
-                Arguments.of(Game.Magic, MagicCardDecorator.class, MockCardData.createMagicDummyMap()),
-                Arguments.of(Game.Pokemon, PokemonCardDecorator.class, MockCardData.createPokemonDummyMap()),
-                Arguments.of(Game.YuGiOh, YuGiOhCardDecorator.class, MockCardData.createYuGiOhDummyMap())
+                Arguments.of(Game.MAGIC, MagicCardDecorator.class, MockCardData.createMagicDummyMap()),
+                Arguments.of(Game.POKEMON, PokemonCardDecorator.class, MockCardData.createPokemonDummyMap()),
+                Arguments.of(Game.YUGIOH, YuGiOhCardDecorator.class, MockCardData.createYuGiOhDummyMap())
         );
     }
 
     private static Stream<Arguments> provideMockData() {
         return Stream.of(
-                Arguments.of(Game.Magic, MockCardData.createMagicDummyMap()),
-                Arguments.of(Game.Pokemon, MockCardData.createPokemonDummyMap()),
-                Arguments.of(Game.YuGiOh, MockCardData.createYuGiOhDummyMap())
+                Arguments.of(Game.MAGIC, MockCardData.createMagicDummyMap()),
+                Arguments.of(Game.POKEMON, MockCardData.createPokemonDummyMap()),
+                Arguments.of(Game.YUGIOH, MockCardData.createYuGiOhDummyMap())
         );
     }
 
@@ -92,7 +92,7 @@ public class CardServiceTest {
 
     @Test
     public void testGetGameCardForLessThan0CardIdParameter() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> cardService.getGameCard(Game.Magic, -5));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> cardService.getGameCard(Game.MAGIC, -5));
     }
 
     @ParameterizedTest
@@ -107,8 +107,8 @@ public class CardServiceTest {
     }
 
     @Test
-    public void testGetNameCard(){
-        Assertions.assertEquals("No Name Found", CardServiceImpl.getNameCard(Game.Magic, 1111, new HashMap<>()));
+    public void testGetNameCard() {
+        Assertions.assertEquals("No Name Found", CardServiceImpl.getNameCard(1111, new HashMap<>()));
     }
 
 

@@ -3,16 +3,16 @@
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <ui:style>
         .deck {
-            /*padding: 1rem;*/
-            /*min-height: 30vh;*/
             width: 100%;
-            max-width: 100%;
-            background: aqua;
+            max-width: 85vw;
+            background: #942e94;
         }
 
-        .deckTitle {
+        .deckHeader {
             display: flex;
             align-items: center;
+            color: #fff;
+            padding-left: 1rem;
             gap: 1rem;
         }
 
@@ -23,13 +23,13 @@
             height: 2rem;
             width: 2rem;
             border-radius: 25%;
+            font-size: 1.1em;
             transform: rotate(90deg);
         }
 
         .showButton:hover {
             background: #eee;
             color: #444;
-            border: 1px solid #444;
         }
 
         .cards {
@@ -40,13 +40,13 @@
             height: 100%;
             width: 100%;
             justify-content: flex-start;
-            align-items: center;
+            align-items: stretch;
             overflow-x: scroll;
-            background: blueviolet;
+            background: #eee;
         }
     </ui:style>
     <g:HTMLPanel styleName="{style.deck}">
-        <div class="{style.deckTitle}">
+        <div class="{style.deckHeader}">
             <h2 ui:field="deckName"/>
             <g:Button styleName="{style.showButton}" ui:field="showButton">></g:Button>
         </div>

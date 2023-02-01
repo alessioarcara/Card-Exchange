@@ -29,7 +29,7 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
         } else {
             try {
                 String[] parts = token.split(DELIMITER);
-                Game game = Game.valueOf(parts[1]);
+                Game game = Game.valueOf(parts[1].toUpperCase());
                 int cardId = Integer.parseInt(parts[2]);
                 return new CardPlace(game, cardId);
             } catch (Exception e) {

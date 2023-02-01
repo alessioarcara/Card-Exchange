@@ -5,7 +5,7 @@ import com.aadm.cardexchange.client.presenters.AuthActivity;
 import com.aadm.cardexchange.client.views.AuthMode;
 import com.aadm.cardexchange.client.views.AuthView;
 import com.aadm.cardexchange.shared.AuthServiceAsync;
-import com.aadm.cardexchange.shared.models.AuthException;
+import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;

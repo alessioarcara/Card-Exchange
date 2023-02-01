@@ -29,8 +29,8 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
     }
 
     public static String getCardMap(Game game) {
-        return game == Game.Magic ? MAGIC_MAP_NAME :
-                game == Game.Pokemon ? POKEMON_MAP_NAME :
+        return game == Game.MAGIC ? MAGIC_MAP_NAME :
+                game == Game.POKEMON ? POKEMON_MAP_NAME :
                         YUGIOH_MAP_NAME;
     }
 
@@ -43,7 +43,7 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
         return new ArrayList<>(map.values());
     }
 
-    public static String getNameCard(Game game, int idCard, Map<Integer, CardDecorator> cardMap) {
+    public static String getNameCard(int idCard, Map<Integer, CardDecorator> cardMap) {
         try {
             return cardMap.get(idCard).getName();
         } catch (NullPointerException e) {

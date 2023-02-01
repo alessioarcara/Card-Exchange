@@ -29,7 +29,8 @@ public class PhysicalCardWidget extends Composite {
 
     public PhysicalCardWidget(PhysicalCardDecorator pCard) {
         initWidget(uiBinder.createAndBindUi(this));
-        cardContainer.add(new Hyperlink("Open Details", "cards/yugioh/" + pCard.getCardId()));
+        cardContainer.add(new Hyperlink("Open Details",
+                "cards/" + pCard.getGameType() + "/" + pCard.getCardId()));
         cardContainer.addDomHandler(e -> {
             getElement().addClassName(selected ? style.cardSelected() : style.cardDiscarded());
             getElement().removeClassName(selected ? style.cardDiscarded() : style.cardSelected());
@@ -44,7 +45,6 @@ public class PhysicalCardWidget extends Composite {
         cardName.setInnerText(pCard.getName());
         cardStatus.setInnerHTML(pCard.getStatus().name());
         cardDescription.setInnerText(pCard.getDescription());
-
     }
 
     interface PhysicalCardStyle extends CssResource {
