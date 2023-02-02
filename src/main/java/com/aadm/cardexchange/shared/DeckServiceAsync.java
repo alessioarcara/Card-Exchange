@@ -15,8 +15,6 @@ public interface DeckServiceAsync {
 
     void getUserDeckNames(String token, AsyncCallback<List<String>> callback);
 
-    void getDeckByName(String token, String deckName, AsyncCallback<List<PhysicalCardDecorator>> async);
-
     void removePhysicalCardFromDeck(String token, String deckName, PhysicalCardImpl pCardImpl, AsyncCallback<Boolean> async);
     void getMyDeck(String token, String deckName, AsyncCallback<List<PhysicalCardDecorator>> callback);
 

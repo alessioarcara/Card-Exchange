@@ -2,7 +2,6 @@ package com.aadm.cardexchange.shared;
 
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.BaseException;
-import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.Game;
 import com.aadm.cardexchange.shared.models.PhysicalCardDecorator;
 import com.aadm.cardexchange.shared.models.PhysicalCardImpl;
@@ -19,7 +18,7 @@ public interface DeckService extends RemoteService {
 
     boolean addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description) throws BaseException;
 
-    boolean removePhysicalCardFromDeck(String token, String deckName, PhysicalCardImpl pCardImpl) throws AuthException, InputException;
+    boolean removePhysicalCardFromDeck(String token, String deckName, PhysicalCardImpl pCardImpl) throws BaseException;
 
     List<String> getUserDeckNames(String token) throws AuthException;
 

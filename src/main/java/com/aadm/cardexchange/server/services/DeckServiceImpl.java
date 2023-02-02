@@ -124,13 +124,9 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             return false;
         }
             if (foundDeck.removePhysicalCard(pCardImpl)) {
-                decks.remove(deckName);
-                decks.put(deckName, foundDeck);
-                deckMap.remove(userEmail);
-                deckMap.put(userEmail, decks);
+                 deckMap.put(userEmail, decks);
                 return true;
-            } else
-            return false;
+            } else return false;
     }
 
     @Override
@@ -183,4 +179,5 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         }
         return getUserDeck(email, "Owned");
     }
+
 }
