@@ -6,30 +6,23 @@ import java.util.Set;
 
 public class Deck implements Serializable {
     private static final long serialVersionUID = -3036168098606868237L;
-    private String userEmail;
     private String name;
     private boolean isDefault;
-    private Set<PhysicalCard> physicalCardImpls;
+    private Set<PhysicalCardImpl> physicalCards;
 
-    public Deck(String userEmail, String name) {
-        this.userEmail = userEmail;
+    public Deck(String name) {
         this.name = name;
         this.isDefault = false;
-        physicalCardImpls = new LinkedHashSet<>();
+        physicalCards = new LinkedHashSet<>();
     }
 
-    public Deck(String userEmail, String name, boolean isDefault) {
-        this.userEmail = userEmail;
+    public Deck(String name, boolean isDefault) {
         this.name = name;
         this.isDefault = isDefault;
-        physicalCardImpls = new LinkedHashSet<>();
+        physicalCards = new LinkedHashSet<>();
     }
 
     public Deck() {
-    }
-
-    public String getUserEmail() {
-        return userEmail;
     }
 
     public String getName() {
@@ -46,20 +39,20 @@ public class Deck implements Serializable {
         return isDefault;
     }
 
-    public Set<PhysicalCard> getPhysicalCards() {
-        return physicalCardImpls;
+    public Set<PhysicalCardImpl> getPhysicalCards() {
+        return physicalCards;
     }
 
-    public boolean addPhysicalCard(PhysicalCard physicalCard) {
-        return physicalCardImpls.add(physicalCard);
+    public boolean addPhysicalCard(PhysicalCardImpl physicalCard) {
+        return physicalCards.add(physicalCard);
     }
 
-    public boolean removePhysicalCard(PhysicalCard physicalCard) {
-        return physicalCardImpls.remove(physicalCard);
+    public boolean removePhysicalCard(PhysicalCardImpl physicalCard) {
+        return physicalCards.remove(physicalCard);
     }
 
-    public boolean containsPhysicalCard(PhysicalCard physicalCard) {
-        return physicalCardImpls.contains(physicalCard);
+    public boolean containsPhysicalCard(PhysicalCardImpl physicalCard) {
+        return physicalCards.contains(physicalCard);
     }
 
     @Override

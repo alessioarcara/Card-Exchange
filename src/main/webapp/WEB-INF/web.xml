@@ -8,15 +8,15 @@
     <!-- Servlets -->
     <servlet>
         <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>
-        <servlet-class>com.aadm.cardexchange.server.CardServiceImpl</servlet-class>
+        <servlet-class>com.aadm.cardexchange.server.services.CardServiceImpl</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>com.aadm.cardexchange.CardExchange UserService</servlet-name>
-        <servlet-class>com.aadm.cardexchange.server.AuthServiceImpl</servlet-class>
+        <servlet-class>com.aadm.cardexchange.server.services.AuthServiceImpl</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>com.aadm.cardexchange.CardExchange DeckService</servlet-name>
-        <servlet-class>com.aadm.cardexchange.server.DeckServiceImpl</servlet-class>
+        <servlet-class>com.aadm.cardexchange.server.services.DeckServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>

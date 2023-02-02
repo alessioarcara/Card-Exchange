@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.client;
 
-import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
+import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.views.*;
 import com.google.gwt.event.shared.SimpleEventBus;
 import com.google.gwt.place.shared.PlaceController;
@@ -43,7 +43,9 @@ public class ClientFactoryImpl implements ClientFactory {
     }
 
     @Override
-    public DecksView getDecksView() { return decksView; }
+    public DecksView getDecksView() {
+        return decksView;
+    }
 
     @Override
     public AuthSubject getAuthSubject() {

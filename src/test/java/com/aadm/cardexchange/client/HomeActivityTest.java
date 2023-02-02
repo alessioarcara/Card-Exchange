@@ -74,9 +74,9 @@ public class HomeActivityTest {
 
     private static Stream<Arguments> provideMockCards() {
         return Stream.of(
-                Arguments.of(Game.Magic, MockCardData.createMagicDummyList()),
-                Arguments.of(Game.Pokemon, MockCardData.createPokemonDummyList()),
-                Arguments.of(Game.YuGiOh, MockCardData.createYuGiOhDummyList())
+                Arguments.of(Game.MAGIC, MockCardData.createMagicDummyList()),
+                Arguments.of(Game.POKEMON, MockCardData.createPokemonDummyList()),
+                Arguments.of(Game.YUGIOH, MockCardData.createYuGiOhDummyList())
         );
     }
 
@@ -115,23 +115,51 @@ public class HomeActivityTest {
                 Collections.emptyList(), Collections.emptyList()).get(0), expectedCard);
     }
 
+    private static Stream<Arguments> provideMockCardsAndBooleanFields() {
+        return Stream.of(
+                Arguments.of(
+                        Game.MAGIC, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(0),
+                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(true, false, false, false, false)),
+                Arguments.of(
+                        Game.MAGIC, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(1),
+                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, true, false, false, false)),
+                Arguments.of(
+                        Game.MAGIC, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(2),
+                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, false, true, false, false)),
+                Arguments.of(
+                        Game.MAGIC, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(3),
+                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, false, false, true, false)),
+                Arguments.of(
+                        Game.MAGIC, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(4),
+                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, false, false, false, true)),
+                Arguments.of(
+                        Game.POKEMON, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(0),
+                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(true, false, false, false, false)),
+                Arguments.of(
+                        Game.POKEMON, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(1),
+                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(false, true, false, false, false)),
+                Arguments.of(
+                        Game.POKEMON, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(2),
+                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(false, false, true, false, false)),
+                Arguments.of(
+                        Game.POKEMON, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(3),
+                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(false, false, false, true, false)),
+                Arguments.of(
+                        Game.POKEMON, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(4),
+                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(false, false, false, false, true)),
+                Arguments.of(
+                        Game.YUGIOH, MockCardData.createYuGiOhDummyList(), MockCardData.createYuGiOhDummyList().get(0),
+                        Collections.emptyList(), Collections.emptyList())
+        );
+    }
+
     @Test
     public void testFilterGameCardsFor_Magic_and_Artist_Parameters() {
         List<CardDecorator> mockCards = MockCardData.createMagicDummyList();
         CardDecorator expectedCard = mockCards.get(mockCards.size() - 1);
-        setupFetchGameCardsTest(Game.Magic, mockCards);
+        setupFetchGameCardsTest(Game.MAGIC, mockCards);
         Assertions.assertEquals(homeActivity.filterGameCards("all", "all",
                 "Artist", ((MagicCardDecorator) expectedCard).getArtist(),
-                Collections.emptyList(), Collections.emptyList()).get(0), expectedCard);
-    }
-
-    @Test
-    public void testFilterGameCardsFor_Pokemon_and_Artist_Parameters() {
-        List<CardDecorator> mockCards = MockCardData.createPokemonDummyList();
-        CardDecorator expectedCard = mockCards.get(0);
-        setupFetchGameCardsTest(Game.Pokemon, mockCards);
-        Assertions.assertEquals(homeActivity.filterGameCards("all", "all",
-                "Artist", ((PokemonCardDecorator) expectedCard).getArtist(),
                 Collections.emptyList(), Collections.emptyList()).get(0), expectedCard);
     }
 
@@ -159,42 +187,14 @@ public class HomeActivityTest {
                 Collections.emptyList(), Collections.emptyList()).get(0), expectedCard);
     }
 
-    private static Stream<Arguments> provideMockCardsAndBooleanFields() {
-        return Stream.of(
-                Arguments.of(
-                        Game.Magic, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(0),
-                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(true, false, false, false, false)),
-                Arguments.of(
-                        Game.Magic, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(1),
-                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, true, false, false, false)),
-                Arguments.of(
-                        Game.Magic, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(2),
-                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, false, true, false, false)),
-                Arguments.of(
-                        Game.Magic, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(3),
-                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, false, false, true, false)),
-                Arguments.of(
-                        Game.Magic, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(4),
-                        MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, false, false, false, true)),
-                Arguments.of(
-                        Game.Pokemon, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(0),
-                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(true, false, false, false, false)),
-                Arguments.of(
-                        Game.Pokemon, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(1),
-                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(false, true, false, false, false)),
-                Arguments.of(
-                        Game.Pokemon, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(2),
-                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(false, false, true, false, false)),
-                Arguments.of(
-                        Game.Pokemon, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(3),
-                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(false, false, false, true, false)),
-                Arguments.of(
-                        Game.Pokemon, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(4),
-                        POKEMON_BOOLEAN_FIELDS, Arrays.asList(false, false, false, false, true)),
-                Arguments.of(
-                        Game.YuGiOh, MockCardData.createYuGiOhDummyList(), MockCardData.createYuGiOhDummyList().get(0),
-                        Collections.emptyList(), Collections.emptyList())
-        );
+    @Test
+    public void testFilterGameCardsFor_Pokemon_and_Artist_Parameters() {
+        List<CardDecorator> mockCards = MockCardData.createPokemonDummyList();
+        CardDecorator expectedCard = mockCards.get(0);
+        setupFetchGameCardsTest(Game.POKEMON, mockCards);
+        Assertions.assertEquals(homeActivity.filterGameCards("all", "all",
+                "Artist", ((PokemonCardDecorator) expectedCard).getArtist(),
+                Collections.emptyList(), Collections.emptyList()).get(0), expectedCard);
     }
 
     @ParameterizedTest

@@ -1,0 +1,55 @@
+<!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <ui:style>
+        .deck {
+            width: 100%;
+            max-width: 85vw;
+            background: #942e94;
+        }
+
+        .deckHeader {
+            display: flex;
+            align-items: center;
+            color: #fff;
+            padding-left: 1rem;
+            gap: 1rem;
+        }
+
+        .showButton {
+            background: #444;
+            color: #eee;
+            border: none;
+            height: 2rem;
+            width: 2rem;
+            border-radius: 25%;
+            font-size: 1.1em;
+            transform: rotate(90deg);
+        }
+
+        .showButton:hover {
+            background: #eee;
+            color: #444;
+        }
+
+        .cards {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            min-height: 10rem;
+            height: 100%;
+            width: 100%;
+            justify-content: flex-start;
+            align-items: stretch;
+            overflow-x: scroll;
+            background: #eee;
+        }
+    </ui:style>
+    <g:HTMLPanel styleName="{style.deck}">
+        <div class="{style.deckHeader}">
+            <h2 ui:field="deckName"/>
+            <g:Button styleName="{style.showButton}" ui:field="showButton">></g:Button>
+        </div>
+        <g:HTMLPanel styleName="{style.cards}" ui:field="cards"/>
+    </g:HTMLPanel>
+</ui:UiBinder>
