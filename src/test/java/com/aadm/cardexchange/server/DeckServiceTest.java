@@ -405,9 +405,9 @@ public class DeckServiceTest {
     @NullAndEmptySource
     public void testRemovePhysicalCardFromDeckForInvalidDeckName(String input) {
         setupForValidToken();
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
         ctrl.replay();
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
+        Assertions.assertThrows(InputException.class, () ->
                 deckService.removePhysicalCardFromDeck("validToken", input, mockPCard1)
         );
         ctrl.verify();
@@ -415,7 +415,7 @@ public class DeckServiceTest {
     @Test
     public void testRemovePhysicalCardFromDeckForNotExistingDeckMap() {
         setupForValidToken();
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
 
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
             put("test@test.it", null);
@@ -431,9 +431,9 @@ public class DeckServiceTest {
     }
 
     @Test
-    public void testRemovePhysicalCardFromDeckForNotExistingDeck() throws AuthException {
+    public void testRemovePhysicalCardFromDeckForNotExistingDeck() throws AuthException, InputException {
         setupForValidToken();
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
         Map<String, Deck> deckMap = new HashMap<>() {{
             put("Wished", new Deck("Wished", true));
         }};
@@ -449,10 +449,10 @@ public class DeckServiceTest {
     }
 
     @Test
-    public void testRemovePhysicalCardFromDeckForNotExistingPhysicalCard() throws AuthException {
+    public void testRemovePhysicalCardFromDeckForNotExistingPhysicalCard() throws AuthException, InputException {
         setupForValidToken();
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
-        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.Magic, 1221, Status.Fair, "This is a valid bis description.");
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.MAGIC, 1221, Status.Fair, "This is a valid bis description.");
         Map<String, Deck> deckMap = new HashMap<>() {{
             put("Owned", new Deck("Owned", true));
         }};
@@ -469,21 +469,10 @@ public class DeckServiceTest {
         Assertions.assertFalse(deckService.removePhysicalCardFromDeck("validToken", "Owned", mockPCard1));
         ctrl.verify();
     }
-/*
-    public void testRemovePhysicalCardFromDeckWithErrorInNativeMethodRemove() {
-        setupForValidToken();
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
-        ctrl.replay();
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
-                deckService.removePhysicalCardFromDeck("validToken", "owned", "test")
-        );
-        ctrl.verify();
-    }
-*/
     @Test
-    public void testRemovePhysicalCardFromDeckSuccess() throws AuthException {
+    public void testRemovePhysicalCardFromDeckSuccess() throws AuthException, InputException {
         setupForValidToken();
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.Magic, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
         Map<String, Deck> deckMap = new HashMap<>() {{
             put("Owned", new Deck("Owned", true));
         }};
