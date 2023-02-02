@@ -1,7 +1,7 @@
 package com.aadm.cardexchange.client;
 
 import com.aadm.cardexchange.client.auth.AuthSubject;
-import com.aadm.cardexchange.client.views*;
+import com.aadm.cardexchange.client.views.*;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.web.bindery.event.shared.EventBus;
 
