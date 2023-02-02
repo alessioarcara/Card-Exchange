@@ -12,5 +12,9 @@ public interface DeckServiceAsync {
 
     void addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description, AsyncCallback<Boolean> callback);
 
-    void getDeckByName(String token, String deckName, AsyncCallback<List<PhysicalCardDecorator>> async);
+    void getUserDeckNames(String token, AsyncCallback<List<String>> callback);
+
+    void getMyDeck(String token, String deckName, AsyncCallback<List<PhysicalCardDecorator>> callback);
+
+    void getUserOwnedDeck(String email, AsyncCallback<List<PhysicalCardDecorator>> callback);
 }

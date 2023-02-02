@@ -7,9 +7,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Set;
 
-import static com.aadm.cardexchange.shared.UserTestConstants.email;
-import static com.aadm.cardexchange.shared.UserTestConstants.password;
-
 public class DeckTest {
 
     private Deck deck;
@@ -19,18 +16,11 @@ public class DeckTest {
 
     @BeforeEach
     public void initialize() {
-        User user = new User(email, password);
-        deck = new Deck(user.getEmail(), "Deck_name");
-        defaultDeck = new Deck(user.getEmail(), "Deck_default", true);
+        deck = new Deck("Deck_name");
+        defaultDeck = new Deck("Deck_default", true);
         CardDecorator card = new CardDecorator(new CardImpl("DUMMY_NAME", "DUMMY_TYPE", "DUMMY_DESCRIPTION"));
-        pCard = new PhysicalCardImpl(Game.Magic, card.getId(), Status.Excellent, "test description card");
-        pCard2 = new PhysicalCardImpl(Game.Magic, card.getId(), Status.Good, "test card 2");
-    }
-
-    @Test
-    public void testGetUserEmail() {
-        Assertions.assertEquals(email, deck.getUserEmail());
-        Assertions.assertEquals(email, defaultDeck.getUserEmail());
+        pCard = new PhysicalCardImpl(Game.MAGIC, card.getId(), Status.Excellent, "test description card");
+        pCard2 = new PhysicalCardImpl(Game.MAGIC, card.getId(), Status.Good, "test card 2");
     }
 
     @Test
@@ -71,7 +61,7 @@ public class DeckTest {
     public void testGetPhysicalCards() {
         deck.addPhysicalCard(pCard);
         deck.addPhysicalCard(pCard2);
-        Set<PhysicalCard> cards = deck.getPhysicalCards();
+        Set<PhysicalCardImpl> cards = deck.getPhysicalCards();
 
         Assertions.assertEquals(2, cards.size());
         Assertions.assertTrue(cards.contains(pCard));

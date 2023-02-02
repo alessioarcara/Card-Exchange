@@ -1,7 +1,7 @@
 package com.aadm.cardexchange.client;
 
-import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
-import com.aadm.cardexchange.client.AuthSubject.Observer;
+import com.aadm.cardexchange.client.auth.AuthSubject;
+import com.aadm.cardexchange.client.auth.Observer;
 import com.aadm.cardexchange.client.places.HomePlace;
 import com.aadm.cardexchange.client.routes.AppActivityMapper;
 import com.aadm.cardexchange.client.routes.AppPlaceHistoryMapper;
