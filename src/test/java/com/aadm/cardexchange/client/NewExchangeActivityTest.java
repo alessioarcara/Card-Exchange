@@ -1,9 +1,11 @@
 package com.aadm.cardexchange.client;
 
+import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.places.NewExchangePlace;
 import com.aadm.cardexchange.client.presenters.NewExchangeActivity;
 import com.aadm.cardexchange.client.views.CardView;
 import com.aadm.cardexchange.client.views.NewExchangeView;
+import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import org.easymock.IMocksControl;
@@ -20,14 +22,18 @@ public class NewExchangeActivityTest {
     NewExchangeView mockView;
     PlaceController placeController;
     NewExchangeActivity newExchangeActivity;
+    DeckServiceAsync mockDeckService;
+    AuthSubject mockAuthSubject;
 
     @BeforeEach
     public void initialize() {
         ctrl = createStrictControl();
         mockPlace = new NewExchangePlace(SELECTED_PCARD_ID, RECEIVER_USER_EMAIL);
         mockView = ctrl.createMock(CardView.class);
+        mockDeckService = ctrl.createMock(DeckServiceAsync.class);
+        mockAuthSubject = ctrl.createMock(AuthSubject.class);
         placeController = ctrl.createMock(PlaceController.class);
-        newExchangeActivity = new NewExchangeActivity(mockView, mockPlace, placeController);
+        newExchangeActivity = new NewExchangeActivity(mockPlace, mockView, mockDeckService, mockAuthSubject, placeController);
     }
 
     @Test

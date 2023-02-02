@@ -30,7 +30,7 @@ public class AppActivityMapper implements ActivityMapper {
         if (place instanceof DecksPlace)
             return new DecksActivity(clientFactory.getDecksView(), GWT.create(DeckService.class), clientFactory.getAuthSubject());
         if (place instanceof NewExchangePlace)
-            return new NewExchangeActivity(clientFactory.getNewExchangeView(), (NewExchangePlace) place, clientFactory.getPlaceController());
+            return new NewExchangeActivity((NewExchangePlace) place, clientFactory.getNewExchangeView(), GWT.create(DeckService.class), clientFactory.getAuthSubject(), clientFactory.getPlaceController());
         return null;
     }
 }

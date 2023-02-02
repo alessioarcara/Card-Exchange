@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:m="urn:import:com.aadm.cardexchange.client.widgets">
     <ui:style>
         .deckLayout {
             display: flex;
@@ -10,7 +11,7 @@
             text-align: center;
         }
 
-        .addDeck {
+        .newDeck {
             display: flex;
             background: #CD5888;
             color: #eee;
@@ -20,7 +21,7 @@
             align-items: center;
         }
 
-        .addDeckButton {
+        .newDeckButton {
             background: #444;
             color: #eee;
             border: none;
@@ -30,7 +31,7 @@
             border-radius: 25%;
         }
 
-        .addDeckButton:hover {
+        .newDeckButton:hover {
             background-color: #eee;
             color: #444;
         }
@@ -38,9 +39,9 @@
     <g:HTMLPanel styleName="{style.deckLayout}">
         <h1>User decks</h1>
         <g:HTMLPanel ui:field="decksContainer"/>
-        <div class="{style.addDeck}">
+        <div class="{style.newDeck}">
             <h2 contenteditable="true">Write here name for your custom deck</h2>
-            <g:Button styleName="{style.addDeckButton}">&#10003;</g:Button>
+            <g:Button styleName="{style.newDeckButton}">&#10003;</g:Button>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder>
