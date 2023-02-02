@@ -1,6 +1,8 @@
 package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.widgets.DeckWidget;
+import com.aadm.cardexchange.client.widgets.ImperativeHandleDeck;
+import com.aadm.cardexchange.shared.models.PhysicalCardDecorator;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -9,11 +11,11 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.List;
+import java.util.function.Consumer;
 
-public class DecksViewImpl extends Composite implements DecksView {
+public class DecksViewImpl extends Composite implements DecksView, ImperativeHandleDeck {
     private static final DecksViewImpl.DecksViewImplUIBinder uiBinder = GWT.create(DecksViewImpl.DecksViewImplUIBinder.class);
     Presenter presenter;
-
     @UiField
     HTMLPanel decksContainer;
 
@@ -24,8 +26,13 @@ public class DecksViewImpl extends Composite implements DecksView {
     @Override
     public void setData(List<String> data) {
         for (String deckName : data) {
-            decksContainer.add(new DeckWidget(deckName));
+            decksContainer.add(new DeckWidget(this, deckName));
         }
+    }
+
+    @Override
+    public void onShowDeck(String deckName, Consumer<List<PhysicalCardDecorator>> setDeckData) {
+        presenter.fetchUserDeck(deckName, setDeckData);
     }
 
     @Override

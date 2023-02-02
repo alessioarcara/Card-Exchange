@@ -5,6 +5,8 @@ import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.DeckService;
+import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
@@ -13,6 +15,8 @@ import org.mapdb.Serializer;
 
 import java.lang.reflect.Type;
 import java.util.*;
+
+import static com.aadm.cardexchange.server.services.AuthServiceImpl.validateEmail;
 
 
 public class DeckServiceImpl extends RemoteServiceServlet implements DeckService, MapDBConstants {
@@ -67,23 +71,23 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     }
 
     @Override
-    public boolean addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description) throws AuthException {
+    public boolean addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description) throws AuthException, InputException {
         /* PARAMETERS CHECK */
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         if (game == null) {
-            throw new IllegalArgumentException("Invalid game");
+            throw new InputException("Invalid game");
         }
         if (deckName == null || deckName.isEmpty()) {
-            throw new IllegalArgumentException("Invalid deck name");
+            throw new InputException("Invalid deck name");
         }
         if (cardId <= 0) {
-            throw new IllegalArgumentException("Invalid card id");
+            throw new InputException("Invalid card id");
         }
         if (status == null) {
-            throw new IllegalArgumentException("Invalid status");
+            throw new InputException("Invalid status");
         }
         if (description == null || !checkDescriptionValidity(description)) {
-            throw new IllegalArgumentException("Invalid description");
+            throw new InputException("Invalid description");
         }
         /* PHYSICAL CARD ADDITION TO DECK*/
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
@@ -97,7 +101,11 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             return false;
         }
         // physical card addition
-        return foundDeck.addPhysicalCard(new PhysicalCardImpl(game, cardId, status, description));
+        if (foundDeck.addPhysicalCard(new PhysicalCardImpl(game, cardId, status, description))) {
+            deckMap.put(userEmail, decks);
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -131,34 +139,46 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return decks == null ? Collections.emptyList() : new ArrayList<>(decks.keySet());
     }
 
-    @Override
-    public List<PhysicalCardDecorator> getDeckByName(String token, String deckName) throws AuthException {
-        String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+    private List<PhysicalCardDecorator> getUserDeck(String userEmail, String deckName) {
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> allUserDecks = deckMap.get(userEmail);
-        Deck thisUserDeck = allUserDecks.get(deckName);
+        Deck userDeck = allUserDecks.get(deckName);
         List<PhysicalCardDecorator> pDecoratedCards = new ArrayList<>();
-        for (PhysicalCard physicalCard : thisUserDeck.getPhysicalCards()) {
+        for (PhysicalCardImpl pCard : userDeck.getPhysicalCards()) {
             String cardName = CardServiceImpl.getNameCard(
-                    physicalCard.getGameType(),
-                    physicalCard.getCardId(),
+                    pCard.getCardId(),
                     db.getCachedMap(
                             getServletContext(),
-                            CardServiceImpl.getCardMap(physicalCard.getGameType()),
+                            CardServiceImpl.getCardMap(pCard.getGameType()),
                             Serializer.INTEGER,
                             new GsonSerializer<>(gson)
                     )
             );
-            PhysicalCardDecorator thisPhysicalDecoratorCard = new PhysicalCardDecorator(
-                    new PhysicalCardImpl(
-                            physicalCard.getGameType(),
-                            physicalCard.getCardId(),
-                            physicalCard.getStatus(),
-                            physicalCard.getDescription()),
-                    cardName
-            );
-            pDecoratedCards.add(thisPhysicalDecoratorCard);
+            pDecoratedCards.add(new PhysicalCardDecorator(pCard, cardName));
         }
         return pDecoratedCards;
+    }
+
+    @Override
+    public List<PhysicalCardDecorator> getMyDeck(String token, String deckName) throws AuthException {
+        return getUserDeck(
+                AuthServiceImpl.checkTokenValidity(
+                        token,
+                        db.getPersistentMap(getServletContext(),
+                                LOGIN_MAP_NAME,
+                                Serializer.STRING,
+                                new GsonSerializer<>(gson)
+                        )
+                ),
+                deckName
+        );
+    }
+
+    @Override
+    public List<PhysicalCardDecorator> getUserOwnedDeck(String email) throws AuthException {
+        if (email == null || !validateEmail(email)) {
+            throw new AuthException("Invalid email");
+        }
+        return getUserDeck(email, "Owned");
     }
 }

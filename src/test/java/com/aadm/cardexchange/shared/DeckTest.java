@@ -19,8 +19,8 @@ public class DeckTest {
         deck = new Deck("Deck_name");
         defaultDeck = new Deck("Deck_default", true);
         CardDecorator card = new CardDecorator(new CardImpl("DUMMY_NAME", "DUMMY_TYPE", "DUMMY_DESCRIPTION"));
-        pCard = new PhysicalCardImpl(Game.Magic, card.getId(), Status.Excellent, "test description card");
-        pCard2 = new PhysicalCardImpl(Game.Magic, card.getId(), Status.Good, "test card 2");
+        pCard = new PhysicalCardImpl(Game.MAGIC, card.getId(), Status.Excellent, "test description card");
+        pCard2 = new PhysicalCardImpl(Game.MAGIC, card.getId(), Status.Good, "test card 2");
     }
 
     @Test

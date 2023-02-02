@@ -4,11 +4,13 @@ import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.DecksView;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
+import com.aadm.cardexchange.shared.models.PhysicalCardDecorator;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 public class DecksActivity extends AbstractActivity implements DecksView.Presenter {
     private final DecksView view;
@@ -34,8 +36,13 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
     }
 
     @Override
-    public void fetchUserDeck() {
-        
+    public void fetchUserDeck(String deckName, Consumer<List<PhysicalCardDecorator>> setDeckData) {
+        rpcService.getMyDeck(authSubject.getToken(), deckName, new BaseAsyncCallback<List<PhysicalCardDecorator>>() {
+            @Override
+            public void onSuccess(List<PhysicalCardDecorator> result) {
+                setDeckData.accept(result);
+            }
+        });
     }
 
     private void fetchUserDeckNames() {

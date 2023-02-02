@@ -34,9 +34,9 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
 
     public HomeViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
-        magicRadio.addValueChangeHandler(e -> onGameChanged(Game.Magic));
-        pokemonRadio.addValueChangeHandler(e -> onGameChanged(Game.Pokemon));
-        yugiohRadio.addValueChangeHandler(e -> onGameChanged(Game.YuGiOh));
+        magicRadio.addValueChangeHandler(e -> onGameChanged(Game.MAGIC));
+        pokemonRadio.addValueChangeHandler(e -> onGameChanged(Game.POKEMON));
+        yugiohRadio.addValueChangeHandler(e -> onGameChanged(Game.YUGIOH));
         applyFiltersButton.addClickHandler(e -> handleFiltersApply());
         cleanFiltersButton.addClickHandler(e -> handleFiltersClean());
     }

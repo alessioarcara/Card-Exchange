@@ -7,7 +7,8 @@ import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.CardView;
 import com.aadm.cardexchange.shared.CardServiceAsync;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
-import com.aadm.cardexchange.shared.models.AuthException;
+import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.CardDecorator;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.activity.shared.AbstractActivity;
@@ -66,12 +67,13 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
                     public void onFailure(Throwable caught) {
                         if (caught instanceof AuthException) {
                             view.displayErrorAlert(((AuthException) caught).getErrorMessage());
-                        } else if (caught instanceof IllegalArgumentException) {
-                            view.displayErrorAlert(caught.getMessage());
+                        } else if (caught instanceof InputException) {
+                            view.displayErrorAlert(((InputException) caught).getErrorMessage());
                         } else {
                             view.displayErrorAlert(caught.getMessage());
                         }
                     }
+
                     @Override
                     public void onSuccess(Boolean result) {
                         if (result) {

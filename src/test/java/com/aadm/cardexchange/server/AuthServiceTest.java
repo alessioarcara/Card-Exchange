@@ -2,7 +2,7 @@ package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.services.AuthServiceImpl;
-import com.aadm.cardexchange.shared.models.AuthException;
+import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;
 import org.easymock.IMocksControl;
