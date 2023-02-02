@@ -16,9 +16,9 @@ import java.util.Map;
 public class CardWidget extends Composite {
     private static final CardUIBinder uiBinder = GWT.create(CardUIBinder.class);
     private static final Map<Game, String> DEFAULT_IMAGE_PATHS = new HashMap<Game, String>() {{
-        put(Game.Magic, "placeholders/magic-placeholder.png");
-        put(Game.Pokemon, "placeholders/pokemon-placeholder.png");
-        put(Game.YuGiOh, "placeholders/yugioh-placeholder.png");
+        put(Game.MAGIC, "placeholders/magic-placeholder.png");
+        put(Game.POKEMON, "placeholders/pokemon-placeholder.png");
+        put(Game.YUGIOH, "placeholders/yugioh-placeholder.png");
     }};
     @UiField
     DivElement nameDiv;
@@ -44,7 +44,7 @@ public class CardWidget extends Composite {
         if (card instanceof YuGiOhCardDecorator) {
             imageUrl = ((YuGiOhCardDecorator) card).getImageUrl();
             details += createDetailHTML("Race", ((YuGiOhCardDecorator) card).getRace());
-            game = Game.YuGiOh;
+            game = Game.YUGIOH;
         } else if (card instanceof PokemonCardDecorator) {
             imageUrl = ((PokemonCardDecorator) card).getImageUrl();
             details += createDetailHTML("Artist", ((PokemonCardDecorator) card).getArtist());
@@ -54,7 +54,7 @@ public class CardWidget extends Composite {
             properties += createPropertyHTML("Normal", ((PokemonCardDecorator) card).getIsNormal());
             properties += createPropertyHTML("Reverse", ((PokemonCardDecorator) card).getIsReverse());
             properties += createPropertyHTML("Promo", ((PokemonCardDecorator) card).getIsPromo());
-            game = Game.Pokemon;
+            game = Game.POKEMON;
         } else if (card instanceof MagicCardDecorator) {
             details += createDetailHTML("Artist", ((MagicCardDecorator) card).getArtist());
             details += createDetailHTML("Rarity", ((MagicCardDecorator) card).getRarity());
@@ -63,7 +63,7 @@ public class CardWidget extends Composite {
             properties += createPropertyHTML("Full Art", ((MagicCardDecorator) card).getIsFullArt());
             properties += createPropertyHTML("Promo", ((MagicCardDecorator) card).getIsPromo());
             properties += createPropertyHTML("Reprint", ((MagicCardDecorator) card).getIsReprint());
-            game = Game.Magic;
+            game = Game.MAGIC;
         } else {
             game = null;
         }

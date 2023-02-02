@@ -1,6 +1,8 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.shared.models.AuthException;
+import com.aadm.cardexchange.server.mapdb.MapDB;
+import com.aadm.cardexchange.server.services.AuthServiceImpl;
+import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;
 import org.easymock.IMocksControl;
@@ -31,9 +33,7 @@ public class AuthServiceTest {
         mockDB = ctrl.createMock(MapDB.class);
         mockConfig = ctrl.createMock(ServletConfig.class);
         mockCtx = ctrl.createMock(ServletContext.class);
-        DeckServiceImpl mockDeckService = new DeckServiceImpl(mockDB);
-        authService = new AuthServiceImpl(mockDB, mockDeckService);
-        mockDeckService.init(mockConfig);
+        authService = new AuthServiceImpl(mockDB);
         authService.init(mockConfig);
     }
 
@@ -90,7 +90,7 @@ public class AuthServiceTest {
 
     @Test
     public void testSignupForCorrectEmailAndPassword() throws AuthException {
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 3; i++) {
             expect(mockConfig.getServletContext()).andReturn(mockCtx);
             expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                     .andReturn(new HashMap<>());
@@ -203,8 +203,8 @@ public class AuthServiceTest {
         ctrl.replay();
         Assertions.assertThrows(AuthException.class, () -> authService.checkTokenValidity("invalidToken", new HashMap<>() {{
             put("validToken1", new LoginInfo("test1@test.it", System.currentTimeMillis()));
-            put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis()-2000));
-            put("validToken3", new LoginInfo("test3@test.it", System.currentTimeMillis()-4000));
+            put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 2000));
+            put("validToken3", new LoginInfo("test3@test.it", System.currentTimeMillis() - 4000));
         }}));
         ctrl.verify();
     }
@@ -220,9 +220,9 @@ public class AuthServiceTest {
         ctrl.replay();
         try {
             authService.checkTokenValidity("validToken1", new HashMap<>() {{
-                put("validToken1", new LoginInfo("test1@test.it", System.currentTimeMillis()-(1000*60*60*24*7+1000*10)));
+                put("validToken1", new LoginInfo("test1@test.it", System.currentTimeMillis() - (1000 * 60 * 60 * 24 * 7 + 1000 * 10)));
             }});
-        } catch(AuthException e) {
+        } catch (AuthException e) {
             Assertions.assertEquals("Expired token", e.getErrorMessage());
         }
         ctrl.verify();
