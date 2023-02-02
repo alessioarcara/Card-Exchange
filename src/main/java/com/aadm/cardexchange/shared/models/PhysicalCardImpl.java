@@ -58,4 +58,13 @@ public class PhysicalCardImpl implements PhysicalCard {
     public int hashCode() {
         return Objects.hash(getId());
     }
+
+    @Override
+    public String toString() {
+        return "id: " + this.getId() +
+                ", cardID: " + this.getCardId() +
+                ", status: " + this.getStatus() +
+                ", description: " + this.getDescription() ;
+    }
+
 }
