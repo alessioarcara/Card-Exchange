@@ -1,7 +1,11 @@
 package com.aadm.cardexchange.shared;
 
+import com.aadm.cardexchange.server.MockCardData;
 import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
-import com.aadm.cardexchange.shared.models.*;
+import com.aadm.cardexchange.shared.models.Card;
+import com.aadm.cardexchange.shared.models.Game;
+import com.aadm.cardexchange.shared.models.PhysicalCardImpl;
+import com.aadm.cardexchange.shared.models.Status;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,13 +19,13 @@ import java.io.IOException;
 
 public class PhysicalCardTest {
 
-    private CardDecorator card;
+    private Card card;
     private PhysicalCardImpl pCard;
 
     @BeforeEach
     public void initialize() {
-        card = new CardDecorator(new CardImpl("DUMMY_NAME", "DUMMY_TYPE", "DUMMY_DESCRIPTION"));
-        pCard = new PhysicalCardImpl(Game.MAGIC, card.getId(), Status.Excellent, "well handled card during almost 10 years");
+        card = MockCardData.createPokemonDummyCard();
+        pCard = new PhysicalCardImpl(Game.POKEMON, card.getId(), Status.Excellent, "well handled card during almost 10 years");
     }
 
     @ParameterizedTest
@@ -50,7 +54,6 @@ public class PhysicalCardTest {
         PhysicalCardImpl pCard2 = new PhysicalCardImpl(game, card.getId(), Status.VeryDamaged, "this is a valid description");
         Assertions.assertEquals(game, pCard2.getGameType());
     }
-
 
     @Test
     public void testGetStatus() {

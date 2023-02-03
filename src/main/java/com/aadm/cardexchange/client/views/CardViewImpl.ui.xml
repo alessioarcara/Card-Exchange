@@ -42,7 +42,7 @@
             gap: 3.5rem;
         }
 
-        .cardOption {
+        .cardOptions > div > div, .optionOtherProperties > div {
             justify-self: end;
             font-weight: bold;
             text-transform: uppercase;
@@ -69,34 +69,20 @@
                 <div class="{style.cardOptions}">
                     <!--all cards-->
                     <div>Type:
-                        <div class="{style.cardOption}" ui:field="cardOptionType"/>
+                        <div ui:field="cardOptionType"/>
                     </div>
                     <!--Magic and Pokemon cards-->
                     <div ui:field="optionArtist">Artist:
-                        <div class="{style.cardOption}" ui:field="cardOptionArtist"/>
+                        <div ui:field="cardOptionArtist"/>
                     </div>
                     <div ui:field="optionRarity">Rarity:
-                        <div class="{style.cardOption}" ui:field="cardOptionRarity"/>
+                        <div ui:field="cardOptionRarity"/>
                     </div>
                     <!--YuGiOh cards-->
                     <div ui:field="optionRace">Race:
-                        <div class="{style.cardOption}" ui:field="cardOptionRace"/>
+                        <div ui:field="cardOptionRace"/>
                     </div>
-
-                    <div ui:field="optionOtherProperties">Other properties:
-                        <!--Magic cards-->
-                        <div class="{style.cardOption}" ui:field="cardOptionFoil">foil</div>
-                        <div class="{style.cardOption}" ui:field="cardOptionAlternative">alternative</div>
-                        <div class="{style.cardOption}" ui:field="cardOptionFullArt">full art</div>
-                        <div class="{style.cardOption}" ui:field="cardOptionReprint">reprint</div>
-                        <!--Pokemon cards-->
-                        <div class="{style.cardOption}" ui:field="cardOptionFirstEd">first edition</div>
-                        <div class="{style.cardOption}" ui:field="cardOptionHolo">holo</div>
-                        <div class="{style.cardOption}" ui:field="cardOptionNormal">normal</div>
-                        <div class="{style.cardOption}" ui:field="cardOptionReverse">reverse</div>
-                        <!--Magic and Pokemon cards-->
-                        <div class="{style.cardOption}" ui:field="cardOptionPromo">promo</div>
-                    </div>
+                    <div ui:field="optionOtherProperties" class="{style.optionOtherProperties}">Other properties:</div>
                 </div>
             </div>
         </div>

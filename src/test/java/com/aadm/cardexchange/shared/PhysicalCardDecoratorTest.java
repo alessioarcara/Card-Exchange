@@ -1,22 +1,21 @@
 package com.aadm.cardexchange.shared;
 
+import com.aadm.cardexchange.server.MockCardData;
 import com.aadm.cardexchange.shared.models.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static com.aadm.cardexchange.shared.CardTestConstants.*;
-
 public class PhysicalCardDecoratorTest {
-    private CardDecorator card;
+    private Card card;
     private PhysicalCardImpl physicalCard;
     private PhysicalCardDecorator physicalCardDecorator;
 
     @BeforeEach
     public void initialize() {
-        card = new CardDecorator(new CardImpl(cardName, cardDesc, cardType));
+        card = MockCardData.createPokemonDummyCard();
         String sampleDesc = "this is a valid test description";
-        physicalCard = new PhysicalCardImpl(Game.YUGIOH, card.getId(), Status.Good, sampleDesc);
+        physicalCard = new PhysicalCardImpl(Game.POKEMON, card.getId(), Status.Good, sampleDesc);
         physicalCardDecorator = new PhysicalCardDecorator(physicalCard, card.getName());
     }
 

@@ -34,6 +34,10 @@
             text-transform: uppercase;
         }
 
+        .cardDescription {
+            word-break: break-word;
+        }
+
         .deleteButton {
             position: absolute;
             top: 5px;
@@ -54,7 +58,7 @@
     </ui:style>
     <g:HTMLPanel styleName="{style.card}" ui:field="cardContainer">
         <h2 ui:field="cardName"/>
-        <div ui:field="cardDescription"/>
+        <div ui:field="cardDescription" class="{style.cardDescription}"/>
         <div ui:field="cardStatus" class="{style.cardStatus}"/>
         <g:Button title="Rimuovi carta dal mazzo" styleName="{style.deleteButton}" ui:field="deleteButton">X</g:Button>
     </g:HTMLPanel>

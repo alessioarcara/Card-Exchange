@@ -344,9 +344,9 @@ public class DeckServiceTest {
         // init Mocks
         PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
         PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.MAGIC, 2222, Status.Fair, "This is a valid bis description.");
-        CardDecorator mockCard1 = new CardDecorator(new CardImpl("Nome1", "Desc1", "Type1"));
-        CardDecorator mockCard2 = new CardDecorator(new CardImpl("Nome2", "Desc2", "Type2"));
-        Map<Integer, CardDecorator> cardMap = new HashMap<>() {{
+        Card mockCard1 = MockCardData.createPokemonDummyCard();
+        Card mockCard2 = MockCardData.createYuGiOhDummyCard();
+        Map<Integer, Card> cardMap = new HashMap<>() {{
             put(1111, mockCard1);
             put(2222, mockCard2);
         }};
@@ -380,8 +380,8 @@ public class DeckServiceTest {
         ctrl.verify();
         Assertions.assertAll(() -> {
             Assertions.assertEquals(2, decoratedCards.size());
-            Assertions.assertEquals("Nome1", decoratedCards.get(0).getName());
-            Assertions.assertEquals("Nome2", decoratedCards.get(1).getName());
+            Assertions.assertEquals("Charizard", decoratedCards.get(0).getName());
+            Assertions.assertEquals("Exodia the Forbidden One", decoratedCards.get(1).getName());
         });
     }
 
@@ -402,8 +402,8 @@ public class DeckServiceTest {
         ctrl.verify();
         Assertions.assertAll(() -> {
             Assertions.assertEquals(2, decoratedCards.size());
-            Assertions.assertEquals("Nome1", decoratedCards.get(0).getName());
-            Assertions.assertEquals("Nome2", decoratedCards.get(1).getName());
+            Assertions.assertEquals("Charizard", decoratedCards.get(0).getName());
+            Assertions.assertEquals("Exodia the Forbidden One", decoratedCards.get(1).getName());
         });
     }
 

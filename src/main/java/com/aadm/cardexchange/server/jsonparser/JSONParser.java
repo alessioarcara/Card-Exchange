@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.server.jsonparser;
 
-import com.aadm.cardexchange.shared.models.CardDecorator;
+import com.aadm.cardexchange.shared.models.Card;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
@@ -11,7 +11,7 @@ public class JSONParser {
     private CardParseStrategy strategy;
     private final Gson gson;
 
-    public JSONParser(CardParseStrategy  strategy, Gson gson) {
+    public JSONParser(CardParseStrategy strategy, Gson gson) {
         this.strategy = strategy;
         this.gson = gson;
     }
@@ -20,10 +20,10 @@ public class JSONParser {
         this.strategy = strategy;
     }
 
-    public CardDecorator[] parseJSON(String filePath) throws FileNotFoundException {
+    public Card[] parseJSON(String filePath) throws FileNotFoundException {
         JsonArray jsonArray = gson.fromJson(new FileReader(filePath), JsonArray.class);
 
-        CardDecorator[] cards = new CardDecorator[jsonArray.size()];
+        Card[] cards = new Card[jsonArray.size()];
 
         for (int i = 0; i < jsonArray.size(); i++) {
             cards[i] = strategy.execute(jsonArray.get(i).getAsJsonObject());

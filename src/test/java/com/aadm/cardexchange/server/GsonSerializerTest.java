@@ -24,27 +24,25 @@ public class GsonSerializerTest implements CardTestConstants {
 
     private static Stream<Arguments> provideSubClasses() {
         return Stream.of(
-                Arguments.of(new CardDecorator(new CardImpl(cardName, cardDesc, cardType))),
-                Arguments.of(new MagicCardDecorator(new CardImpl(cardName, cardDesc, cardType),
-                        genericArtist, genericRarity, true, true, true, true, true)),
-                Arguments.of(new PokemonCardDecorator(new CardImpl(cardName, cardDesc, cardType),
-                        genericArtist, cardImageUrl, genericRarity, true, true, true, true, true)),
-                Arguments.of(new YuGiOhCardDecorator(new CardImpl(cardName, cardDesc, cardType),
-                        yuGiOhRace, cardImageUrl, yuGiOhSmallImageUrl))
+                Arguments.of(new MagicCard(cardName, cardDesc, cardType, genericArtist, genericRarity,
+                        "hasFoil", "isAlternative", "isFullArt", "isPromo", "isReprint")),
+                Arguments.of(new PokemonCard(cardName, cardDesc, cardType, genericArtist, cardImageUrl, genericRarity,
+                        "firstEdition", "holo", "normal", "reverse", "wPromo")),
+                Arguments.of(new YuGiOhCard(cardName, cardDesc, cardType, yuGiOhRace, cardImageUrl, yuGiOhSmallImageUrl))
         );
     }
 
     @ParameterizedTest
     @MethodSource("provideSubClasses")
-    public void testSerializerForCardDecorators(CardDecorator card) throws IOException {
+    public void testSerializerForCards(Card card) throws IOException {
         Gson gson = new Gson();
-        GsonSerializer<CardDecorator> serializer = new GsonSerializer<>(gson);
+        GsonSerializer<Card> serializer = new GsonSerializer<>(gson);
 
         DataOutput2 out = new DataOutput2();
         serializer.serialize(out, card);
 
         byte[] data = out.copyBytes();
-        GsonSerializer<CardDecorator> deserializer = new GsonSerializer<>(gson);
+        GsonSerializer<Card> deserializer = new GsonSerializer<>(gson);
         Object deserializedCard = deserializer.deserialize(new DataInput2.ByteArray(data), 0);
 
         Assertions.assertEquals(card, deserializedCard);
@@ -53,7 +51,7 @@ public class GsonSerializerTest implements CardTestConstants {
     @Test
     public void testSerializerForUnknownClass() throws IOException {
         Gson gson = new Gson();
-        GsonSerializer<CardDecorator> serializer = new GsonSerializer<>(gson);
+        GsonSerializer<Card> serializer = new GsonSerializer<>(gson);
 
         byte[] data;
         try (DataOutput2 out = new DataOutput2()) {
