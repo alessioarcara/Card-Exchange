@@ -8,6 +8,7 @@ import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,11 +67,13 @@ public class ExchangeServiceTest {
         return myList;
     }
 
-    @Test
+
+    /*
     public void testGenerateValidListPcard() {
+
         System.out.println((generateValidListPcard(10).toString()));
     }
-
+    */
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"invalidToken"})
