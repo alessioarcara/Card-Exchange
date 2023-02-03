@@ -4,13 +4,16 @@ import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.widgets.CardWidget;
 import com.aadm.cardexchange.client.widgets.GameFiltersWidget;
 import com.aadm.cardexchange.client.widgets.ImperativeHandleCard;
-import com.aadm.cardexchange.shared.models.*;
+import com.aadm.cardexchange.shared.models.Card;
+import com.aadm.cardexchange.shared.models.Game;
+import com.aadm.cardexchange.shared.models.PropertyType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 
 import java.util.*;
+import java.util.logging.Logger;
 
 
 public class HomeViewImpl extends Composite implements HomeView, ImperativeHandleCard {
@@ -49,43 +52,49 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
     @Override
     public void setData(List<Card> data) {
         cardsPanel.clear();
-        Set<String> uniqueSpecialAttributes = new HashSet<>();
-        Set<String> uniqueTypes = new HashSet<>();
+        // lookup tables
+        // init tables
+        Set<String> textPropertyNames = new HashSet<>();
+        Map<String, Set<String>> catProperties = new HashMap<>();
+        Set<String> variants = new HashSet<>();
+        Logger.getLogger("prweesa").info("pasdas");
+
+        Logger.getLogger("prweesa").info("pasdas");
+        // set tables
         data.forEach(card -> {
-            uniqueTypes.add(card.getType());
-            if (card instanceof MagicCard) {
-                uniqueSpecialAttributes.add(((MagicCard) card).getRarity());
-            } else if (card instanceof PokemonCard) {
-                uniqueSpecialAttributes.add(((PokemonCard) card).getRarity());
-            } else if (card instanceof YuGiOhCard) {
-                uniqueSpecialAttributes.add(((YuGiOhCard) card).getRace());
-            }
+            card.getProperties().forEach(prop -> {
+                PropertyType propType = prop.getType();
+                String propName = prop.getName();
+                if (propType == PropertyType.TEXT)
+                    textPropertyNames.add(propName);
+                else if (propType == PropertyType.CATEGORICAL) {
+                    catProperties.computeIfAbsent(propName, k -> new HashSet<>());
+                    catProperties.get(propName).add(prop.getValue());
+                }
+            });
+            variants.addAll(card.getVariants());
             cardsPanel.add(new CardWidget(this, card));
         });
         if (!isGameChanged) {
-            setFilters(uniqueSpecialAttributes, uniqueTypes);
+            setFilters(textPropertyNames.toArray(new String[0]), new ArrayList<>(catProperties.values()), variants.toArray(new String[0]));
             isGameChanged = true;
         }
     }
 
-    private void setFilters(Set<String> uniqueSpecialAttributes, Set<String> uniqueTypes) {
-        filters.specialAttributeOptions.clear();
-        filters.typeOptions.clear();
-        filters.specialAttributeOptions.addItem("all");
-        filters.typeOptions.addItem("all");
-        uniqueSpecialAttributes.forEach(specialAttribute -> filters.specialAttributeOptions.addItem(specialAttribute));
-        uniqueTypes.forEach(type -> filters.typeOptions.addItem(type));
+    private void setFilters(String[] textPropertyNames, List<Set<String>> catProperties, String[] variants) {
+        filters.setCategories(catProperties);
+        filters.setTextOptions(textPropertyNames);
+        filters.setCheckBoxes(variants);
     }
 
     private void handleFiltersClean() {
-        filters.specialAttributeOptions.setItemSelected(0, true);
-        filters.typeOptions.setItemSelected(0, true);
+        filters.categoryListBoxes.forEach(listBox -> listBox.setItemSelected(0, true));
         filters.textOptions.setItemSelected(0, true);
         filters.textInput.setText("");
         filters.checkBoxes.forEach(checkBox -> checkBox.setValue(false));
         setData(presenter.filterGameCards(
-                filters.specialAttributeOptions.getSelectedValue(),
-                filters.typeOptions.getSelectedValue(),
+                Collections.emptyList(),
+                Collections.emptyList(),
                 filters.textOptions.getSelectedValue(),
                 filters.textInput.getText(),
                 Collections.emptyList(),
@@ -94,19 +103,25 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
     }
 
     private void handleFiltersApply() {
-        List<String> booleanInputNames = new ArrayList<>();
-        List<Boolean> booleanInputValues = new ArrayList<>();
+        List<String> categoryInputNames = new ArrayList<>();
+        List<String> categoryInputValues = new ArrayList<>();
+        List<String> variantInputNames = new ArrayList<>();
+        List<Boolean> variantInputValues = new ArrayList<>();
         for (CheckBox checkBox : filters.checkBoxes) {
-            booleanInputNames.add(checkBox.getText());
-            booleanInputValues.add(checkBox.getValue());
+            variantInputNames.add(checkBox.getText());
+            variantInputValues.add(checkBox.getValue());
+        }
+        for (ListBox listBox : filters.categoryListBoxes) {
+            categoryInputNames.add(listBox.getName());
+            categoryInputValues.add(listBox.getSelectedItemText());
         }
         setData(presenter.filterGameCards(
-                filters.specialAttributeOptions.getSelectedValue(),
-                filters.typeOptions.getSelectedValue(),
+                categoryInputNames,
+                categoryInputValues,
                 filters.textOptions.getSelectedValue(),
                 filters.textInput.getText(),
-                booleanInputNames,
-                booleanInputValues
+                variantInputNames,
+                variantInputValues
         ));
     }
 
@@ -117,7 +132,6 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
 
     private void onGameChanged(Game game) {
         presenter.fetchGameCards(game);
-        filters.handleGameChange(game);
         isGameChanged = false;
     }
 

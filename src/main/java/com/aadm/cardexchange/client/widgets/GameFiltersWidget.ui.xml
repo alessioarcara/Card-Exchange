@@ -11,18 +11,7 @@
         }
     </ui:style>
     <g:HTMLPanel styleName="{style.filters}">
-        <div>
-            <span ui:field="specialAttributeSpan">Special Attribute</span>
-            <g:ListBox ui:field="specialAttributeOptions">
-                <g:item>/</g:item>
-            </g:ListBox>
-        </div>
-        <div>
-            Type
-            <g:ListBox ui:field="typeOptions">
-                <g:item>/</g:item>
-            </g:ListBox>
-        </div>
+        <g:HTMLPanel ui:field="categoriesPanel"/>
         <div>
             <g:ListBox ui:field="textOptions">
                 <g:item>/</g:item>

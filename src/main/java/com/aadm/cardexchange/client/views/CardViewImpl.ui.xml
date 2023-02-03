@@ -42,7 +42,7 @@
             gap: 3.5rem;
         }
 
-        .cardOptions > div > div, .optionOtherProperties > div {
+        .cardOptions > div > div, .cardVariants > div {
             justify-self: end;
             font-weight: bold;
             text-transform: uppercase;
@@ -67,22 +67,7 @@
             <div class="{style.cardInformation}">
                 <div ui:field="cardDescription"/>
                 <div class="{style.cardOptions}">
-                    <!--all cards-->
-                    <div>Type:
-                        <div ui:field="cardOptionType"/>
-                    </div>
-                    <!--Magic and Pokemon cards-->
-                    <div ui:field="optionArtist">Artist:
-                        <div ui:field="cardOptionArtist"/>
-                    </div>
-                    <div ui:field="optionRarity">Rarity:
-                        <div ui:field="cardOptionRarity"/>
-                    </div>
-                    <!--YuGiOh cards-->
-                    <div ui:field="optionRace">Race:
-                        <div ui:field="cardOptionRace"/>
-                    </div>
-                    <div ui:field="optionOtherProperties" class="{style.optionOtherProperties}">Other properties:</div>
+                    <div ui:field="variantsDiv" class="{style.cardVariants}">Variants:</div>
                 </div>
             </div>
         </div>

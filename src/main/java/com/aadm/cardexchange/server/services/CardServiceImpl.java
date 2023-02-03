@@ -36,7 +36,7 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
 
     public static String getNameCard(int idCard, Map<Integer, Card> cardMap) {
         try {
-            return cardMap.get(idCard).getName();
+            return cardMap.get(idCard).getProperty("name");
         } catch (NullPointerException e) {
             return "No Name Found";
         }

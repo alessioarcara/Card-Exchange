@@ -1,31 +1,28 @@
 package com.aadm.cardexchange.server.jsonparser;
 
-import com.aadm.cardexchange.shared.models.PokemonCard;
+import com.aadm.cardexchange.shared.models.Card;
+import com.aadm.cardexchange.shared.models.Game;
+import com.aadm.cardexchange.shared.models.Property;
+import com.aadm.cardexchange.shared.models.PropertyType;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static com.aadm.cardexchange.server.jsonparser.JSONParser.getPropertiesFromJson;
+import static com.aadm.cardexchange.server.jsonparser.JSONParser.getVariantsFromJson;
 
 public class PokemonCardParseStrategy implements CardParseStrategy {
-
-    public PokemonCard execute(JsonObject json) {
-        // fields
-        String name = json.has("name") ? json.get("name").getAsString() : "unknown";
-        String description = json.has("description") ? json.get("description").getAsString() : "unknown";
-        String types = json.has("types") ? json.get("types").getAsString() : "unknown";
-        String illustrator = json.has("illustrator") ? json.get("illustrator").getAsString() : "unknown";
-        String image = json.has("image") ? json.get("image").getAsString() : "";
-        String rarity = json.has("rarity") ? json.get("rarity").getAsString() : "unknown";
-
+    public Card execute(JsonObject json) {
+        // properties
+        List<Property> textProperties = getPropertiesFromJson(json, PropertyType.TEXT, "name", "description", "illustrator");
+        List<Property> catProperties = getPropertiesFromJson(json, PropertyType.CATEGORICAL, "types", "rarity");
+        List<Property> otherProperties = getPropertiesFromJson(json, PropertyType.OTHER, "image");
+        // variants
         JsonObject variantsObject = json.getAsJsonObject("variants");
-        List<String> variants = new ArrayList<>();
-        String[] variantNames = {"firstEdition", "holo", "normal", "reverse", "wPromo"};
-        for (String variantName : variantNames) {
-            if (variantsObject != null && variantsObject.get(variantName).getAsBoolean()) {
-                variants.add(variantName);
-            }
-        }
+        List<String> variants = getVariantsFromJson(variantsObject, "firstEdition", "holo", "normal", "reverse", "wPromo");
 
-        return new PokemonCard(name, description, types, illustrator, image, rarity, variants.toArray(new String[0]));
+        return new Card(Game.POKEMON, Stream.of(textProperties, catProperties, otherProperties).flatMap(Collection::stream).toArray(Property[]::new), variants.toArray(new String[0]));
     }
 }

@@ -1,9 +1,9 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.models.Card;
-import com.aadm.cardexchange.shared.models.MagicCard;
-import com.aadm.cardexchange.shared.models.PokemonCard;
-import com.aadm.cardexchange.shared.models.YuGiOhCard;
+import com.aadm.cardexchange.shared.models.Game;
+import com.aadm.cardexchange.shared.models.Property;
+import com.aadm.cardexchange.shared.models.PropertyType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,21 +12,32 @@ import java.util.Map;
 
 // Create mocks cards with distinct fields for testing purposes
 public class MockCardData {
-    public static PokemonCard createPokemonDummyCard() {
-        return new PokemonCard("Charizard", "The flame Pokemon", "Flame",
-                "Ken Sugimori", "http://www.charizard-image.jpg", "Rare",
-                "holo");
+    public static Card createPokemonDummyCard() {
+        return new Card(Game.POKEMON, new Property[]{
+                new Property("name", PropertyType.TEXT, "Charizard"),
+                new Property("description", PropertyType.TEXT, "The flame Pokemon"),
+                new Property("illustrator", PropertyType.TEXT, "Ken Sugimori"),
+                new Property("types", PropertyType.CATEGORICAL, "Flame"),
+                new Property("rarity", PropertyType.CATEGORICAL, "Rare"),
+                new Property("image", PropertyType.OTHER, "http://www.charizard-image.jpg"),
+        }, "holo");
     }
 
-    public static YuGiOhCard createYuGiOhDummyCard() {
-        return new YuGiOhCard("Exodia the Forbidden One", "One of the most powerful monsters in the game",
-                "Creature", "Divine-Beast", "http://www.exodia-image.jpg", "http://www.exodia-thumbnail.jpg"
-        );
+    public static Card createYuGiOhDummyCard() {
+        return new Card(Game.POKEMON, new Property[]{
+                new Property("name", PropertyType.TEXT, "Exodia the Forbidden One"),
+                new Property("desc", PropertyType.TEXT, "One of the most powerful monsters in the game"),
+                new Property("type", PropertyType.CATEGORICAL, "Creature"),
+                new Property("race", PropertyType.CATEGORICAL, "Divine-Beast"),
+                new Property("image_url", PropertyType.OTHER, "http://www.exodia-image.jpg"),
+                new Property("small_image_url", PropertyType.OTHER, "http://www.exodia-thumbnail.jpg"),
+        });
     }
 
-    public static Map<Integer, MagicCard> createMagicDummyMap() {
+    public static Map<Integer, Card> createCardDummyMap() {
         return new HashMap<>() {{
-            put(0, new MagicCard("Lightning Bolt", "Deal 3 damage to any target", "Cast",
+            put(0, new Card(
+                    "Lightning Bolt", "Deal 3 damage to any target", "Cast",
                     "Christopher Rush", "Rare",
                     "hasFoil"
             ));

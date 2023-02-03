@@ -3,7 +3,8 @@ package com.aadm.cardexchange.client.presenters;
 import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.HomeView;
 import com.aadm.cardexchange.shared.CardServiceAsync;
-import com.aadm.cardexchange.shared.models.*;
+import com.aadm.cardexchange.shared.models.Card;
+import com.aadm.cardexchange.shared.models.Game;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
@@ -44,51 +45,31 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
         });
     }
 
-    public List<Card> filterGameCards(String specialAttributeValue, String typeValue, String textInputName, String textInputValue,
-                                      List<String> booleanInputNames, List<Boolean> booleanInputValues) {
+    public List<Card> filterGameCards(List<String> categoryInputNames, List<String> categoryInputValues,
+                                      String textInputName, String textInputValue,
+                                      List<String> variantInputNames, List<Boolean> variantInputValues) {
         List<Card> filteredCards = new ArrayList<>();
         for (Card card : cards) {
             boolean shouldSkip = false;
             if (!textInputValue.isEmpty()) {
-                String cardText = "";
-                switch (textInputName) {
-                    case "Name":
-                        cardText = card.getName();
-                        break;
-                    case "Description":
-                        cardText = card.getDescription();
-                        break;
-                    case "Artist":
-                        cardText = card instanceof MagicCard ?
-                                ((MagicCard) card).getArtist() :
-                                card instanceof PokemonCard ?
-                                        ((PokemonCard) card).getArtist() : "";
-                        break;
-                }
+                String cardText = card.getProperty(textInputName);
                 if (!cardText.toLowerCase().contains(textInputValue.toLowerCase())) {
                     shouldSkip = true;
                 }
             }
-            if (!specialAttributeValue.equals("all")) {
-                if (card instanceof MagicCard ?
-                        !specialAttributeValue.equals(((MagicCard) card).getRarity()) :
-                        card instanceof PokemonCard ?
-                                !specialAttributeValue.equals(((PokemonCard) card).getRarity()) :
-                                card instanceof YuGiOhCard &&
-                                        !specialAttributeValue.equals(((YuGiOhCard) card).getRace())
-                ) {
-                    shouldSkip = true;
+            if (!(categoryInputNames.isEmpty() && categoryInputValues.isEmpty())) {
+                for (int i = 0; i < categoryInputNames.size(); i++) {
+                    String name = categoryInputNames.get(i);
+                    String value = categoryInputValues.get(i);
+                    if (!card.getProperty(name).equals(value)) {
+                        shouldSkip = true;
+                    }
                 }
             }
-            if (!typeValue.equals("all")) {
-                if (!typeValue.equals(card.getType())) {
-                    shouldSkip = true;
-                }
-            }
-            if (!(booleanInputNames.isEmpty() && booleanInputValues.isEmpty())) {
-                for (int i = 0; i < booleanInputNames.size(); i++) {
-                    String name = booleanInputNames.get(i);
-                    Boolean value = booleanInputValues.get(i);
+            if (!(variantInputNames.isEmpty() && variantInputValues.isEmpty())) {
+                for (int i = 0; i < variantInputNames.size(); i++) {
+                    String name = variantInputNames.get(i);
+                    Boolean value = variantInputValues.get(i);
                     if (value && !card.getVariants().contains(name)) {
                         shouldSkip = true;
                         break;

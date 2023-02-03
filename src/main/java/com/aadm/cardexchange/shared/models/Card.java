@@ -7,21 +7,20 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class Card implements Serializable {
+public class Card implements Serializable {
     private static final long serialVersionUID = -6914752354287411438L;
     private static final AtomicInteger uniqueId = new AtomicInteger();
     private int id;
-    private String name;
-    private String description;
-    private String type;
+    Game gameType;
+    private Set<Property> properties;
     private Set<String> variants;
 
-    public Card(String name, String description, String type, String... variants) {
+    public Card(Game game, Property[] properties, String... variants) {
         this.id = uniqueId.incrementAndGet();
-        this.name = name;
-        this.description = description;
-        this.type = type;
+        this.gameType = game;
+        this.properties = new HashSet<>();
         this.variants = new HashSet<>();
+        Collections.addAll(this.properties, properties);
         Collections.addAll(this.variants, variants);
     }
 
@@ -32,16 +31,21 @@ public abstract class Card implements Serializable {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public Game getGameType() {
+        return gameType;
     }
 
-    public String getDescription() {
-        return description;
+    public Set<Property> getProperties() {
+        return properties;
     }
 
-    public String getType() {
-        return type;
+    public String getProperty(String propertyName) {
+        for (Property prop : properties) {
+            if (prop.getName().equals(propertyName)) {
+                return prop.value;
+            }
+        }
+        return null;
     }
 
     public Set<String> getVariants() {
@@ -53,11 +57,11 @@ public abstract class Card implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Card)) return false;
         Card card = (Card) o;
-        return getName().equals(card.getName()) && getDescription().equals(card.getDescription()) && getType().equals(card.getType());
+        return getId() == card.getId() && getGameType() == card.getGameType() && Objects.equals(getProperties(), card.getProperties()) && Objects.equals(getVariants(), card.getVariants());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName(), getDescription(), getType());
+        return Objects.hash(getId(), getGameType(), getProperties(), getVariants());
     }
 }

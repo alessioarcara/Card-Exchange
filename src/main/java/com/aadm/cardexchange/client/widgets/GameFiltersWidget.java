@@ -1,56 +1,60 @@
 package com.aadm.cardexchange.client.widgets;
 
-import com.aadm.cardexchange.shared.models.Game;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.SpanElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class GameFiltersWidget extends Composite {
     private static final GameFiltersUIBinder uiBinder = GWT.create(GameFiltersUIBinder.class);
     @UiField
     public TextBox textInput;
     @UiField
-    public ListBox specialAttributeOptions;
-    @UiField
-    public ListBox typeOptions;
+    public HTMLPanel categoriesPanel;
+    public List<ListBox> categoryListBoxes;
     @UiField
     public ListBox textOptions;
     public List<CheckBox> checkBoxes;
     @UiField
-    SpanElement specialAttributeSpan;
-    @UiField
     HTMLPanel checkboxesPanel;
-    Map<Game, List<String>> gameTextFieldsMap;
-    Map<Game, List<String>> gameBooleanFieldsMap;
 
     @UiConstructor
     public GameFiltersWidget() {
         initWidget(uiBinder.createAndBindUi(this));
-        gameTextFieldsMap = new HashMap<>();
-        gameTextFieldsMap.put(Game.MAGIC, Arrays.asList("Name", "Artist"));
-        gameTextFieldsMap.put(Game.POKEMON, Arrays.asList("Name", "Artist"));
-        gameTextFieldsMap.put(Game.YUGIOH, Collections.singletonList("Name"));
-
-        gameBooleanFieldsMap = new HashMap<>();
-        gameBooleanFieldsMap.put(Game.MAGIC, Arrays.asList("hasFoil", "isAlternative", "isFullArt", "isPromo", "isReprint"));
-        gameBooleanFieldsMap.put(Game.POKEMON, Arrays.asList("firstEdition", "holo", "normal", "reverse", "wPromo"));
-        gameBooleanFieldsMap.put(Game.YUGIOH, Collections.emptyList());
+        categoryListBoxes = new ArrayList<>();
+        checkBoxes = new ArrayList<>();
     }
 
-    public void handleGameChange(Game game) {
-        specialAttributeSpan.setInnerHTML((game == Game.MAGIC || game == Game.POKEMON) ? "Rarity" : "Race");
+    public void setCategories(List<Set<String>> catProperties) {
+        categoryListBoxes.clear();
+        catProperties.forEach(prop -> {
+            ListBox listBox = new ListBox();
+            listBox.addItem("all");
+            for (String option : prop) {
+                listBox.addItem(option);
+            }
+            categoryListBoxes.add(listBox);
+            categoriesPanel.add(listBox);
+        });
+    }
+
+    public void setTextOptions(String[] textProperties) {
         textOptions.clear();
+        for (String textProperty : textProperties) {
+            textOptions.addItem(textProperty);
+        }
+    }
+
+    public void setCheckBoxes(String[] variants) {
         checkboxesPanel.clear();
-        checkBoxes = new ArrayList<>();
-        for (String textField : gameTextFieldsMap.get(game))
-            textOptions.addItem(textField);
-        for (String booleanField : gameBooleanFieldsMap.get(game)) {
-            CheckBox checkBox = new CheckBox(booleanField);
+        checkBoxes.clear();
+        for (String variant : variants) {
+            CheckBox checkBox = new CheckBox(variant);
             checkboxesPanel.add(checkBox);
             checkBoxes.add(checkBox);
         }

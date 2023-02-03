@@ -2,9 +2,6 @@ package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.server.jsonparser.*;
 import com.aadm.cardexchange.shared.models.Card;
-import com.aadm.cardexchange.shared.models.MagicCard;
-import com.aadm.cardexchange.shared.models.PokemonCard;
-import com.aadm.cardexchange.shared.models.YuGiOhCard;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

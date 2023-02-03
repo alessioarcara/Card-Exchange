@@ -1,8 +1,10 @@
 package com.aadm.cardexchange.client.views;
 
-import com.aadm.cardexchange.client.utils.DefaultImagePathLookupTable;
 import com.aadm.cardexchange.client.widgets.*;
-import com.aadm.cardexchange.shared.models.*;
+import com.aadm.cardexchange.shared.models.Card;
+import com.aadm.cardexchange.shared.models.Game;
+import com.aadm.cardexchange.shared.models.Property;
+import com.aadm.cardexchange.shared.models.PropertyType;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.HeadingElement;
@@ -23,21 +25,7 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
     @UiField
     DivElement cardDescription;
     @UiField
-    DivElement cardOptionType;
-    @UiField
-    DivElement optionArtist;
-    @UiField
-    DivElement cardOptionArtist;
-    @UiField
-    DivElement optionRarity;
-    @UiField
-    DivElement cardOptionRarity;
-    @UiField
-    DivElement optionRace;
-    @UiField
-    DivElement cardOptionRace;
-    @UiField
-    DivElement optionOtherProperties;
+    DivElement variantsDiv;
     @UiField
     HTMLPanel addCardToDeckContainer;
     @UiField
@@ -53,53 +41,49 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
     public void setData(Card data) {
         Game game;
         String imageUrl = "";
-        String artist = "";
-        String rarity = "";
-        String race = "";
-        StringBuilder otherProperties = new StringBuilder();
+        StringBuilder categories = new StringBuilder();
+        StringBuilder variants = new StringBuilder();
 
-        setPropertiesUnvisible();
-
-        if (data instanceof MagicCard) {
-            game = Game.MAGIC;
-            artist = ((MagicCard) data).getArtist();
-            rarity = ((MagicCard) data).getRarity();
-        } else if (data instanceof PokemonCard) {
-            game = Game.POKEMON;
-            imageUrl = ((PokemonCard) data).getImageUrl();
-            artist = ((PokemonCard) data).getArtist();
-            rarity = ((PokemonCard) data).getRarity();
-        } else if (data instanceof YuGiOhCard) {
-            game = Game.YUGIOH;
-            imageUrl = ((YuGiOhCard) data).getImageUrl();
-            race = ((YuGiOhCard) data).getRace();
-        } else {
-            game = null;
+        for (Property prop : data.getProperties()) {
+            if (prop.getType() == PropertyType.CATEGORICAL) {
+                categories.append("<div>").append(prop.getValue()).append("</div>");
+            }
         }
 
-        for (String variant : data.getVariants()) {
-            otherProperties.append("<div>").append(variant).append("</div>");
-        }
-
-        cardImage.addErrorHandler((error) -> cardImage.setUrl(GWT.getHostPageBaseURL() + DefaultImagePathLookupTable.getPath(game)));
-        cardGame.setInnerHTML(game != null ? game.name() : "");
-        cardName.setInnerHTML(data.getName());
-        cardImage.setUrl(imageUrl);
-        cardDescription.setInnerHTML(data.getDescription());
-        cardOptionType.setInnerHTML(data.getType());
-        cardOptionArtist.setInnerHTML(artist);
-        cardOptionRarity.setInnerHTML(rarity);
-        cardOptionRace.setInnerHTML(race);
-        if (!artist.isEmpty()) optionArtist.getStyle().clearDisplay();
-        if (!rarity.isEmpty()) optionRarity.getStyle().clearDisplay();
-        if (!race.isEmpty()) optionRace.getStyle().clearDisplay();
-        optionOtherProperties.setInnerHTML(String.valueOf(otherProperties));
-    }
-
-    private void setPropertiesUnvisible() {
-        optionArtist.setAttribute("style", "display: none");
-        optionRarity.setAttribute("style", "display: none");
-        optionRace.setAttribute("style", "display: none");
+//        if (data instanceof MagicCard) {
+//            game = Game.MAGIC;
+//            artist = ((MagicCard) data).getArtist();
+//            rarity = ((MagicCard) data).getRarity();
+//        } else if (data instanceof PokemonCard) {
+//            game = Game.POKEMON;
+//            imageUrl = ((PokemonCard) data).getImageUrl();
+//            artist = ((PokemonCard) data).getArtist();
+//            rarity = ((PokemonCard) data).getRarity();
+//        } else if (data instanceof YuGiOhCard) {
+//            game = Game.YUGIOH;
+//            imageUrl = ((YuGiOhCard) data).getImageUrl();
+//            race = ((YuGiOhCard) data).getRace();
+//        } else {
+//            game = null;
+//        }
+//
+//        for (String variant : data.getVariants()) {
+//            variants.append("<div>").append(variant).append("</div>");
+//        }
+//
+//        cardImage.addErrorHandler((error) -> cardImage.setUrl(GWT.getHostPageBaseURL() + DefaultImagePathLookupTable.getPath(game)));
+//        cardGame.setInnerHTML(game != null ? game.name() : "");
+//        cardName.setInnerHTML(data.getName());
+//        cardImage.setUrl(imageUrl);
+//        cardDescription.setInnerHTML(data.getDescription());
+//        cardOptionType.setInnerHTML(data.getType());
+//        cardOptionArtist.setInnerHTML(artist);
+//        cardOptionRarity.setInnerHTML(rarity);
+//        cardOptionRace.setInnerHTML(race);
+//        if (!artist.isEmpty()) optionArtist.getStyle().clearDisplay();
+//        if (!rarity.isEmpty()) optionRarity.getStyle().clearDisplay();
+//        if (!race.isEmpty()) optionRace.getStyle().clearDisplay();
+        variantsDiv.setInnerHTML(String.valueOf(variants));
     }
 
     @Override
