@@ -4,4 +4,6 @@ public interface RouteConstants {
     String homeLink = "home";
     String authLink = "auth";
     String decksLink = "decks";
+
+    String exchangesLink = "exchanges";
 }

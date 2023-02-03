@@ -31,6 +31,8 @@ import org.junit.platform.suite.api.Suite;
         AuthSubjectTest.class,
         DeckServiceTest.class,
         ProposalTest.class,
+        NewExchangePlaceTest.class,
+        ExchangeServiceTest.class,
 })
 public class CardExchangeSuite {
 }
