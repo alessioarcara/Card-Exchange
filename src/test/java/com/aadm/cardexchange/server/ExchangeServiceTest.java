@@ -63,17 +63,8 @@ public class ExchangeServiceTest {
             PhysicalCardImpl mockPCard = new PhysicalCardImpl(Game.randomGame(), (i+3000), Status.randomGame(), "This is a valid description.");
             myList.add(mockPCard);
         }
-        //System.out.println(myList.toString());
         return myList;
     }
-
-
-    /*
-    public void testGenerateValidListPcard() {
-
-        System.out.println((generateValidListPcard(10).toString()));
-    }
-    */
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"invalidToken"})
@@ -86,7 +77,6 @@ public class ExchangeServiceTest {
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(loginInfoMap);
-        //setupForValidEmail();
         ctrl.replay();
         Assertions.assertThrows(AuthException.class, () -> exchangeService.addProposal(input, "valid@receiverUserEmail.it", generateValidListPcard(2), generateValidListPcard(2)));
         ctrl.verify();
@@ -95,7 +85,6 @@ public class ExchangeServiceTest {
     @NullAndEmptySource
     public void testAddProposalForInvalidReceiverUserEmail(String input) {
         setupForValidToken();
-        //setupForValidEmail();
         ctrl.replay();
         Assertions.assertThrows(InputException.class, () -> {
             exchangeService.addProposal("validToken", input, generateValidListPcard(2), generateValidListPcard(2));
@@ -153,21 +142,6 @@ public class ExchangeServiceTest {
         });
         ctrl.verify();
     }
-
-    /*
-    @Test
-    public void testAddProposalForExistingProposal() throws AuthException, InputException {
-        setupForValidToken();
-        setupForValidEmail();
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(new HashMap<>());
-        ctrl.replay();
-        Assertions.assertTrue(exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(1), generateValidListPcard(2)));
-        ctrl.verify();
-    }
-    */
-
     @Test
     public void testAddProposalSuccess() throws AuthException, InputException {
         setupForValidToken();
@@ -179,5 +153,4 @@ public class ExchangeServiceTest {
         Assertions.assertTrue(exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(1), generateValidListPcard(2)));
         ctrl.verify();
     }
-
 }

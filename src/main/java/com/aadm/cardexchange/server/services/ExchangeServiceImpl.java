@@ -24,16 +24,12 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     private static final long serialVersionUID = 5868088467963819042L;
     private final MapDB db;
     private final Gson gson = new Gson();
-    private final Type type = new TypeToken<Map<Integer, Proposal>>() {
-    }.getType();
     public ExchangeServiceImpl() {
         db = new MapDBImpl();
     }
-
     public ExchangeServiceImpl(MapDB mockDB) {
         db = mockDB;
     }
-
     private boolean checkEmailExistance(String email) {
         Map<String, User> userMap = db.getPersistentMap(
                 getServletContext(), USER_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
@@ -50,7 +46,6 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     public boolean addProposal(String token, String receiverUserEmail, List<PhysicalCardImpl> senderPhysicalCards, List<PhysicalCardImpl> receiverPhysicalCards) throws AuthException, InputException {
         String email = AuthServiceImpl.checkTokenValidity(token,
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        //System.out.println(email);
         if (receiverUserEmail == null || receiverUserEmail.isEmpty() || !checkEmailExistance(receiverUserEmail)) {
             throw new InputException("Invalid receiverUserEmail name");
         } else if (!checkPcardListConsistency(senderPhysicalCards)) {
@@ -59,7 +54,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
             throw new InputException("Invalid senderPhysicalCards list");
         } else {
             Proposal newProposal = new Proposal(email, receiverUserEmail, senderPhysicalCards, receiverPhysicalCards);
-            Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson, type));
+            Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
             if (proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null) return true;
             else return false;
         }
