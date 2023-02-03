@@ -83,7 +83,7 @@ public class ExchangeServiceTest {
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(loginInfoMap);
-        setupForValidEmail();
+        //setupForValidEmail();
         ctrl.replay();
         Assertions.assertThrows(AuthException.class, () -> exchangeService.addProposal(input, "valid@receiverUserEmail.it", generateValidListPcard(2), generateValidListPcard(2)));
         ctrl.verify();
@@ -92,7 +92,7 @@ public class ExchangeServiceTest {
     @NullAndEmptySource
     public void testAddProposalForInvalidReceiverUserEmail(String input) {
         setupForValidToken();
-        setupForValidEmail();
+        //setupForValidEmail();
         ctrl.replay();
         Assertions.assertThrows(InputException.class, () -> {
             exchangeService.addProposal("validToken", input, generateValidListPcard(2), generateValidListPcard(2));
@@ -110,13 +110,20 @@ public class ExchangeServiceTest {
         ctrl.verify();
     }
     @Test
-    public void testAddProposalForInvalidSenderPCards() throws AuthException {
+    public void testAddProposalForEmptySenderPCards() throws AuthException {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
         Assertions.assertThrows(InputException.class, () -> {
-            exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(0), generateValidListPcard(2));
-        });
+                exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(0), generateValidListPcard(2));
+            });
+        ctrl.verify();
+    }
+    @Test
+    public void testAddProposalForNullSenderPCards() throws AuthException {
+        setupForValidToken();
+        setupForValidEmail();
+        ctrl.replay();
         Assertions.assertThrows(InputException.class, () -> {
             exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", null, generateValidListPcard(2));
         });
@@ -124,23 +131,47 @@ public class ExchangeServiceTest {
     }
 
     @Test
-    public void testAddProposalForInvalidReceiverPCards() throws AuthException {
+    public void testAddProposalForEmptyReceiverPCards() throws AuthException {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
         Assertions.assertThrows(InputException.class, () -> {
             exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(2), generateValidListPcard(0));
         });
+        ctrl.verify();
+    }
+    @Test
+    public void testAddProposalForNullReceiverPCards() throws AuthException {
+        setupForValidToken();
+        setupForValidEmail();
+        ctrl.replay();
         Assertions.assertThrows(InputException.class, () -> {
             exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(2), null);
         });
         ctrl.verify();
     }
 
+    /*
     @Test
-    public void testAddProposalSuccess() throws AuthException {
+    public void testAddProposalForExistingProposal() throws AuthException, InputException {
         setupForValidToken();
         setupForValidEmail();
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(new HashMap<>());
+        ctrl.replay();
+        Assertions.assertTrue(exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(1), generateValidListPcard(2)));
+        ctrl.verify();
+    }
+    */
+
+    @Test
+    public void testAddProposalSuccess() throws AuthException, InputException {
+        setupForValidToken();
+        setupForValidEmail();
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(new HashMap<>());
         ctrl.replay();
         Assertions.assertTrue(exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(1), generateValidListPcard(2)));
         ctrl.verify();

@@ -24,7 +24,8 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     private static final long serialVersionUID = 5868088467963819042L;
     private final MapDB db;
     private final Gson gson = new Gson();
-
+    private final Type type = new TypeToken<Map<Integer, Proposal>>() {
+    }.getType();
     public ExchangeServiceImpl() {
         db = new MapDBImpl();
     }
@@ -32,20 +33,36 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     public ExchangeServiceImpl(MapDB mockDB) {
         db = mockDB;
     }
-/*
-    private static boolean addDeck(String email, String deckName, boolean isDefault, Map<String, Map<String, Deck>> deckMap) {
-        Map<String, Deck> userDecks = deckMap.computeIfAbsent(email, k -> new HashMap<>());
-        // if deck already exists in decks container do nothing
-        if (userDecks.get(deckName) != null) {
-            return false;
-        }
-        userDecks.put(deckName, new Deck(deckName, isDefault));
-        deckMap.put(email, userDecks);
-        return true;
+
+    private boolean checkEmailExistance(String email) {
+        Map<String, User> userMap = db.getPersistentMap(
+                getServletContext(), USER_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        System.out.println(userMap.get(email) );
+        if (userMap.get(email) != null) {
+            return true;
+        } else return false;
     }
-*/
+    private boolean checkPcardListConsistency(List<PhysicalCardImpl> physicalCards) {
+       if (physicalCards == null) return false;
+       else return !physicalCards.isEmpty();
+    }
     @Override
-    public boolean addProposal(String token, String receiverUserEmail, List<PhysicalCardImpl> senderPhysicalCards, List<PhysicalCardImpl> receiverPhysicalCards) throws AuthException {
-        return false;
+    public boolean addProposal(String token, String receiverUserEmail, List<PhysicalCardImpl> senderPhysicalCards, List<PhysicalCardImpl> receiverPhysicalCards) throws AuthException, InputException {
+        String email = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        //System.out.println(email);
+        if (receiverUserEmail == null || receiverUserEmail.isEmpty() || !checkEmailExistance(receiverUserEmail)) {
+            throw new InputException("Invalid receiverUserEmail name");
+        } else if (!checkPcardListConsistency(senderPhysicalCards)) {
+            throw new InputException("Invalid senderPhysicalCards list");
+        } else if (!checkPcardListConsistency(receiverPhysicalCards)) {
+            throw new InputException("Invalid senderPhysicalCards list");
+        } else {
+            Proposal newProposal = new Proposal(email, receiverUserEmail, senderPhysicalCards, receiverPhysicalCards);
+            Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson, type));
+            if (proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null) return true;
+            else return false;
+        }
     }
 }
+
