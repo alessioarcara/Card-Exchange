@@ -6,8 +6,8 @@ import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.DecksView;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.models.Game;
-import com.aadm.cardexchange.shared.models.PhysicalCardDecorator;
-import com.aadm.cardexchange.shared.models.PhysicalCardImpl;
+import com.aadm.cardexchange.shared.models.PhysicalCard;
+import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.easymock.IMocksControl;
@@ -39,18 +39,18 @@ public class DecksActivityTest {
     @Test
     public void testFetchUserDeckForSuccess() {
         mockRpcService.getMyDeck(anyString(), anyString(), isA(BaseAsyncCallback.class));
-        List<PhysicalCardDecorator> pcards = new ArrayList<>() {{
-            add(new PhysicalCardDecorator(
-                    new PhysicalCardImpl(Game.MAGIC, 111, Status.Good, "This is a valid description"),
+        List<PhysicalCardWithName> pcards = new ArrayList<>() {{
+            add(new PhysicalCardWithName(
+                    new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"),
                     "Test Card"));
-            add(new PhysicalCardDecorator(
-                    new PhysicalCardImpl(Game.MAGIC, 111, Status.Good, "This is a valid description"),
+            add(new PhysicalCardWithName(
+                    new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"),
                     "Test Card"));
         }};
 
         expectLastCall().andAnswer(() -> {
             Object[] args = getCurrentArguments();
-            AsyncCallback<List<PhysicalCardDecorator>> callback = (AsyncCallback<List<PhysicalCardDecorator>>) args[args.length - 1];
+            AsyncCallback<List<PhysicalCardWithName>> callback = (AsyncCallback<List<PhysicalCardWithName>>) args[args.length - 1];
             callback.onSuccess(pcards);
             return null;
         });

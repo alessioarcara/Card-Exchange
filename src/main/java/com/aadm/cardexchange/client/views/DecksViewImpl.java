@@ -2,7 +2,7 @@ package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.widgets.DeckWidget;
 import com.aadm.cardexchange.client.widgets.ImperativeHandleDeck;
-import com.aadm.cardexchange.shared.models.PhysicalCardDecorator;
+import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -31,7 +31,7 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     }
 
     @Override
-    public void onShowDeck(String deckName, Consumer<List<PhysicalCardDecorator>> setDeckData) {
+    public void onShowDeck(String deckName, Consumer<List<PhysicalCardWithName>> setDeckData) {
         presenter.fetchUserDeck(deckName, setDeckData);
     }
 

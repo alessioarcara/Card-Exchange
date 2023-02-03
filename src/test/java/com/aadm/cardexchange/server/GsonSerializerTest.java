@@ -94,8 +94,8 @@ public class GsonSerializerTest implements CardTestConstants {
 
         DataOutput2 out = new DataOutput2();
         Deck ownedDeck = new Deck("Owned");
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 111, Status.Excellent, "This is valid description");
-        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.POKEMON, 222, Status.VeryDamaged, "This is valid description");
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 111, Status.Excellent, "This is valid description");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.POKEMON, 222, Status.VeryDamaged, "This is valid description");
         ownedDeck.addPhysicalCard(mockPCard1);
         ownedDeck.addPhysicalCard(mockPCard2);
         serializer.serialize(out, ownedDeck);
@@ -126,8 +126,8 @@ public class GsonSerializerTest implements CardTestConstants {
             put("Owned", new Deck("Owned"));
             put("Wished", new Deck("Wished"));
         }};
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 111, Status.Excellent, "This is valid description");
-        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.POKEMON, 222, Status.VeryDamaged, "This is valid description");
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 111, Status.Excellent, "This is valid description");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.POKEMON, 222, Status.VeryDamaged, "This is valid description");
         mockDecks.get("Owned").addPhysicalCard(mockPCard1);
         mockDecks.get("Wished").addPhysicalCard(mockPCard2);
         deckMap.put("test@test.it", mockDecks);

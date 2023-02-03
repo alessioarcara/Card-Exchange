@@ -18,10 +18,7 @@ import org.mapdb.Serializer;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.easymock.EasyMock.*;
 
@@ -342,8 +339,8 @@ public class DeckServiceTest {
 
     private void setupForValidCardsAndUserDecks() {
         // init Mocks
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
-        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.MAGIC, 2222, Status.Fair, "This is a valid bis description.");
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 2222, Status.Fair, "This is a valid bis description.");
         Card mockCard1 = MockCardData.createPokemonDummyCard();
         Card mockCard2 = MockCardData.createYuGiOhDummyCard();
         Map<Integer, Card> cardMap = new HashMap<>() {{
@@ -376,7 +373,7 @@ public class DeckServiceTest {
         setupForValidToken();
         setupForValidCardsAndUserDecks();
         ctrl.replay();
-        List<PhysicalCardDecorator> decoratedCards = deckService.getMyDeck("validToken", "Owned");
+        List<PhysicalCardWithName> decoratedCards = deckService.getMyDeck("validToken", "Owned");
         ctrl.verify();
         Assertions.assertAll(() -> {
             Assertions.assertEquals(2, decoratedCards.size());
@@ -398,7 +395,7 @@ public class DeckServiceTest {
     public void testGetUserOwnedDeckForValidEmail() throws AuthException {
         setupForValidCardsAndUserDecks();
         ctrl.replay();
-        List<PhysicalCardDecorator> decoratedCards = deckService.getUserOwnedDeck("test@test.it");
+        List<PhysicalCardWithName> decoratedCards = deckService.getUserOwnedDeck("test@test.it");
         ctrl.verify();
         Assertions.assertAll(() -> {
             Assertions.assertEquals(2, decoratedCards.size());
@@ -418,10 +415,10 @@ public class DeckServiceTest {
     @Test
     public void testGetOwnedPhysicalCardsByCardIdForValidId() throws InputException {
         // init Mocks
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
-        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Good, "This is a valid description.");
-        PhysicalCardImpl mockPCard3 = new PhysicalCardImpl(Game.POKEMON, 2222, Status.Fair, "This is a valid description.");
-        PhysicalCardImpl mockPCard4 = new PhysicalCardImpl(Game.YUGIOH, 3333, Status.Damaged, "This is a valid description.");
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 1111, Status.Good, "This is a valid description.");
+        PhysicalCard mockPCard3 = new PhysicalCard(Game.POKEMON, 2222, Status.Fair, "This is a valid description.");
+        PhysicalCard mockPCard4 = new PhysicalCard(Game.YUGIOH, 3333, Status.Damaged, "This is a valid description.");
 
         Deck test1OwnedDeck = new Deck("Owned");
         Deck test2OwnedDeck = new Deck("Owned");
@@ -435,7 +432,7 @@ public class DeckServiceTest {
         Map<String, Deck> test2Decks = new HashMap<>() {{
             put("Owned", test2OwnedDeck);
         }};
-        Map<String, Map<String, Deck>> deckMap = new HashMap<>() {{
+        Map<String, Map<String, Deck>> deckMap = new LinkedHashMap<>() {{
             put("test1@test.it", test1Decks);
             put("test2@test.it", test2Decks);
         }};
@@ -446,12 +443,12 @@ public class DeckServiceTest {
                 .andReturn(deckMap);
 
         ctrl.replay();
-        List<PhysicalCardImpl> decoratedCards = deckService.getOwnedPhysicalCardsByCardId(1111);
+        List<PhysicalCardWithEmail> decoratedCards = deckService.getOwnedPhysicalCardsByCardId(1111);
         ctrl.verify();
         Assertions.assertAll(() -> {
             Assertions.assertEquals(2, decoratedCards.size());
-//            Assertions.assertEquals("Nome1", decoratedCards.get(0).getName());
-//            Assertions.assertEquals("Nome2", decoratedCards.get(1).getName());
+            Assertions.assertEquals("test1@test.it", decoratedCards.get(0).getEmail());
+            Assertions.assertEquals("test2@test.it", decoratedCards.get(1).getEmail());
         });
     }
 }

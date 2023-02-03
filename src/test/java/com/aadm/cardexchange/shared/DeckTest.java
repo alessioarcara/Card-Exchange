@@ -12,16 +12,16 @@ public class DeckTest {
 
     private Deck deck;
     private Deck defaultDeck;
-    private PhysicalCardImpl pCard;
-    private PhysicalCardImpl pCard2;
+    private PhysicalCard pCard;
+    private PhysicalCard pCard2;
 
     @BeforeEach
     public void initialize() {
         deck = new Deck("Deck_name");
         defaultDeck = new Deck("Deck_default", true);
         Card card = MockCardData.createPokemonDummyCard();
-        pCard = new PhysicalCardImpl(Game.POKEMON, card.getId(), Status.Excellent, "test description card");
-        pCard2 = new PhysicalCardImpl(Game.POKEMON, card.getId(), Status.Good, "test card 2");
+        pCard = new PhysicalCard(Game.POKEMON, card.getId(), Status.Excellent, "test description card");
+        pCard2 = new PhysicalCard(Game.POKEMON, card.getId(), Status.Good, "test card 2");
     }
 
     @Test
@@ -62,7 +62,7 @@ public class DeckTest {
     public void testGetPhysicalCards() {
         deck.addPhysicalCard(pCard);
         deck.addPhysicalCard(pCard2);
-        Set<PhysicalCardImpl> cards = deck.getPhysicalCards();
+        Set<PhysicalCard> cards = deck.getPhysicalCards();
 
         Assertions.assertEquals(2, cards.size());
         Assertions.assertTrue(cards.contains(pCard));
