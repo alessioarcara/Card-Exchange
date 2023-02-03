@@ -123,8 +123,8 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         if (foundDeck == null) {
             return false;
         }
-        if (foundDeck.removePhysicalCard(pCardImpl)) {
-             deckMap.put(userEmail, decks);
+        if (foundDeck.removePhysicalCard(pCard)) {
+            deckMap.put(userEmail, decks);
             return true;
         } else return false;
     }
