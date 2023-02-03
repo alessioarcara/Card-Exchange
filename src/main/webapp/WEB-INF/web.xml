@@ -18,6 +18,10 @@
         <servlet-name>com.aadm.cardexchange.CardExchange DeckService</servlet-name>
         <servlet-class>com.aadm.cardexchange.server.services.DeckServiceImpl</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>com.aadm.cardexchange.CardExchange ExchangeService</servlet-name>
+        <servlet-class>com.aadm.cardexchange.server.services.ExchangeServiceImpl</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>
         <url-pattern>/cardexchange/cards</url-pattern>
@@ -29,6 +33,10 @@
     <servlet-mapping>
         <servlet-name>com.aadm.cardexchange.CardExchange DeckService</servlet-name>
         <url-pattern>/cardexchange/decks</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>com.aadm.cardexchange.CardExchange ExchangeService</servlet-name>
+        <url-pattern>/cardexchange/exchanges</url-pattern>
     </servlet-mapping>
 
     <listener>
