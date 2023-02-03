@@ -3,10 +3,10 @@ package com.aadm.cardexchange.client.views;
 import com.aadm.cardexchange.client.widgets.DeckWidget;
 import com.aadm.cardexchange.shared.models.PhysicalCardDecorator;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -17,14 +17,17 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView {
     private static final NewExchangeViewImpl.NewExchangeViewImplUIBinder uiBinder = GWT.create(NewExchangeViewImpl.NewExchangeViewImplUIBinder.class);
     Presenter presenter;
     String token;
+    String selectedCardId;
     @UiField
     HeadingElement receiverEmail;
-    @UiField
-    DivElement selectedCard;
     @UiField(provided=true)
     DeckWidget senderDeck;
     @UiField(provided=true)
     DeckWidget receiverDeck;
+    @UiField
+    Button cancelButton;
+    @UiField
+    Button acceptButton;
 
     public NewExchangeViewImpl() {
         this.senderDeck = new DeckWidget(null, "");
@@ -35,7 +38,7 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView {
     public void setData(String receiverUserEmail, String selectedCardId, String token) {
         this.token = token;
         receiverEmail.setInnerHTML(receiverUserEmail);
-        selectedCard.setInnerHTML(selectedCardId);
+        this.selectedCardId = selectedCardId;
     }
 
     public void setSenderDeck(List<PhysicalCardDecorator> physicalCardDecorators) {
@@ -43,7 +46,7 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView {
     }
 
     public void setReceiverDeck(List<PhysicalCardDecorator> physicalCardDecorators) {
-        receiverDeck.setData(physicalCardDecorators);
+        receiverDeck.setData(physicalCardDecorators, selectedCardId);
     }
 
     @Override

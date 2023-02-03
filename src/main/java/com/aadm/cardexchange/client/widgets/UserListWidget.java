@@ -44,7 +44,7 @@ public class UserListWidget extends Composite {
         int numRows = (table.getRowCount());
         table.setText(numRows, 0, email);
         table.setText(numRows, 1, "1 (Ottimo)");
-        button.addClickHandler(clickEvent -> parent.onClickExchange(email, "y123123"));
+        button.addClickHandler(clickEvent -> parent.onClickExchange(email, "y2"));
         if (showExchangeButton) table.setWidget(numRows, 2, button);
     }
 

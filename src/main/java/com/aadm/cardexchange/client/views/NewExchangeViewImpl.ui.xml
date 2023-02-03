@@ -28,6 +28,45 @@
             padding-left: 10px;
         }
 
+        .buttons {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            width: 90%;
+            margin-top: 50px;
+            align-self: center;
+        }
+
+        .buttons Button {
+            font-size: 14px;
+            font-weight: bold;
+            border: 2px solid white;
+            border-radius: .7em;
+            width: 100px;
+            height: 40px;
+            color: white;
+        }
+
+        .green {
+            background-color: darkgreen;
+        }
+
+        .green:hover {
+            background-color: forestgreen;
+            color: black;;
+            border: 3px solid black;
+        }
+
+        .red {
+            background-color: firebrick;
+        }
+
+        .red:hover {
+            background-color: #e50000;
+            color: black;;
+            border: 3px solid black;
+        }
+
     </ui:style>
     <g:HTMLPanel styleName="{style.extern}">
         <h1>New Exchange Page</h1>
@@ -39,7 +78,9 @@
             <h2 class="{style.deckTitle}" ui:field="receiverEmail" />
             <m:DeckWidget ui:field="receiverDeck" />
         </div>
-
-        <div ui:field="selectedCard" />
+        <div class="{style.buttons}">
+            <g:Button ui:field="cancelButton" styleName="{style.red}">&#10006;</g:Button>
+            <g:Button ui:field="acceptButton" styleName="{style.green}">&#10004;</g:Button>
+        </div>
     </g:HTMLPanel>
 </ui:UiBinder>
