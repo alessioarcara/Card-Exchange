@@ -41,7 +41,7 @@ public class CardActivityTest {
         mockCardService = ctrl.mock(CardServiceAsync.class);
         mockDeckService = ctrl.mock(DeckServiceAsync.class);
         placeController = ctrl.createMock(PlaceController.class);
-        cardActivity = new CardActivity(mockPlace, mockView, mockCardService, mockDeckService, new AuthSubject(null), placeController);
+        cardActivity = new CardActivity(mockPlace, mockView, mockCardService, mockDeckService, new AuthSubject(), placeController);
     }
 
     @Test
