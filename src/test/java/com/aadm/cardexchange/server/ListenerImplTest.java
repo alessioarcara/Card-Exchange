@@ -1,7 +1,7 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.server.mapdb.MapDB;
-import com.aadm.cardexchange.shared.models.CardDecorator;
+import com.aadm.cardexchange.shared.models.Card;
 import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +30,7 @@ public class ListenerImplTest {
     public void testContextInitializedForIncorrectFile() {
         ServletContextListener listener = new ListenerImpl(mockDB, "");
 
-        Map<Integer, CardDecorator> expectedMap = new HashMap<>();
+        Map<Integer, Card> expectedMap = new HashMap<>();
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(expectedMap).times(3);
         replay(mockDB);
@@ -46,9 +46,9 @@ public class ListenerImplTest {
     public void testContextInitializedForJSONFiles() {
         ServletContextListener listener = new ListenerImpl(mockDB, "src/main/resources/json/");
 
-        Map<Integer, CardDecorator> yugiohMap = new HashMap<>();
-        Map<Integer, CardDecorator> magicMap = new HashMap<>();
-        Map<Integer, CardDecorator> pokemonMap = new HashMap<>();
+        Map<Integer, Card> yugiohMap = new HashMap<>();
+        Map<Integer, Card> magicMap = new HashMap<>();
+        Map<Integer, Card> pokemonMap = new HashMap<>();
 
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(yugiohMap);
@@ -72,8 +72,6 @@ public class ListenerImplTest {
     @Test
     public void testcontextDestroyed() {
         ServletContextListener listener = new ListenerImpl();
-        Assertions.assertDoesNotThrow(() -> {
-            listener.contextDestroyed(new ServletContextEvent(mockCtx));
-        });
+        Assertions.assertDoesNotThrow(() -> listener.contextDestroyed(new ServletContextEvent(mockCtx)));
     }
 }

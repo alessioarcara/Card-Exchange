@@ -14,12 +14,18 @@ public class AuthSubjectTest {
 
     @BeforeEach
     public void initialize() {
-        authSubject = new AuthSubject("test");
+        authSubject = new AuthSubject();
+        authSubject.setCredentials("validToken", "test@test.it");
     }
 
     @Test
     public void testGetToken() {
-        Assertions.assertEquals("test", authSubject.getToken());
+        Assertions.assertEquals("validToken", authSubject.getToken());
+    }
+
+    @Test
+    public void testGetEmail() {
+        Assertions.assertEquals("test@test.it", authSubject.getEmail());
     }
 
     @Test
@@ -35,7 +41,7 @@ public class AuthSubjectTest {
         expectLastCall();
 
         replay(observer);
-        authSubject.setToken(null);
+        authSubject.setCredentials(null, null);
         verify(observer);
     }
 
@@ -45,7 +51,7 @@ public class AuthSubjectTest {
         authSubject.attach(observer);
         authSubject.detach(observer);
         replay(observer);
-        authSubject.setToken(null);
+        authSubject.setCredentials(null, null);
         verify(observer);
     }
 }
