@@ -17,7 +17,7 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
     private final HomeView view;
     private final CardServiceAsync rpcService;
     private final PlaceController placeController;
-    private List<CardDecorator> cards;
+    private List<Card> cards;
 
     public HomeActivity(HomeView view, CardServiceAsync rpcService, PlaceController placeController) {
         this.view = view;
@@ -35,81 +35,19 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
         if (game == null) {
             throw new IllegalArgumentException("game cannot be null");
         }
-        rpcService.getGameCards(game, new BaseAsyncCallback<List<CardDecorator>>() {
+        rpcService.getGameCards(game, new BaseAsyncCallback<List<Card>>() {
             @Override
-            public void onSuccess(List<CardDecorator> result) {
+            public void onSuccess(List<Card> result) {
                 view.setData(result);
                 cards = result;
             }
         });
     }
 
-    private boolean shouldSkipMagicCard(MagicCardDecorator card, List<String> booleanInputNames, List<Boolean> booleanInputValues) {
-        boolean shouldSkip = false;
-        for (int i = 0; i < booleanInputNames.size(); i++) {
-            String name = booleanInputNames.get(i);
-            Boolean value = booleanInputValues.get(i);
-            switch (name) {
-                case "hasFoil":
-                    if (value && !card.getHasFoil())
-                        shouldSkip = true;
-                    break;
-                case "isAlternative":
-                    if (value && !card.getIsAlternative())
-                        shouldSkip = true;
-                    break;
-                case "isFullArt":
-                    if (value && !card.getIsFullArt())
-                        shouldSkip = true;
-                    break;
-                case "isPromo":
-                    if (value && !card.getIsPromo())
-                        shouldSkip = true;
-                    break;
-                case "isReprint":
-                    if (value && !card.getIsReprint())
-                        shouldSkip = true;
-                    break;
-            }
-        }
-        return shouldSkip;
-    }
-
-    private boolean shouldSkipPokemonCard(PokemonCardDecorator card, List<String> booleanInputNames, List<Boolean> booleanInputValues) {
-        boolean shouldSkip = false;
-        for (int i = 0; i < booleanInputNames.size(); i++) {
-            String name = booleanInputNames.get(i);
-            Boolean value = booleanInputValues.get(i);
-            switch (name) {
-                case "isFirstEdition":
-                    if (value && !card.getIsFirstEdition())
-                        shouldSkip = true;
-                    break;
-                case "isHolo":
-                    if (value && !card.getIsHolo())
-                        shouldSkip = true;
-                    break;
-                case "isNormal":
-                    if (value && !card.getIsNormal())
-                        shouldSkip = true;
-                    break;
-                case "isReverse":
-                    if (value && !card.getIsReverse())
-                        shouldSkip = true;
-                    break;
-                case "isPromo":
-                    if (value && !card.getIsPromo())
-                        shouldSkip = true;
-                    break;
-            }
-        }
-        return shouldSkip;
-    }
-
-    public List<CardDecorator> filterGameCards(String specialAttributeValue, String typeValue, String textInputName, String textInputValue,
-                                               List<String> booleanInputNames, List<Boolean> booleanInputValues) {
-        List<CardDecorator> filteredCards = new ArrayList<>();
-        for (CardDecorator card : cards) {
+    public List<Card> filterGameCards(String specialAttributeValue, String typeValue, String textInputName, String textInputValue,
+                                      List<String> booleanInputNames, List<Boolean> booleanInputValues) {
+        List<Card> filteredCards = new ArrayList<>();
+        for (Card card : cards) {
             boolean shouldSkip = false;
             if (!textInputValue.isEmpty()) {
                 String cardText = "";
@@ -121,10 +59,10 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
                         cardText = card.getDescription();
                         break;
                     case "Artist":
-                        cardText = card instanceof MagicCardDecorator ?
-                                ((MagicCardDecorator) card).getArtist() :
-                                card instanceof PokemonCardDecorator ?
-                                        ((PokemonCardDecorator) card).getArtist() : "";
+                        cardText = card instanceof MagicCard ?
+                                ((MagicCard) card).getArtist() :
+                                card instanceof PokemonCard ?
+                                        ((PokemonCard) card).getArtist() : "";
                         break;
                 }
                 if (!cardText.toLowerCase().contains(textInputValue.toLowerCase())) {
@@ -132,12 +70,12 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
                 }
             }
             if (!specialAttributeValue.equals("all")) {
-                if (card instanceof MagicCardDecorator ?
-                        !specialAttributeValue.equals(((MagicCardDecorator) card).getRarity()) :
-                        card instanceof PokemonCardDecorator ?
-                                !specialAttributeValue.equals(((PokemonCardDecorator) card).getRarity()) :
-                                card instanceof YuGiOhCardDecorator &&
-                                        !specialAttributeValue.equals(((YuGiOhCardDecorator) card).getRace())
+                if (card instanceof MagicCard ?
+                        !specialAttributeValue.equals(((MagicCard) card).getRarity()) :
+                        card instanceof PokemonCard ?
+                                !specialAttributeValue.equals(((PokemonCard) card).getRarity()) :
+                                card instanceof YuGiOhCard &&
+                                        !specialAttributeValue.equals(((YuGiOhCard) card).getRace())
                 ) {
                     shouldSkip = true;
                 }
@@ -148,13 +86,12 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
                 }
             }
             if (!(booleanInputNames.isEmpty() && booleanInputValues.isEmpty())) {
-                if (card instanceof MagicCardDecorator) {
-                    if (shouldSkipMagicCard((MagicCardDecorator) card, booleanInputNames, booleanInputValues)) {
+                for (int i = 0; i < booleanInputNames.size(); i++) {
+                    String name = booleanInputNames.get(i);
+                    Boolean value = booleanInputValues.get(i);
+                    if (value && !card.getVariants().contains(name)) {
                         shouldSkip = true;
-                    }
-                } else if (card instanceof PokemonCardDecorator) {
-                    if (shouldSkipPokemonCard((PokemonCardDecorator) card, booleanInputNames, booleanInputValues)) {
-                        shouldSkip = true;
+                        break;
                     }
                 }
             }

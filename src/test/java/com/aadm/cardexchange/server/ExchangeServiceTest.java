@@ -1,19 +1,15 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.server.mapdb.MapDB;
-import com.aadm.cardexchange.server.services.DeckServiceImpl;
 import com.aadm.cardexchange.server.services.ExchangeServiceImpl;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
-import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mapdb.Serializer;
@@ -21,7 +17,10 @@ import org.mapdb.Serializer;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.easymock.EasyMock.*;
 
@@ -50,6 +49,7 @@ public class ExchangeServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(mockLoginMap);
     }
+
     private void setupForValidEmail() {
         Map<String, User> userMap = new HashMap<>();
         userMap.put("valid@receiverUserEmail.it", new User("valid@receiverUserEmail.it", "password"));
@@ -57,14 +57,16 @@ public class ExchangeServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(userMap);
     }
-    private  List<PhysicalCardImpl> generateValidListPcard(int n) {
-        List<PhysicalCardImpl> myList = new ArrayList<>();
-        for (int i = 0; i<n; i++ ) {
-            PhysicalCardImpl mockPCard = new PhysicalCardImpl(Game.randomGame(), (i+3000), Status.randomGame(), "This is a valid description.");
+
+    private List<PhysicalCard> generateValidListPcard(int n) {
+        List<PhysicalCard> myList = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            PhysicalCard mockPCard = new PhysicalCard(Game.randomGame(), (i + 3000), Status.randomGame(), "This is a valid description.");
             myList.add(mockPCard);
         }
         return myList;
     }
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"invalidToken"})
@@ -81,44 +83,40 @@ public class ExchangeServiceTest {
         Assertions.assertThrows(AuthException.class, () -> exchangeService.addProposal(input, "valid@receiverUserEmail.it", generateValidListPcard(2), generateValidListPcard(2)));
         ctrl.verify();
     }
+
     @ParameterizedTest
     @NullAndEmptySource
     public void testAddProposalForInvalidReceiverUserEmail(String input) {
         setupForValidToken();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> {
-            exchangeService.addProposal("validToken", input, generateValidListPcard(2), generateValidListPcard(2));
-        });
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", input, generateValidListPcard(2), generateValidListPcard(2)));
         ctrl.verify();
     }
+
     @Test
     public void testAddProposalForNotExistingReceiverUserEmail() {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> {
-            exchangeService.addProposal("validToken", "NotExisting@Mail.it", generateValidListPcard(2), generateValidListPcard(2));
-        });
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "NotExisting@Mail.it", generateValidListPcard(2), generateValidListPcard(2)));
         ctrl.verify();
     }
+
     @Test
     public void testAddProposalForEmptySenderPCards() throws AuthException {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> {
-                exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(0), generateValidListPcard(2));
-            });
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(0), generateValidListPcard(2)));
         ctrl.verify();
     }
+
     @Test
     public void testAddProposalForNullSenderPCards() throws AuthException {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> {
-            exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", null, generateValidListPcard(2));
-        });
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", null, generateValidListPcard(2)));
         ctrl.verify();
     }
 
@@ -127,21 +125,19 @@ public class ExchangeServiceTest {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> {
-            exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(2), generateValidListPcard(0));
-        });
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(2), generateValidListPcard(0)));
         ctrl.verify();
     }
+
     @Test
     public void testAddProposalForNullReceiverPCards() throws AuthException {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> {
-            exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(2), null);
-        });
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(2), null));
         ctrl.verify();
     }
+
     @Test
     public void testAddProposalSuccess() throws AuthException, InputException {
         setupForValidToken();

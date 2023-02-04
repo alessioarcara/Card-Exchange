@@ -9,7 +9,7 @@ import com.aadm.cardexchange.shared.CardServiceAsync;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
-import com.aadm.cardexchange.shared.models.CardDecorator;
+import com.aadm.cardexchange.shared.models.Card;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -50,9 +50,9 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
     }
 
     public void fetchCard() {
-        cardService.getGameCard(place.getGame(), place.getCardId(), new BaseAsyncCallback<CardDecorator>() {
+        cardService.getGameCard(place.getGame(), place.getCardId(), new BaseAsyncCallback<Card>() {
             @Override
-            public void onSuccess(CardDecorator result) {
+            public void onSuccess(Card result) {
                 view.setData(result);
             }
         });

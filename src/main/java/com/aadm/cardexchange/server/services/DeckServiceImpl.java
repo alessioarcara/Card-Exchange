@@ -101,7 +101,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             return false;
         }
         // physical card addition
-        if (foundDeck.addPhysicalCard(new PhysicalCardImpl(game, cardId, status, description))) {
+        if (foundDeck.addPhysicalCard(new PhysicalCard(game, cardId, status, description))) {
             deckMap.put(userEmail, decks);
             return true;
         }
@@ -109,7 +109,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     }
 
     @Override
-    public boolean removePhysicalCardFromDeck(String token, String deckName, PhysicalCardImpl pCardImpl) throws AuthException, InputException {
+    public boolean removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         if (deckName == null || deckName.isEmpty()) {
             throw new InputException("Invalid deck name");
@@ -123,10 +123,10 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         if (foundDeck == null) {
             return false;
         }
-            if (foundDeck.removePhysicalCard(pCardImpl)) {
-                 deckMap.put(userEmail, decks);
-                return true;
-            } else return false;
+        if (foundDeck.removePhysicalCard(pCard)) {
+            deckMap.put(userEmail, decks);
+            return true;
+        } else return false;
     }
 
     @Override
@@ -137,12 +137,12 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return decks == null ? Collections.emptyList() : new ArrayList<>(decks.keySet());
     }
 
-    private List<PhysicalCardDecorator> getUserDeck(String userEmail, String deckName) {
+    private List<PhysicalCardWithName> getUserDeck(String userEmail, String deckName) {
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> allUserDecks = deckMap.get(userEmail);
         Deck userDeck = allUserDecks.get(deckName);
-        List<PhysicalCardDecorator> pDecoratedCards = new ArrayList<>();
-        for (PhysicalCardImpl pCard : userDeck.getPhysicalCards()) {
+        List<PhysicalCardWithName> pCardsWithName = new ArrayList<>();
+        for (PhysicalCard pCard : userDeck.getPhysicalCards()) {
             String cardName = CardServiceImpl.getNameCard(
                     pCard.getCardId(),
                     db.getCachedMap(
@@ -152,13 +152,13 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
                             new GsonSerializer<>(gson)
                     )
             );
-            pDecoratedCards.add(new PhysicalCardDecorator(pCard, cardName));
+            pCardsWithName.add(new PhysicalCardWithName(pCard, cardName));
         }
-        return pDecoratedCards;
+        return pCardsWithName;
     }
 
     @Override
-    public List<PhysicalCardDecorator> getMyDeck(String token, String deckName) throws AuthException {
+    public List<PhysicalCardWithName> getMyDeck(String token, String deckName) throws AuthException {
         return getUserDeck(
                 AuthServiceImpl.checkTokenValidity(
                         token,
@@ -173,11 +173,29 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     }
 
     @Override
-    public List<PhysicalCardDecorator> getUserOwnedDeck(String email) throws AuthException {
+    public List<PhysicalCardWithName> getUserOwnedDeck(String email) throws AuthException {
         if (email == null || !validateEmail(email)) {
             throw new AuthException("Invalid email");
         }
         return getUserDeck(email, "Owned");
     }
 
+    @Override
+    public List<PhysicalCardWithEmail> getOwnedPhysicalCardsByCardId(int cardId) throws InputException {
+        if (cardId <= 0) {
+            throw new InputException("Invalid cardId");
+        }
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
+        Set<String> userEmails = deckMap.keySet();
+        List<PhysicalCardWithEmail> pCardsWithEmail = new ArrayList<>();
+        for (String userEmail : userEmails) {
+            Set<PhysicalCard> pCards = deckMap.get(userEmail).get("Owned").getPhysicalCards();
+            for (PhysicalCard pCard : pCards) {
+                if (pCard.getCardId() == cardId) {
+                    pCardsWithEmail.add(new PhysicalCardWithEmail(pCard, userEmail));
+                }
+            }
+        }
+        return pCardsWithEmail;
+    }
 }
