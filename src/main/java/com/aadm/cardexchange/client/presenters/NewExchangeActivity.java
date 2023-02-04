@@ -5,7 +5,7 @@ import com.aadm.cardexchange.client.places.NewExchangePlace;
 import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.NewExchangeView;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
-import com.aadm.cardexchange.shared.models.PhysicalCardDecorator;
+import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
@@ -32,15 +32,15 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         view.setPresenter(this);
         acceptsOneWidget.setWidget(view.asWidget());
-        deckService.getMyDeck(authSubject.getToken(), "Owned", new BaseAsyncCallback<List<PhysicalCardDecorator>>() {
+        deckService.getMyDeck(authSubject.getToken(), "Owned", new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
-            public void onSuccess(List<PhysicalCardDecorator> physicalCardDecorators) {
+            public void onSuccess(List<PhysicalCardWithName> physicalCardDecorators) {
                 view.setSenderDeck(physicalCardDecorators);
             }
         });
-        deckService.getUserOwnedDeck(place.getReceiverUserEmail(), new BaseAsyncCallback<List<PhysicalCardDecorator>>() {
+        deckService.getUserOwnedDeck(place.getReceiverUserEmail(), new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
-            public void onSuccess(List<PhysicalCardDecorator> physicalCardDecorators) {
+            public void onSuccess(List<PhysicalCardWithName> physicalCardDecorators) {
                 view.setReceiverDeck(physicalCardDecorators);
             }
         });

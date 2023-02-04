@@ -1,7 +1,7 @@
 package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.widgets.DeckWidget;
-import com.aadm.cardexchange.shared.models.PhysicalCardDecorator;
+import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -41,12 +41,12 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView {
         this.selectedCardId = selectedCardId;
     }
 
-    public void setSenderDeck(List<PhysicalCardDecorator> physicalCardDecorators) {
-        senderDeck.setData(physicalCardDecorators);
+    public void setSenderDeck(List<PhysicalCardWithName> physicalCards) {
+        senderDeck.setData(physicalCards);
     }
 
-    public void setReceiverDeck(List<PhysicalCardDecorator> physicalCardDecorators) {
-        receiverDeck.setData(physicalCardDecorators, selectedCardId);
+    public void setReceiverDeck(List<PhysicalCardWithName> physicalCards) {
+        receiverDeck.setData(physicalCards, selectedCardId);
     }
 
     @Override
