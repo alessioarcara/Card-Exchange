@@ -56,6 +56,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
             throw new BaseException("Deck not found");
         }
         for (PhysicalCardImpl pCard : userDeck.getPhysicalCards()) {
+            System.out.println(pCard.getCardId());
             if (cardId== pCard.getCardId()) {
                 return true;
             }
