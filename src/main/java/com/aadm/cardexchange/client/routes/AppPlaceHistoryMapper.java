@@ -28,11 +28,11 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
         } else {
             try {
                 String[] parts = token.split(DELIMITER);
-                if (parts[0].equals("cards")) {
+                if (parts[0].equals(cardsLink)) {
                     Game game = Game.valueOf(parts[1].toUpperCase());
                     int cardId = Integer.parseInt(parts[2]);
                     return new CardPlace(game, cardId);
-                } else if (parts[0].equals("new-exchange") && authSubject.isLoggedIn()) {
+                } else if (parts[0].equals(newExchangeLink) && authSubject.isLoggedIn()) {
                     String receiverUserEmail = parts[1];
                     String selectedCardId = parts[2];
                     return new NewExchangePlace(selectedCardId, receiverUserEmail);
@@ -56,10 +56,10 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
             return exchangesLink;
         } else if (place instanceof NewExchangePlace) {
             NewExchangePlace newExchangePlace = (NewExchangePlace) place;
-            return "new-exchange" + DELIMITER + newExchangePlace.getReceiverUserEmail() + DELIMITER + newExchangePlace.getSelectedCardId();
+            return newExchangeLink + DELIMITER + newExchangePlace.getReceiverUserEmail() + DELIMITER + newExchangePlace.getSelectedCardId();
         } else if (place instanceof CardPlace) {
             CardPlace cardPlace = (CardPlace) place;
-            return "cards" + DELIMITER + cardPlace.getGame().name().toLowerCase() + DELIMITER + cardPlace.getCardId();
+            return cardsLink + DELIMITER + cardPlace.getGame().name().toLowerCase() + DELIMITER + cardPlace.getCardId();
         } else {
             return "";
         }
