@@ -6,6 +6,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
@@ -33,6 +34,10 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView {
         this.senderDeck = new DeckWidget(null, "");
         this.receiverDeck = new DeckWidget(null, "");
         initWidget(uiBinder.createAndBindUi(this));
+        cancelButton.addClickHandler(event -> {
+            Window.alert("Abort Exchange");
+        });
+        acceptButton.addClickHandler(event -> presenter.createProposal(senderDeck, receiverDeck));
     }
 
     public void setData(String receiverUserEmail, String selectedCardId, String token) {

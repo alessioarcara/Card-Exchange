@@ -25,16 +25,17 @@ public class PhysicalCardWidget extends Composite {
     DivElement cardDescription;
     @UiField
     Button deleteButton;
-    boolean selected = true;
+    boolean selected = false;
+    PhysicalCardWithName physicalCard;
 
     public PhysicalCardWidget(PhysicalCardWithName pCard) {
         initWidget(uiBinder.createAndBindUi(this));
         cardContainer.add(new Hyperlink("Open Details",
                 "cards/" + pCard.getGameType() + "/" + pCard.getCardId()));
         cardContainer.addDomHandler(e -> {
+            selected = !selected;
             getElement().addClassName(selected ? style.cardSelected() : style.cardDiscarded());
             getElement().removeClassName(selected ? style.cardDiscarded() : style.cardSelected());
-            selected = !selected;
         }, ClickEvent.getType());
 
         deleteButton.addClickHandler(e -> {
@@ -45,6 +46,8 @@ public class PhysicalCardWidget extends Composite {
         cardName.setInnerText(pCard.getName());
         cardStatus.setInnerHTML(pCard.getStatus().name());
         cardDescription.setInnerText(pCard.getDescription());
+
+        physicalCard = pCard;
     }
 
     public void setSelected() {
@@ -52,6 +55,10 @@ public class PhysicalCardWidget extends Composite {
         cardContainer.getElement().addClassName(style.cardSelected());
         cardContainer.getElement().removeClassName(style.cardDiscarded());
     }
+
+    public boolean getSelected() { return selected; }
+
+    public PhysicalCardWithName getPCard() { return physicalCard; }
 
     interface PhysicalCardStyle extends CssResource {
         String cardSelected();
@@ -64,6 +71,7 @@ public class PhysicalCardWidget extends Composite {
 
         String cardStatus();
 
+        String cardDescription();
     }
 
     interface PhysicalCardUiBinder extends UiBinder<Widget, PhysicalCardWidget> {

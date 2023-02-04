@@ -5,6 +5,7 @@ import com.aadm.cardexchange.client.places.NewExchangePlace;
 import com.aadm.cardexchange.client.presenters.NewExchangeActivity;
 import com.aadm.cardexchange.client.views.CardView;
 import com.aadm.cardexchange.client.views.NewExchangeView;
+import com.aadm.cardexchange.client.widgets.ImperativeHandleDeck;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
@@ -23,6 +24,7 @@ public class NewExchangeActivityTest {
     PlaceController placeController;
     NewExchangeActivity newExchangeActivity;
     DeckServiceAsync mockDeckService;
+    ImperativeHandleDeck mockImperativeHandleDeck;
     AuthSubject mockAuthSubject;
 
     @BeforeEach
@@ -44,5 +46,22 @@ public class NewExchangeActivityTest {
         newExchangeActivity.goTo(new NewExchangePlace("y123123", "test@test.it"));
         ctrl.verify();
     }
+
+//    @Test
+//    public void testCreateProposal() {
+//        DeckWidget senderDeck = new DeckWidget(mockImperativeHandleDeck, "sender");
+//        DeckWidget receiverDeck = new DeckWidget(mockImperativeHandleDeck, "receiver");
+//        PhysicalCardWithName pCard1 = new PhysicalCardWithName(new PhysicalCard(Game.YUGIOH, 111, Status.Good, "this is a valid description"), "name1");
+//        PhysicalCardWithName pCard2 = new PhysicalCardWithName(new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description"), "name2");
+//        PhysicalCardWithName pCard3 = new PhysicalCardWithName(new PhysicalCard(Game.YUGIOH, 333, Status.Good, "this is a valid description"), "name3");
+//        PhysicalCardWithName pCard4 = new PhysicalCardWithName(new PhysicalCard(Game.YUGIOH, 444, Status.Good, "this is a valid description"), "name4");
+//
+//        senderDeck.setData(Arrays.asList(pCard1, pCard2), pCard1.getId());
+//        receiverDeck.setData(Arrays.asList(pCard3, pCard4), pCard4.getId());
+
+//        ctrl.replay();
+//        newExchangeActivity.createProposal(senderDeck, receiverDeck);
+//        ctrl.verify();
+//    }
 
 }

@@ -4,14 +4,20 @@ import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.places.NewExchangePlace;
 import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.NewExchangeView;
+import com.aadm.cardexchange.client.widgets.DeckWidget;
+import com.aadm.cardexchange.client.widgets.PhysicalCardWidget;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
+import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
+import com.aadm.cardexchange.shared.models.Proposal;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NewExchangeActivity extends AbstractActivity implements NewExchangeView.Presenter {
@@ -46,6 +52,40 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         });
 
         view.setData(place.getReceiverUserEmail(), place.getSelectedCardId(), authSubject.getToken());
+    }
+
+    public void createProposal(DeckWidget senderDeck, DeckWidget receiverDeck) {
+        List<PhysicalCard> senderSelectedCards = new ArrayList<>();
+        List<PhysicalCard> receiverSelectedCards = new ArrayList<>();
+
+        for (PhysicalCardWidget pCard : senderDeck.getDeckCards()) {
+            if (pCard.getSelected()) {
+                senderSelectedCards.add(pCard.getPCard());
+            }
+        }
+        for (PhysicalCardWidget pCard : receiverDeck.getDeckCards()) {
+           if (pCard.getSelected()) {
+                receiverSelectedCards.add(pCard.getPCard());
+            }
+        }
+
+        Proposal proposal = new Proposal(authSubject.getToken(), place.getReceiverUserEmail(), senderSelectedCards, receiverSelectedCards);
+
+        /*
+            THIS SECTION IS ONLY FOR DEBUG PURPOSES UNTIL THE EXCHANGE AND THE SELECTION LOGIC ISN'T DONE COMPLETELY
+         */
+        String message = "sender: ";
+        for (PhysicalCard pc: proposal.getSenderPhysicalCards()) {
+            message += pc.getId() + " ";
+        }
+        message += " receiver: ";
+        for (PhysicalCard pc: proposal.getReceiverPhysicalCards()) {
+            message += pc.getId() + " ";
+        }
+        Window.alert(message);
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
     }
 
     public void goTo(Place place) {
