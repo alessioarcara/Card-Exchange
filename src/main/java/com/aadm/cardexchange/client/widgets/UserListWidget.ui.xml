@@ -56,8 +56,8 @@
             border-radius: 0.6rem;
         }
     </ui:style>
-        <g:HTMLPanel>
-            <h2 ui:field="tableHeading" class="{style.tableHeading}"/>
-            <g:FlexTable ui:field="table" styleName="{style.table}" />
-        </g:HTMLPanel>
+    <g:HTMLPanel>
+        <h2 ui:field="tableHeading" class="{style.tableHeading}"/>
+        <g:FlexTable ui:field="table" styleName="{style.table}"/>
+    </g:HTMLPanel>
 </ui:UiBinder>

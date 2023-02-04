@@ -1,18 +1,23 @@
 package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.shared.models.Card;
+import com.aadm.cardexchange.shared.models.PhysicalCardWithEmail;
 import com.google.gwt.user.client.ui.IsWidget;
+
+import java.util.List;
 
 public interface CardView extends IsWidget {
     void setData(Card data);
 
     void hideModal();
 
-    void displayErrorAlert(String errorMessage);
+    String getDeckSelected();
 
-    void displaySuccessAlert();
+    void displayAlert(String message);
 
     void createUserWidgets(boolean isLoggedIn);
+
+    void setOwnedByUserList(List<PhysicalCardWithEmail> pCards);
 
     void setPresenter(Presenter presenter);
 

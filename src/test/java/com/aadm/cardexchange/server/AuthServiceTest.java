@@ -9,6 +9,8 @@ import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.mapdb.Serializer;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -234,6 +236,16 @@ public class AuthServiceTest {
         Assertions.assertEquals("test1@test.it", authService.checkTokenValidity("validToken1", new HashMap<>() {{
             put("validToken1", new LoginInfo("test1@test.it", System.currentTimeMillis()));
         }}));
+        ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void testMeForInvalidToken() {
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> {
+
+        });
         ctrl.verify();
     }
 }

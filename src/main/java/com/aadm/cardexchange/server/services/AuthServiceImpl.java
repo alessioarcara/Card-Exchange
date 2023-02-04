@@ -99,6 +99,11 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
     }
 
     @Override
+    public String me(String token) throws AuthException {
+        return null;
+    }
+
+    @Override
     public String signup(String email, String password) throws AuthException {
         if (validateCredentials(email, password)) {
             throw new AuthException("Invalid credentials");

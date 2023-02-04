@@ -1,14 +1,20 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.shared.models.PhysicalCardWithEmail;
+import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.*;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
+
+import java.util.List;
 
 public class UserListWidget extends Composite {
     private static final UserListUIBinder uiBinder = GWT.create(UserListUIBinder.class);
@@ -19,14 +25,11 @@ public class UserListWidget extends Composite {
     boolean showExchangeButton;
 
     @UiConstructor
-    public UserListWidget(String title, String[] users, boolean showExchangeButton) {
+    public UserListWidget(String title, boolean showExchangeButton) {
         this.showExchangeButton = showExchangeButton;
         setupTable();
         initWidget(uiBinder.createAndBindUi(this));
         tableHeading.setInnerText(title);
-        for (String user: users) {
-            addRow(user);
-        }
     }
 
     private void setupTable() {
@@ -34,15 +37,21 @@ public class UserListWidget extends Composite {
         TableSectionElement tHead = ((TableElement) ((Element) table.getElement())).createTHead();
         TableRowElement row = tHead.insertRow(0);
         row.insertCell(0).setInnerText("User");
-        row.insertCell(1).setInnerText("State");
+        row.insertCell(1).setInnerText("Status");
         if (showExchangeButton) row.insertCell(2).setInnerText("");
     }
 
-    private void addRow(String email) {
+    public void setTable(List<PhysicalCardWithEmail> pCards) {
+        pCards.forEach(pCard -> addRow(pCard.getEmail(), pCard.getStatus(), new Button(
+                "Exchange", (ClickHandler) event -> Window.alert("Click!")
+        )));
+    }
+
+    private void addRow(String email, Status status, Button button) {
         int numRows = (table.getRowCount());
         table.setText(numRows, 0, email);
-        table.setText(numRows, 1, "1 (Ottimo)");
-        if (showExchangeButton) table.setWidget(numRows, 2, new Button("Exchange"));
+        table.setText(numRows, 1, (status.getValue() + ": " + status.name()));
+        if (showExchangeButton) table.setWidget(numRows, 2, button);
     }
 
     interface UserListUIBinder extends UiBinder<Widget, UserListWidget> {

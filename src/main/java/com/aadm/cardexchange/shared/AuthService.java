@@ -6,6 +6,7 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
 @RemoteServiceRelativePath("users")
 public interface AuthService extends RemoteService {
+    String me(String token) throws AuthException;
 
     String signup(String email, String password) throws AuthException;
 

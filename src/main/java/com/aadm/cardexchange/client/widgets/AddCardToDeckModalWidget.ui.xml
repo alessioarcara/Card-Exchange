@@ -2,26 +2,55 @@
 <ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
              xmlns:g='urn:import:com.google.gwt.user.client.ui'>
     <ui:style>
-        .modal {
-            border-radius: 1rem;
-            border: 2px solid black;
+        @external .my-Modal .Caption;
+        .my-Modal .Caption {
+            font-weight: bold;
+            text-align: center;
         }
 
-        .background {
+        @external .my-Modal .dialogMiddleCenter;
+        .my-Modal .dialogMiddleCenter {
+            padding: 0;
+            border: 2px solid #444;
+            border-top: none;
+            background-color: #fff;
+            border-radius: 0 0 1rem 1rem;
+        }
+
+        @external .my-Modal .dialogTopCenter;
+        .my-Modal .dialogTopCenter {
+            border: 2px solid #444;
+            font-weight: bold;
+            color: #444;
+            text-align: center;
+            background-color: #eee;
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .content {
+            padding: 1rem;
             display: flex;
             flex-direction: column;
             gap: 1.2rem;
         }
 
         .field {
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .label {
+            color: #222;
         }
 
         .status {
-            color: black;
+            font-size: 1.1em;
         }
 
         .descriptionArea {
-            width: 12rem;
+            width: 10rem;
             height: 5rem;
             resize: none;
         }
@@ -32,8 +61,10 @@
         }
 
         .button {
+            /*border: none;*/
             border-radius: 0;
-            border: 2px solid black;
+            border: 2px solid #444;
+            background-color: #eee;
         }
 
         .button:hover {
@@ -41,16 +72,18 @@
         }
 
         .noButton {
-            border-bottom-left-radius: 1rem;
+            border-right: none;
+            border-radius: 1rem 0 0 1rem;
         }
 
         .yesButton {
-            border-bottom-right-radius: 1rem;
+            border-radius: 0 1rem 1rem 0;
         }
     </ui:style>
-    <g:DialogBox styleName="{style.modal}">
-        <g:HTMLPanel styleName="{style.background}">
-            <div class="{style.field}">State
+    <g:SimplePanel>
+        <g:HTMLPanel styleName="{style.content}">
+            <div class="{style.field}">
+                <div class="{style.label}">State</div>
                 <g:ListBox styleName="{style.status}" ui:field='status'>
                     <g:item value="1">1 - VeryDamaged</g:item>
                     <g:item value="2">2 - Damaged</g:item>
@@ -59,11 +92,14 @@
                     <g:item value="5">5 - Excellent</g:item>
                 </g:ListBox>
             </div>
-            <div class="{style.field}">Description<g:TextArea styleName="{style.descriptionArea}" ui:field='description'/></div>
+            <div class="{style.field}">
+                <div class="{style.label}">Description</div>
+                <g:TextArea styleName="{style.descriptionArea}" ui:field='description'/>
+            </div>
             <div class="{style.actions}">
                 <g:Button styleName="{style.button} {style.noButton}" ui:field='noButton'>No</g:Button>
                 <g:Button styleName="{style.button} {style.yesButton}" ui:field='yesButton'>Yes</g:Button>
             </div>
         </g:HTMLPanel>
-    </g:DialogBox>
+    </g:SimplePanel>
 </ui:UiBinder>
