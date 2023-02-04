@@ -31,7 +31,7 @@ public class HomeActivityTest {
     PlaceController placeController;
     HomeActivity homeActivity;
     private final static List<String> MAGIC_BOOLEAN_FIELDS = Arrays.asList("hasFoil", "isAlternative", "isFullArt", "isPromo", "isReprint");
-    private final static List<String> POKEMON_BOOLEAN_FIELDS = Arrays.asList("isFirstEdition", "isHolo", "isNormal", "isReverse", "isPromo");
+    private final static List<String> POKEMON_BOOLEAN_FIELDS = Arrays.asList("firstEdition", "holo", "normal", "reverse", "wPromo");
 
     @BeforeEach
     public void initialize() {
@@ -57,11 +57,11 @@ public class HomeActivityTest {
     }
 
     @SuppressWarnings("unchecked")
-    public void setupFetchGameCardsTest(Game game, List<CardDecorator> mockCards) {
+    public void setupFetchGameCardsTest(Game game, List<Card> mockCards) {
         mockRpcService.getGameCards(eq(game), isA(AsyncCallback.class));
         expectLastCall().andAnswer(() -> {
             Object[] args = getCurrentArguments();
-            AsyncCallback<List<CardDecorator>> callback = (AsyncCallback<List<CardDecorator>>) args[args.length - 1];
+            AsyncCallback<List<Card>> callback = (AsyncCallback<List<Card>>) args[args.length - 1];
             callback.onSuccess(mockCards);
             return null;
         });
@@ -82,13 +82,13 @@ public class HomeActivityTest {
 
     @ParameterizedTest
     @MethodSource("provideMockCards")
-    public void testFetchGameCardsExpectedListForGameParameter(Game game, List<CardDecorator> mockCards) {
+    public void testFetchGameCardsExpectedListForGameParameter(Game game, List<Card> mockCards) {
         setupFetchGameCardsTest(game, mockCards);
     }
 
     @ParameterizedTest
     @MethodSource("provideMockCards")
-    public void testFilterGameCardsForAllParameters(Game game, List<CardDecorator> mockCards) {
+    public void testFilterGameCardsForAllParameters(Game game, List<Card> mockCards) {
         setupFetchGameCardsTest(game, mockCards);
         Assertions.assertArrayEquals(homeActivity.filterGameCards("all", "all",
                 "Name", "",
@@ -97,8 +97,8 @@ public class HomeActivityTest {
 
     @ParameterizedTest
     @MethodSource("provideMockCards")
-    public void testFilterGameCardsForNameParameter(Game game, List<CardDecorator> mockCards) {
-        CardDecorator expectedCard = mockCards.get(mockCards.size() - 1);
+    public void testFilterGameCardsForNameParameter(Game game, List<Card> mockCards) {
+        Card expectedCard = mockCards.get(mockCards.size() - 1);
         setupFetchGameCardsTest(game, mockCards);
         Assertions.assertEquals(homeActivity.filterGameCards("all", "all",
                 "Name", expectedCard.getName(),
@@ -107,8 +107,8 @@ public class HomeActivityTest {
 
     @ParameterizedTest
     @MethodSource("provideMockCards")
-    public void testFilterGameCardsForDescriptionParameter(Game game, List<CardDecorator> mockCards) {
-        CardDecorator expectedCard = mockCards.get(mockCards.size() - 1);
+    public void testFilterGameCardsForDescriptionParameter(Game game, List<Card> mockCards) {
+        Card expectedCard = mockCards.get(mockCards.size() - 1);
         setupFetchGameCardsTest(game, mockCards);
         Assertions.assertEquals(homeActivity.filterGameCards("all", "all",
                 "Description", expectedCard.getDescription(),
@@ -155,21 +155,21 @@ public class HomeActivityTest {
 
     @Test
     public void testFilterGameCardsFor_Magic_and_Artist_Parameters() {
-        List<CardDecorator> mockCards = MockCardData.createMagicDummyList();
-        CardDecorator expectedCard = mockCards.get(mockCards.size() - 1);
+        List<Card> mockCards = MockCardData.createMagicDummyList();
+        Card expectedCard = mockCards.get(mockCards.size() - 1);
         setupFetchGameCardsTest(Game.MAGIC, mockCards);
         Assertions.assertEquals(homeActivity.filterGameCards("all", "all",
-                "Artist", ((MagicCardDecorator) expectedCard).getArtist(),
+                "Artist", ((MagicCard) expectedCard).getArtist(),
                 Collections.emptyList(), Collections.emptyList()).get(0), expectedCard);
     }
 
     @ParameterizedTest
     @MethodSource("provideMockCards")
-    public void testFilterGameCardsForSpecialAttributeParameter(Game game, List<CardDecorator> mockCards) {
-        CardDecorator expectedCard = mockCards.get(mockCards.size() - 1);
-        String specialAttribute = expectedCard instanceof MagicCardDecorator ?
-                ((MagicCardDecorator) expectedCard).getRarity() : expectedCard instanceof PokemonCardDecorator ?
-                ((PokemonCardDecorator) expectedCard).getRarity() : ((YuGiOhCardDecorator) expectedCard).getRace();
+    public void testFilterGameCardsForSpecialAttributeParameter(Game game, List<Card> mockCards) {
+        Card expectedCard = mockCards.get(mockCards.size() - 1);
+        String specialAttribute = expectedCard instanceof MagicCard ?
+                ((MagicCard) expectedCard).getRarity() : expectedCard instanceof PokemonCard ?
+                ((PokemonCard) expectedCard).getRarity() : ((YuGiOhCard) expectedCard).getRace();
 
         setupFetchGameCardsTest(game, mockCards);
         Assertions.assertEquals(homeActivity.filterGameCards(specialAttribute, "all",
@@ -179,8 +179,8 @@ public class HomeActivityTest {
 
     @ParameterizedTest
     @MethodSource("provideMockCards")
-    public void testFilterGameCardsForTypeParameter(Game game, List<CardDecorator> mockCards) {
-        CardDecorator expectedCard = mockCards.get(mockCards.size() - 1);
+    public void testFilterGameCardsForTypeParameter(Game game, List<Card> mockCards) {
+        Card expectedCard = mockCards.get(mockCards.size() - 1);
         setupFetchGameCardsTest(game, mockCards);
         Assertions.assertEquals(homeActivity.filterGameCards("all", expectedCard.getType(),
                 "Description", "",
@@ -189,17 +189,17 @@ public class HomeActivityTest {
 
     @Test
     public void testFilterGameCardsFor_Pokemon_and_Artist_Parameters() {
-        List<CardDecorator> mockCards = MockCardData.createPokemonDummyList();
-        CardDecorator expectedCard = mockCards.get(0);
+        List<Card> mockCards = MockCardData.createPokemonDummyList();
+        Card expectedCard = mockCards.get(0);
         setupFetchGameCardsTest(Game.POKEMON, mockCards);
         Assertions.assertEquals(homeActivity.filterGameCards("all", "all",
-                "Artist", ((PokemonCardDecorator) expectedCard).getArtist(),
+                "Artist", ((PokemonCard) expectedCard).getArtist(),
                 Collections.emptyList(), Collections.emptyList()).get(0), expectedCard);
     }
 
     @ParameterizedTest
     @MethodSource("provideMockCardsAndBooleanFields")
-    public void testFilterGameCardsForBooleanParameters(Game game, List<CardDecorator> mockCards, CardDecorator expectedCard,
+    public void testFilterGameCardsForBooleanParameters(Game game, List<Card> mockCards, Card expectedCard,
                                                         List<String> booleanNames, List<Boolean> booleanValues) {
         setupFetchGameCardsTest(game, mockCards);
         Assertions.assertEquals(homeActivity.filterGameCards("all", "all",

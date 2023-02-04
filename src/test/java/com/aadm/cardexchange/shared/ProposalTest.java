@@ -2,7 +2,7 @@ package com.aadm.cardexchange.shared;
 
 import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
 import com.aadm.cardexchange.shared.models.Game;
-import com.aadm.cardexchange.shared.models.PhysicalCardImpl;
+import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.Proposal;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gson.Gson;
@@ -20,12 +20,12 @@ public class ProposalTest {
 
     private String senderEmail;
     private String receiverEmail;
-    private List<PhysicalCardImpl> senderCards;
-    private List<PhysicalCardImpl> receiversCards;
-    private PhysicalCardImpl senderCard1;
-    private PhysicalCardImpl senderCard2;
-    private PhysicalCardImpl receiverCard1;
-    private PhysicalCardImpl receiverCard2;
+    private List<PhysicalCard> senderCards;
+    private List<PhysicalCard> receiversCards;
+    private PhysicalCard senderCard1;
+    private PhysicalCard senderCard2;
+    private PhysicalCard receiverCard1;
+    private PhysicalCard receiverCard2;
 
     Proposal prop;
 
@@ -33,10 +33,10 @@ public class ProposalTest {
     public void initialize() {
         final String validDesc = "this is a valid description!!!";
 
-        senderCard1 = new PhysicalCardImpl(Game.YUGIOH, 111, Status.Good, validDesc);
-        senderCard2 = new PhysicalCardImpl(Game.POKEMON, 222, Status.Excellent, validDesc);
-        receiverCard1 = new PhysicalCardImpl(Game.YUGIOH, 333, Status.Excellent, validDesc);
-        receiverCard2 = new PhysicalCardImpl(Game.POKEMON, 444, Status.Fair, validDesc);
+        senderCard1 = new PhysicalCard(Game.YUGIOH, 111, Status.Good, validDesc);
+        senderCard2 = new PhysicalCard(Game.POKEMON, 222, Status.Excellent, validDesc);
+        receiverCard1 = new PhysicalCard(Game.YUGIOH, 333, Status.Excellent, validDesc);
+        receiverCard2 = new PhysicalCard(Game.POKEMON, 444, Status.Fair, validDesc);
 
         senderCards = new ArrayList<>() {{
             add(senderCard1);

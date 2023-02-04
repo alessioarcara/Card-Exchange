@@ -1,6 +1,9 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.shared.models.*;
+import com.aadm.cardexchange.shared.models.Card;
+import com.aadm.cardexchange.shared.models.MagicCard;
+import com.aadm.cardexchange.shared.models.PokemonCard;
+import com.aadm.cardexchange.shared.models.YuGiOhCard;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,75 +12,92 @@ import java.util.Map;
 
 // Create mocks cards with distinct fields for testing purposes
 public class MockCardData {
-    public static Map<Integer, MagicCardDecorator> createMagicDummyMap() {
+    public static PokemonCard createPokemonDummyCard() {
+        return new PokemonCard("Charizard", "The flame Pokemon", "Flame",
+                "Ken Sugimori", "http://www.charizard-image.jpg", "Rare",
+                "holo");
+    }
+
+    public static YuGiOhCard createYuGiOhDummyCard() {
+        return new YuGiOhCard("Exodia the Forbidden One", "One of the most powerful monsters in the game",
+                "Creature", "Divine-Beast", "http://www.exodia-image.jpg", "http://www.exodia-thumbnail.jpg"
+        );
+    }
+
+    public static Map<Integer, MagicCard> createMagicDummyMap() {
         return new HashMap<>() {{
-            put(0, new MagicCardDecorator(new CardImpl("Lightning Bolt", "Deal 3 damage to any target", "Cast"),
-                    "Christopher Rush", "Rare", true, false, false, false, false
+            put(0, new MagicCard("Lightning Bolt", "Deal 3 damage to any target", "Cast",
+                    "Christopher Rush", "Rare",
+                    "hasFoil"
             ));
-            put(1, new MagicCardDecorator(new CardImpl("Counterspell", "Counter target spell", "Instant"),
-                    "Mark Poole", "Uncommon", false, true, false, false, false
+            put(1, new MagicCard("Counterspell", "Counter target spell", "Instant",
+                    "Mark Poole", "Uncommon",
+                    "isAlternative"
             ));
-            put(2, new MagicCardDecorator(new CardImpl("Plague Wind", "Deal X damage to each creature and each player, where X is the number of creatures you control.", "Sorcery"),
-                    "Ron Spencer", "Mythic Rare", false, false, true, false, false
+            put(2, new MagicCard("Plague Wind", "Deal X damage to each creature and each player, where X is the number of creatures you control.", "Sorcery",
+                    "Ron Spencer", "Mythic Rare",
+                    "isFullArt"
             ));
-            put(3, new MagicCardDecorator(new CardImpl("Angel of Mercy", "When Angel of Mercy enters the battlefield, you gain 3 life", "Creature"),
-                    "Volkan Baa", "Mega Rare", false, false, false, true, false
+            put(3, new MagicCard("Angel of Mercy", "When Angel of Mercy enters the battlefield, you gain 3 life", "Creature",
+                    "Volkan Baa", "Mega Rare",
+                    "isPromo"
             ));
-            put(4, new MagicCardDecorator(new CardImpl("Heart of Light", "Enchant creature (Target a creature as you cast this. This card enters the battlefield attached to that creature.)", "Counter"),
-                    "Luca Zontini", "Unique", false, false, false, false, true
+            put(4, new MagicCard("Heart of Light", "Enchant creature (Target a creature as you cast this. This card enters the battlefield attached to that creature.)", "Counter",
+                    "Luca Zontini", "Unique",
+                    "isReprint"
             ));
         }};
     }
 
 
-    public static Map<Integer, PokemonCardDecorator> createPokemonDummyMap() {
+    public static Map<Integer, PokemonCard> createPokemonDummyMap() {
         return new HashMap<>() {{
-            put(0, new PokemonCardDecorator(new CardImpl("Pikachu", "The electric mouse Pokemon", "Electric"),
-                    "Atsuko Nishida", "http://www.pikachu-image.jpg", "Common", true, false, false, false, false
+            put(0, new PokemonCard("Pikachu", "The electric mouse Pokemon", "Electric",
+                    "Atsuko Nishida", "http://www.pikachu-image.jpg", "Common",
+                    "firstEdition"
             ));
-            put(1, new PokemonCardDecorator(new CardImpl("Charizard", "The flame Pokemon", "Flame"),
-                    "Ken Sugimori", "http://www.charizard-image.jpg", "Rare", false, true, false, false, false
+            put(1, createPokemonDummyCard());
+            put(2, new PokemonCard("Blastoise", "The shellfish Pokemon", "Water",
+                    "Mitsuhiro Arita", "http://www.blastoise-image.jpg", "Uncommon",
+                    "normal"
             ));
-            put(2, new PokemonCardDecorator(new CardImpl("Blastoise", "The shellfish Pokemon", "Water"),
-                    "Mitsuhiro Arita", "http://www.blastoise-image.jpg", "Uncommon", false, false, true, false, false
+            put(3, new PokemonCard("Mewtwo", "The Genetic Pokemon", "Psychic",
+                    "Akira Egawa", "http://www.mewtwo-image.jpg", "Ultra Rare",
+                    "reverse"
             ));
-            put(3, new PokemonCardDecorator(new CardImpl("Mewtwo", "The Genetic Pokemon", "Psychic"),
-                    "Akira Egawa", "http://www.mewtwo-image.jpg", "Ultra Rare", false, false, false, true, false
-            ));
-            put(4, new PokemonCardDecorator(new CardImpl("Hitmonlee", "The legs freely contract and stretch", "Fighting"),
-                    "Shigenori Negishi", "https://assets.tcgdex.net/en/swsh/swsh1/94", "Unique", false, false, false, false, true
+            put(4, new PokemonCard("Hitmonlee", "The legs freely contract and stretch", "Fighting",
+                    "Shigenori Negishi", "https://assets.tcgdex.net/en/swsh/swsh1/94", "Unique",
+                    "wPromo"
             ));
         }};
     }
 
-    public static Map<Integer, CardDecorator> createYuGiOhDummyMap() {
+    public static Map<Integer, YuGiOhCard> createYuGiOhDummyMap() {
         return new HashMap<>() {
             {
-                put(0, new YuGiOhCardDecorator(new CardImpl("Dark Magician", "A powerful sorcerer", "Monster"),
+                put(0, new YuGiOhCard("Dark Magician", "A powerful sorcerer", "Monster",
                         "Spellcaster", "http://www.darkmagician-image.jpg", "http://www.darkmagician-thumbnail.jpg"
                 ));
-                put(1, new YuGiOhCardDecorator(new CardImpl("Exodia the Forbidden One", "One of the most powerful monsters in the game", "Creature"),
-                        "Divine-Beast", "http://www.exodia-image.jpg", "http://www.exodia-thumbnail.jpg"
-                ));
-                put(2, new YuGiOhCardDecorator(new CardImpl("Monster Reborn", "Special Summon a monster from either player's graveyard", "Spell"),
+                put(1, createYuGiOhDummyCard());
+                put(2, new YuGiOhCard("Monster Reborn", "Special Summon a monster from either player's graveyard", "Spell",
                         "Monster", "http://www.monsterreborn-image.jpg", "http://www.monsterreborn-thumbnail.jpg"
                 ));
-                put(3, new YuGiOhCardDecorator(new CardImpl("Pot of Greed", "Draw 2 cards", "Draw"),
+                put(3, new YuGiOhCard("Pot of Greed", "Draw 2 cards", "Draw",
                         "Pot", "http://www.potofgreed-image.jpg", "http://www.potofgreed-thumbnail.jpg"
                 ));
             }
         };
     }
 
-    public static List<CardDecorator> createMagicDummyList() {
+    public static List<Card> createMagicDummyList() {
         return new ArrayList<>(createMagicDummyMap().values());
     }
 
-    public static List<CardDecorator> createPokemonDummyList() {
+    public static List<Card> createPokemonDummyList() {
         return new ArrayList<>(createPokemonDummyMap().values());
     }
 
-    public static List<CardDecorator> createYuGiOhDummyList() {
+    public static List<Card> createYuGiOhDummyList() {
         return new ArrayList<>(createYuGiOhDummyMap().values());
     }
 }

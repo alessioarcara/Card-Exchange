@@ -38,7 +38,7 @@ public class GameFiltersWidget extends Composite {
 
         gameBooleanFieldsMap = new HashMap<>();
         gameBooleanFieldsMap.put(Game.MAGIC, Arrays.asList("hasFoil", "isAlternative", "isFullArt", "isPromo", "isReprint"));
-        gameBooleanFieldsMap.put(Game.POKEMON, Arrays.asList("isFirstEdition", "isHolo", "isNormal", "isReverse", "isPromo"));
+        gameBooleanFieldsMap.put(Game.POKEMON, Arrays.asList("firstEdition", "holo", "normal", "reverse", "wPromo"));
         gameBooleanFieldsMap.put(Game.YUGIOH, Collections.emptyList());
     }
 
