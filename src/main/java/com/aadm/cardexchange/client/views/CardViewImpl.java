@@ -2,7 +2,10 @@ package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.places.NewExchangePlace;
 import com.aadm.cardexchange.client.widgets.*;
-import com.aadm.cardexchange.shared.models.*;
+import com.aadm.cardexchange.shared.models.CardDecorator;
+import com.aadm.cardexchange.shared.models.MagicCardDecorator;
+import com.aadm.cardexchange.shared.models.PokemonCardDecorator;
+import com.aadm.cardexchange.shared.models.YuGiOhCardDecorator;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.HeadingElement;
@@ -12,7 +15,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
-public class CardViewImpl extends Composite implements CardView, ImperativeHandleAddCardToDeck, ImperativeHandleAddCardToDeckModal, ImperativeHandlerExchangeCard {
+public class CardViewImpl extends Composite implements CardView, ImperativeHandleAddCardToDeck, ImperativeHandleAddCardToDeckModal, ImperativeHandleUserList {
     private static final CardsViewImplUIBinder uiBinder = GWT.create(CardsViewImplUIBinder.class);
     @UiField
     SpanElement cardGame;
@@ -178,7 +181,7 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
         dialog.show();
         if (addCardToDeckWidget.getDeckName().equals("Owned")) {
             dialog.setText("Do you own this card?");
-        } else if(addCardToDeckWidget.getDeckName().equals("Wished")) {
+        } else if (addCardToDeckWidget.getDeckName().equals("Wished")) {
             dialog.setText("Do you wish this card?");
         } else {
             dialog.setText("YOU MUST SELECT A DECK!");

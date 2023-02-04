@@ -1,11 +1,9 @@
 package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.places.CardPlace;
-import com.aadm.cardexchange.client.places.NewExchangePlace;
 import com.aadm.cardexchange.client.widgets.CardWidget;
 import com.aadm.cardexchange.client.widgets.GameFiltersWidget;
 import com.aadm.cardexchange.client.widgets.ImperativeHandleCard;
-import com.aadm.cardexchange.client.widgets.ImperativeHandlerExchangeCard;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -15,7 +13,7 @@ import com.google.gwt.user.client.ui.*;
 import java.util.*;
 
 
-public class HomeViewImpl extends Composite implements HomeView, ImperativeHandleCard, ImperativeHandlerExchangeCard {
+public class HomeViewImpl extends Composite implements HomeView, ImperativeHandleCard {
     private static final HomeViewImplUIBinder uiBinder = GWT.create(HomeViewImplUIBinder.class);
     @UiField
     RadioButton magicRadio;
@@ -115,11 +113,6 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
     @Override
     public void onOpenDetailsClick(Game game, int id) {
         presenter.goTo(new CardPlace(game, id));
-    }
-
-    @Override
-    public void onClickExchange(String receiverUserEmail, String selectedCardId) {
-        presenter.goTo(new NewExchangePlace(selectedCardId, receiverUserEmail));
     }
 
     private void onGameChanged(Game game) {

@@ -6,14 +6,10 @@ import com.aadm.cardexchange.client.presenters.CardActivity;
 import com.aadm.cardexchange.client.views.CardView;
 import com.aadm.cardexchange.shared.CardServiceAsync;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
-import com.aadm.cardexchange.shared.models.*;
-import com.google.gwt.place.shared.PlaceController;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
-import com.aadm.cardexchange.shared.models.CardDecorator;
-import com.aadm.cardexchange.shared.models.CardImpl;
-import com.aadm.cardexchange.shared.models.Game;
-import com.aadm.cardexchange.shared.models.Status;
+import com.aadm.cardexchange.shared.models.*;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
@@ -35,7 +31,6 @@ public class CardActivityTest {
     DeckServiceAsync mockDeckService;
     PlaceController placeController;
     CardActivity cardActivity;
-
 
     @BeforeEach
     public void initialize() {
@@ -76,9 +71,9 @@ public class CardActivityTest {
 
     private static Stream<Arguments> provideDifferentTypeOfErrors() {
         return Stream.of(
-                Arguments.of(new AuthException("Invalid token")),
-                Arguments.of(new InputException("Invalid description")),
-                Arguments.of(new RuntimeException())
+            Arguments.of(new AuthException("Invalid token")),
+            Arguments.of(new InputException("Invalid description")),
+            Arguments.of(new RuntimeException())
         );
     }
 
