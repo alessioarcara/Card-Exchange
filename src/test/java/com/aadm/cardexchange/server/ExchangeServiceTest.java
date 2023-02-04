@@ -3,7 +3,6 @@ package com.aadm.cardexchange.server;
 import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.services.ExchangeServiceImpl;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
-import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
@@ -19,7 +18,10 @@ import org.mapdb.Serializer;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static com.aadm.cardexchange.server.MockCardData2.createMagicDummyMap2;
 import static org.easymock.EasyMock.*;
@@ -50,6 +52,7 @@ public class ExchangeServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(mockLoginMap);
     }
+
     private void setupForValidEmail() {
         Map<String, User> userMap = new HashMap<>();
         userMap.put("valid@receiverUserEmail.it", new User("valid@receiverUserEmail.it", "password"));
@@ -57,6 +60,11 @@ public class ExchangeServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(userMap);
     }
+
+    private List<PhysicalCard> generateValidListPcard(int n) {
+        List<PhysicalCard> myList = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            PhysicalCard mockPCard = new PhysicalCard(Game.randomGame(), (i + 3000), Status.randomGame(), "This is a valid description.");
     private PhysicalCardImpl generateValidPCard(int i) {
         return new PhysicalCardImpl(Game.randomGame(), (i+3000), Status.randomStatus(), "This is a valid description.");
     }
@@ -197,6 +205,7 @@ public class ExchangeServiceTest {
         });
         ctrl.verify();
     }
+
     @Test
     public void testAddProposalSuccess() throws AuthException, InputException {
         setupForValidToken();

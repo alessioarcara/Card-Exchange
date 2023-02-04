@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.client.widgets;
 
-import com.aadm.cardexchange.shared.models.PhysicalCardDecorator;
+import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -35,9 +35,9 @@ public class DeckWidget extends Composite {
         });
     }
 
-    public void setData(List<PhysicalCardDecorator> data) {
+    public void setData(List<PhysicalCardWithName> data) {
         cards.clear();
-        for (PhysicalCardDecorator pCard : data) {
+        for (PhysicalCardWithName pCard : data) {
             cards.add(new PhysicalCardWidget(pCard));
         }
     }

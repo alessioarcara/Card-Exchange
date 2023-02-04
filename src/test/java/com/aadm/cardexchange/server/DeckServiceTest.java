@@ -18,10 +18,7 @@ import org.mapdb.Serializer;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.easymock.EasyMock.*;
 
@@ -342,11 +339,11 @@ public class DeckServiceTest {
 
     private void setupForValidCardsAndUserDecks() {
         // init Mocks
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
-        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.MAGIC, 2222, Status.Fair, "This is a valid bis description.");
-        CardDecorator mockCard1 = new CardDecorator(new CardImpl("Nome1", "Desc1", "Type1"));
-        CardDecorator mockCard2 = new CardDecorator(new CardImpl("Nome2", "Desc2", "Type2"));
-        Map<Integer, CardDecorator> cardMap = new HashMap<>() {{
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 2222, Status.Fair, "This is a valid bis description.");
+        Card mockCard1 = MockCardData.createPokemonDummyCard();
+        Card mockCard2 = MockCardData.createYuGiOhDummyCard();
+        Map<Integer, Card> cardMap = new HashMap<>() {{
             put(1111, mockCard1);
             put(2222, mockCard2);
         }};
@@ -376,12 +373,12 @@ public class DeckServiceTest {
         setupForValidToken();
         setupForValidCardsAndUserDecks();
         ctrl.replay();
-        List<PhysicalCardDecorator> decoratedCards = deckService.getMyDeck("validToken", "Owned");
+        List<PhysicalCardWithName> decoratedCards = deckService.getMyDeck("validToken", "Owned");
         ctrl.verify();
         Assertions.assertAll(() -> {
             Assertions.assertEquals(2, decoratedCards.size());
-            Assertions.assertEquals("Nome1", decoratedCards.get(0).getName());
-            Assertions.assertEquals("Nome2", decoratedCards.get(1).getName());
+            Assertions.assertEquals("Charizard", decoratedCards.get(0).getName());
+            Assertions.assertEquals("Exodia the Forbidden One", decoratedCards.get(1).getName());
         });
     }
 
@@ -398,24 +395,79 @@ public class DeckServiceTest {
     public void testGetUserOwnedDeckForValidEmail() throws AuthException {
         setupForValidCardsAndUserDecks();
         ctrl.replay();
-        Assertions.assertNotNull(deckService.getUserOwnedDeck("test@test.it"));
+        List<PhysicalCardWithName> decoratedCards = deckService.getUserOwnedDeck("test@test.it");
+        ctrl.verify();
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(2, decoratedCards.size());
+            Assertions.assertEquals("Charizard", decoratedCards.get(0).getName());
+            Assertions.assertEquals("Exodia the Forbidden One", decoratedCards.get(1).getName());
+        });
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0})
+    public void testGetOwnedPhysicalCardsByCardIdForInvalidId(int input) {
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> deckService.getOwnedPhysicalCardsByCardId(input));
         ctrl.verify();
     }
+
+    @Test
+    public void testGetOwnedPhysicalCardsByCardIdForValidId() throws InputException {
+        // init Mocks
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 1111, Status.Good, "This is a valid description.");
+        PhysicalCard mockPCard3 = new PhysicalCard(Game.POKEMON, 2222, Status.Fair, "This is a valid description.");
+        PhysicalCard mockPCard4 = new PhysicalCard(Game.YUGIOH, 3333, Status.Damaged, "This is a valid description.");
+
+        Deck test1OwnedDeck = new Deck("Owned");
+        Deck test2OwnedDeck = new Deck("Owned");
+        test1OwnedDeck.addPhysicalCard(mockPCard1);
+        test1OwnedDeck.addPhysicalCard(mockPCard3);
+        test2OwnedDeck.addPhysicalCard(mockPCard2);
+        test2OwnedDeck.addPhysicalCard(mockPCard4);
+        Map<String, Deck> test1Decks = new HashMap<>() {{
+            put("Owned", test1OwnedDeck);
+        }};
+        Map<String, Deck> test2Decks = new HashMap<>() {{
+            put("Owned", test2OwnedDeck);
+        }};
+        Map<String, Map<String, Deck>> deckMap = new LinkedHashMap<>() {{
+            put("test1@test.it", test1Decks);
+            put("test2@test.it", test2Decks);
+        }};
+
+        // what I expect
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(deckMap);
+
+        ctrl.replay();
+        List<PhysicalCardWithEmail> decoratedCards = deckService.getOwnedPhysicalCardsByCardId(1111);
+        ctrl.verify();
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(2, decoratedCards.size());
+            Assertions.assertEquals("test1@test.it", decoratedCards.get(0).getEmail());
+            Assertions.assertEquals("test2@test.it", decoratedCards.get(1).getEmail());
+        });
+    }
+
     @ParameterizedTest
     @NullAndEmptySource
     public void testRemovePhysicalCardFromDeckForInvalidDeckName(String input) {
         setupForValidToken();
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
         ctrl.replay();
         Assertions.assertThrows(InputException.class, () ->
                 deckService.removePhysicalCardFromDeck("validToken", input, mockPCard1)
         );
         ctrl.verify();
     }
+
     @Test
     public void testRemovePhysicalCardFromDeckForNotExistingDeckMap() {
         setupForValidToken();
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
 
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
             put("test@test.it", null);
@@ -433,7 +485,7 @@ public class DeckServiceTest {
     @Test
     public void testRemovePhysicalCardFromDeckForNotExistingDeck() throws AuthException, InputException {
         setupForValidToken();
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
         Map<String, Deck> deckMap = new HashMap<>() {{
             put("Wished", new Deck("Wished", true));
         }};
@@ -451,8 +503,8 @@ public class DeckServiceTest {
     @Test
     public void testRemovePhysicalCardFromDeckForNotExistingPhysicalCard() throws AuthException, InputException {
         setupForValidToken();
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
-        PhysicalCardImpl mockPCard2 = new PhysicalCardImpl(Game.MAGIC, 1221, Status.Fair, "This is a valid bis description.");
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 1221, Status.Fair, "This is a valid bis description.");
         Map<String, Deck> deckMap = new HashMap<>() {{
             put("Owned", new Deck("Owned", true));
         }};
@@ -469,10 +521,11 @@ public class DeckServiceTest {
         Assertions.assertFalse(deckService.removePhysicalCardFromDeck("validToken", "Owned", mockPCard1));
         ctrl.verify();
     }
+
     @Test
     public void testRemovePhysicalCardFromDeckSuccess() throws AuthException, InputException {
         setupForValidToken();
-        PhysicalCardImpl mockPCard1 = new PhysicalCardImpl(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
         Map<String, Deck> deckMap = new HashMap<>() {{
             put("Owned", new Deck("Owned", true));
         }};

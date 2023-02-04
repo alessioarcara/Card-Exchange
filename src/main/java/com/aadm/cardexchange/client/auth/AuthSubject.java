@@ -6,10 +6,7 @@ import java.util.List;
 public class AuthSubject {
     List<Observer> observers = new ArrayList<>();
     String token;
-
-    public AuthSubject(String token) {
-        this.token = token;
-    }
+    String email;
 
     public void attach(Observer observer) {
         observers.add(observer);
@@ -29,8 +26,13 @@ public class AuthSubject {
         return token;
     }
 
-    public void setToken(String token) {
+    public String getEmail() {
+        return email;
+    }
+
+    public void setCredentials(String token, String email) {
         this.token = token;
+        this.email = email;
         notifyObservers();
     }
 

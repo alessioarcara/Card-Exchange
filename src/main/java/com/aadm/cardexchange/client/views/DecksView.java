@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.client.views;
 
-import com.aadm.cardexchange.shared.models.PhysicalCardDecorator;
+import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.user.client.ui.IsWidget;
 
 import java.util.List;
@@ -15,6 +15,6 @@ public interface DecksView extends IsWidget {
     void setPresenter(Presenter presenter);
 
     interface Presenter {
-        void fetchUserDeck(String deckName, Consumer<List<PhysicalCardDecorator>> setDeckData);
+        void fetchUserDeck(String deckName, Consumer<List<PhysicalCardWithName>> setDeckData);
     }
 }

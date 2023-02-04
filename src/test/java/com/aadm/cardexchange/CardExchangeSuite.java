@@ -8,14 +8,13 @@ import org.junit.platform.suite.api.Suite;
 
 @Suite
 @SelectClasses({
-        CardTest.class,
         UserTest.class,
         LoginInfoTest.class,
-        CardDecoratorTest.class,
-        YuGiOhCardDecoratorTest.class,
-        PokemonCardDecoratorTest.class,
-        MagicCardDecoratorTest.class,
-        PhysicalCardDecoratorTest.class,
+        YuGiOhCardTest.class,
+        PokemonCardTest.class,
+        MagicCardTest.class,
+        PhysicalCardWithEmailTest.class,
+        PhysicalCardWithNameTest.class,
         PhysicalCardTest.class,
         DeckTest.class,
         MapDBTest.class,
@@ -30,6 +29,7 @@ import org.junit.platform.suite.api.Suite;
         AuthActivityTest.class,
         DecksActivityTest.class,
         AuthSubjectTest.class,
+        AuthPayloadTest.class,
         DeckServiceTest.class,
         ProposalTest.class,
         NewExchangePlaceTest.class,

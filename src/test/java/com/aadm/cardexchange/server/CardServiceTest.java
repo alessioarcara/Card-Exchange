@@ -42,9 +42,9 @@ public class CardServiceTest {
 
     private static Stream<Arguments> provideClassAndMockData() {
         return Stream.of(
-                Arguments.of(Game.MAGIC, MagicCardDecorator.class, MockCardData.createMagicDummyMap()),
-                Arguments.of(Game.POKEMON, PokemonCardDecorator.class, MockCardData.createPokemonDummyMap()),
-                Arguments.of(Game.YUGIOH, YuGiOhCardDecorator.class, MockCardData.createYuGiOhDummyMap())
+                Arguments.of(Game.MAGIC, MagicCard.class, MockCardData.createMagicDummyMap()),
+                Arguments.of(Game.POKEMON, PokemonCard.class, MockCardData.createPokemonDummyMap()),
+                Arguments.of(Game.YUGIOH, YuGiOhCard.class, MockCardData.createYuGiOhDummyMap())
         );
     }
 
@@ -58,11 +58,11 @@ public class CardServiceTest {
 
     @ParameterizedTest
     @MethodSource("provideClassAndMockData")
-    public void testGetGameCardsListContainsCorrectSubClassesForGameParameter(Game game, Class<?> clazz, Map<Integer, CardDecorator> expectedMap) {
+    public void testGetGameCardsListContainsCorrectSubClassesForGameParameter(Game game, Class<?> clazz, Map<Integer, Card> expectedMap) {
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(expectedMap);
         ctrl.replay();
-        List<CardDecorator> cards = cardService.getGameCards(game);
+        List<Card> cards = cardService.getGameCards(game);
         ctrl.verify();
         Assertions.assertTrue(cards.stream().allMatch(card ->
                 card.getClass() == clazz
@@ -76,11 +76,11 @@ public class CardServiceTest {
 
     @ParameterizedTest
     @MethodSource("provideMockData")
-    public void testGetGameCardsExpectedListForGameParameter(Game game, Map<Integer, CardDecorator> expectedMap) {
+    public void testGetGameCardsExpectedListForGameParameter(Game game, Map<Integer, Card> expectedMap) {
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(expectedMap);
         ctrl.replay();
-        List<CardDecorator> cards = cardService.getGameCards(game);
+        List<Card> cards = cardService.getGameCards(game);
         ctrl.verify();
         Assertions.assertEquals(new ArrayList<>(expectedMap.values()), cards);
     }
@@ -97,11 +97,11 @@ public class CardServiceTest {
 
     @ParameterizedTest
     @MethodSource("provideMockData")
-    public void testGetGameCardForIdParameter(Game game, Map<Integer, CardDecorator> expectedMap) {
+    public void testGetGameCardForIdParameter(Game game, Map<Integer, Card> expectedMap) {
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(expectedMap);
         ctrl.replay();
-        CardDecorator actualCard = cardService.getGameCard(game, 2);
+        Card actualCard = cardService.getGameCard(game, 2);
         ctrl.verify();
         Assertions.assertEquals(expectedMap.get(2), actualCard);
     }

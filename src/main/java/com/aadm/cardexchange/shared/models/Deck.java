@@ -8,7 +8,7 @@ public class Deck implements Serializable {
     private static final long serialVersionUID = -3036168098606868237L;
     private String name;
     private boolean isDefault;
-    private Set<PhysicalCardImpl> physicalCards;
+    private Set<PhysicalCard> physicalCards;
 
     public Deck(String name) {
         this.name = name;
@@ -39,19 +39,19 @@ public class Deck implements Serializable {
         return isDefault;
     }
 
-    public Set<PhysicalCardImpl> getPhysicalCards() {
+    public Set<PhysicalCard> getPhysicalCards() {
         return physicalCards;
     }
 
-    public boolean addPhysicalCard(PhysicalCardImpl physicalCard) {
+    public boolean addPhysicalCard(PhysicalCard physicalCard) {
         return physicalCards.add(physicalCard);
     }
 
-    public boolean removePhysicalCard(PhysicalCardImpl physicalCard) {
+    public boolean removePhysicalCard(PhysicalCard physicalCard) {
         return physicalCards.remove(physicalCard);
     }
 
-    public boolean containsPhysicalCard(PhysicalCardImpl physicalCard) {
+    public boolean containsPhysicalCard(PhysicalCard physicalCard) {
         return physicalCards.contains(physicalCard);
     }
 

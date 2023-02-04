@@ -1,26 +1,28 @@
 package com.aadm.cardexchange.server.jsonparser;
 
-import com.aadm.cardexchange.shared.models.CardImpl;
-import com.aadm.cardexchange.shared.models.MagicCardDecorator;
+import com.aadm.cardexchange.shared.models.MagicCard;
 import com.google.gson.JsonObject;
 
-public class MagicCardParseStrategy implements CardParseStrategy{
+import java.util.ArrayList;
+import java.util.List;
 
-    public MagicCardDecorator execute(JsonObject json) {
+public class MagicCardParseStrategy implements CardParseStrategy {
+
+    public MagicCard execute(JsonObject json) {
         // fields
         String name = json.has("name") ? json.get("name").getAsString() : "unknown";
         String description = json.has("text") ? json.get("text").getAsString() : "unknown";
         String types = json.has("types") ? json.get("types").getAsString() : "unknown";
         String artist = json.has("artist") ? json.get("artist").getAsString() : "unknown";
         String rarity = json.has("rarity") ? json.get("rarity").getAsString() : "unknown";
-        boolean hasFoil = (json.has("hasFoil")) && (json.get("hasFoil").getAsInt() != 0);
-        boolean isAlternative = (json.has("isAlternative")) && (json.get("isAlternative").getAsInt() != 0);
-        boolean isFullArt = (json.has("isFullArt")) && (json.get("isFullArt").getAsInt() != 0);
-        boolean isPromo = (json.has("isPromo")) && (json.get("isPromo").getAsInt() != 0);
-        boolean isReprint = (json.has("isReprint")) && (json.get("isReprint").getAsInt() != 0);
-
-        return new MagicCardDecorator(new CardImpl(name, description, types),
-                artist, rarity,
-                hasFoil, isAlternative, isFullArt, isPromo, isReprint);
+        // variants
+        List<String> variants = new ArrayList<>();
+        String[] variantNames = {"hasFoil", "isAlternative", "isFullArt", "isPromo", "isReprint"};
+        for (String variantName : variantNames) {
+            if (json.has(variantName) && json.get(variantName).getAsInt() != 0) {
+                variants.add(variantName);
+            }
+        }
+        return new MagicCard(name, description, types, artist, rarity, variants.toArray(new String[0]));
     }
 }

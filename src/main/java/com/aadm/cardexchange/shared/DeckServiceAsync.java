@@ -1,9 +1,6 @@
 package com.aadm.cardexchange.shared;
 
-import com.aadm.cardexchange.shared.models.Game;
-import com.aadm.cardexchange.shared.models.PhysicalCardDecorator;
-import com.aadm.cardexchange.shared.models.PhysicalCardImpl;
-import com.aadm.cardexchange.shared.models.Status;
+import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;
@@ -13,10 +10,13 @@ public interface DeckServiceAsync {
 
     void addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description, AsyncCallback<Boolean> callback);
 
+    void removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard, AsyncCallback<Boolean> callback);
+
     void getUserDeckNames(String token, AsyncCallback<List<String>> callback);
 
-    void removePhysicalCardFromDeck(String token, String deckName, PhysicalCardImpl pCardImpl, AsyncCallback<Boolean> async);
-    void getMyDeck(String token, String deckName, AsyncCallback<List<PhysicalCardDecorator>> callback);
+    void getMyDeck(String token, String deckName, AsyncCallback<List<PhysicalCardWithName>> callback);
 
-    void getUserOwnedDeck(String email, AsyncCallback<List<PhysicalCardDecorator>> callback);
+    void getUserOwnedDeck(String email, AsyncCallback<List<PhysicalCardWithName>> callback);
+
+    void getOwnedPhysicalCardsByCardId(int cardId, AsyncCallback<List<PhysicalCardWithEmail>> callback);
 }
