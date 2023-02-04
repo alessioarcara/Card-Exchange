@@ -48,9 +48,9 @@ public class DeckWidget extends Composite {
         }
     }
 
-    public void setData(List<PhysicalCardDecorator> data, String selectedCardId) {
+    public void setData(List<PhysicalCardWithName> data, String selectedCardId) {
         cards.clear();
-        for (PhysicalCardDecorator pCard : data) {
+        for (PhysicalCardWithName pCard : data) {
             PhysicalCardWidget pCardWidget = new PhysicalCardWidget(pCard);
             if (pCard.getId().equals(selectedCardId)) {
                 pCardWidget.setSelected();
