@@ -1,20 +1,18 @@
 package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.server.mapdb.MapDB;
-import com.aadm.cardexchange.server.services.DeckServiceImpl;
 import com.aadm.cardexchange.server.services.ExchangeServiceImpl;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
-import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mapdb.Serializer;
 
@@ -23,6 +21,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.util.*;
 
+import static com.aadm.cardexchange.server.MockCardData2.createMagicDummyMap2;
 import static org.easymock.EasyMock.*;
 
 public class ExchangeServiceTest {
@@ -57,14 +56,79 @@ public class ExchangeServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(userMap);
     }
+    private PhysicalCardImpl generateValidPCard(int i) {
+        return new PhysicalCardImpl(Game.randomGame(), (i+3000), Status.randomStatus(), "This is a valid description.");
+    }
+
+
+
     private  List<PhysicalCardImpl> generateValidListPcard(int n) {
         List<PhysicalCardImpl> myList = new ArrayList<>();
         for (int i = 0; i<n; i++ ) {
-            PhysicalCardImpl mockPCard = new PhysicalCardImpl(Game.randomGame(), (i+3000), Status.randomGame(), "This is a valid description.");
+            //PhysicalCardImpl mockPCard = new PhysicalCardImpl(Game.randomGame(), (i+3000), Status.randomGame(), "This is a valid description.");
+            PhysicalCardImpl mockPCard = generateValidPCard(i);
             myList.add(mockPCard);
         }
         return myList;
     }
+
+    private  Map<Integer, MagicCardDecorator>  generateValidMagicCardMap(){
+        return createMagicDummyMap2();
+    }
+
+        private Map<String, Deck>  generateValidDeckofMagicPhysicalCardMap(Map<Integer, MagicCardDecorator> magicCardMap, int i, String deckName){
+        Map<String, Deck> deckMap = new HashMap<>() {{
+            put(deckName, new Deck(deckName, true));
+        }};
+        int count = 0;
+        for (Map.Entry<Integer, MagicCardDecorator> entry : magicCardMap.entrySet()) {
+            if(count<i) {
+                deckMap.get(deckName).addPhysicalCard(new PhysicalCardImpl(Game.MAGIC, entry.getKey(), Status.randomStatus(), "This is a super valid description"));
+                //System.out.println(entry.getKey() + ":" + entry.getValue());
+                //System.out.println("stampo count" + count);
+            }
+            count++;
+            }
+        return deckMap;
+    }
+
+
+    private Map<String, Deck> generateValidDeck(int nCard, String mail, String deckName) {
+       Map<String, Deck> deckMap = new HashMap<>() {{
+           put(deckName, new Deck(deckName, true));
+       }};
+        for (int i=0; i<nCard; i++) {
+            PhysicalCardImpl mockPCard = generateValidPCard(i);
+            deckMap.get(deckName).addPhysicalCard(mockPCard);
+            //System.out.println(mockPCard);
+        }
+        return deckMap;
+    }
+    private Map<String, Map<String, Deck>> generateValidUserDecksMap(String mail,Map<String, Deck> singleDeck) {
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<String, Map<String, Deck>>() {
+            {
+                put(mail, singleDeck);
+            }};
+            return mockDeckMap;
+    }
+
+    private Map<String, Map<String, Deck>> generateCardFromId(String mail,Map<String, Deck> singleDeck) {
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<String, Map<String, Deck>>() {
+            {
+                put(mail, singleDeck);
+            }};
+        return mockDeckMap;
+    }
+
+/*    @Test
+    public void testGenerateExcetera(){
+        //Map<String, Deck> mockDeck = generateValidDeck( 5,"pippo","Owned");
+        //System.out.println(mockDeck.get("Owned").getPhysicalCards().iterator().next().toString());
+        //System.out.println(generateValidUserDecksMap("pippo", mockDeck));
+        //System.out.println(MockCardData.createMagicDummyMap().get(4).getId());
+        generateValidDeckofMagicPhysicalCardMap(generateValidMagicCardMap(),2,"owned");
+    }*/
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"invalidToken"})
@@ -153,4 +217,174 @@ public class ExchangeServiceTest {
         Assertions.assertTrue(exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(1), generateValidListPcard(2)));
         ctrl.verify();
     }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testCheckExistingPcardByCardForInvalidToken(String input) {
+        Map<String, LoginInfo> loginInfoMap = new HashMap<>() {{
+            put("validToken1", new LoginInfo("test@test.it", System.currentTimeMillis() - 10000));
+            put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 20000));
+            put("validToken3", new LoginInfo("test3@test.it", System.currentTimeMillis() - 30000));
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(loginInfoMap);
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> exchangeService.CheckExistingPcardByIdCard(input, Game.randomGame(), 1));
+        ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @NullSource
+    public void testCheckExistingPcardByCardForNullGame(Game input) {
+        setupForValidToken();
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> {
+            exchangeService.CheckExistingPcardByIdCard("validToken", input, 1);
+            ctrl.verify();
+        });
+    }
+
+    @Test
+    public void testCheckExistingPcardByCardForNegativeCardId() {
+        setupForValidToken();
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> {
+            exchangeService.CheckExistingPcardByIdCard("validToken", Game.randomGame(), -1);
+            ctrl.verify();
+        });
+    }
+    @Test
+    public void testCheckExistingPcardByCardForUserWithoutDecksMap() {
+        setupForValidToken();
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>();
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertThrows(RuntimeException.class, () ->
+                exchangeService.CheckExistingPcardByIdCard("validToken", Game.randomGame(), 3)
+        );
+        ctrl.verify();
+    }
+    @Test
+    public void testCheckExistingPcardByCardForUserWithDeckNull() {
+        setupForValidToken();
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", null);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertThrows(RuntimeException.class, () ->
+                exchangeService.CheckExistingPcardByIdCard("validToken", Game.randomGame(), 3)
+        );
+        ctrl.verify();
+    }
+    @Test
+    public void testCheckExistingPcardByCardForUserWithEmptyDeckMap() {
+        setupForValidToken();
+        Map<String, Deck> deckMap = new HashMap<>();
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", deckMap);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertThrows(BaseException.class, () ->
+                exchangeService.CheckExistingPcardByIdCard("validToken", Game.randomGame(), 3)
+        );
+        ctrl.verify();
+    }
+    @Test
+    public void testCheckExistingPcardByCardForUserWithoutCardsInOwnedDeck() throws BaseException {
+        setupForValidToken();
+        Map<String, Deck> deckMap = new HashMap<>() {{
+            put("Owned", new Deck("Wished", true));
+        }};
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", deckMap);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertFalse(exchangeService.CheckExistingPcardByIdCard("validToken", Game.randomGame(), 3));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testCheckExistingPcardByCardWithoutOwnedDeck() throws InputException, AuthException {
+        //serve per catturare l'eccezione BaseException, con mazzo "Owned" non trovato
+        setupForValidToken();
+        Map<String, Deck> deckMap =  generateValidDeckofMagicPhysicalCardMap(generateValidMagicCardMap(),5,"owd");
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", deckMap);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertThrows(BaseException.class, () ->
+                exchangeService.CheckExistingPcardByIdCard("validToken", Game.randomGame(), 3)
+        );
+        ctrl.verify();
+    }
+
+
+    @Test
+    public void testCheckExistingPcardByCardForUserWithoutPCardsInOwnedDeck() throws BaseException {
+        setupForValidToken();
+        Map<String, Deck> deckMap = new HashMap<>() {{
+            put("Owned", new Deck("Owned", true));
+        }};
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", deckMap);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertFalse(exchangeService.CheckExistingPcardByIdCard("validToken", Game.randomGame(), 3));
+        ctrl.verify();
+    }
+
+
+  /*  @Test
+    public void testCheckExistingPcardByCardFonNotMatchingIdCardsDraft() throws InputException, AuthException {
+        setupForValidToken();
+        Map<String, Deck> deckMap = new HashMap<>() {{
+            put("Owned", new Deck("Owned", true));
+        }};
+        deckMap.get("Owned").addPhysicalCard(generateValidPCard(1));
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", deckMap);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertFalse(exchangeService.CheckExistingPcardByIdCard("validToken", Game.randomGame(), 3));
+        ctrl.verify();
+    }*/
+
+
+    @Test
+    public void testCheckExistingPcardByCardNotMatchingIdCard() throws BaseException {
+        setupForValidToken();
+        Map<String, Deck> deckMap =  generateValidDeckofMagicPhysicalCardMap(generateValidMagicCardMap(),5,"Owned");
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", deckMap);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertFalse(exchangeService.CheckExistingPcardByIdCard("validToken", Game.randomGame(), 55));
+        ctrl.verify();
+    }
+
 }

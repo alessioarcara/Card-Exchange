@@ -29,7 +29,7 @@ public enum Status {
             Collections.unmodifiableList(Arrays.asList(values()));
     private static final int SIZE = VALUES.size();
     private static final Random RANDOM = new Random();
-    public static Status randomGame()  {
+    public static Status randomStatus()  {
         return VALUES.get(RANDOM.nextInt(SIZE));
     }
 

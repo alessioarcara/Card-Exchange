@@ -4,9 +4,9 @@ import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
 import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
-import com.aadm.cardexchange.shared.DeckService;
 import com.aadm.cardexchange.shared.ExchangeService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.common.reflect.TypeToken;
@@ -17,9 +17,6 @@ import org.mapdb.Serializer;
 import java.lang.reflect.Type;
 import java.util.*;
 
-import static com.aadm.cardexchange.server.services.AuthServiceImpl.validateEmail;
-
-
 public class ExchangeServiceImpl extends RemoteServiceServlet implements ExchangeService, MapDBConstants {
     private static final long serialVersionUID = 5868088467963819042L;
     private final MapDB db;
@@ -27,6 +24,8 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     public ExchangeServiceImpl() {
         db = new MapDBImpl();
     }
+    private final Type type = new TypeToken<Map<String, Deck>>() {
+    }.getType();
     public ExchangeServiceImpl(MapDB mockDB) {
         db = mockDB;
     }
@@ -34,14 +33,36 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         Map<String, User> userMap = db.getPersistentMap(
                 getServletContext(), USER_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
         System.out.println(userMap.get(email) );
-        if (userMap.get(email) != null) {
-            return true;
-        } else return false;
+        return userMap.get(email) != null;
     }
     private boolean checkPcardListConsistency(List<PhysicalCardImpl> physicalCards) {
        if (physicalCards == null) return false;
        else return !physicalCards.isEmpty();
     }
+    @Override
+    public boolean CheckExistingPcardByIdCard(String token, Game game, int cardId) throws BaseException {
+        String userEmail = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        if (game == null) {
+            throw new InputException("Invalid game");
+        }
+        if (cardId <= 0) {
+            throw new InputException("Invalid card");
+        }
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
+        Map<String, Deck> allUserDecks = deckMap.get(userEmail);
+        Deck userDeck = allUserDecks.get("Owned");
+        if (userDeck == null) {
+            throw new BaseException("Deck not found");
+        }
+        for (PhysicalCardImpl pCard : userDeck.getPhysicalCards()) {
+            if (cardId== pCard.getCardId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public boolean addProposal(String token, String receiverUserEmail, List<PhysicalCardImpl> senderPhysicalCards, List<PhysicalCardImpl> receiverPhysicalCards) throws AuthException, InputException {
         String email = AuthServiceImpl.checkTokenValidity(token,
@@ -55,8 +76,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         } else {
             Proposal newProposal = new Proposal(email, receiverUserEmail, senderPhysicalCards, receiverPhysicalCards);
             Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
-            if (proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null) return true;
-            else return false;
+            return proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null;
         }
     }
 }
