@@ -61,7 +61,6 @@
         }
 
         .button {
-            /*border: none;*/
             border-radius: 0;
             border: 2px solid #444;
             background-color: #eee;
@@ -80,26 +79,24 @@
             border-radius: 0 1rem 1rem 0;
         }
     </ui:style>
-    <g:SimplePanel>
-        <g:HTMLPanel styleName="{style.content}">
-            <div class="{style.field}">
-                <div class="{style.label}">State</div>
-                <g:ListBox styleName="{style.status}" ui:field='status'>
-                    <g:item value="1">1 - VeryDamaged</g:item>
-                    <g:item value="2">2 - Damaged</g:item>
-                    <g:item value="3">3 - Fair</g:item>
-                    <g:item value="4">4 - Good</g:item>
-                    <g:item value="5">5 - Excellent</g:item>
-                </g:ListBox>
-            </div>
-            <div class="{style.field}">
-                <div class="{style.label}">Description</div>
-                <g:TextArea styleName="{style.descriptionArea}" ui:field='description'/>
-            </div>
-            <div class="{style.actions}">
-                <g:Button styleName="{style.button} {style.noButton}" ui:field='noButton'>No</g:Button>
-                <g:Button styleName="{style.button} {style.yesButton}" ui:field='yesButton'>Yes</g:Button>
-            </div>
-        </g:HTMLPanel>
-    </g:SimplePanel>
+    <g:HTMLPanel styleName="{style.content}">
+        <div class="{style.field}">
+            <div class="{style.label}">State</div>
+            <g:ListBox styleName="{style.status}" ui:field='status'>
+                <g:item value="1">1 - VeryDamaged</g:item>
+                <g:item value="2">2 - Damaged</g:item>
+                <g:item value="3">3 - Fair</g:item>
+                <g:item value="4">4 - Good</g:item>
+                <g:item value="5">5 - Excellent</g:item>
+            </g:ListBox>
+        </div>
+        <div class="{style.field}">
+            <div class="{style.label}">Description</div>
+            <g:TextArea styleName="{style.descriptionArea}" ui:field='description'/>
+        </div>
+        <div class="{style.actions}">
+            <g:Button styleName="{style.button} {style.noButton}" ui:field='noButton'>No</g:Button>
+            <g:Button styleName="{style.button} {style.yesButton}" ui:field='yesButton'>Yes</g:Button>
+        </div>
+    </g:HTMLPanel>
 </ui:UiBinder>

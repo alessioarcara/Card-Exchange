@@ -74,7 +74,7 @@ public class CardActivityTest {
         mockView = ctrl.createMock(CardView.class);
         mockCardService = ctrl.mock(CardServiceAsync.class);
         mockDeckService = ctrl.mock(DeckServiceAsync.class);
-        cardActivity = new CardActivity(mockPlace, mockView, mockCardService, mockDeckService, new AuthSubject(null));
+        cardActivity = new CardActivity(mockPlace, mockView, mockCardService, mockDeckService, new AuthSubject());
     }
 
     @ParameterizedTest
@@ -102,6 +102,8 @@ public class CardActivityTest {
             callback.onSuccess(true);
             return null;
         });
+        mockView.getDeckSelected();
+        expectLastCall().andReturn("Owned");
         mockView.displayAlert(anyString());
         mockView.hideModal();
         ctrl.replay();

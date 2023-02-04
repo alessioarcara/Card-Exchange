@@ -50,7 +50,7 @@ public class UserListWidget extends Composite {
     private void addRow(String email, Status status, Button button) {
         int numRows = (table.getRowCount());
         table.setText(numRows, 0, email);
-        table.setText(numRows, 1, (status.getValue() + ": " + status.name()));
+        table.setText(numRows, 1, (status.getValue() + " (" + status.name() + ")"));
         if (showExchangeButton) table.setWidget(numRows, 2, button);
     }
 

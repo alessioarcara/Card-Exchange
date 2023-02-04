@@ -18,6 +18,7 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CardActivity extends AbstractActivity implements CardView.Presenter, Observer {
     private final CardPlace place;
@@ -58,11 +59,15 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
         });
     }
 
-    public void fetchOwnedPhysicalCards() {
+    private void fetchOwnedPhysicalCards() {
         deckService.getOwnedPhysicalCardsByCardId(place.getCardId(), new BaseAsyncCallback<List<PhysicalCardWithEmail>>() {
             @Override
             public void onSuccess(List<PhysicalCardWithEmail> result) {
-                view.setOwnedByUserList(result);
+                view.setOwnedByUserList(
+                        authSubject.isLoggedIn() ?
+                                result.stream().filter(pCardWithEmail -> !pCardWithEmail.getEmail().equals(authSubject.getEmail())).collect(Collectors.toList()) :
+                                result
+                );
             }
         });
     }

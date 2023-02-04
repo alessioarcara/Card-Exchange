@@ -6,6 +6,7 @@ import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.AuthService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.models.AuthPayload;
 import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;
@@ -100,11 +101,11 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
 
     @Override
     public String me(String token) throws AuthException {
-        return null;
+        return checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
     }
 
     @Override
-    public String signup(String email, String password) throws AuthException {
+    public AuthPayload signup(String email, String password) throws AuthException {
         if (validateCredentials(email, password)) {
             throw new AuthException("Invalid credentials");
         }
@@ -122,11 +123,11 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
                         new GsonSerializer<>(gson, type)
                 )
         );
-        return generateAndStoreLoginToken(user);
+        return new AuthPayload(generateAndStoreLoginToken(user), email);
     }
 
     @Override
-    public String signin(String email, String password) throws AuthException {
+    public AuthPayload signin(String email, String password) throws AuthException {
         if (validateCredentials(email, password)) {
             throw new AuthException("Invalid credentials");
         }
@@ -139,7 +140,7 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
         if (!BCrypt.checkpw(password, user.getPassword())) {
             throw new AuthException("Password don't match");
         }
-        return generateAndStoreLoginToken(user);
+        return new AuthPayload(generateAndStoreLoginToken(user), email);
     }
 
     @Override

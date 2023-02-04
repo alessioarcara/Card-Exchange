@@ -1,6 +1,7 @@
 package com.aadm.cardexchange.shared;
 
 import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.models.AuthPayload;
 import com.google.gwt.user.client.rpc.RemoteService;
 import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 
@@ -8,9 +9,9 @@ import com.google.gwt.user.client.rpc.RemoteServiceRelativePath;
 public interface AuthService extends RemoteService {
     String me(String token) throws AuthException;
 
-    String signup(String email, String password) throws AuthException;
+    AuthPayload signup(String email, String password) throws AuthException;
 
-    String signin(String email, String password) throws AuthException;
+    AuthPayload signin(String email, String password) throws AuthException;
 
     Boolean logout(String token) throws AuthException;
 }
