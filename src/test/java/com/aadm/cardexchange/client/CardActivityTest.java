@@ -4,12 +4,12 @@ import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.presenters.CardActivity;
 import com.aadm.cardexchange.client.views.CardView;
+import com.aadm.cardexchange.server.MockCardData;
 import com.aadm.cardexchange.shared.CardServiceAsync;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
-import com.aadm.cardexchange.shared.models.CardDecorator;
-import com.aadm.cardexchange.shared.models.CardImpl;
+import com.aadm.cardexchange.shared.models.Card;
 import com.aadm.cardexchange.shared.models.Game;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -52,15 +52,15 @@ public class CardActivityTest {
 
     @Test
     public void testFetchCardForOnSuccess() {
-        CardDecorator cardDecorator = new CardDecorator(new CardImpl("Charizard", "Un pokemon di fuoco", "Fuoco"));
+        Card card = MockCardData.createPokemonDummyCard();
         mockCardService.getGameCard(isA(Game.class), anyInt(), isA(AsyncCallback.class));
         expectLastCall().andAnswer(() -> {
             Object[] args = getCurrentArguments();
-            AsyncCallback<CardDecorator> callback = (AsyncCallback<CardDecorator>) args[args.length - 1];
-            callback.onSuccess(cardDecorator);
+            AsyncCallback<Card> callback = (AsyncCallback<Card>) args[args.length - 1];
+            callback.onSuccess(card);
             return null;
         });
-        mockView.setData(cardDecorator);
+        mockView.setData(card);
         expectLastCall();
         ctrl.replay();
         cardActivity.fetchCard();
@@ -70,7 +70,7 @@ public class CardActivityTest {
     @BeforeEach
     public void initialize() {
         ctrl = createStrictControl();
-        mockPlace = new CardPlace(Game.MAGIC, CARD_ID);
+        mockPlace = new CardPlace(Game.POKEMON, CARD_ID);
         mockView = ctrl.createMock(CardView.class);
         mockCardService = ctrl.mock(CardServiceAsync.class);
         mockDeckService = ctrl.mock(DeckServiceAsync.class);

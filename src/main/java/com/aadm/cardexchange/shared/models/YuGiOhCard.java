@@ -3,20 +3,20 @@ package com.aadm.cardexchange.shared.models;
 
 import java.util.Objects;
 
-public class YuGiOhCardDecorator extends CardDecorator {
+public class YuGiOhCard extends Card {
     private static final long serialVersionUID = -5460276673235842624L;
     private String race;
     private String imageUrl;
     private String smallImageUrl;
 
-    public YuGiOhCardDecorator(CardImpl card, String race, String imageUrl, String smallImageUrl) {
-        super(card);
+    public YuGiOhCard(String name, String description, String type, String race, String imageUrl, String smallImageUrl) {
+        super(name, description, type);
         this.race = race;
         this.imageUrl = imageUrl;
         this.smallImageUrl = smallImageUrl;
     }
 
-    public YuGiOhCardDecorator() {
+    public YuGiOhCard() {
     }
 
     public String getRace() {
@@ -34,10 +34,10 @@ public class YuGiOhCardDecorator extends CardDecorator {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof YuGiOhCardDecorator)) return false;
+        if (!(o instanceof YuGiOhCard)) return false;
         if (!super.equals(o)) return false;
-        YuGiOhCardDecorator that = (YuGiOhCardDecorator) o;
-        return getRace().equals(that.getRace()) && getImageUrl().equals(that.getImageUrl()) && getSmallImageUrl().equals(that.getSmallImageUrl());
+        YuGiOhCard that = (YuGiOhCard) o;
+        return Objects.equals(getRace(), that.getRace()) && Objects.equals(getImageUrl(), that.getImageUrl()) && Objects.equals(getSmallImageUrl(), that.getSmallImageUrl());
     }
 
     @Override

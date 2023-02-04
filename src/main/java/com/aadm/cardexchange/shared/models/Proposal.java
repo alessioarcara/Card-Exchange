@@ -12,10 +12,10 @@ public class Proposal implements Serializable {
     private int id;
     private String senderUserEmail;
     private String receiverUserEmail;
-    private List<PhysicalCardImpl> senderPhysicalCards;
-    private List<PhysicalCardImpl> receiverPhysicalCards;
+    private List<PhysicalCard> senderPhysicalCards;
+    private List<PhysicalCard> receiverPhysicalCards;
 
-    public Proposal(String senderUserEmail, String receiverUserEmail, List<PhysicalCardImpl> senderPhysicalCards, List<PhysicalCardImpl> receiverPhysicalCards) {
+    public Proposal(String senderUserEmail, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards) {
         this.id = uniqueId.getAndIncrement();
         this.senderUserEmail = senderUserEmail;
         this.receiverUserEmail = receiverUserEmail;
@@ -38,11 +38,11 @@ public class Proposal implements Serializable {
         return receiverUserEmail;
     }
 
-    public List<PhysicalCardImpl> getSenderPhysicalCards() {
+    public List<PhysicalCard> getSenderPhysicalCards() {
         return senderPhysicalCards;
     }
 
-    public List<PhysicalCardImpl> getReceiverPhysicalCards() {
+    public List<PhysicalCard> getReceiverPhysicalCards() {
         return receiverPhysicalCards;
     }
 
