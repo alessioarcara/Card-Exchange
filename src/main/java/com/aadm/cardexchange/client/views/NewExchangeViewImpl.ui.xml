@@ -55,6 +55,7 @@
             background-color: forestgreen;
             color: black;;
             border: 3px solid black;
+            cursor: pointer;
         }
 
         .red {
@@ -65,6 +66,7 @@
             background-color: #e50000;
             color: black;;
             border: 3px solid black;
+            cursor: pointer;
         }
 
     </ui:style>
