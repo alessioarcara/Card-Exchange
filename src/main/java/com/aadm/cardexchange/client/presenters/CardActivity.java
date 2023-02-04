@@ -10,6 +10,7 @@ import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.Card;
+import com.aadm.cardexchange.shared.models.PhysicalCardWithEmail;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -17,6 +18,9 @@ import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class CardActivity extends AbstractActivity implements CardView.Presenter, Observer {
     private final CardPlace place;
@@ -41,6 +45,7 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         fetchCard();
+        fetchOwnedPhysicalCards();
         update();
     }
 
@@ -58,6 +63,19 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
         });
     }
 
+    private void fetchOwnedPhysicalCards() {
+        deckService.getOwnedPhysicalCardsByCardId(place.getCardId(), new BaseAsyncCallback<List<PhysicalCardWithEmail>>() {
+            @Override
+            public void onSuccess(List<PhysicalCardWithEmail> result) {
+                view.setOwnedByUserList(
+                        authSubject.isLoggedIn() ?
+                                result.stream().filter(pCardWithEmail -> !pCardWithEmail.getEmail().equals(authSubject.getEmail())).collect(Collectors.toList()) :
+                                result
+                );
+            }
+        });
+    }
+
     public void addCardToDeck(String deckName, String status, String description) {
         deckService.addPhysicalCardToDeck(
                 authSubject.getToken(),
@@ -70,21 +88,21 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
                     @Override
                     public void onFailure(Throwable caught) {
                         if (caught instanceof AuthException) {
-                            view.displayErrorAlert(((AuthException) caught).getErrorMessage());
+                            view.displayAlert(((AuthException) caught).getErrorMessage());
                         } else if (caught instanceof InputException) {
-                            view.displayErrorAlert(((InputException) caught).getErrorMessage());
+                            view.displayAlert(((InputException) caught).getErrorMessage());
                         } else {
-                            view.displayErrorAlert(caught.getMessage());
+                            view.displayAlert("Internal server error");
                         }
                     }
 
                     @Override
                     public void onSuccess(Boolean result) {
                         if (result) {
-                            view.displaySuccessAlert();
+                            view.displayAlert("Success! Card added to " + view.getDeckSelected() + " deck");
                             view.hideModal();
                         } else {
-                            view.displayErrorAlert("Deck not found.");
+                            view.displayAlert("Deck not found");
                         }
                     }
                 }

@@ -32,7 +32,7 @@ public class DecksActivityTest {
         ctrl = createStrictControl();
         mockDecksView = ctrl.createMock(DecksView.class);
         mockRpcService = ctrl.mock(DeckServiceAsync.class);
-        AuthSubject authSubject = new AuthSubject(null);
+        AuthSubject authSubject = new AuthSubject();
         decksActivity = new DecksActivity(mockDecksView, mockRpcService, authSubject);
     }
 
