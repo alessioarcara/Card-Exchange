@@ -17,16 +17,16 @@ public class UserListWidget extends Composite {
     @UiField(provided = true)
     FlexTable table;
     boolean showExchangeButton;
-    ImperativeHandlerExchangeCard parent;
+    ImperativeHandleUserList parent;
 
     @UiConstructor
-    public UserListWidget(String title, String[] users, boolean showExchangeButton, ImperativeHandlerExchangeCard parent) {
+    public UserListWidget(String title, String[] users, boolean showExchangeButton, ImperativeHandleUserList parent) {
         this.showExchangeButton = showExchangeButton;
         this.parent = parent;
         setupTable();
         initWidget(uiBinder.createAndBindUi(this));
         tableHeading.setInnerText(title);
-        for (String user: users) {
+        for (String user : users) {
             addRow(user, new Button("Exchange"));
         }
     }
