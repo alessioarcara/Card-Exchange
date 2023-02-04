@@ -1,11 +1,13 @@
 package com.aadm.cardexchange.client;
 
-import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
+import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.presenters.CardActivity;
 import com.aadm.cardexchange.client.views.CardView;
 import com.aadm.cardexchange.shared.CardServiceAsync;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
+import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -33,7 +35,7 @@ public class CardActivityTest {
     @BeforeEach
     public void initialize() {
         ctrl = createStrictControl();
-        mockPlace = new CardPlace(Game.Magic, CARD_ID);
+        mockPlace = new CardPlace(Game.MAGIC, CARD_ID);
         mockView = ctrl.createMock(CardView.class);
         mockCardService = ctrl.mock(CardServiceAsync.class);
         mockDeckService = ctrl.mock(DeckServiceAsync.class);
@@ -69,8 +71,8 @@ public class CardActivityTest {
 
     private static Stream<Arguments> provideDifferentTypeOfErrors() {
         return Stream.of(
-                Arguments.of(new AuthException()),
-                Arguments.of(new IllegalArgumentException("Invalid description.")),
+                Arguments.of(new AuthException("Invalid token")),
+                Arguments.of(new InputException("Invalid description")),
                 Arguments.of(new RuntimeException())
         );
     }

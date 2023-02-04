@@ -10,11 +10,11 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: #ccc;
+            background: #20262E;
         }
 
         .sidebar div {
-            background: #eee;
+            background: #E9E8E8;
             margin: 1rem;
             padding: 1rem;
         }

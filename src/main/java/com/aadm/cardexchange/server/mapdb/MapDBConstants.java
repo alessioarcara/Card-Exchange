@@ -1,4 +1,4 @@
-package com.aadm.cardexchange.server;
+package com.aadm.cardexchange.server.mapdb;
 
 public interface MapDBConstants {
     String DB_FILENAME = "db";
@@ -10,4 +10,5 @@ public interface MapDBConstants {
     String DECK_MAP_NAME = "DECK_MAP";
     String USER_MAP_NAME = "USER_MAP";
     String LOGIN_MAP_NAME = "LOGIN_MAP";
+    String PROPOSAL_MAP_NAME = "PROPOSAL_MAP";
 }

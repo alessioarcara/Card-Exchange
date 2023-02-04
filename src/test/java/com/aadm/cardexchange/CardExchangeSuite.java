@@ -18,18 +18,22 @@ import org.junit.platform.suite.api.Suite;
         PhysicalCardDecoratorTest.class,
         PhysicalCardTest.class,
         DeckTest.class,
+        MapDBTest.class,
         GsonSerializerTest.class,
         JSONParserTest.class,
         CardServiceTest.class,
         AuthServiceTest.class,
+        DeckServiceTest.class,
         ListenerImplTest.class,
         HomeActivityTest.class,
         CardActivityTest.class,
         AuthActivityTest.class,
+        DecksActivityTest.class,
         AuthSubjectTest.class,
         DeckServiceTest.class,
         ProposalTest.class,
         NewExchangePlaceTest.class,
+        ExchangeServiceTest.class,
 })
 public class CardExchangeSuite {
 }

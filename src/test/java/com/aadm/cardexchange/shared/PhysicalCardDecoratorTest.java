@@ -16,7 +16,7 @@ public class PhysicalCardDecoratorTest {
     public void initialize() {
         card = new CardDecorator(new CardImpl(cardName, cardDesc, cardType));
         String sampleDesc = "this is a valid test description";
-        physicalCard = new PhysicalCardImpl(Game.YuGiOh, card.getId(), Status.Good, sampleDesc);
+        physicalCard = new PhysicalCardImpl(Game.YUGIOH, card.getId(), Status.Good, sampleDesc);
         physicalCardDecorator = new PhysicalCardDecorator(physicalCard, card.getName());
     }
 

@@ -1,4 +1,4 @@
-package com.aadm.cardexchange.client.AuthSubject;
+package com.aadm.cardexchange.client.auth;
 
 import java.util.ArrayList;
 import java.util.List;

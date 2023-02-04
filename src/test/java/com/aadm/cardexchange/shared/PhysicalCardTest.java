@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.shared;
 
-import com.aadm.cardexchange.server.GsonSerializer;
+import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Assertions;
@@ -21,7 +21,7 @@ public class PhysicalCardTest {
     @BeforeEach
     public void initialize() {
         card = new CardDecorator(new CardImpl("DUMMY_NAME", "DUMMY_TYPE", "DUMMY_DESCRIPTION"));
-        pCard = new PhysicalCardImpl(Game.Magic, card.getId(), Status.Excellent, "well handled card during almost 10 years");
+        pCard = new PhysicalCardImpl(Game.MAGIC, card.getId(), Status.Excellent, "well handled card during almost 10 years");
     }
 
     @ParameterizedTest
@@ -37,7 +37,7 @@ public class PhysicalCardTest {
 
     @Test
     public void testGetCardId() {
-        PhysicalCardImpl pCard2 = new PhysicalCardImpl(Game.Magic, card.getId(), Status.Good, "this is a valid description");
+        PhysicalCardImpl pCard2 = new PhysicalCardImpl(Game.MAGIC, card.getId(), Status.Good, "this is a valid description");
         Assertions.assertAll(() -> {
             Assertions.assertEquals(card.getId(), pCard.getCardId());
             Assertions.assertEquals(card.getId(), pCard2.getCardId());

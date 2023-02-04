@@ -12,7 +12,7 @@ public class PhysicalCardImpl implements PhysicalCard {
     private String description;
 
     public PhysicalCardImpl(Game game, int cardId, Status status, String description) {
-        this.id = (game == Game.Magic ? "m" : game == Game.Pokemon ? "p" : game == Game.YuGiOh ? "y" : "")
+        this.id = (game == Game.MAGIC ? "m" : game == Game.POKEMON ? "p" : game == Game.YUGIOH ? "y" : "")
                 + uniqueId.getAndIncrement();
         this.cardId = cardId;
         this.status = status;
@@ -40,9 +40,9 @@ public class PhysicalCardImpl implements PhysicalCard {
     }
 
     public Game getGameType() {
-        return id.charAt(0) == 'm' ? Game.Magic :
-                id.charAt(0) == 'y' ? Game.YuGiOh :
-                        id.charAt(0) == 'p' ? Game.Pokemon :
+        return id.charAt(0) == 'm' ? Game.MAGIC :
+                id.charAt(0) == 'y' ? Game.YUGIOH :
+                        id.charAt(0) == 'p' ? Game.POKEMON :
                                 null;
     }
 
@@ -58,4 +58,13 @@ public class PhysicalCardImpl implements PhysicalCard {
     public int hashCode() {
         return Objects.hash(getId());
     }
+
+    @Override
+    public String toString() {
+        return "id: " + this.getId() +
+                ", cardID: " + this.getCardId() +
+                ", status: " + this.getStatus() +
+                ", description: " + this.getDescription() ;
+    }
+
 }

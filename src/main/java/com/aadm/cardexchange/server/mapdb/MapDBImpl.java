@@ -1,4 +1,4 @@
-package com.aadm.cardexchange.server;
+package com.aadm.cardexchange.server.mapdb;
 
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
@@ -28,17 +28,15 @@ public class MapDBImpl implements MapDB, MapDBConstants {
         }
     }
 
+    @Override
     public <K, V> Map<K, V> getCachedMap(ServletContext ctx, String mapName, Serializer<K> keySerializer,
                                          Serializer<V> valueSerializer) {
         return getDB(ctx, DB_MEMORY_TYPE).hashMap(mapName, keySerializer, valueSerializer).createOrOpen();
     }
 
+    @Override
     public <K, V> Map<K, V> getPersistentMap(ServletContext ctx, String mapName, Serializer<K> keySerializer,
                                              Serializer<V> valueSerializer) {
         return getDB(ctx, DB_FILE_TYPE).hashMap(mapName, keySerializer, valueSerializer).createOrOpen();
-    }
-
-    public void flush(ServletContext ctx) {
-        getDB(ctx, DB_FILE_TYPE).commit();
     }
 }
