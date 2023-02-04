@@ -8,9 +8,8 @@ import com.aadm.cardexchange.shared.ExchangeService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
-import com.aadm.cardexchange.shared.models.PhysicalCard;
-import com.aadm.cardexchange.shared.models.Proposal;
-import com.aadm.cardexchange.shared.models.User;
+import com.aadm.cardexchange.shared.models.*;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
@@ -38,10 +37,12 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
                 getServletContext(), USER_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
         return userMap.get(email) != null;
     }
-    private boolean checkPcardListConsistency(List<PhysicalCardImpl> physicalCards) {
+    private boolean checkPhysicalCardsConsistency(List<PhysicalCard> physicalCards) {
        if (physicalCards == null) return false;
        else return !physicalCards.isEmpty();
     }
+
+
     @Override
     public boolean CheckExistingPcardByIdCard(String token, Game game, int cardId) throws BaseException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token,
@@ -58,7 +59,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         if (userDeck == null) {
             throw new BaseException("Deck not found");
         }
-        for (PhysicalCardImpl pCard : userDeck.getPhysicalCards()) {
+        for (PhysicalCard pCard : userDeck.getPhysicalCards()) {
             System.out.println(pCard.getCardId());
             if (cardId== pCard.getCardId()) {
                 return true;
@@ -69,7 +70,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
 
 
     @Override
-    public boolean addProposal(String token, String receiverUserEmail, List<PhysicalCardImpl> senderPhysicalCards, List<PhysicalCardImpl> receiverPhysicalCards) throws AuthException, InputException {
+    public boolean addProposal(String token, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards) throws InputException, AuthException {
         String email = AuthServiceImpl.checkTokenValidity(token,
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         if (receiverUserEmail == null || receiverUserEmail.isEmpty() || !checkEmailExistance(receiverUserEmail)) {

@@ -3,6 +3,7 @@ package com.aadm.cardexchange.server;
 import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.services.ExchangeServiceImpl;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
@@ -18,10 +19,7 @@ import org.mapdb.Serializer;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.aadm.cardexchange.server.MockCardData2.createMagicDummyMap2;
 import static org.easymock.EasyMock.*;
@@ -61,38 +59,34 @@ public class ExchangeServiceTest {
                 .andReturn(userMap);
     }
 
-    private List<PhysicalCard> generateValidListPcard(int n) {
-        List<PhysicalCard> myList = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            PhysicalCard mockPCard = new PhysicalCard(Game.randomGame(), (i + 3000), Status.randomGame(), "This is a valid description.");
-    private PhysicalCardImpl generateValidPCard(int i) {
-        return new PhysicalCardImpl(Game.randomGame(), (i+3000), Status.randomStatus(), "This is a valid description.");
+    private PhysicalCard generateValidPCard(int i) {
+        return new PhysicalCard(Game.randomGame(), (i+3000), Status.randomStatus(), "This is a valid description.");
     }
 
 
-
-    private  List<PhysicalCardImpl> generateValidListPcard(int n) {
-        List<PhysicalCardImpl> myList = new ArrayList<>();
+    private  List<PhysicalCard> generateValidListPcard(int n) {
+        List<PhysicalCard> myList = new ArrayList<>();
         for (int i = 0; i<n; i++ ) {
             //PhysicalCardImpl mockPCard = new PhysicalCardImpl(Game.randomGame(), (i+3000), Status.randomGame(), "This is a valid description.");
-            PhysicalCardImpl mockPCard = generateValidPCard(i);
+            PhysicalCard mockPCard = generateValidPCard(i);
             myList.add(mockPCard);
         }
         return myList;
     }
 
-    private  Map<Integer, MagicCardDecorator>  generateValidMagicCardMap(){
+
+    private  Map<Integer, MagicCard>  generateValidMagicCardMap(){
         return createMagicDummyMap2();
     }
 
-    private Map<String, Deck>  generateValidDeckofMagicPhysicalCardMap(Map<Integer, MagicCardDecorator> magicCardMap, int i, String deckName){
+    private Map<String, Deck>  generateValidDeckofMagicPhysicalCardMap(Map<Integer, MagicCard> magicCardMap, int i, String deckName){
         Map<String, Deck> deckMap = new HashMap<>() {{
             put(deckName, new Deck(deckName, true));
         }};
         int count = 0;
-        for (Map.Entry<Integer, MagicCardDecorator> entry : magicCardMap.entrySet()) {
+        for (Map.Entry<Integer, MagicCard> entry : magicCardMap.entrySet()) {
             if(count<i) {
-                deckMap.get(deckName).addPhysicalCard(new PhysicalCardImpl(Game.MAGIC, entry.getKey(), Status.randomStatus(), "This is a super valid description"));
+                deckMap.get(deckName).addPhysicalCard(new PhysicalCard(Game.MAGIC, entry.getKey(), Status.randomStatus(), "This is a super valid description"));
             }
             count++;
             }
@@ -105,7 +99,7 @@ public class ExchangeServiceTest {
            put(deckName, new Deck(deckName, true));
        }};
         for (int i=0; i<nCard; i++) {
-            PhysicalCardImpl mockPCard = generateValidPCard(i);
+            PhysicalCard mockPCard = generateValidPCard(i);
             deckMap.get(deckName).addPhysicalCard(mockPCard);
         }
         return deckMap;
@@ -373,7 +367,7 @@ public class ExchangeServiceTest {
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
             put("test@test.it", deckMap);
         }};
-        Set<PhysicalCardImpl> PcardList = deckMap.get("Owned").getPhysicalCards();
+        Set<PhysicalCard> PcardList = deckMap.get("Owned").getPhysicalCards();
         int randomRealCardIdToFound = PcardList.stream().skip(new Random().nextInt(PcardList.size())).findFirst().orElse(null).getCardId();
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
