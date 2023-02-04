@@ -34,13 +34,11 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     private boolean checkEmailExistance(String email) {
         Map<String, User> userMap = db.getPersistentMap(
                 getServletContext(), USER_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
-        System.out.println(userMap.get(email));
         return userMap.get(email) != null;
     }
 
-    private boolean checkPcardListConsistency(List<PhysicalCard> physicalCards) {
-        if (physicalCards == null) return true;
-        else return physicalCards.isEmpty();
+    private boolean checkPhysicalCardsConsistency(List<PhysicalCard> physicalCards) {
+        return physicalCards != null && !physicalCards.isEmpty();
     }
 
     @Override
@@ -48,16 +46,17 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         String email = AuthServiceImpl.checkTokenValidity(token,
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         if (receiverUserEmail == null || receiverUserEmail.isEmpty() || !checkEmailExistance(receiverUserEmail)) {
-            throw new InputException("Invalid receiverUserEmail name");
-        } else if (checkPcardListConsistency(senderPhysicalCards)) {
-            throw new InputException("Invalid senderPhysicalCards list");
-        } else if (checkPcardListConsistency(receiverPhysicalCards)) {
-            throw new InputException("Invalid senderPhysicalCards list");
-        } else {
-            Proposal newProposal = new Proposal(email, receiverUserEmail, senderPhysicalCards, receiverPhysicalCards);
-            Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
-            return proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null;
+            throw new InputException("Invalid receiver email");
         }
+        if (!checkPhysicalCardsConsistency(senderPhysicalCards)) {
+            throw new InputException("Invalid sender physical cards");
+        }
+        if (!checkPhysicalCardsConsistency(receiverPhysicalCards)) {
+            throw new InputException("Invalid receiver physical cards");
+        }
+        Proposal newProposal = new Proposal(email, receiverUserEmail, senderPhysicalCards, receiverPhysicalCards);
+        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+        return proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null;
     }
 }
 

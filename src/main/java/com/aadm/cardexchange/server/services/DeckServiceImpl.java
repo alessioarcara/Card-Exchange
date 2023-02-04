@@ -143,7 +143,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> allUserDecks = deckMap.get(userEmail);
         Deck userDeck = allUserDecks.get(deckName);
-        List<PhysicalCardWithName> pDecoratedCards = new ArrayList<>();
+        List<PhysicalCardWithName> pCardsWithName = new ArrayList<>();
         for (PhysicalCard pCard : userDeck.getPhysicalCards()) {
             String cardName = CardServiceImpl.getNameCard(
                     pCard.getCardId(),
@@ -154,9 +154,9 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
                             new GsonSerializer<>(gson)
                     )
             );
-            pDecoratedCards.add(new PhysicalCardWithName(pCard, cardName));
+            pCardsWithName.add(new PhysicalCardWithName(pCard, cardName));
         }
-        return pDecoratedCards;
+        return pCardsWithName;
     }
 
     @Override
@@ -185,16 +185,16 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     private List<PhysicalCardWithEmail> getPhysicalCardByCardIdAndDeckName(int cardId, String deckName) {
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Set<String> userEmails = deckMap.keySet();
-        List<PhysicalCardWithEmail> pDecoratedCards = new ArrayList<>();
+        List<PhysicalCardWithEmail> pCardsWithEmail = new ArrayList<>();
         for (String userEmail : userEmails) {
             Set<PhysicalCard> pCards = deckMap.get(userEmail).get(deckName).getPhysicalCards();
             for (PhysicalCard pCard : pCards) {
                 if (pCard.getCardId() == cardId) {
-                    pDecoratedCards.add(new PhysicalCardWithEmail(pCard, userEmail));
+                    pCardsWithEmail.add(new PhysicalCardWithEmail(pCard, userEmail));
                 }
             }
         }
-        return pDecoratedCards;
+        return pCardsWithEmail;
     }
 
     @Override
