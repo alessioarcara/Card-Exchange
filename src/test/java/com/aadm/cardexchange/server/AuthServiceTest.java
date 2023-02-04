@@ -3,12 +3,16 @@ package com.aadm.cardexchange.server;
 import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.services.AuthServiceImpl;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.models.AuthPayload;
 import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mapdb.Serializer;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -90,15 +94,19 @@ public class AuthServiceTest {
 
     @Test
     public void testSignupForCorrectEmailAndPassword() throws AuthException {
+        String email = "test@test.it";
         for (int i = 0; i < 3; i++) {
             expect(mockConfig.getServletContext()).andReturn(mockCtx);
             expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                     .andReturn(new HashMap<>());
         }
         ctrl.replay();
-        String token = authService.signup("test@test.it", "password");
+        AuthPayload token = authService.signup(email, "password");
         ctrl.verify();
-        Assertions.assertNotNull(token);
+        Assertions.assertAll(() -> {
+            Assertions.assertNotNull(token.getToken());
+            Assertions.assertEquals(email, token.getEmail());
+        });
     }
 
     @Test
@@ -133,8 +141,9 @@ public class AuthServiceTest {
 
     @Test
     public void testSigninForCorrectEmailAndPassword() throws AuthException {
+        String email = "test@test.it";
         Map<String, User> userMap = new HashMap<>();
-        userMap.put("test@test.it", new User("test@test.it", BCrypt.hashpw("password", BCrypt.gensalt())));
+        userMap.put(email, new User(email, BCrypt.hashpw("password", BCrypt.gensalt())));
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(userMap);
@@ -142,9 +151,12 @@ public class AuthServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(new HashMap<>());
         ctrl.replay();
-        String token = authService.signin("test@test.it", "password");
+        AuthPayload token = authService.signin(email, "password");
         ctrl.verify();
-        Assertions.assertNotNull(token);
+        Assertions.assertAll(() -> {
+            Assertions.assertNotNull(token.getToken());
+            Assertions.assertEquals(email, token.getEmail());
+        });
     }
 
     @Test
@@ -234,6 +246,36 @@ public class AuthServiceTest {
         Assertions.assertEquals("test1@test.it", authService.checkTokenValidity("validToken1", new HashMap<>() {{
             put("validToken1", new LoginInfo("test1@test.it", System.currentTimeMillis()));
         }}));
+        ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = "invalidToken")
+    public void testMeForInvalidToken(String input) {
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(new HashMap<String, LoginInfo>() {{
+                    put("validToken1", new LoginInfo("test1@test.it", System.currentTimeMillis() - 10000));
+                    put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 20000));
+                    put("validToken3", new LoginInfo("test3@test.it", System.currentTimeMillis() - 30000));
+                }});
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> authService.me(input));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testMeForValidToken() throws AuthException {
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(new HashMap<String, LoginInfo>() {{
+                    put("validToken1", new LoginInfo("test1@test.it", System.currentTimeMillis() - 10000));
+                    put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 20000));
+                    put("validToken3", new LoginInfo("test3@test.it", System.currentTimeMillis() - 30000));
+                }});
+        ctrl.replay();
+        Assertions.assertEquals("test2@test.it", authService.me("validToken2"));
         ctrl.verify();
     }
 }

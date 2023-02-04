@@ -74,7 +74,7 @@ public class CardActivityTest {
         mockView = ctrl.createMock(CardView.class);
         mockCardService = ctrl.mock(CardServiceAsync.class);
         mockDeckService = ctrl.mock(DeckServiceAsync.class);
-        cardActivity = new CardActivity(mockPlace, mockView, mockCardService, mockDeckService, new AuthSubject(null));
+        cardActivity = new CardActivity(mockPlace, mockView, mockCardService, mockDeckService, new AuthSubject());
     }
 
     @ParameterizedTest
@@ -87,7 +87,7 @@ public class CardActivityTest {
             callback.onFailure(error);
             return null;
         });
-        mockView.displayErrorAlert(anyString());
+        mockView.displayAlert(anyString());
         ctrl.replay();
         cardActivity.addCardToDeck("Owned", "1", "This is a valid description.");
         ctrl.verify();
@@ -102,7 +102,9 @@ public class CardActivityTest {
             callback.onSuccess(true);
             return null;
         });
-        mockView.displaySuccessAlert();
+        mockView.getDeckSelected();
+        expectLastCall().andReturn("Owned");
+        mockView.displayAlert(anyString());
         mockView.hideModal();
         ctrl.replay();
         cardActivity.addCardToDeck("Owned", "1", "This is a valid description.");
@@ -118,7 +120,7 @@ public class CardActivityTest {
             callback.onSuccess(false);
             return null;
         });
-        mockView.displayErrorAlert(anyString());
+        mockView.displayAlert(anyString());
         ctrl.replay();
         cardActivity.addCardToDeck("Owned", "1", "This is a valid description.");
         ctrl.verify();

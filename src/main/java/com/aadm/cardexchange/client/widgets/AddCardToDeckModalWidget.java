@@ -22,7 +22,8 @@ public class AddCardToDeckModalWidget extends DialogBox {
         setModal(true);
         setAnimationEnabled(true);
         setGlassEnabled(true);
-        noButton.addClickHandler(clickEvent -> parent.onClickModalNo());
+        setStyleName("my-Modal");
+        noButton.addClickHandler(clickEvent -> hide());
         yesButton.addClickHandler(clickEvent -> parent.onClickModalYes(status.getSelectedValue(), description.getValue()));
     }
 

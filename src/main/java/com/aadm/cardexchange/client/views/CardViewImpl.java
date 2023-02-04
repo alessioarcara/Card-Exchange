@@ -12,6 +12,8 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
+import java.util.List;
+
 public class CardViewImpl extends Composite implements CardView, ImperativeHandleAddCardToDeck, ImperativeHandleAddCardToDeckModal {
     private static final CardsViewImplUIBinder uiBinder = GWT.create(CardsViewImplUIBinder.class);
     @UiField
@@ -45,6 +47,7 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
     Presenter presenter;
     AddCardToDeckWidget addCardToDeckWidget = new AddCardToDeckWidget(this);
     DialogBox dialog = new AddCardToDeckModalWidget(this);
+    UserListWidget ownedByUserList;
 
     public CardViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -111,15 +114,14 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
             addCardToDeckContainer.add(addCardToDeckWidget);
         }
         // create UserListWidget 'Exchange' buttons
-        userLists.add(new UserListWidget(
-                "Owned by",
-                new String[]{"alessio.arcara@hotmail.com", "davide.fermi@gmail.com", "alessia.crimaldi@virgilio.it", "alessio.arcara@hotmail.com", "davide.fermi@gmail.com", "alessia.crimaldi@virgilio.it"},
-                isLoggedIn
-        ));
-        userLists.add(new UserListWidget(
-                "Wished by",
-                new String[]{"matteo.sacco04@studio.unibo.it"},
-                isLoggedIn));
+        ownedByUserList = new UserListWidget("Owned by", isLoggedIn);
+        userLists.add(ownedByUserList);
+        userLists.add(new UserListWidget("Wished by", isLoggedIn));
+    }
+
+    @Override
+    public void setOwnedByUserList(List<PhysicalCardWithEmail> pCards) {
+        ownedByUserList.setTable(pCards);
     }
 
     @Override
@@ -131,7 +133,6 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
     public void onClickAddToDeck() {
         dialog.center();
         dialog.setModal(true);
-        dialog.show();
         if (addCardToDeckWidget.getDeckName().equals("Owned")) {
             dialog.setText("Do you own this card?");
         } else if (addCardToDeckWidget.getDeckName().equals("Wished")) {
@@ -139,6 +140,7 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
         } else {
             dialog.setText("YOU MUST SELECT A DECK!");
         }
+        dialog.show();
     }
 
     @Override
@@ -146,9 +148,10 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
         dialog.hide();
     }
 
+
     @Override
-    public void onClickModalNo() {
-        hideModal();
+    public String getDeckSelected() {
+        return addCardToDeckWidget.getDeckName();
     }
 
     @Override
@@ -157,13 +160,8 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
     }
 
     @Override
-    public void displayErrorAlert(String errorMessage) {
-        Window.alert(errorMessage);
-    }
-
-    @Override
-    public void displaySuccessAlert() {
-        Window.alert("Success! Card added to " + addCardToDeckWidget.getDeckName() + " deck");
+    public void displayAlert(String message) {
+        Window.alert(message);
     }
 
     interface CardsViewImplUIBinder extends UiBinder<Widget, CardViewImpl> {
