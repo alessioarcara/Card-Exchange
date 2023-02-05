@@ -2,6 +2,7 @@ package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.places.NewExchangePlace;
 import com.aadm.cardexchange.client.utils.DefaultImagePathLookupTable;
+import com.aadm.cardexchange.client.places.NewExchangePlace;
 import com.aadm.cardexchange.client.widgets.*;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;

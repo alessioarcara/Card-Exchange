@@ -45,7 +45,7 @@ public class UserListWidget extends Composite {
 
     public void setTable(List<PhysicalCardWithEmail> pCards) {
         pCards.forEach(pCard -> addRow(pCard.getEmail(), pCard.getStatus(), new Button(
-                "Exchange", (ClickHandler) event -> parent.onClickExchange(pCard.getEmail(), "y2")
+                "Exchange", (ClickHandler) event -> parent.onClickExchange(pCard.getEmail(), pCard.getId())
         )));
     }
 
