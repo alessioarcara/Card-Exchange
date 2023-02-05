@@ -49,6 +49,10 @@
             cursor: pointer;
         }
 
+        .green:disabled {
+            background-color: gainsboro;
+        }
+
         .red {
             background-color: firebrick;
         }

@@ -1,6 +1,7 @@
 package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.widgets.DeckWidget;
+import com.aadm.cardexchange.client.widgets.ImperativeHandleCardsSelection;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
@@ -13,7 +14,7 @@ import com.google.gwt.user.client.ui.Widget;
 import java.util.List;
 
 
-public class NewExchangeViewImpl extends Composite implements NewExchangeView {
+public class NewExchangeViewImpl extends Composite implements NewExchangeView, ImperativeHandleCardsSelection {
     private static final NewExchangeViewImpl.NewExchangeViewImplUIBinder uiBinder = GWT.create(NewExchangeViewImpl.NewExchangeViewImplUIBinder.class);
     Presenter presenter;
     @UiField(provided=true)
@@ -26,8 +27,8 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView {
     Button acceptButton;
 
     public NewExchangeViewImpl() {
-        this.senderDeck = new DeckWidget(null, "Your Owned Cards");
-        this.receiverDeck = new DeckWidget(null, "");
+        this.senderDeck = new DeckWidget(null, this, "Your Owned Cards");
+        this.receiverDeck = new DeckWidget(null, this, "");
         initWidget(uiBinder.createAndBindUi(this));
         cancelButton.addClickHandler(e -> Window.alert("Abort Exchange"));
         acceptButton.addClickHandler(e -> presenter.createProposal(senderDeck.getDeckSelectedCards(), receiverDeck.getDeckSelectedCards()));

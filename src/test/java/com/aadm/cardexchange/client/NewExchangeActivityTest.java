@@ -18,6 +18,9 @@ import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,10 +30,7 @@ import java.util.stream.Stream;
 import static org.easymock.EasyMock.*;
 
 public class NewExchangeActivityTest {
-    private final String RECEIVER_USER_EMAIL = "test@test.it";
-    private final String SELECTED_PCARD_ID = "y132154654";
     IMocksControl ctrl;
-    NewExchangePlace mockPlace;
     NewExchangeView mockView;
     PlaceController placeController;
     NewExchangeActivity newExchangeActivity;
@@ -54,7 +54,7 @@ public class NewExchangeActivityTest {
         placeController.goTo(isA(Place.class));
         expectLastCall();
         ctrl.replay();
-        newExchangeActivity.goTo(new NewExchangePlace("y123123", "test@test.it"));
+        newExchangeActivity.goTo(new NewExchangePlace("y132154654", "receiver@test.it"));
         ctrl.verify();
     }
 

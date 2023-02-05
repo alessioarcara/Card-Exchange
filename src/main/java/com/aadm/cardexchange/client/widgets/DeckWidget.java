@@ -28,21 +28,22 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
     ImperativeHandleCardsSelection parent2;
 
     @UiConstructor
-    public DeckWidget(ImperativeHandleDeck parent, String name) {
+    public DeckWidget(ImperativeHandleDeck parent1, ImperativeHandleCardsSelection parent2, String name) {
         initWidget(uiBinder.createAndBindUi(this));
         setDeckName(name);
-        isVisible = (parent == null);
+        isVisible = (parent1 == null);
         showButton.setVisible(!isVisible);
 
         cards.setVisible(isVisible);
         if (!isVisible) {
             showButton.addClickHandler(e -> {
                 if (isVisible = !isVisible) {
-                    parent.onShowDeck(name, this::setData);
+                    parent1.onShowDeck(name, this::setData);
                 }
                 cards.setVisible(isVisible);
             });
         }
+        this.parent2 = parent2;
     }
 
     public void setData(List<PhysicalCardWithName> data, String selectedCardId) {

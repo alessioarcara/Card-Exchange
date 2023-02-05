@@ -26,7 +26,7 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     @Override
     public void setData(List<String> data) {
         for (String deckName : data) {
-            decksContainer.add(new DeckWidget(this, deckName));
+            decksContainer.add(new DeckWidget(this, null, deckName));
         }
     }
 
