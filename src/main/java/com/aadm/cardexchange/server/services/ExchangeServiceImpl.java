@@ -30,22 +30,20 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     public ExchangeServiceImpl(MapDB mockDB) {
         db = mockDB;
     }
-
-    private boolean checkEmailExistance(String email) {
+    private boolean checkEmailExistence(String email) {
         Map<String, User> userMap = db.getPersistentMap(
                 getServletContext(), USER_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
         return userMap.get(email) != null;
     }
-
     private boolean checkPhysicalCardsConsistency(List<PhysicalCard> physicalCards) {
-        return physicalCards != null && !physicalCards.isEmpty();
+       return physicalCards != null && !physicalCards.isEmpty();
     }
 
     @Override
     public boolean addProposal(String token, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards) throws AuthException, InputException {
         String email = AuthServiceImpl.checkTokenValidity(token,
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        if (receiverUserEmail == null || receiverUserEmail.isEmpty() || !checkEmailExistance(receiverUserEmail)) {
+        if (receiverUserEmail == null || receiverUserEmail.isEmpty() || !checkEmailExistence(receiverUserEmail)) {
             throw new InputException("Invalid receiver email");
         }
         if (!checkPhysicalCardsConsistency(senderPhysicalCards)) {

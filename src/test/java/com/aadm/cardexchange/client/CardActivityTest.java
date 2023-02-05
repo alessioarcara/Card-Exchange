@@ -72,9 +72,9 @@ public class CardActivityTest {
 
     private static Stream<Arguments> provideDifferentTypeOfErrors() {
         return Stream.of(
-                Arguments.of(new AuthException("Invalid token")),
-                Arguments.of(new InputException("Invalid description")),
-                Arguments.of(new RuntimeException())
+            Arguments.of(new AuthException("Invalid token")),
+            Arguments.of(new InputException("Invalid description")),
+            Arguments.of(new RuntimeException())
         );
     }
 

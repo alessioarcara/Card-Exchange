@@ -4,6 +4,7 @@ import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.uibinder.client.UiBinder;
+import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
@@ -22,23 +23,39 @@ public class DeckWidget extends Composite {
     Button showButton;
     boolean isVisible = false;
 
+    @UiConstructor
     public DeckWidget(ImperativeHandleDeck parent, String name) {
         initWidget(uiBinder.createAndBindUi(this));
         deckName.setInnerText(name);
+        isVisible = (parent == null);
+        showButton.setVisible(!isVisible);
 
         cards.setVisible(isVisible);
-        showButton.addClickHandler(e -> {
-            if (isVisible = !isVisible) {
-                parent.onShowDeck(name, this::setData);
-            }
-            cards.setVisible(isVisible);
-        });
+        if (!isVisible) {
+            showButton.addClickHandler(e -> {
+                if (isVisible = !isVisible) {
+                    parent.onShowDeck(name, this::setData);
+                }
+                cards.setVisible(isVisible);
+            });
+        }
     }
 
     public void setData(List<PhysicalCardWithName> data) {
         cards.clear();
         for (PhysicalCardWithName pCard : data) {
             cards.add(new PhysicalCardWidget(pCard));
+        }
+    }
+
+    public void setData(List<PhysicalCardWithName> data, String selectedCardId) {
+        cards.clear();
+        for (PhysicalCardWithName pCard : data) {
+            PhysicalCardWidget pCardWidget = new PhysicalCardWidget(pCard);
+            if (pCard.getId().equals(selectedCardId)) {
+                pCardWidget.setSelected();
+            }
+            cards.add(pCardWidget);
         }
     }
 

@@ -47,10 +47,23 @@ public class PhysicalCardWidget extends Composite {
         cardDescription.setInnerText(pCard.getDescription());
     }
 
+    public void setSelected() {
+        this.selected = true;
+        cardContainer.getElement().addClassName(style.cardSelected());
+        cardContainer.getElement().removeClassName(style.cardDiscarded());
+    }
+
     interface PhysicalCardStyle extends CssResource {
         String cardSelected();
 
         String cardDiscarded();
+
+        String deleteButton();
+
+        String card();
+
+        String cardStatus();
+
     }
 
     interface PhysicalCardUiBinder extends UiBinder<Widget, PhysicalCardWidget> {
