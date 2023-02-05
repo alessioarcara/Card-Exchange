@@ -18,15 +18,13 @@ import java.util.*;
 
 import static com.aadm.cardexchange.server.services.AuthServiceImpl.validateEmail;
 
-
 public class DeckServiceImpl extends RemoteServiceServlet implements DeckService, MapDBConstants {
     private static final long serialVersionUID = 5868007467963819042L;
     private static final String OWNED_DECK = "Owned";
     private static final String WISHED_DECK = "Wished";
     private final MapDB db;
     private final Gson gson = new Gson();
-    private final Type type = new TypeToken<Map<String, Deck>>() {
-    }.getType();
+    private final Type type = new TypeToken<Map<String, Deck>>() {}.getType();
 
     public DeckServiceImpl() {
         db = new MapDBImpl();
