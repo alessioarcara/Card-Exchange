@@ -6,9 +6,6 @@ actor User as U
 
 
 rectangle CardExchange {
-  (Signup) as UC1
-  (Login) as UC2
-
   (Cards visualization) as UC3
   (Card details visualization) as UC4
 
@@ -21,15 +18,10 @@ rectangle CardExchange {
   (Exchange proposal visualization) as UC10
   (Accept exchange) as UC11
   (Refuse exchange) as UC12
-
-  (Logout) as UC13
 }
 
 
 V <- U
-
-V ----> UC1
-U ----> UC2
 
 V ----> UC3
 UC3 <.. UC4 : <<extend>>
@@ -43,7 +35,5 @@ U ----> UC9
 U ----> UC10
 UC10 <.. UC11 : <<extend>>
 UC10 <.. UC12 : <<extend>>
-
-U ----> UC13
 
 @enduml
