@@ -60,18 +60,10 @@ public class PhysicalCardWidget extends Composite {
 
     public PhysicalCardWithName getPCard() { return physicalCard; }
 
+
     interface PhysicalCardStyle extends CssResource {
         String cardSelected();
-
         String cardDiscarded();
-
-        String deleteButton();
-
-        String card();
-
-        String cardStatus();
-
-        String cardDescription();
     }
 
     interface PhysicalCardUiBinder extends UiBinder<Widget, PhysicalCardWidget> {

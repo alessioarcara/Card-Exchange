@@ -11,7 +11,7 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class DecksViewImpl extends Composite implements DecksView, ImperativeHandleDeck {
     private static final DecksViewImpl.DecksViewImplUIBinder uiBinder = GWT.create(DecksViewImpl.DecksViewImplUIBinder.class);
@@ -31,7 +31,7 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     }
 
     @Override
-    public void onShowDeck(String deckName, Consumer<List<PhysicalCardWithName>> setDeckData) {
+    public void onShowDeck(String deckName, BiConsumer<List<PhysicalCardWithName>, String> setDeckData) {
         presenter.fetchUserDeck(deckName, setDeckData);
     }
 

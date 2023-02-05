@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface NewExchangeView extends IsWidget {
 
-    void setData(String receiverUserEmail, String selectedCardId, String token);
+    void setData(String receiverUserEmail, String selectedCardId);
     void setSenderDeck(List<PhysicalCardWithName> physicalCardDecorators);
     void setReceiverDeck(List<PhysicalCardWithName> physicalCardDecorators);
     void setPresenter(Presenter presenter);

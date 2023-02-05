@@ -114,14 +114,14 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
             addCardToDeckContainer.add(addCardToDeckWidget);
         }
         // create UserListWidget 'Exchange' buttons
-        ownedByUserList = new UserListWidget("Owned by", isLoggedIn, this);
+        ownedByUserList = new UserListWidget("Owned by", isLoggedIn);
         userLists.add(ownedByUserList);
-        userLists.add(new UserListWidget("Wished by", isLoggedIn, this));
+        userLists.add(new UserListWidget("Wished by", isLoggedIn));
     }
 
     @Override
     public void setOwnedByUserList(List<PhysicalCardWithEmail> pCards) {
-        ownedByUserList.setTable(pCards);
+        ownedByUserList.setTable(pCards, this);
     }
 
     @Override

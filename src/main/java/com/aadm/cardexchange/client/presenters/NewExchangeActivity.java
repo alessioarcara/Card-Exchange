@@ -51,7 +51,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
             }
         });
 
-        view.setData(place.getReceiverUserEmail(), place.getSelectedCardId(), authSubject.getToken());
+        view.setData(place.getReceiverUserEmail(), place.getSelectedCardId());
     }
 
     public void createProposal(DeckWidget senderDeck, DeckWidget receiverDeck) {
