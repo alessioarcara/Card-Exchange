@@ -5,5 +5,7 @@
     </ui:style>
     <g:HTMLPanel>
         <h1 ui:field="pageTitle" />
+        <div ui:field="receiverEmail" />
+        <div ui:field="selectedCard" />
     </g:HTMLPanel>
 </ui:UiBinder>

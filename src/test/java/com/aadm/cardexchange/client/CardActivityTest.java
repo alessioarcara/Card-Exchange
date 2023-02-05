@@ -9,9 +9,8 @@ import com.aadm.cardexchange.shared.CardServiceAsync;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
-import com.aadm.cardexchange.shared.models.Card;
-import com.aadm.cardexchange.shared.models.Game;
-import com.aadm.cardexchange.shared.models.Status;
+import com.aadm.cardexchange.shared.models.*;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.BeforeEach;
@@ -31,14 +30,18 @@ public class CardActivityTest {
     CardView mockView;
     CardServiceAsync mockCardService;
     DeckServiceAsync mockDeckService;
+    PlaceController placeController;
     CardActivity cardActivity;
 
-    private static Stream<Arguments> provideDifferentTypeOfErrors() {
-        return Stream.of(
-                Arguments.of(new AuthException("Invalid token")),
-                Arguments.of(new InputException("Invalid description")),
-                Arguments.of(new RuntimeException())
-        );
+    @BeforeEach
+    public void initialize() {
+        ctrl = createStrictControl();
+        mockPlace = new CardPlace(Game.MAGIC, CARD_ID);
+        mockView = ctrl.createMock(CardView.class);
+        mockCardService = ctrl.mock(CardServiceAsync.class);
+        mockDeckService = ctrl.mock(DeckServiceAsync.class);
+        placeController = ctrl.createMock(PlaceController.class);
+        cardActivity = new CardActivity(mockPlace, mockView, mockCardService, mockDeckService, new AuthSubject(), placeController);
     }
 
     @Test
@@ -67,14 +70,12 @@ public class CardActivityTest {
         ctrl.verify();
     }
 
-    @BeforeEach
-    public void initialize() {
-        ctrl = createStrictControl();
-        mockPlace = new CardPlace(Game.POKEMON, CARD_ID);
-        mockView = ctrl.createMock(CardView.class);
-        mockCardService = ctrl.mock(CardServiceAsync.class);
-        mockDeckService = ctrl.mock(DeckServiceAsync.class);
-        cardActivity = new CardActivity(mockPlace, mockView, mockCardService, mockDeckService, new AuthSubject());
+    private static Stream<Arguments> provideDifferentTypeOfErrors() {
+        return Stream.of(
+                Arguments.of(new AuthException("Invalid token")),
+                Arguments.of(new InputException("Invalid description")),
+                Arguments.of(new RuntimeException())
+        );
     }
 
     @ParameterizedTest

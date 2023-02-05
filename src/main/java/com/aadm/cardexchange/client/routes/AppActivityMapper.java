@@ -23,13 +23,14 @@ public class AppActivityMapper implements ActivityMapper {
         if (place instanceof HomePlace)
             return new HomeActivity(clientFactory.getHomeView(), GWT.create(CardService.class), clientFactory.getPlaceController());
         if (place instanceof CardPlace)
-            return new CardActivity((CardPlace) place, clientFactory.getCardView(), GWT.create(CardService.class), GWT.create(DeckService.class), clientFactory.getAuthSubject());
+            return new CardActivity((CardPlace) place, clientFactory.getCardView(), GWT.create(CardService.class), GWT.create(DeckService.class),
+                    clientFactory.getAuthSubject(), clientFactory.getPlaceController());
         if (place instanceof AuthPlace)
             return new AuthActivity(clientFactory.getAuthView(), GWT.create(AuthService.class), clientFactory.getAuthSubject(), clientFactory.getPlaceController());
         if (place instanceof DecksPlace)
             return new DecksActivity(clientFactory.getDecksView(), GWT.create(DeckService.class), clientFactory.getAuthSubject());
         if (place instanceof NewExchangePlace)
-            return new NewExchangeActivity(clientFactory.getNewExchangeView(),  (NewExchangePlace) place);
+            return new NewExchangeActivity(clientFactory.getNewExchangeView(), (NewExchangePlace) place, clientFactory.getPlaceController());
         return null;
     }
 }

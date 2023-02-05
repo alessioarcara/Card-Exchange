@@ -1,6 +1,7 @@
 package com.aadm.cardexchange.client.views;
 
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
@@ -13,6 +14,10 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView {
 
     @UiField
     HeadingElement pageTitle; //temporary element to be able to see the page has been loaded
+    @UiField
+    DivElement receiverEmail;
+    @UiField
+    DivElement selectedCard;
 
     public NewExchangeViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -20,6 +25,8 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView {
 
     public void setData(String receiverUserEmail, String selectedCardId) {
         pageTitle.setInnerHTML("New Exchange Page");
+        receiverEmail.setInnerHTML(receiverUserEmail);
+        selectedCard.setInnerHTML(selectedCardId);
     }
 
     @Override

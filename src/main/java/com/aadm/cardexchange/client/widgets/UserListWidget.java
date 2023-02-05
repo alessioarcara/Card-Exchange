@@ -23,10 +23,12 @@ public class UserListWidget extends Composite {
     @UiField(provided = true)
     FlexTable table;
     boolean showExchangeButton;
+    ImperativeHandleUserList parent;
 
     @UiConstructor
-    public UserListWidget(String title, boolean showExchangeButton) {
+    public UserListWidget(String title, boolean showExchangeButton, ImperativeHandleUserList parent) {
         this.showExchangeButton = showExchangeButton;
+        this.parent = parent;
         setupTable();
         initWidget(uiBinder.createAndBindUi(this));
         tableHeading.setInnerText(title);
@@ -43,7 +45,7 @@ public class UserListWidget extends Composite {
 
     public void setTable(List<PhysicalCardWithEmail> pCards) {
         pCards.forEach(pCard -> addRow(pCard.getEmail(), pCard.getStatus(), new Button(
-                "Exchange", (ClickHandler) event -> Window.alert("Click!")
+                "Exchange", (ClickHandler) event -> parent.onClickExchange(pCard.getEmail(), "y123123")
         )));
     }
 

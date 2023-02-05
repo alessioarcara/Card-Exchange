@@ -1,6 +1,7 @@
 package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.utils.DefaultImagePathLookupTable;
+import com.aadm.cardexchange.client.places.NewExchangePlace;
 import com.aadm.cardexchange.client.widgets.*;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
@@ -14,7 +15,7 @@ import com.google.gwt.user.client.ui.*;
 
 import java.util.List;
 
-public class CardViewImpl extends Composite implements CardView, ImperativeHandleAddCardToDeck, ImperativeHandleAddCardToDeckModal {
+public class CardViewImpl extends Composite implements CardView, ImperativeHandleAddCardToDeck, ImperativeHandleAddCardToDeckModal, ImperativeHandleUserList {
     private static final CardsViewImplUIBinder uiBinder = GWT.create(CardsViewImplUIBinder.class);
     @UiField
     SpanElement cardGame;
@@ -114,9 +115,9 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
             addCardToDeckContainer.add(addCardToDeckWidget);
         }
         // create UserListWidget 'Exchange' buttons
-        ownedByUserList = new UserListWidget("Owned by", isLoggedIn);
+        ownedByUserList = new UserListWidget("Owned by", isLoggedIn, this);
         userLists.add(ownedByUserList);
-        userLists.add(new UserListWidget("Wished by", isLoggedIn));
+        userLists.add(new UserListWidget("Wished by", isLoggedIn, this));
     }
 
     @Override
@@ -148,7 +149,6 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
         dialog.hide();
     }
 
-
     @Override
     public String getDeckSelected() {
         return addCardToDeckWidget.getDeckName();
@@ -162,6 +162,11 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
     @Override
     public void displayAlert(String message) {
         Window.alert(message);
+    }
+
+    @Override
+    public void onClickExchange(String receiverUserEmail, String selectedCardId) {
+        presenter.goTo(new NewExchangePlace(selectedCardId, receiverUserEmail));
     }
 
     interface CardsViewImplUIBinder extends UiBinder<Widget, CardViewImpl> {
