@@ -10,7 +10,7 @@
             height: 100vh;
         }
 
-        .extern h1 {
+        .extern > h1 {
             width: 100%;
             text-align: center;
         }
@@ -19,20 +19,11 @@
             margin-top: 50px
         }
 
-        .deckTitle {
-            width: 100%;
-            background: #942e94;
-            color: #fff;
-            margin: 0;
-            padding-top: 10px;
-            padding-left: 10px;
-        }
-
         .buttons {
             display: flex;
             flex-direction: row;
             justify-content: space-between;
-            width: 90%;
+            width: 20%;
             margin-top: 50px;
             align-self: center;
         }
@@ -73,11 +64,9 @@
     <g:HTMLPanel styleName="{style.extern}">
         <h1>New Exchange Page</h1>
         <div class="{style.ow-deck-container}">
-            <h2 class="{style.deckTitle}">Your Owned Cards</h2>
             <m:DeckWidget ui:field="senderDeck" />
         </div>
         <div class="{style.ow-deck-container}">
-            <h2 class="{style.deckTitle}" ui:field="receiverEmail" />
             <m:DeckWidget ui:field="receiverDeck" />
         </div>
         <div class="{style.buttons}">
