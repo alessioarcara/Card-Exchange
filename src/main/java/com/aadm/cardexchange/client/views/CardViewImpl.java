@@ -1,7 +1,7 @@
 package com.aadm.cardexchange.client.views;
 
-import com.aadm.cardexchange.client.utils.DefaultImagePathLookupTable;
 import com.aadm.cardexchange.client.places.NewExchangePlace;
+import com.aadm.cardexchange.client.utils.DefaultImagePathLookupTable;
 import com.aadm.cardexchange.client.widgets.*;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
@@ -12,6 +12,7 @@ import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
+
 import java.util.List;
 
 public class CardViewImpl extends Composite implements CardView, ImperativeHandleAddCardToDeck, ImperativeHandleAddCardToDeckModal, ImperativeHandleUserList {
@@ -114,14 +115,14 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
             addCardToDeckContainer.add(addCardToDeckWidget);
         }
         // create UserListWidget 'Exchange' buttons
-        ownedByUserList = new UserListWidget("Owned by", isLoggedIn, this);
+        ownedByUserList = new UserListWidget("Owned by", isLoggedIn);
         userLists.add(ownedByUserList);
-        userLists.add(new UserListWidget("Wished by", isLoggedIn, this));
+        userLists.add(new UserListWidget("Wished by", isLoggedIn));
     }
 
     @Override
     public void setOwnedByUserList(List<PhysicalCardWithEmail> pCards) {
-        ownedByUserList.setTable(pCards);
+        ownedByUserList.setTable(pCards, this);
     }
 
     @Override

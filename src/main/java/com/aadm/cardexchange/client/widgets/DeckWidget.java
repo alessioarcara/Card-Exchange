@@ -21,12 +21,12 @@ public class DeckWidget extends Composite {
     HTMLPanel cards;
     @UiField
     Button showButton;
-    boolean isVisible = false;
+    boolean isVisible;
 
     @UiConstructor
     public DeckWidget(ImperativeHandleDeck parent, String name) {
         initWidget(uiBinder.createAndBindUi(this));
-        deckName.setInnerText(name);
+        setDeckName(name);
         isVisible = (parent == null);
         showButton.setVisible(!isVisible);
 
@@ -41,13 +41,6 @@ public class DeckWidget extends Composite {
         }
     }
 
-    public void setData(List<PhysicalCardWithName> data) {
-        cards.clear();
-        for (PhysicalCardWithName pCard : data) {
-            cards.add(new PhysicalCardWidget(pCard));
-        }
-    }
-
     public void setData(List<PhysicalCardWithName> data, String selectedCardId) {
         cards.clear();
         for (PhysicalCardWithName pCard : data) {
@@ -57,6 +50,10 @@ public class DeckWidget extends Composite {
             }
             cards.add(pCardWidget);
         }
+    }
+
+    public void setDeckName(String name) {
+        deckName.setInnerText(name);
     }
 
     interface DeckUIBinder extends UiBinder<Widget, DeckWidget> {

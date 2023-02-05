@@ -10,7 +10,7 @@ import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 public class DecksActivity extends AbstractActivity implements DecksView.Presenter {
     private final DecksView view;
@@ -36,11 +36,11 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
     }
 
     @Override
-    public void fetchUserDeck(String deckName, Consumer<List<PhysicalCardWithName>> setDeckData) {
+    public void fetchUserDeck(String deckName, BiConsumer<List<PhysicalCardWithName>, String> setDeckData) {
         rpcService.getMyDeck(authSubject.getToken(), deckName, new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
             public void onSuccess(List<PhysicalCardWithName> result) {
-                setDeckData.accept(result);
+                setDeckData.accept(result, null);
             }
         });
     }

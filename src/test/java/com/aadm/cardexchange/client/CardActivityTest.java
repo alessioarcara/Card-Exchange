@@ -70,7 +70,7 @@ public class CardActivityTest {
         ctrl.verify();
     }
 
-    private static Stream<Arguments> provideDifferentTypeOfErrors() {
+   private static Stream<Arguments> provideDifferentTypeOfErrors() {
         return Stream.of(
             Arguments.of(new AuthException("Invalid token")),
             Arguments.of(new InputException("Invalid description")),

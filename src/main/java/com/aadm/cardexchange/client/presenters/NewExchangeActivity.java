@@ -32,20 +32,27 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         view.setPresenter(this);
         acceptsOneWidget.setWidget(view.asWidget());
+        fetchMyOwnedDeck();
+        fetchReceiverOwnedDeck();
+        view.setData(place.getReceiverUserEmail(), place.getSelectedCardId());
+    }
+
+    private void fetchMyOwnedDeck() {
         deckService.getMyDeck(authSubject.getToken(), "Owned", new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
-            public void onSuccess(List<PhysicalCardWithName> physicalCardDecorators) {
-                view.setSenderDeck(physicalCardDecorators);
+            public void onSuccess(List<PhysicalCardWithName> physicalCards) {
+                view.setSenderDeck(physicalCards);
             }
         });
+    }
+
+    private void fetchReceiverOwnedDeck() {
         deckService.getUserOwnedDeck(place.getReceiverUserEmail(), new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
-            public void onSuccess(List<PhysicalCardWithName> physicalCardDecorators) {
-                view.setReceiverDeck(physicalCardDecorators);
+            public void onSuccess(List<PhysicalCardWithName> physicalCards) {
+                view.setReceiverDeck(physicalCards);
             }
         });
-
-        view.setData(place.getReceiverUserEmail(), place.getSelectedCardId(), authSubject.getToken());
     }
 
     public void goTo(Place place) {
