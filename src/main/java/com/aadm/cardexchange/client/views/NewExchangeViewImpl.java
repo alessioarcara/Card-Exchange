@@ -16,7 +16,6 @@ import java.util.List;
 public class NewExchangeViewImpl extends Composite implements NewExchangeView {
     private static final NewExchangeViewImpl.NewExchangeViewImplUIBinder uiBinder = GWT.create(NewExchangeViewImpl.NewExchangeViewImplUIBinder.class);
     Presenter presenter;
-    String selectedCardId;
     @UiField(provided=true)
     DeckWidget senderDeck;
     @UiField(provided=true)
@@ -30,28 +29,35 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView {
         this.senderDeck = new DeckWidget(null, "Your Owned Cards");
         this.receiverDeck = new DeckWidget(null, "");
         initWidget(uiBinder.createAndBindUi(this));
-        cancelButton.addClickHandler(event -> {
-            Window.alert("Abort Exchange");
-        });
-        acceptButton.addClickHandler(event -> presenter.createProposal(senderDeck, receiverDeck));
+        cancelButton.addClickHandler(e -> Window.alert("Abort Exchange"));
+        acceptButton.addClickHandler(e -> presenter.createProposal(senderDeck.getDeckSelectedCards(), receiverDeck.getDeckSelectedCards()));
     }
 
-    public void setData(String receiverUserEmail, String selectedCardId) {
+    public void setReceiverDeckName(String receiverUserEmail) {
         receiverDeck.setDeckName(receiverUserEmail);
-        this.selectedCardId = selectedCardId;
     }
 
     public void setSenderDeck(List<PhysicalCardWithName> physicalCards) {
         senderDeck.setData(physicalCards, null);
     }
 
-    public void setReceiverDeck(List<PhysicalCardWithName> physicalCards) {
+    public void setReceiverDeck(List<PhysicalCardWithName> physicalCards, String selectedCardId) {
         receiverDeck.setData(physicalCards, selectedCardId);
     }
 
     @Override
     public void setPresenter(NewExchangeView.Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void showAlert(String message) {
+        Window.alert(message);
+    }
+
+    @Override
+    public void onChangeSelectedCards() {
+        acceptButton.setEnabled(!receiverDeck.getDeckSelectedCards().isEmpty() && !senderDeck.getDeckSelectedCards().isEmpty());
     }
 
     interface NewExchangeViewImplUIBinder extends UiBinder<Widget, NewExchangeViewImpl> {

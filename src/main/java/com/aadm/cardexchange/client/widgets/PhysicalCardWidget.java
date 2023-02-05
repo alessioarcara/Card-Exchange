@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -26,16 +27,15 @@ public class PhysicalCardWidget extends Composite {
     @UiField
     Button deleteButton;
     boolean selected = false;
-    PhysicalCardWithName physicalCard;
+    PhysicalCardWithName pCard;
 
-    public PhysicalCardWidget(PhysicalCardWithName pCard) {
+    public PhysicalCardWidget(PhysicalCardWithName pCard, ImperativeHandlePhysicalCard parent) {
         initWidget(uiBinder.createAndBindUi(this));
         cardContainer.add(new Hyperlink("Open Details",
                 "cards/" + pCard.getGameType() + "/" + pCard.getCardId()));
         cardContainer.addDomHandler(e -> {
-            selected = !selected;
-            getElement().addClassName(selected ? style.cardSelected() : style.cardDiscarded());
-            getElement().removeClassName(selected ? style.cardDiscarded() : style.cardSelected());
+            setSelected();
+            parent.onChangeSelection();
         }, ClickEvent.getType());
 
         deleteButton.addClickHandler(e -> {
@@ -47,19 +47,18 @@ public class PhysicalCardWidget extends Composite {
         cardStatus.setInnerHTML(pCard.getStatus().name());
         cardDescription.setInnerText(pCard.getDescription());
 
-        physicalCard = pCard;
+        this.pCard = pCard;
     }
 
     public void setSelected() {
-        this.selected = true;
-        cardContainer.getElement().addClassName(style.cardSelected());
-        cardContainer.getElement().removeClassName(style.cardDiscarded());
+        selected = !selected;
+        getElement().addClassName(selected ? style.cardSelected() : style.cardDiscarded());
+        getElement().removeClassName(selected ? style.cardDiscarded() : style.cardSelected());
     }
 
     public boolean getSelected() { return selected; }
 
-    public PhysicalCardWithName getPCard() { return physicalCard; }
-
+    public PhysicalCard getPhysicalCard() { return pCard; }
 
     interface PhysicalCardStyle extends CssResource {
         String cardSelected();

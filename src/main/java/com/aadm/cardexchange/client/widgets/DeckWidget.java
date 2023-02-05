@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;
@@ -11,10 +12,10 @@ import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-public class DeckWidget extends Composite {
+public class DeckWidget extends Composite implements ImperativeHandlePhysicalCard {
     private static final DeckUIBinder uiBinder = GWT.create(DeckUIBinder.class);
     @UiField
     HeadingElement deckName;
@@ -22,7 +23,9 @@ public class DeckWidget extends Composite {
     HTMLPanel cards;
     @UiField
     Button showButton;
-    boolean isVisible = false;
+    boolean isVisible;
+    List<PhysicalCard> deckSelectedCards;
+    ImperativeHandleCardsSelection parent2;
 
     @UiConstructor
     public DeckWidget(ImperativeHandleDeck parent, String name) {
@@ -45,24 +48,37 @@ public class DeckWidget extends Composite {
     public void setData(List<PhysicalCardWithName> data, String selectedCardId) {
         cards.clear();
         for (PhysicalCardWithName pCard : data) {
-            PhysicalCardWidget pCardWidget = new PhysicalCardWidget(pCard);
+            PhysicalCardWidget pCardWidget = new PhysicalCardWidget(pCard, this);
             if (pCard.getId().equals(selectedCardId)) {
                 pCardWidget.setSelected();
             }
             cards.add(pCardWidget);
         }
+        onChangeSelection();
     }
 
     public void setDeckName(String name) {
         deckName.setInnerText(name);
     }
 
-    public List<PhysicalCardWidget> getDeckCards() {
-        List<PhysicalCardWidget> tmp = new ArrayList<>();
-        for (int i = 0; i < cards.getWidgetCount(); i++) {
-            tmp.add((PhysicalCardWidget) cards.getWidget(i));
-        }
-        return tmp;
+    public List<PhysicalCard> getDeckSelectedCards() {
+        return deckSelectedCards;
+    }
+
+    void setDeckSelectedCards() {
+        List<PhysicalCard> selectedCards = new LinkedList<>();
+        cards.forEach((widget) -> {
+            PhysicalCardWidget physicalCardWidget = (PhysicalCardWidget) widget;
+            if (physicalCardWidget.getSelected())
+                selectedCards.add(physicalCardWidget.getPhysicalCard());
+        });
+        deckSelectedCards = selectedCards;
+    }
+
+    @Override
+    public void onChangeSelection() {
+        setDeckSelectedCards();
+        parent2.onChangeSelectedCards();
     }
 
     interface DeckUIBinder extends UiBinder<Widget, DeckWidget> {

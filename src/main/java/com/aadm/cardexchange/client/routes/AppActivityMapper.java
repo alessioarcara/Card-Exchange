@@ -6,6 +6,7 @@ import com.aadm.cardexchange.client.presenters.*;
 import com.aadm.cardexchange.shared.AuthService;
 import com.aadm.cardexchange.shared.CardService;
 import com.aadm.cardexchange.shared.DeckService;
+import com.aadm.cardexchange.shared.ExchangeService;
 import com.google.gwt.activity.shared.Activity;
 import com.google.gwt.activity.shared.ActivityMapper;
 import com.google.gwt.core.client.GWT;
@@ -30,7 +31,8 @@ public class AppActivityMapper implements ActivityMapper {
         if (place instanceof DecksPlace)
             return new DecksActivity(clientFactory.getDecksView(), GWT.create(DeckService.class), clientFactory.getAuthSubject());
         if (place instanceof NewExchangePlace)
-            return new NewExchangeActivity((NewExchangePlace) place, clientFactory.getNewExchangeView(), GWT.create(DeckService.class), clientFactory.getAuthSubject(), clientFactory.getPlaceController());
+            return new NewExchangeActivity((NewExchangePlace) place, clientFactory.getNewExchangeView(), GWT.create(DeckService.class), GWT.create(ExchangeService.class),
+                    clientFactory.getAuthSubject(), clientFactory.getPlaceController());
         return null;
     }
 }
