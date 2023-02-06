@@ -4,6 +4,7 @@ import com.aadm.cardexchange.client.handlers.ImperativeHandleCardRemove;
 import com.aadm.cardexchange.client.handlers.ImperativeHandleCardSelection;
 import com.aadm.cardexchange.client.handlers.ImperativeHandleCardsSelection;
 import com.aadm.cardexchange.client.handlers.ImperativeHandleDeck;
+import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
@@ -96,7 +97,7 @@ public class DeckWidget extends Composite implements ImperativeHandleCardSelecti
     }
 
     @Override
-    public void onClickDeleteButton(PhysicalCard pCard, Consumer<Boolean> isRemoved) {
+    public void onClickDeleteButton(PhysicalCard pCard, Consumer<List<Deck>> isRemoved) {
         if (deckHandler != null) {
             deckHandler.onRemovePhysicalCard(deckName.getInnerText(), pCard, isRemoved);
         }

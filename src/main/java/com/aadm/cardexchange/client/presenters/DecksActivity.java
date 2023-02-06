@@ -6,6 +6,7 @@ import com.aadm.cardexchange.client.views.DecksView;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
+import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.activity.shared.AbstractActivity;
@@ -64,7 +65,7 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
     }
 
     @Override
-    public void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard, Consumer<Boolean> isRemoved) {
+    public void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard, Consumer<List<Deck>> isRemoved) {
         if (checkDeckNameInvalidity(deckName)) {
             view.displayAlert("Invalid deck name");
             return;
@@ -73,7 +74,7 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
             view.displayAlert("Invalid physical card");
             return;
         }
-        rpcService.removePhysicalCardFromDeck(authSubject.getToken(), deckName, pCard, new AsyncCallback<Boolean>() {
+        rpcService.removePhysicalCardFromDeck(authSubject.getToken(), deckName, pCard, new AsyncCallback<List<Deck>>() {
             @Override
             public void onFailure(Throwable caught) {
                 if (caught instanceof AuthException) {
@@ -86,7 +87,7 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
             }
 
             @Override
-            public void onSuccess(Boolean result) {
+            public void onSuccess(List<Deck> result) {
                 isRemoved.accept(result);
             }
         });

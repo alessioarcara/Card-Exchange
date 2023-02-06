@@ -7,10 +7,7 @@ import com.aadm.cardexchange.client.views.DecksView;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
-import com.aadm.cardexchange.shared.models.Game;
-import com.aadm.cardexchange.shared.models.PhysicalCard;
-import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
-import com.aadm.cardexchange.shared.models.Status;
+import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
@@ -20,9 +17,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -80,7 +77,7 @@ public class DecksActivityTest {
     public void testRemovePhysicalCardFromDeckForInvalidDeckName(String input) {
         mockDecksView.displayAlert(anyString());
         ctrl.replay();
-        decksActivity.removePhysicalCardFromDeck(input, new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"), (Boolean bool) -> {
+        decksActivity.removePhysicalCardFromDeck(input, new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"), (List<Deck> res) -> {
         });
         ctrl.verify();
     }
@@ -89,7 +86,7 @@ public class DecksActivityTest {
     public void testRemovePhysicalCardFromDeckForNullPhysicalCard() {
         mockDecksView.displayAlert(anyString());
         ctrl.replay();
-        decksActivity.removePhysicalCardFromDeck("Owned", null, (Boolean bool) -> {
+        decksActivity.removePhysicalCardFromDeck("Owned", null, (List<Deck> res) -> {
         });
         ctrl.verify();
     }
@@ -100,7 +97,7 @@ public class DecksActivityTest {
         mockRpcService.removePhysicalCardFromDeck(anyString(), anyString(), isA(PhysicalCard.class), isA(AsyncCallback.class));
         expectLastCall().andAnswer(() -> {
             Object[] args = getCurrentArguments();
-            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
+            AsyncCallback<List<Deck>> callback = (AsyncCallback<List<Deck>>) args[args.length - 1];
             callback.onFailure(e);
             return null;
         });
@@ -108,18 +105,24 @@ public class DecksActivityTest {
 
         ctrl.replay();
         decksActivity.removePhysicalCardFromDeck("Owned", new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"),
-                (Boolean bool) -> {
+                (List<Deck> res) -> {
                 });
         ctrl.verify();
     }
 
+    static Stream<Arguments> provideDifferentLists() {
+        return Stream.of(
+                Arguments.of(Arrays.asList(new Deck("deck1"), new Deck("deck1"), new Deck("deck1")))
+        );
+    }
+
     @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    public void testRemovePhysicalCardFromDeckForSuccess(Boolean input) {
+    @MethodSource("provideDifferentLists")
+    public void testRemovePhysicalCardFromDeckForSuccess(List<Deck> input) {
         mockRpcService.removePhysicalCardFromDeck(anyString(), anyString(), isA(PhysicalCard.class), isA(AsyncCallback.class));
         expectLastCall().andAnswer(() -> {
             Object[] args = getCurrentArguments();
-            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
+            AsyncCallback<List<Deck>> callback = (AsyncCallback<List<Deck>>) args[args.length - 1];
             callback.onSuccess(input);
             return null;
         });

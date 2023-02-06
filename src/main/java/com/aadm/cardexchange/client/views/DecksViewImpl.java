@@ -2,6 +2,7 @@ package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.handlers.ImperativeHandleDeck;
 import com.aadm.cardexchange.client.widgets.DeckWidget;
+import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
@@ -47,7 +48,7 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     }
 
     @Override
-    public void onRemovePhysicalCard(String deckName, PhysicalCard pCard, Consumer<Boolean> isRemoved) {
+    public void onRemovePhysicalCard(String deckName, PhysicalCard pCard, Consumer<List<Deck>> isRemoved) {
         presenter.removePhysicalCardFromDeck(deckName, pCard, isRemoved);
     }
 

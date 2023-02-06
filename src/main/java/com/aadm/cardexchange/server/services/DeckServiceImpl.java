@@ -52,6 +52,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return addDeck(email, deckName, false, deckMap);
     }
 
+    @Override
     public boolean removeCustomDeck(String token, String deckName) throws AuthException {
         String email = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
@@ -120,8 +121,18 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return false;
     }
 
+    private List<Deck> removeCardFromAllDecks(PhysicalCard pCard, Map<String, Deck> decks) {
+        List<Deck> updatedDecks = new ArrayList<>();
+        for (Deck deck : decks.values()) {
+            if (deck.removePhysicalCard(pCard)) {
+                updatedDecks.add(deck);
+            }
+        }
+        return updatedDecks;
+    }
+
     @Override
-    public boolean removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException {
+    public List<Deck> removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         if (deckName == null || deckName.isEmpty()) {
             throw new InputException("Invalid deck name");
@@ -131,14 +142,27 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         if (decks.size() == 0) {
             throw new RuntimeException("Not existing decks");
         }
+
+        List<Deck> opResult = new ArrayList<>();
+
         Deck foundDeck = decks.get(deckName);
-        if (foundDeck == null) {
-            return false;
-        }
-        if (foundDeck.removePhysicalCard(pCard)) {
+        if (foundDeck == null) { return opResult; }
+
+        if (deckName.equals("Owned")) {
+            List<Deck> updatedDecks = removeCardFromAllDecks(pCard, decks);
+            for (Deck updatedDeck : updatedDecks) {
+                decks.put(updatedDeck.getName(), updatedDeck);
+                opResult.add(updatedDeck);
+            }
             deckMap.put(userEmail, decks);
-            return true;
-        } else return false;
+        }
+        else {
+            foundDeck.removePhysicalCard(pCard);
+            opResult.add(foundDeck);
+        }
+
+        deckMap.put(userEmail, decks);
+        return  opResult;
     }
 
     @Override

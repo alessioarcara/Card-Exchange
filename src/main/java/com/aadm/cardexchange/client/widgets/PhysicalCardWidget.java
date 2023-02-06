@@ -45,7 +45,7 @@ public class PhysicalCardWidget extends Composite {
                 e.stopPropagation();
                 if (Window.confirm("Are you sure you want to remove this card?")) {
                     removeHandler.onClickDeleteButton(pCard, isRemoved -> {
-                        if (isRemoved != null && isRemoved) {
+                        if (isRemoved != null && !isRemoved.isEmpty()) {
                             this.removeFromParent();
                         }
                     });
