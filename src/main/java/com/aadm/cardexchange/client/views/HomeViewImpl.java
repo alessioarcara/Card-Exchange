@@ -1,9 +1,9 @@
 package com.aadm.cardexchange.client.views;
 
+import com.aadm.cardexchange.client.handlers.ImperativeHandleCard;
 import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.widgets.CardWidget;
 import com.aadm.cardexchange.client.widgets.GameFiltersWidget;
-import com.aadm.cardexchange.client.widgets.ImperativeHandleCard;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;

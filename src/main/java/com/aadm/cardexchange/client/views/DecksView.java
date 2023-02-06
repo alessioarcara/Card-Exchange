@@ -1,10 +1,12 @@
 package com.aadm.cardexchange.client.views;
 
+import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.user.client.ui.IsWidget;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public interface DecksView extends IsWidget {
 
@@ -12,9 +14,13 @@ public interface DecksView extends IsWidget {
 
     void resetData();
 
+    void displayAlert(String message);
+
     void setPresenter(Presenter presenter);
 
     interface Presenter {
         void fetchUserDeck(String deckName, BiConsumer<List<PhysicalCardWithName>, String> setDeckData);
+
+        void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard, Consumer<Boolean> isRemoved);
     }
 }

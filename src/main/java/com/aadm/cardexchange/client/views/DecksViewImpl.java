@@ -1,17 +1,20 @@
 package com.aadm.cardexchange.client.views;
 
+import com.aadm.cardexchange.client.handlers.ImperativeHandleDeck;
 import com.aadm.cardexchange.client.widgets.DeckWidget;
-import com.aadm.cardexchange.client.widgets.ImperativeHandleDeck;
+import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class DecksViewImpl extends Composite implements DecksView, ImperativeHandleDeck {
     private static final DecksViewImpl.DecksViewImplUIBinder uiBinder = GWT.create(DecksViewImpl.DecksViewImplUIBinder.class);
@@ -36,8 +39,18 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     }
 
     @Override
+    public void onRemovePhysicalCard(String deckName, PhysicalCard pCard, Consumer<Boolean> isRemoved) {
+        presenter.removePhysicalCardFromDeck(deckName, pCard, isRemoved);
+    }
+
+    @Override
     public void resetData() {
         decksContainer.clear();
+    }
+
+    @Override
+    public void displayAlert(String message) {
+        Window.alert(message);
     }
 
     @Override

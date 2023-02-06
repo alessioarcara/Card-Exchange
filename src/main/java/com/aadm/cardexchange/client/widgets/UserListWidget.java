@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.client.handlers.ImperativeHandleUserList;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithEmail;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.core.client.GWT;

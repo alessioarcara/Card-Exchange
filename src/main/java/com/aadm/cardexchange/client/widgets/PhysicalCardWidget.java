@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
@@ -9,6 +10,7 @@ import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.resources.client.CssResource;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.*;
 
 public class PhysicalCardWidget extends Composite {
@@ -40,7 +42,13 @@ public class PhysicalCardWidget extends Composite {
 
         deleteButton.addClickHandler(e -> {
             e.stopPropagation();
-            this.removeFromParent();
+            if (Window.confirm("Are you sure you want to remove this card?")) {
+                parent.onClickDeleteButton(pCard, isRemoved -> {
+                    if (isRemoved != null && isRemoved) {
+                        this.removeFromParent();
+                    }
+                });
+            }
         });
 
         cardName.setInnerText(pCard.getName());
@@ -56,12 +64,17 @@ public class PhysicalCardWidget extends Composite {
         getElement().removeClassName(selected ? style.cardDiscarded() : style.cardSelected());
     }
 
-    public boolean getSelected() { return selected; }
+    public boolean getSelected() {
+        return selected;
+    }
 
-    public PhysicalCard getPhysicalCard() { return pCard; }
+    public PhysicalCard getPhysicalCard() {
+        return pCard;
+    }
 
     interface PhysicalCardStyle extends CssResource {
         String cardSelected();
+
         String cardDiscarded();
     }
 

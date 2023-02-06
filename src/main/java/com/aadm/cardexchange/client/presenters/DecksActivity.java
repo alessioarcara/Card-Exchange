@@ -4,13 +4,18 @@ import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.DecksView;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
+import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.InputException;
+import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import java.util.List;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class DecksActivity extends AbstractActivity implements DecksView.Presenter {
     private final DecksView view;
@@ -41,6 +46,31 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
             @Override
             public void onSuccess(List<PhysicalCardWithName> result) {
                 setDeckData.accept(result, null);
+            }
+        });
+    }
+
+    @Override
+    public void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard, Consumer<Boolean> isRemoved) {
+        if (deckName == null || deckName.isEmpty() || pCard == null) {
+            view.displayAlert("Invalid deck name");
+            return;
+        }
+        rpcService.removePhysicalCardFromDeck(authSubject.getToken(), deckName, pCard, new AsyncCallback<Boolean>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                if (caught instanceof AuthException) {
+                    view.displayAlert(((AuthException) caught).getErrorMessage());
+                } else if (caught instanceof InputException) {
+                    view.displayAlert(((InputException) caught).getErrorMessage());
+                } else {
+                    view.displayAlert("Internal server error: " + caught.getMessage());
+                }
+            }
+
+            @Override
+            public void onSuccess(Boolean result) {
+                isRemoved.accept(result);
             }
         });
     }

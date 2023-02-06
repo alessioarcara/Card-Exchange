@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.client.handlers.ImperativeHandleAddCardToDeckModal;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;

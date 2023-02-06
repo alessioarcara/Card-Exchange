@@ -1,4 +1,4 @@
-package com.aadm.cardexchange.client.widgets;
+package com.aadm.cardexchange.client.handlers;
 
 public interface ImperativeHandleCardsSelection {
     void onChangeSelectedCards();
