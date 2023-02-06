@@ -46,6 +46,7 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
         containerWidget.setWidget(view.asWidget());
         fetchCard();
         fetchOwnedPhysicalCards();
+        fetchWishedPhysicalCards();
         update();
     }
 
@@ -72,6 +73,15 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
                                 result.stream().filter(pCardWithEmail -> !pCardWithEmail.getEmail().equals(authSubject.getEmail())).collect(Collectors.toList()) :
                                 result
                 );
+            }
+        });
+    }
+
+    private void fetchWishedPhysicalCards() {
+        deckService.getWishedPhysicalCardsByCardId(place.getCardId(), new BaseAsyncCallback<List<PhysicalCardWithEmail>>() {
+            @Override
+            public void onSuccess(List<PhysicalCardWithEmail> result) {
+                view.setWishedByUserList(result);
             }
         });
     }
@@ -110,5 +120,7 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
     }
 
     @Override
-    public void goTo(Place place) { placeController.goTo(place); }
+    public void goTo(Place place) {
+        placeController.goTo(place);
+    }
 }

@@ -555,10 +555,10 @@ public class DeckServiceTest {
         // init mocks
         String emailTest1 = "test1@test.it";
         String emailTest2 = "test2@test.it";
-        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is the card that I want.");
-        PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 1111, Status.Good, "This is the card that I want.");
-        PhysicalCard mockPCard3 = new PhysicalCard(Game.POKEMON, 2222, Status.Excellent, "This is the card that I want.");
-        PhysicalCard mockPCard4 = new PhysicalCard(Game.YUGIOH, 3333, Status.Fair, "This is the card that I want.");
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.randomGame(), 1111, Status.randomGame(), "This is the card that I want.");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.randomGame(), 1111, Status.randomGame(), "This is the card that I want.");
+        PhysicalCard mockPCard3 = new PhysicalCard(Game.randomGame(), 2222, Status.randomGame(), "This is the card that I want.");
+        PhysicalCard mockPCard4 = new PhysicalCard(Game.randomGame(), 3333, Status.randomGame(), "This is the card that I want.");
         Deck mockWishedDeck1 = new Deck("Wished", true);
         Deck mockWishedDeck2 = new Deck("Wished", true);
 
