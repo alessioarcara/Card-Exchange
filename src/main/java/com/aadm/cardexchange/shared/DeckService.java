@@ -25,4 +25,6 @@ public interface DeckService extends RemoteService {
     List<PhysicalCardWithName> getUserOwnedDeck(String email) throws AuthException;
 
     List<PhysicalCardWithEmail> getOwnedPhysicalCardsByCardId(int cardId) throws InputException;
+
+    List<PhysicalCardWithEmail> getWishedPhysicalCardsByCardId(int cardId) throws InputException;
 }

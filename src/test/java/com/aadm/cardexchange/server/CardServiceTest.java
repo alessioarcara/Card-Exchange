@@ -2,6 +2,7 @@ package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.services.CardServiceImpl;
+import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
@@ -58,7 +59,7 @@ public class CardServiceTest {
 
     @ParameterizedTest
     @MethodSource("provideClassAndMockData")
-    public void testGetGameCardsListContainsCorrectSubClassesForGameParameter(Game game, Class<?> clazz, Map<Integer, Card> expectedMap) {
+    public void testGetGameCardsListContainsCorrectSubClassesForGameParameter(Game game, Class<?> clazz, Map<Integer, Card> expectedMap) throws InputException {
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(expectedMap);
         ctrl.replay();
@@ -71,12 +72,12 @@ public class CardServiceTest {
 
     @Test
     public void testGetGameCardsForNullParameter() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> cardService.getGameCards(null));
+        Assertions.assertThrows(InputException.class, () -> cardService.getGameCards(null));
     }
 
     @ParameterizedTest
     @MethodSource("provideMockData")
-    public void testGetGameCardsExpectedListForGameParameter(Game game, Map<Integer, Card> expectedMap) {
+    public void testGetGameCardsExpectedListForGameParameter(Game game, Map<Integer, Card> expectedMap) throws InputException {
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(expectedMap);
         ctrl.replay();
@@ -87,17 +88,17 @@ public class CardServiceTest {
 
     @Test
     public void testGetGameCardForNullGameParameter() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> cardService.getGameCard(null, 2));
+        Assertions.assertThrows(InputException.class, () -> cardService.getGameCard(null, 2));
     }
 
     @Test
     public void testGetGameCardForLessThan0CardIdParameter() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> cardService.getGameCard(Game.MAGIC, -5));
+        Assertions.assertThrows(InputException.class, () -> cardService.getGameCard(Game.MAGIC, -5));
     }
 
     @ParameterizedTest
     @MethodSource("provideMockData")
-    public void testGetGameCardForIdParameter(Game game, Map<Integer, Card> expectedMap) {
+    public void testGetGameCardForIdParameter(Game game, Map<Integer, Card> expectedMap) throws InputException {
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(expectedMap);
         ctrl.replay();

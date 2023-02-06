@@ -443,12 +443,12 @@ public class DeckServiceTest {
                 .andReturn(deckMap);
 
         ctrl.replay();
-        List<PhysicalCardWithEmail> decoratedCards = deckService.getOwnedPhysicalCardsByCardId(1111);
+        List<PhysicalCardWithEmail> pCardsWithEmail = deckService.getOwnedPhysicalCardsByCardId(1111);
         ctrl.verify();
         Assertions.assertAll(() -> {
-            Assertions.assertEquals(2, decoratedCards.size());
-            Assertions.assertEquals("test1@test.it", decoratedCards.get(0).getEmail());
-            Assertions.assertEquals("test2@test.it", decoratedCards.get(1).getEmail());
+            Assertions.assertEquals(2, pCardsWithEmail.size());
+            Assertions.assertEquals("test1@test.it", pCardsWithEmail.get(0).getEmail());
+            Assertions.assertEquals("test2@test.it", pCardsWithEmail.get(1).getEmail());
         });
     }
 
@@ -542,4 +542,51 @@ public class DeckServiceTest {
         ctrl.verify();
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0})
+    public void testGetWishedPhysicalCardsByCardIdForInvalidId(int input) {
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> deckService.getWishedPhysicalCardsByCardId(input));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetWishedPhysicalCardsByCardIdForValidId() throws InputException {
+        // init mocks
+        String emailTest1 = "test1@test.it";
+        String emailTest2 = "test2@test.it";
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is the card that I want.");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 1111, Status.Good, "This is the card that I want.");
+        PhysicalCard mockPCard3 = new PhysicalCard(Game.POKEMON, 2222, Status.Excellent, "This is the card that I want.");
+        PhysicalCard mockPCard4 = new PhysicalCard(Game.YUGIOH, 3333, Status.Fair, "This is the card that I want.");
+        Deck mockWishedDeck1 = new Deck("Wished", true);
+        Deck mockWishedDeck2 = new Deck("Wished", true);
+
+        mockWishedDeck1.addPhysicalCard(mockPCard1);
+        mockWishedDeck1.addPhysicalCard(mockPCard4);
+        mockWishedDeck2.addPhysicalCard(mockPCard3);
+        mockWishedDeck2.addPhysicalCard(mockPCard2);
+        Map<String, Map<String, Deck>> deckMap = new LinkedHashMap<>() {{
+            put(emailTest1, new HashMap<>() {{
+                put("Wished", mockWishedDeck1);
+            }});
+            put(emailTest2, new HashMap<>() {{
+                put("Wished", mockWishedDeck2);
+            }});
+        }};
+
+        // expects
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class))).andReturn(deckMap);
+
+        ctrl.replay();
+        List<PhysicalCardWithEmail> pCardsWithEmail = deckService.getWishedPhysicalCardsByCardId(1111);
+        ctrl.verify();
+
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(emailTest1, pCardsWithEmail.get(0).getEmail());
+            Assertions.assertEquals(emailTest2, pCardsWithEmail.get(1).getEmail());
+            Assertions.assertEquals(2, pCardsWithEmail.size());
+        });
+    }
 }
