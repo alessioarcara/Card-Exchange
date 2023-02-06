@@ -67,10 +67,7 @@ public class ExchangeServiceTest {
         return myList;
     }
 
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"invalidToken"})
-    public void testAddProposalForInvalidToken(String input) {
+    private  void  generateLoginInfoMap(){
         Map<String, LoginInfo> loginInfoMap = new HashMap<>() {{
             put("validToken1", new LoginInfo("test@test.it", System.currentTimeMillis() - 10000));
             put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 20000));
@@ -79,6 +76,13 @@ public class ExchangeServiceTest {
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(loginInfoMap);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testAddProposalForInvalidToken(String input) {
+        generateLoginInfoMap();
         ctrl.replay();
         Assertions.assertThrows(AuthException.class, () -> exchangeService.addProposal(input, "valid@receiverUserEmail.it", generateValidListPcard(2), generateValidListPcard(2)));
         ctrl.verify();
@@ -149,4 +153,63 @@ public class ExchangeServiceTest {
         Assertions.assertTrue(exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(1), generateValidListPcard(2)));
         ctrl.verify();
     }
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testGetProposalListForInvalidToken(String input) {
+        generateLoginInfoMap();
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> exchangeService.GetProposalList(input, 3));
+        ctrl.verify();
+    }
+    @Test
+    public void testGetProposalListForLessThan0CardIdParameter() throws AuthException, InputException {
+        setupForValidToken();
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> exchangeService.GetProposalList("validToken", -1));
+        ctrl.verify();
+    }
+    @Test
+    public void testGetProposalListForEmptyProposalMap() throws AuthException, InputException {
+        setupForValidToken();
+
+        #TODO
+
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> exchangeService.GetProposalList("validToken", -1));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetProposalListForNoProposalForThisUser() throws AuthException, InputException {
+        setupForValidToken();
+
+        #TODO
+
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> exchangeService.GetProposalList("validToken", -1));
+        ctrl.verify();
+    }
+    @Test
+    public void testGetProposalListForEmptyProposalObject() throws AuthException, InputException {
+        setupForValidToken();
+
+        #TODO
+
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> exchangeService.GetProposalList("validToken", -1));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetProposalListForSuccess() throws AuthException, InputException {
+        setupForValidToken();
+
+        #TODO
+
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> exchangeService.GetProposalList("validToken", -1));
+        ctrl.verify();
+    }
+
 }
