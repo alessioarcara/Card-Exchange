@@ -120,4 +120,9 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
         });
 
     }
+
+    @Override
+    public void deleteCustomDeck() {
+
+    }
 }

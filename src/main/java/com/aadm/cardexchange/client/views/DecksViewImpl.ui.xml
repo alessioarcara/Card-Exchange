@@ -19,28 +19,13 @@
             border: 5px dashed rgba(148, 46, 148, 0.75);
             align-items: center;
         }
-
-        .newDeckButton {
-            background: #444;
-            color: #eee;
-            border: none;
-            height: 2rem;
-            width: 2rem;
-            font-size: 1.1em;
-            border-radius: 25%;
-        }
-
-        .newDeckButton:hover {
-            background-color: #eee;
-            color: #444;
-        }
     </ui:style>
     <g:HTMLPanel styleName="{style.deckLayout}">
         <h1>User decks</h1>
         <g:HTMLPanel ui:field="decksContainer"/>
         <div class="{style.newDeck}">
             <h2 ui:field="newDeckName" contenteditable="true">Write here name for your custom deck</h2>
-            <g:Button ui:field="newDeckButton" styleName="{style.newDeckButton}">&#10003;</g:Button>
+            <g:Button ui:field="newDeckButton" styleName="deckButton">&#10003;</g:Button>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder>

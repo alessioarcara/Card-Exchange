@@ -27,8 +27,8 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
     Button acceptButton;
 
     public NewExchangeViewImpl() {
-        this.senderDeck = new DeckWidget(null, this, "Your Owned Cards");
-        this.receiverDeck = new DeckWidget(null, this, "");
+        this.senderDeck = new DeckWidget(null, null, this, "Your Owned Cards");
+        this.receiverDeck = new DeckWidget(null, null, this, "");
         initWidget(uiBinder.createAndBindUi(this));
         cancelButton.addClickHandler(e -> Window.alert("Abort Exchange"));
         acceptButton.addClickHandler(e -> presenter.createProposal(senderDeck.getDeckSelectedCards(), receiverDeck.getDeckSelectedCards()));
