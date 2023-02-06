@@ -21,7 +21,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     private static final long serialVersionUID = 5868088467963819042L;
     private final MapDB db;
     private final Gson gson = new Gson();
-
+    private final Type type = new TypeToken<Map<String, Deck>>() {}.getType();
     public ExchangeServiceImpl() {
         db = new MapDBImpl();
     }

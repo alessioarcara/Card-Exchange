@@ -17,9 +17,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.easymock.EasyMock.*;
@@ -116,21 +114,25 @@ public class HomeActivityTest {
     }
 
     private static Stream<Arguments> provideMockCardsAndBooleanFields() {
+        Map<Integer, MagicCard> MagicDummy = MockCardData.createMagicDummyMap();
+        Set<Integer> magicKeys = MagicDummy.keySet();
+        Integer[] magicKeysArray = magicKeys.toArray(new Integer[magicKeys.size()]);
+        List<Card>  MagicDummyList = new ArrayList<>(MagicDummy.values());
         return Stream.of(
                 Arguments.of(
-                        Game.MAGIC, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(0),
+                        Game.MAGIC, MagicDummyList, MagicDummy.get(magicKeysArray[0]),
                         MAGIC_BOOLEAN_FIELDS, Arrays.asList(true, false, false, false, false)),
                 Arguments.of(
-                        Game.MAGIC, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(1),
+                        Game.MAGIC, MagicDummyList, MagicDummy.get(magicKeysArray[1]),
                         MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, true, false, false, false)),
                 Arguments.of(
-                        Game.MAGIC, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(2),
+                        Game.MAGIC, MagicDummyList, MagicDummy.get(magicKeysArray[2]),
                         MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, false, true, false, false)),
                 Arguments.of(
-                        Game.MAGIC, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(3),
+                        Game.MAGIC, MagicDummyList, MagicDummy.get(magicKeysArray[3]),
                         MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, false, false, true, false)),
                 Arguments.of(
-                        Game.MAGIC, MockCardData.createMagicDummyList(), MockCardData.createMagicDummyMap().get(4),
+                        Game.MAGIC, MagicDummyList, MagicDummy.get(magicKeysArray[4]),
                         MAGIC_BOOLEAN_FIELDS, Arrays.asList(false, false, false, false, true)),
                 Arguments.of(
                         Game.POKEMON, MockCardData.createPokemonDummyList(), MockCardData.createPokemonDummyList().get(0),
