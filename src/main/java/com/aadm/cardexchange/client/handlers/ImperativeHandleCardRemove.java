@@ -4,8 +4,7 @@ import com.aadm.cardexchange.shared.models.PhysicalCard;
 
 import java.util.function.Consumer;
 
-public interface ImperativeHandlePhysicalCard {
-    void onChangeSelection();
-
+public interface ImperativeHandleCardRemove {
     void onClickDeleteButton(PhysicalCard pCard, Consumer<Boolean> isRemoved);
+
 }
