@@ -47,10 +47,22 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
 
     @Override
     public boolean addDeck(String token, String deckName) throws AuthException {
-        String email = AuthServiceImpl.checkTokenValidity(token,
-                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        String email = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         return addDeck(email, deckName, false, deckMap);
+    }
+
+    public boolean removeCustomDeck(String token, String deckName) throws AuthException {
+        String email = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
+        Map<String, Deck> userDecks = deckMap.get(email);
+        Deck deck = userDecks.get(deckName);
+        if (deck == null || deck.isDefault()) {
+            return false;
+        }
+        userDecks.remove(deckName, deck);
+        deckMap.put(email, userDecks);
+        return true;
     }
 
     public static boolean createDefaultDecks(String email, Map<String, Map<String, Deck>> deckMap) {
@@ -159,17 +171,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
 
     @Override
     public List<PhysicalCardWithName> getMyDeck(String token, String deckName) throws AuthException {
-        return getUserDeck(
-                AuthServiceImpl.checkTokenValidity(
-                        token,
-                        db.getPersistentMap(getServletContext(),
-                                LOGIN_MAP_NAME,
-                                Serializer.STRING,
-                                new GsonSerializer<>(gson)
-                        )
-                ),
-                deckName
-        );
+        return getUserDeck(AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson))), deckName);
     }
 
     @Override
