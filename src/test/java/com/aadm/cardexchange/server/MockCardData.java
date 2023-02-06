@@ -26,26 +26,30 @@ public class MockCardData {
 
     public static Map<Integer, MagicCard> createMagicDummyMap() {
         return new HashMap<>() {{
-            put(0, new MagicCard("Lightning Bolt", "Deal 3 damage to any target", "Cast",
-                    "Christopher Rush", "Rare",
-                    "hasFoil"
-            ));
-            put(1, new MagicCard("Counterspell", "Counter target spell", "Instant",
-                    "Mark Poole", "Uncommon",
-                    "isAlternative"
-            ));
-            put(2, new MagicCard("Plague Wind", "Deal X damage to each creature and each player, where X is the number of creatures you control.", "Sorcery",
-                    "Ron Spencer", "Mythic Rare",
-                    "isFullArt"
-            ));
-            put(3, new MagicCard("Angel of Mercy", "When Angel of Mercy enters the battlefield, you gain 3 life", "Creature",
-                    "Volkan Baa", "Mega Rare",
-                    "isPromo"
-            ));
-            put(4, new MagicCard("Heart of Light", "Enchant creature (Target a creature as you cast this. This card enters the battlefield attached to that creature.)", "Counter",
-                    "Luca Zontini", "Unique",
-                    "isReprint"
-            ));
+            MagicCard mcd1 = new MagicCard("Lightning Bolt", "Deal 3 damage to any target", "Cast",
+                    "Christopher Rush", "Rare", "hasFoil"
+            );
+            put(mcd1.getId(), mcd1);
+
+            MagicCard mcd2 = new MagicCard("Counterspell", "Counter target spell", "Instant",
+                    "Mark Poole", "Uncommon", "isAlternative"
+            );
+            put(mcd2.getId(), mcd2);
+
+            MagicCard mcd3 = new MagicCard("Plague Wind", "Deal X damage to each creature and each player, where X is the number of creatures you control.", "Sorcery",
+                    "Ron Spencer", "Mythic Rare", "isFullArt"
+            );
+            put(mcd3.getId(), mcd3);
+
+            MagicCard mcd4 = new MagicCard("Angel of Mercy", "When Angel of Mercy enters the battlefield, you gain 3 life", "Creature",
+                    "Volkan Baa", "Mega Rare", "isPromo"
+            );
+            put(mcd4.getId(), mcd4);
+
+            MagicCard mcd5 = new MagicCard("Heart of Light", "Enchant creature (Target a creature as you cast this. This card enters the battlefield attached to that creature.)", "Counter",
+                    "Luca Zontini", "Unique", "isReprint"
+            );
+            put(mcd5.getId(), mcd5);
         }};
     }
 

@@ -21,7 +21,7 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.util.*;
 
-import static com.aadm.cardexchange.server.MockCardData2.createMagicDummyMap2;
+import static com.aadm.cardexchange.server.MockCardData.createMagicDummyMap;
 import static org.easymock.EasyMock.*;
 
 public class ExchangeServiceTest {
@@ -76,7 +76,7 @@ public class ExchangeServiceTest {
 
 
     private  Map<Integer, MagicCard>  generateValidMagicCardMap(){
-        return createMagicDummyMap2();
+        return createMagicDummyMap();
     }
 
     private Map<String, Deck>  generateValidDeckofMagicPhysicalCardMap(Map<Integer, MagicCard> magicCardMap, int i, String deckName){
@@ -91,33 +91,6 @@ public class ExchangeServiceTest {
             count++;
             }
         return deckMap;
-    }
-
-
-    private Map<String, Deck> generateValidDeck(int nCard, String mail, String deckName) {
-       Map<String, Deck> deckMap = new HashMap<>() {{
-           put(deckName, new Deck(deckName, true));
-       }};
-        for (int i=0; i<nCard; i++) {
-            PhysicalCard mockPCard = generateValidPCard(i);
-            deckMap.get(deckName).addPhysicalCard(mockPCard);
-        }
-        return deckMap;
-    }
-    private Map<String, Map<String, Deck>> generateValidUserDecksMap(String mail,Map<String, Deck> singleDeck) {
-        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<String, Map<String, Deck>>() {
-            {
-                put(mail, singleDeck);
-            }};
-        return mockDeckMap;
-    }
-
-    private Map<String, Map<String, Deck>> generateCardFromId(String mail,Map<String, Deck> singleDeck) {
-        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<String, Map<String, Deck>>() {
-            {
-                put(mail, singleDeck);
-            }};
-        return mockDeckMap;
     }
 
     //#### UNIT TESTS #####
