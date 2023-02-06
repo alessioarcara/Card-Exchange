@@ -1,0 +1,23 @@
+<ui:UiBinder xmlns:ui='urn:ui:com.google.gwt.uibinder'
+             xmlns:g='urn:import:com.google.gwt.user.client.ui'>
+    <ui:style>
+        .addCardToDeck {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .deckButton {
+            border-radius: 0.7rem;
+            padding: 0.2rem 0.5rem;
+        }
+    </ui:style>
+    <g:HTMLPanel styleName="{style.addCardToDeck}">
+        <g:ListBox ui:field="deckListBox">
+            <g:item value="">-- select a deck --</g:item>
+            <g:item value="Owned">Owned</g:item>
+            <g:item value="Wished">Wished</g:item>
+        </g:ListBox>
+        <g:PushButton addStyleNames="{style.deckButton}" ui:field="addToDeckButton">Add to deck</g:PushButton>
+    </g:HTMLPanel>
+</ui:UiBinder>

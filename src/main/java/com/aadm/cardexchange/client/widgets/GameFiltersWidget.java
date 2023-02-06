@@ -32,18 +32,18 @@ public class GameFiltersWidget extends Composite {
     public GameFiltersWidget() {
         initWidget(uiBinder.createAndBindUi(this));
         gameTextFieldsMap = new HashMap<>();
-        gameTextFieldsMap.put(Game.Magic, Arrays.asList("Name", "Artist", "Description"));
-        gameTextFieldsMap.put(Game.Pokemon, Arrays.asList("Name", "Artist", "Description"));
-        gameTextFieldsMap.put(Game.YuGiOh, Arrays.asList("Name", "Description"));
+        gameTextFieldsMap.put(Game.MAGIC, Arrays.asList("Name", "Artist"));
+        gameTextFieldsMap.put(Game.POKEMON, Arrays.asList("Name", "Artist"));
+        gameTextFieldsMap.put(Game.YUGIOH, Collections.singletonList("Name"));
 
         gameBooleanFieldsMap = new HashMap<>();
-        gameBooleanFieldsMap.put(Game.Magic, Arrays.asList("hasFoil", "isAlternative", "isFullArt", "isPromo", "isReprint"));
-        gameBooleanFieldsMap.put(Game.Pokemon, Arrays.asList("isFirstEdition", "isHolo", "isNormal", "isReverse", "isPromo"));
-        gameBooleanFieldsMap.put(Game.YuGiOh, Collections.emptyList());
+        gameBooleanFieldsMap.put(Game.MAGIC, Arrays.asList("hasFoil", "isAlternative", "isFullArt", "isPromo", "isReprint"));
+        gameBooleanFieldsMap.put(Game.POKEMON, Arrays.asList("firstEdition", "holo", "normal", "reverse", "wPromo"));
+        gameBooleanFieldsMap.put(Game.YUGIOH, Collections.emptyList());
     }
 
     public void handleGameChange(Game game) {
-        specialAttributeSpan.setInnerHTML((game == Game.Magic || game == Game.Pokemon) ? "Rarity" : "Race");
+        specialAttributeSpan.setInnerHTML((game == Game.MAGIC || game == Game.POKEMON) ? "Rarity" : "Race");
         textOptions.clear();
         checkboxesPanel.clear();
         checkBoxes = new ArrayList<>();

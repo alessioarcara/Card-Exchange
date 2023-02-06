@@ -1,7 +1,7 @@
 package com.aadm.cardexchange.client;
 
-import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
-import com.aadm.cardexchange.client.AuthSubject.Observer;
+import com.aadm.cardexchange.client.auth.AuthSubject;
+import com.aadm.cardexchange.client.auth.Observer;
 import com.aadm.cardexchange.client.places.HomePlace;
 import com.aadm.cardexchange.client.routes.AppActivityMapper;
 import com.aadm.cardexchange.client.routes.AppPlaceHistoryMapper;
@@ -17,6 +17,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.place.shared.PlaceHistoryHandler;
 import com.google.gwt.user.client.Cookies;
+import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.web.bindery.event.shared.EventBus;
@@ -27,13 +28,15 @@ public class CardExchange implements EntryPoint, Observer, ImperativeHandleSideb
     private final SidebarWidget appSidebar = new SidebarWidget(this);
     private AuthServiceAsync authService;
     private AuthSubject authSubject;
+    private PlaceController placeController;
 
     public void onModuleLoad() {
         ClientFactory clientFactory = new ClientFactoryImpl();
         EventBus eventBus = clientFactory.getEventBus();
-        PlaceController placeController = clientFactory.getPlaceController();
+        placeController = clientFactory.getPlaceController();
         authService = GWT.create(AuthService.class);
         authSubject = clientFactory.getAuthSubject();
+        validateUserToken();
         authSubject.attach(this);
 
         // Start ActivityManager for the main widget with our ActivityMapper
@@ -61,7 +64,22 @@ public class CardExchange implements EntryPoint, Observer, ImperativeHandleSideb
     public void onClickLogout() {
         authService.logout(authSubject.getToken(), new IgnoreAsyncCallback<>());
         Cookies.removeCookie("token");
-        authSubject.setToken(null);
+        authSubject.setCredentials(null, null);
+        placeController.goTo(new HomePlace());
+    }
+
+    private void validateUserToken() {
+        authService.me(Cookies.getCookie("token"), new AsyncCallback<String>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                Cookies.removeCookie("token");
+            }
+
+            @Override
+            public void onSuccess(String result) {
+                authSubject.setCredentials(Cookies.getCookie("token"), result);
+            }
+        });
     }
 
     @Override

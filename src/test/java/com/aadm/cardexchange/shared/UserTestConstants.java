@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.shared;
 
 public interface UserTestConstants {
-    String username = "gattopardo@test.it";
+    String email = "gattopardo@test.it";
     String password = "password";
 }

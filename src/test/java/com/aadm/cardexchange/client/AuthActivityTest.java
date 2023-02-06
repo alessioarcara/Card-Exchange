@@ -1,11 +1,12 @@
 package com.aadm.cardexchange.client;
 
-import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
+import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.presenters.AuthActivity;
 import com.aadm.cardexchange.client.views.AuthMode;
 import com.aadm.cardexchange.client.views.AuthView;
 import com.aadm.cardexchange.shared.AuthServiceAsync;
-import com.aadm.cardexchange.shared.models.AuthException;
+import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.models.AuthPayload;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -43,7 +44,7 @@ public class AuthActivityTest {
         ctrl = EasyMock.createStrictControl();
         mockView = ctrl.createMock(AuthView.class);
         mockRpcService = ctrl.createMock(AuthServiceAsync.class);
-        mockSubject = new AuthSubject(null);
+        mockSubject = new AuthSubject();
         mockPlaceController = ctrl.createMock(PlaceController.class);
         authActivity = new AuthActivity(mockView, mockRpcService, mockSubject, mockPlaceController);
     }
@@ -77,7 +78,9 @@ public class AuthActivityTest {
     @ParameterizedTest
     @EnumSource(AuthMode.class)
     public void testAuthenticateSuccessForAuthModeParameter(AuthMode authMode) {
-        String token = "this_is_a_token";
+        String token = "validToken";
+        String email = "test@test.it";
+        AuthPayload authPayload = new AuthPayload(token, email);
         if (authMode == AuthMode.Login) {
             mockRpcService.signin(anyString(), anyString(), isA(AsyncCallback.class));
         } else {
@@ -85,18 +88,18 @@ public class AuthActivityTest {
         }
         expectLastCall().andAnswer(() -> {
             Object[] args = getCurrentArguments();
-            AsyncCallback<String> callback = (AsyncCallback<String>) args[args.length - 1];
-            callback.onSuccess(token);
+            AsyncCallback<AuthPayload> callback = (AsyncCallback<AuthPayload>) args[args.length - 1];
+            callback.onSuccess(authPayload);
             return null;
         });
         mockView.setAuthToken(token);
         expectLastCall();
-        mockSubject.setToken(token);
+        mockSubject.setCredentials(token, email);
         expectLastCall();
         mockPlaceController.goTo(isA(Place.class));
         expectLastCall();
         ctrl.replay();
-        authActivity.authenticate(authMode, "test@test.it", "password");
+        authActivity.authenticate(authMode, email, "password");
         ctrl.verify();
     }
 

@@ -1,14 +1,12 @@
 package com.aadm.cardexchange.shared;
 
+import com.aadm.cardexchange.server.MockCardData;
 import com.aadm.cardexchange.shared.models.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.LinkedHashSet;
-
-import static com.aadm.cardexchange.shared.UserTestConstants.password;
-import static com.aadm.cardexchange.shared.UserTestConstants.username;
+import java.util.Set;
 
 public class DeckTest {
 
@@ -19,18 +17,11 @@ public class DeckTest {
 
     @BeforeEach
     public void initialize() {
-        User user = new User(username, password);
-        deck = new Deck(user.getUsername(), "Deck_name");
-        defaultDeck = new Deck(user.getUsername(), "Deck_default", true);
-        CardDecorator card = new CardDecorator(new CardImpl("DUMMY_NAME", "DUMMY_TYPE", "DUMMY_DESCRIPTION"));
-        pCard = new PhysicalCard(card.getId(), "1 (Very Good)", "test description card");
-        pCard2 = new PhysicalCard(card.getId(), "2 (Good)", "test card 2");
-    }
-
-    @Test
-    public void testGetUserEmail() {
-        Assertions.assertEquals(username, deck.getUserEmail());
-        Assertions.assertEquals(username, defaultDeck.getUserEmail());
+        deck = new Deck("Deck_name");
+        defaultDeck = new Deck("Deck_default", true);
+        Card card = MockCardData.createPokemonDummyCard();
+        pCard = new PhysicalCard(Game.POKEMON, card.getId(), Status.Excellent, "test description card");
+        pCard2 = new PhysicalCard(Game.POKEMON, card.getId(), Status.Good, "test card 2");
     }
 
     @Test
@@ -56,34 +47,34 @@ public class DeckTest {
 
     @Test
     public void testAddPhysicalCard() {
-        Assertions.assertTrue(deck.addPhysicalCard(pCard.getId()));
-        Assertions.assertFalse(deck.addPhysicalCard(pCard.getId()));
+        Assertions.assertTrue(deck.addPhysicalCard(pCard));
+        Assertions.assertFalse(deck.addPhysicalCard(pCard));
     }
 
     @Test
     public void testContainsPhysicalCard() {
-        deck.addPhysicalCard(pCard.getId());
-        Assertions.assertTrue(deck.containsPhysicalCard(pCard.getId()));
-        Assertions.assertFalse(deck.containsPhysicalCard(pCard2.getId()));
+        deck.addPhysicalCard(pCard);
+        Assertions.assertTrue(deck.containsPhysicalCard(pCard));
+        Assertions.assertFalse(deck.containsPhysicalCard(pCard2));
     }
 
     @Test
     public void testGetPhysicalCards() {
-        deck.addPhysicalCard(pCard.getId());
-        deck.addPhysicalCard(pCard2.getId());
-        LinkedHashSet<Integer> cards = deck.getPhysicalCards();
+        deck.addPhysicalCard(pCard);
+        deck.addPhysicalCard(pCard2);
+        Set<PhysicalCard> cards = deck.getPhysicalCards();
 
         Assertions.assertEquals(2, cards.size());
-        Assertions.assertTrue(cards.contains(pCard.getId()));
-        Assertions.assertTrue(cards.contains(pCard2.getId()));
+        Assertions.assertTrue(cards.contains(pCard));
+        Assertions.assertTrue(cards.contains(pCard2));
     }
 
     @Test
     public void testRemovePhysicalCard() {
-        deck.addPhysicalCard(pCard.getId());
-        deck.addPhysicalCard(pCard2.getId());
-        Assertions.assertTrue(deck.removePhysicalCard(pCard.getId()));
+        deck.addPhysicalCard(pCard);
+        deck.addPhysicalCard(pCard2);
+        Assertions.assertTrue(deck.removePhysicalCard(pCard));
         Assertions.assertEquals(1, deck.getPhysicalCards().size());
-        Assertions.assertFalse(deck.removePhysicalCard(pCard.getId()));
+        Assertions.assertFalse(deck.removePhysicalCard(pCard));
     }
 }

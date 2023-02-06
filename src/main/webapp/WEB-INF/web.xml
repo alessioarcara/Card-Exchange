@@ -6,14 +6,21 @@
          xmlns="http://java.sun.com/xml/ns/javaee">
 
     <!-- Servlets -->
-
     <servlet>
         <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>
-        <servlet-class>com.aadm.cardexchange.server.CardServiceImpl</servlet-class>
+        <servlet-class>com.aadm.cardexchange.server.services.CardServiceImpl</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>com.aadm.cardexchange.CardExchange UserService</servlet-name>
-        <servlet-class>com.aadm.cardexchange.server.AuthServiceImpl</servlet-class>
+        <servlet-class>com.aadm.cardexchange.server.services.AuthServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>com.aadm.cardexchange.CardExchange DeckService</servlet-name>
+        <servlet-class>com.aadm.cardexchange.server.services.DeckServiceImpl</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>com.aadm.cardexchange.CardExchange ExchangeService</servlet-name>
+        <servlet-class>com.aadm.cardexchange.server.services.ExchangeServiceImpl</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>com.aadm.cardexchange.CardExchange CardService</servlet-name>
@@ -22,6 +29,14 @@
     <servlet-mapping>
         <servlet-name>com.aadm.cardexchange.CardExchange UserService</servlet-name>
         <url-pattern>/cardexchange/users</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>com.aadm.cardexchange.CardExchange DeckService</servlet-name>
+        <url-pattern>/cardexchange/decks</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>com.aadm.cardexchange.CardExchange ExchangeService</servlet-name>
+        <url-pattern>/cardexchange/exchanges</url-pattern>
     </servlet-mapping>
 
     <listener>

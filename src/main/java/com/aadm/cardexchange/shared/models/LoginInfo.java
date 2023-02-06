@@ -4,19 +4,19 @@ import java.io.Serializable;
 
 public class LoginInfo implements Serializable {
     private static final long serialVersionUID = -6617923440217703559L;
-    private int userId;
+    private String userEmail;
     private long loginTime;
 
-    public LoginInfo(int userId, long loginTime) {
-        this.userId = userId;
+    public LoginInfo(String userEmail, long loginTime) {
+        this.userEmail = userEmail;
         this.loginTime = loginTime;
     }
 
     public LoginInfo() {
     }
 
-    public int getUserId() {
-        return userId;
+    public String getUserEmail() {
+        return userEmail;
     }
 
     public long getLoginTime() {

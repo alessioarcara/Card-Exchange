@@ -1,11 +1,12 @@
 package com.aadm.cardexchange.client.presenters;
 
-import com.aadm.cardexchange.client.AuthSubject.AuthSubject;
+import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.places.HomePlace;
 import com.aadm.cardexchange.client.views.AuthMode;
 import com.aadm.cardexchange.client.views.AuthView;
 import com.aadm.cardexchange.shared.AuthServiceAsync;
-import com.aadm.cardexchange.shared.models.AuthException;
+import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.models.AuthPayload;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
@@ -44,7 +45,7 @@ public class AuthActivity extends AbstractActivity implements AuthView.Presenter
         if (!regExp.test(email) || password.length() < 8) {
             view.displayAlert("Incorrect credentials");
         } else {
-            AsyncCallback<String> callback = new AsyncCallback<String>() {
+            AsyncCallback<AuthPayload> callback = new AsyncCallback<AuthPayload>() {
                 @Override
                 public void onFailure(Throwable caught) {
                     if (caught instanceof AuthException) {
@@ -55,9 +56,9 @@ public class AuthActivity extends AbstractActivity implements AuthView.Presenter
                 }
 
                 @Override
-                public void onSuccess(String result) {
-                    view.setAuthToken(result);
-                    authSubject.setToken(result);
+                public void onSuccess(AuthPayload result) {
+                    view.setAuthToken(result.getToken());
+                    authSubject.setCredentials(result.getToken(), result.getEmail());
                     goTo(new HomePlace());
                 }
             };

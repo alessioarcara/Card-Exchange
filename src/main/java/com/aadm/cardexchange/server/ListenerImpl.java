@@ -1,10 +1,14 @@
 package com.aadm.cardexchange.server;
 
+import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
 import com.aadm.cardexchange.server.jsonparser.JSONParser;
 import com.aadm.cardexchange.server.jsonparser.MagicCardParseStrategy;
 import com.aadm.cardexchange.server.jsonparser.PokemonCardParseStrategy;
 import com.aadm.cardexchange.server.jsonparser.YuGiOhCardParseStrategy;
-import com.aadm.cardexchange.shared.models.CardDecorator;
+import com.aadm.cardexchange.server.mapdb.MapDB;
+import com.aadm.cardexchange.server.mapdb.MapDBConstants;
+import com.aadm.cardexchange.server.mapdb.MapDBImpl;
+import com.aadm.cardexchange.shared.models.Card;
 import com.google.gson.Gson;
 import org.mapdb.Serializer;
 
@@ -27,8 +31,8 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         this.path = path;
     }
 
-    private void uploadDataToDB(Map<Integer, CardDecorator> map, CardDecorator[] cards) {
-        for (CardDecorator card : cards) {
+    private void uploadDataToDB(Map<Integer, Card> map, Card[] cards) {
+        for (Card card : cards) {
             map.put(card.getId(), card);
         }
     }
@@ -39,13 +43,13 @@ public class ListenerImpl implements ServletContextListener, MapDBConstants {
         System.out.println("*** Loading data from file. ***");
 
         Gson gson = new Gson();
-        GsonSerializer<CardDecorator> cardSerializer = new GsonSerializer<>(gson);
+        GsonSerializer<Card> cardSerializer = new GsonSerializer<>(gson);
 
-        Map<Integer, CardDecorator> yuGiOhMap = db.getCachedMap(sce.getServletContext(), YUGIOH_MAP_NAME,
+        Map<Integer, Card> yuGiOhMap = db.getCachedMap(sce.getServletContext(), YUGIOH_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
-        Map<Integer, CardDecorator> magicMap = db.getCachedMap(sce.getServletContext(), MAGIC_MAP_NAME,
+        Map<Integer, Card> magicMap = db.getCachedMap(sce.getServletContext(), MAGIC_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
-        Map<Integer, CardDecorator> pokemonMap = db.getCachedMap(sce.getServletContext(), POKEMON_MAP_NAME,
+        Map<Integer, Card> pokemonMap = db.getCachedMap(sce.getServletContext(), POKEMON_MAP_NAME,
                 Serializer.INTEGER, cardSerializer);
 
         JSONParser parser = new JSONParser(new YuGiOhCardParseStrategy(), gson);

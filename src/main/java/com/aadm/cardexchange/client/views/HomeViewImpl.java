@@ -34,9 +34,9 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
 
     public HomeViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
-        magicRadio.addValueChangeHandler(e -> onGameChanged(Game.Magic));
-        pokemonRadio.addValueChangeHandler(e -> onGameChanged(Game.Pokemon));
-        yugiohRadio.addValueChangeHandler(e -> onGameChanged(Game.YuGiOh));
+        magicRadio.addValueChangeHandler(e -> onGameChanged(Game.MAGIC));
+        pokemonRadio.addValueChangeHandler(e -> onGameChanged(Game.POKEMON));
+        yugiohRadio.addValueChangeHandler(e -> onGameChanged(Game.YUGIOH));
         applyFiltersButton.addClickHandler(e -> handleFiltersApply());
         cleanFiltersButton.addClickHandler(e -> handleFiltersClean());
     }
@@ -47,18 +47,18 @@ public class HomeViewImpl extends Composite implements HomeView, ImperativeHandl
     }
 
     @Override
-    public void setData(List<CardDecorator> data) {
+    public void setData(List<Card> data) {
         cardsPanel.clear();
         Set<String> uniqueSpecialAttributes = new HashSet<>();
         Set<String> uniqueTypes = new HashSet<>();
         data.forEach(card -> {
             uniqueTypes.add(card.getType());
-            if (card instanceof MagicCardDecorator) {
-                uniqueSpecialAttributes.add(((MagicCardDecorator) card).getRarity());
-            } else if (card instanceof PokemonCardDecorator) {
-                uniqueSpecialAttributes.add(((PokemonCardDecorator) card).getRarity());
-            } else if (card instanceof YuGiOhCardDecorator) {
-                uniqueSpecialAttributes.add(((YuGiOhCardDecorator) card).getRace());
+            if (card instanceof MagicCard) {
+                uniqueSpecialAttributes.add(((MagicCard) card).getRarity());
+            } else if (card instanceof PokemonCard) {
+                uniqueSpecialAttributes.add(((PokemonCard) card).getRarity());
+            } else if (card instanceof YuGiOhCard) {
+                uniqueSpecialAttributes.add(((YuGiOhCard) card).getRace());
             }
             cardsPanel.add(new CardWidget(this, card));
         });

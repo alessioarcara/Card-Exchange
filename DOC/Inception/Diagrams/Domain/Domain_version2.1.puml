@@ -1,0 +1,91 @@
+@startuml Dominio
+
+object Visitatore
+
+object Utente {
+  +email: string
+  +password: string
+  -mazziUtente: List<Mazzo>
+}
+
+object Carta {
+  +id: string
+  +nome: string
+  +descrizione: string
+  +tipo: string
+}
+
+object CartaYuGiOh {
+  +race: string
+  +image_url: string
+  +small_image_url: string
+}
+
+object CartaMagic {
+  +artist: string
+  +rarity: string
+  +hasFoil: boolean
+  +isAlternative: boolean
+  +isFullArt: boolean
+  +isPromo: boolean
+  +isReprint: boolean
+}
+
+object CartaPokemon {
+  +illustrator: string
+  +rarity: string
+  +image: string
+  +firstEdition: boolean
+  +holo: boolean
+  +normal: boolean
+  +reverse: boolean
+  +isPromo: boolean
+}
+
+object CartaFisica {
+  +idCarta: string
+  +status: string
+  +descrizione: string
+}
+
+object Mazzo {
+  +id: integer
+  +emailUtente: string
+  +nome: string
+  +isDefault: boolean
+  -carte: List<idCarta>
+}
+
+object Catalogo {
+  -carte: List<Carta>
+}
+
+object Scambio {
+  +utenteProponente: Utente
+  +utenteDestinatario: Utente
+  +cartaRichiesta: Carta
+  +cartaOfferta: Carta
+  +stato: string
+}
+
+CartaYuGiOh ..^ Carta
+CartaMagic ..^ Carta
+CartaPokemon ..^ Carta
+
+CartaFisica "*"-"1" Carta
+
+Mazzo --o CartaFisica
+
+Scambio --> Carta : coinvolge
+
+Catalogo --* Carta
+
+Utente --> CartaFisica : possiede
+Utente --> Carta : desidera
+Utente ..> Scambio : <<use>>
+Utente -> Mazzo : organizza carte
+
+Visitatore -^ Utente
+Visitatore --> Catalogo : visualizza
+
+@enduml
