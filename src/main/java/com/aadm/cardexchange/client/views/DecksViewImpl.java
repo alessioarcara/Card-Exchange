@@ -7,10 +7,12 @@ import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.uibinder.client.UiHandler;
 import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
@@ -35,7 +37,7 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     @Override
     public void setData(List<String> data) {
         for (String deckName : data) {
-            decksContainer.add(new DeckWidget(this, null, deckName));
+            decksContainer.add(createDeck(deckName));
         }
     }
 
@@ -61,8 +63,22 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
 
     @Override
     public void displayAddedCustomDeck(String deckName) {
-        decksContainer.add(new DeckWidget(this, null, deckName));
+        decksContainer.add(createDeck(deckName));
         newDeckName.setInnerText(DEFAULT_CUSTOM_DECK_TEXT);
+    }
+
+    // factory
+    private DeckWidget createDeck(String deckName) {
+        if (deckName.equals("Owned") || deckName.equals("Wished")) {
+            return new DeckWidget(this, null, null, deckName);
+        } else {
+            Button removeButton = new Button("x", (ClickHandler) e -> {
+                if (Window.confirm("Are you sure you want to remove this deck?"))
+                    presenter.deleteCustomDeck();
+            });
+            removeButton.setStyleName("deckButton");
+            return new DeckWidget(this, removeButton, null, deckName);
+        }
     }
 
     @UiHandler(value = "newDeckButton")

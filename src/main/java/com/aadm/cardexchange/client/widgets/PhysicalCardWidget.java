@@ -58,7 +58,6 @@ public class PhysicalCardWidget extends Composite {
         cardName.setInnerText(pCard.getName());
         cardStatus.setInnerHTML(pCard.getStatus().name());
         cardDescription.setInnerText(pCard.getDescription());
-
         this.pCard = pCard;
     }
 

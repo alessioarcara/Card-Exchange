@@ -32,15 +32,19 @@ public class DeckWidget extends Composite implements ImperativeHandleCardSelecti
     List<PhysicalCard> deckSelectedCards;
     ImperativeHandleDeck deckHandler;
     ImperativeHandleCardsSelection selectionHandler;
+    @UiField
+    HTMLPanel actions;
 
     @UiConstructor
-    public DeckWidget(ImperativeHandleDeck deckHandler, ImperativeHandleCardsSelection selectionHandler, String name) {
+    public DeckWidget(ImperativeHandleDeck deckHandler, Button removeButton, ImperativeHandleCardsSelection selectionHandler, String name) {
+        this.deckHandler = deckHandler;
+        this.selectionHandler = selectionHandler;
         initWidget(uiBinder.createAndBindUi(this));
         setDeckName(name);
         isVisible = (deckHandler == null);
         showButton.setVisible(!isVisible);
-
         cards.setVisible(isVisible);
+
         if (!isVisible) {
             showButton.addClickHandler(e -> {
                 if (isVisible = !isVisible) {
@@ -49,8 +53,8 @@ public class DeckWidget extends Composite implements ImperativeHandleCardSelecti
                 cards.setVisible(isVisible);
             });
         }
-        this.deckHandler = deckHandler;
-        this.selectionHandler = selectionHandler;
+
+        if (removeButton != null) actions.add(removeButton);
     }
 
     public void setData(List<PhysicalCardWithName> data, String selectedCardId) {
