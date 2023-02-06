@@ -1,4 +1,4 @@
-package com.aadm.cardexchange.client.widgets;
+package com.aadm.cardexchange.client.handlers;
 
 import com.aadm.cardexchange.shared.models.Game;
 

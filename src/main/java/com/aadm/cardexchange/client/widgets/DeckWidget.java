@@ -1,5 +1,8 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.client.handlers.ImperativeHandleCardsSelection;
+import com.aadm.cardexchange.client.handlers.ImperativeHandleDeck;
+import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
@@ -14,6 +17,7 @@ import com.google.gwt.user.client.ui.Widget;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class DeckWidget extends Composite implements ImperativeHandlePhysicalCard {
     private static final DeckUIBinder uiBinder = GWT.create(DeckUIBinder.class);
@@ -25,6 +29,7 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
     Button showButton;
     boolean isVisible;
     List<PhysicalCard> deckSelectedCards;
+    ImperativeHandleDeck parent1;
     ImperativeHandleCardsSelection parent2;
 
     @UiConstructor
@@ -43,6 +48,7 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
                 cards.setVisible(isVisible);
             });
         }
+        this.parent1 = parent1;
         this.parent2 = parent2;
     }
 
@@ -79,7 +85,16 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
     @Override
     public void onChangeSelection() {
         setDeckSelectedCards();
-        parent2.onChangeSelectedCards();
+        if (parent2 != null) {
+            parent2.onChangeSelectedCards();
+        }
+    }
+
+    @Override
+    public void onClickDeleteButton(PhysicalCard pCard, Consumer<Boolean> isRemoved) {
+        if (parent1 != null) {
+            parent1.onRemovePhysicalCard(deckName.getInnerText(), pCard, isRemoved);
+        }
     }
 
     interface DeckUIBinder extends UiBinder<Widget, DeckWidget> {
