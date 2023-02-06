@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.client.handlers.ImperativeHandleSidebar;
 import com.aadm.cardexchange.client.routes.RouteConstants;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickHandler;

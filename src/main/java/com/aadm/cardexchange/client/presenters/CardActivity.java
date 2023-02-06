@@ -14,6 +14,8 @@ import com.aadm.cardexchange.shared.models.PhysicalCardWithEmail;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
+import com.google.gwt.place.shared.Place;
+import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
@@ -26,13 +28,15 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
     private final CardServiceAsync cardService;
     private final DeckServiceAsync deckService;
     private final AuthSubject authSubject;
+    private final PlaceController placeController;
 
-    public CardActivity(CardPlace place, CardView view, CardServiceAsync cardService, DeckServiceAsync deckService, AuthSubject authSubject) {
+    public CardActivity(CardPlace place, CardView view, CardServiceAsync cardService, DeckServiceAsync deckService, AuthSubject authSubject, PlaceController placeController) {
         this.place = place;
         this.view = view;
         this.cardService = cardService;
         this.deckService = deckService;
         this.authSubject = authSubject;
+        this.placeController = placeController;
         authSubject.attach(this);
     }
 
@@ -104,4 +108,7 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
                 }
         );
     }
+
+    @Override
+    public void goTo(Place place) { placeController.goTo(place); }
 }

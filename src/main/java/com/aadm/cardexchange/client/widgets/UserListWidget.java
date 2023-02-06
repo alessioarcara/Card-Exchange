@@ -1,5 +1,6 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.client.handlers.ImperativeHandleUserList;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithEmail;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.core.client.GWT;
@@ -8,7 +9,6 @@ import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
@@ -41,9 +41,9 @@ public class UserListWidget extends Composite {
         if (showExchangeButton) row.insertCell(2).setInnerText("");
     }
 
-    public void setTable(List<PhysicalCardWithEmail> pCards) {
+    public void setTable(List<PhysicalCardWithEmail> pCards, ImperativeHandleUserList parent) {
         pCards.forEach(pCard -> addRow(pCard.getEmail(), pCard.getStatus(), new Button(
-                "Exchange", (ClickHandler) event -> Window.alert("Click!")
+                "Exchange", (ClickHandler) event -> parent.onClickExchange(pCard.getEmail(), pCard.getId())
         )));
     }
 

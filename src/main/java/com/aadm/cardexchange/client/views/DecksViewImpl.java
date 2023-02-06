@@ -1,16 +1,19 @@
 package com.aadm.cardexchange.client.views;
 
+import com.aadm.cardexchange.client.handlers.ImperativeHandleDeck;
 import com.aadm.cardexchange.client.widgets.DeckWidget;
-import com.aadm.cardexchange.client.widgets.ImperativeHandleDeck;
+import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class DecksViewImpl extends Composite implements DecksView, ImperativeHandleDeck {
@@ -26,18 +29,28 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     @Override
     public void setData(List<String> data) {
         for (String deckName : data) {
-            decksContainer.add(new DeckWidget(this, deckName));
+            decksContainer.add(new DeckWidget(this, null, deckName));
         }
     }
 
     @Override
-    public void onShowDeck(String deckName, Consumer<List<PhysicalCardWithName>> setDeckData) {
+    public void onShowDeck(String deckName, BiConsumer<List<PhysicalCardWithName>, String> setDeckData) {
         presenter.fetchUserDeck(deckName, setDeckData);
+    }
+
+    @Override
+    public void onRemovePhysicalCard(String deckName, PhysicalCard pCard, Consumer<Boolean> isRemoved) {
+        presenter.removePhysicalCardFromDeck(deckName, pCard, isRemoved);
     }
 
     @Override
     public void resetData() {
         decksContainer.clear();
+    }
+
+    @Override
+    public void displayAlert(String message) {
+        Window.alert(message);
     }
 
     @Override
