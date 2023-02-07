@@ -6,6 +6,7 @@ import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.DeckService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.common.reflect.TypeToken;
@@ -203,5 +204,46 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             throw new InputException("Invalid cardId");
         }
         return getPhysicalCardByCardIdAndDeckName(cardId, OWNED_DECK);
+    }
+
+
+    @Override
+    public List <PhysicalCardWithEmailDealing> getListPhysicalCardWithEmailDealing(String token, Game game, int cardId) throws BaseException {
+        String userEmail = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        if (game == null) {
+            throw new InputException("Invalid game");
+        }
+        if (cardId <= 0) {
+            throw new InputException("Invalid card");
+        }
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
+        Map<String, Deck> allUserDecks = deckMap.get(userEmail);
+        Deck userDeck = allUserDecks.get("Owned");
+        List<PhysicalCard> myPCardsMatching = new ArrayList<>();
+        if (userDeck == null) {
+            throw new BaseException("Deck not found");
+        }
+        for (PhysicalCard pCard : userDeck.getPhysicalCards()) {
+            if (cardId== pCard.getCardId()) {
+                myPCardsMatching.add(pCard);
+            }
+        }
+        myPCardsMatching.sort(Comparator.comparing(PhysicalCard::getStatus));
+        Collections.reverse(myPCardsMatching);
+        List<PhysicalCardWithEmail> listWishedPCard =  getPhysicalCardByCardIdAndDeckName(cardId, WISHED_DECK);
+        int statusWished;
+        String offerPCardId = null;
+        List <PhysicalCardWithEmailDealing> result = new ArrayList<>();
+        for (PhysicalCardWithEmail pCardWished : listWishedPCard) {
+            statusWished =  pCardWished.getStatus().getValue();
+            for(PhysicalCard pCardOwned : myPCardsMatching) {
+                if  (statusWished== pCardOwned.getStatus().getValue()) {
+                    offerPCardId = pCardOwned.getId();
+                    break;
+                }
+            } result.add(new PhysicalCardWithEmailDealing(pCardWished, offerPCardId));
+        }
+        return result;
     }
 }

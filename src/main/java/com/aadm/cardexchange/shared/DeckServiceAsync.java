@@ -21,4 +21,6 @@ public interface DeckServiceAsync {
     void getUserOwnedDeck(String email, AsyncCallback<List<PhysicalCardWithName>> callback);
 
     void getOwnedPhysicalCardsByCardId(int cardId, AsyncCallback<List<PhysicalCardWithEmail>> callback);
+
+    void getListPhysicalCardWithEmailDealing(String token, Game game, int cardId, AsyncCallback<List<PhysicalCardWithEmailDealing>> async);
 }

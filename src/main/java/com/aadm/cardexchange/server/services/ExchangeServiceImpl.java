@@ -6,7 +6,6 @@ import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.ExchangeService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
-import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.common.reflect.TypeToken;
@@ -21,7 +20,6 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     private static final long serialVersionUID = 5868088467963819042L;
     private final MapDB db;
     private final Gson gson = new Gson();
-    private final Type type = new TypeToken<Map<String, Deck>>() {}.getType();
     public ExchangeServiceImpl() {
         db = new MapDBImpl();
     }
@@ -38,33 +36,6 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     private boolean checkPhysicalCardsConsistency(List<PhysicalCard> physicalCards) {
        return physicalCards != null && !physicalCards.isEmpty();
     }
-
-
-    @Override
-    public boolean CheckExistingPcardByIdCard(String token, Game game, int cardId) throws BaseException {
-        String userEmail = AuthServiceImpl.checkTokenValidity(token,
-                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        if (game == null) {
-            throw new InputException("Invalid game");
-        }
-        if (cardId <= 0) {
-            throw new InputException("Invalid card");
-        }
-        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
-        Map<String, Deck> allUserDecks = deckMap.get(userEmail);
-        Deck userDeck = allUserDecks.get("Owned");
-        if (userDeck == null) {
-            throw new BaseException("Deck not found");
-        }
-        for (PhysicalCard pCard : userDeck.getPhysicalCards()) {
-            System.out.println(pCard.getCardId());
-            if (cardId== pCard.getCardId()) {
-                return true;
-            }
-        }
-        return false;
-    }
-
 
     @Override
     public boolean addProposal(String token, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards) throws InputException, AuthException {
