@@ -69,7 +69,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
             throw new InputException("Invalid proposal Id");
         }
 
-        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+        Map<Integer, Proposal> proposalMap = new HashMap<>(db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson)));
         if (proposalMap.size() == 0) {
             throw new RuntimeException("Not existing proposal");
         }
