@@ -17,10 +17,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -182,6 +179,64 @@ public class DecksActivityTest {
         mockDecksView.displayAddedCustomDeck(deckName);
         ctrl.replay();
         decksActivity.createCustomDeck(deckName);
+        ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @NullSource
+    public void testDeleteCustomDeckForInvalidDeckName(String input) {
+        mockDecksView.displayAlert(anyString());
+        ctrl.replay();
+        decksActivity.deleteCustomDeck(input, (Boolean bool) -> {
+        });
+        ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideDifferentTypeOfErrors")
+    public void testDeleteCustomDeckForValidDeckNameForFailure(Exception e) {
+        mockRpcService.removeCustomDeck(anyString(), anyString(), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
+            callback.onFailure(e);
+            return null;
+        });
+        mockDecksView.displayAlert(anyString());
+
+        ctrl.replay();
+        decksActivity.deleteCustomDeck("Test", (Boolean bool) -> {
+        });
+        ctrl.verify();
+    }
+
+    @Test
+    public void testDeleteCustomDeckForValidDeckForSuccessAndFalseReturn() {
+        mockRpcService.removeCustomDeck(anyString(), anyString(), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
+            callback.onSuccess(false);
+            return null;
+        });
+
+        ctrl.replay();
+        decksActivity.deleteCustomDeck("Test", Assertions::assertFalse);
+        ctrl.verify();
+    }
+
+    @Test
+    public void testDeleteCustomDeckForValidDeckForSuccessAndTrueReturn() {
+        mockRpcService.removeCustomDeck(anyString(), anyString(), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
+            callback.onSuccess(true);
+            return null;
+        });
+
+        ctrl.replay();
+        decksActivity.deleteCustomDeck("Test", Assertions::assertTrue);
         ctrl.verify();
     }
 }
