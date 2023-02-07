@@ -1,16 +1,15 @@
 package com.aadm.cardexchange.client.widgets;
 
-import com.aadm.cardexchange.client.handlers.ImperativeHandleCardRemove;
-import com.aadm.cardexchange.client.handlers.ImperativeHandleCardSelection;
-import com.aadm.cardexchange.client.handlers.ImperativeHandleCardsSelection;
-import com.aadm.cardexchange.client.handlers.ImperativeHandleDeck;
+import com.aadm.cardexchange.client.handlers.*;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.HTMLPanel;
@@ -36,7 +35,7 @@ public class DeckWidget extends Composite implements ImperativeHandleCardSelecti
     HTMLPanel actions;
 
     @UiConstructor
-    public DeckWidget(ImperativeHandleDeck deckHandler, Button removeButton, ImperativeHandleCardsSelection selectionHandler, String name) {
+    public DeckWidget(ImperativeHandleDeck deckHandler, ImperativeHandleDeckRemove removeHandler, ImperativeHandleCardsSelection selectionHandler, String name) {
         this.deckHandler = deckHandler;
         this.selectionHandler = selectionHandler;
         initWidget(uiBinder.createAndBindUi(this));
@@ -54,7 +53,20 @@ public class DeckWidget extends Composite implements ImperativeHandleCardSelecti
             });
         }
 
-        if (removeButton != null) actions.add(removeButton);
+        if (removeHandler != null) {
+            Button removeButton = new Button("x", (ClickHandler) e -> {
+                if (Window.confirm("Are you sure you want to remove this deck?"))
+                    removeHandler.onClickRemoveCustomDeck(deckName.getInnerText(), (Boolean isRemoved) -> {
+                        if (isRemoved) {
+                            removeFromParent();
+                        } else {
+                            Window.alert("Deck cannot be deleted. It may be a default deck or does not exist.");
+                        }
+                    });
+            });
+            removeButton.setStyleName("deckButton");
+            actions.add(removeButton);
+        }
     }
 
     public void setData(List<PhysicalCardWithName> data, String selectedCardId) {
