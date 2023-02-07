@@ -78,6 +78,7 @@ public class DecksActivityTest {
         mockDecksView.displayAlert(anyString());
         ctrl.replay();
         decksActivity.removePhysicalCardFromDeck(input, new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"), (List<Deck> res) -> {
+            Assertions.assertTrue(res.isEmpty());
         });
         ctrl.verify();
     }
@@ -87,6 +88,7 @@ public class DecksActivityTest {
         mockDecksView.displayAlert(anyString());
         ctrl.replay();
         decksActivity.removePhysicalCardFromDeck("Owned", null, (List<Deck> res) -> {
+            Assertions.assertTrue(res.isEmpty());
         });
         ctrl.verify();
     }
@@ -106,13 +108,14 @@ public class DecksActivityTest {
         ctrl.replay();
         decksActivity.removePhysicalCardFromDeck("Owned", new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"),
                 (List<Deck> res) -> {
+                    Assertions.assertTrue(res.isEmpty());
                 });
         ctrl.verify();
     }
 
     static Stream<Arguments> provideDifferentLists() {
         return Stream.of(
-                Arguments.of(Arrays.asList(new Deck("deck1"), new Deck("deck1"), new Deck("deck1")))
+                Arguments.of(Arrays.asList(new Deck("Owned", true), new Deck("Deck1")))
         );
     }
 

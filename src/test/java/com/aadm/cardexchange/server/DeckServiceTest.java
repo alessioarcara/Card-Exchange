@@ -539,7 +539,7 @@ public class DeckServiceTest {
         deckMap.get("Owned").addPhysicalCard(mockPCard2);
 
         ownedDeck.addPhysicalCard(mockPCard2);
-        List<Deck> decksList = new ArrayList<>(){{
+        List<Deck> decksList = new LinkedList<>(){{
             add(ownedDeck);
         }};
         expect(mockConfig.getServletContext()).andReturn(mockCtx);

@@ -143,7 +143,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             throw new RuntimeException("Not existing decks");
         }
 
-        List<Deck> opResult = new ArrayList<>();
+        List<Deck> opResult = new LinkedList<>();
 
         Deck foundDeck = decks.get(deckName);
         if (foundDeck == null) { return opResult; }
@@ -154,7 +154,6 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
                 decks.put(updatedDeck.getName(), updatedDeck);
                 opResult.add(updatedDeck);
             }
-            deckMap.put(userEmail, decks);
         }
         else {
             foundDeck.removePhysicalCard(pCard);
