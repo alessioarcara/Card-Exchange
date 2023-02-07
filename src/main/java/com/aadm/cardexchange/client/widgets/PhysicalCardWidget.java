@@ -3,7 +3,6 @@ package com.aadm.cardexchange.client.widgets;
 import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardEdit;
 import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardRemove;
 import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardSelection;
-import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
@@ -43,10 +42,12 @@ public class PhysicalCardWidget extends Composite {
                 "cards/" + pCard.getGameType() + "/" + pCard.getCardId()));
 
         // card selection
-        cardContainer.addDomHandler(e -> {
-            setSelected();
-            selectionHandler.onChangeSelection();
-        }, ClickEvent.getType());
+        if (selectionHandler != null) {
+            cardContainer.addDomHandler(e -> {
+                setSelected();
+                selectionHandler.onChangeSelection();
+            }, ClickEvent.getType());
+        }
 
         // card edit
         if (editHandler != null) {
@@ -79,7 +80,7 @@ public class PhysicalCardWidget extends Composite {
         setPhysicalCard();
     }
 
-    public PhysicalCard getPhysicalCard() {
+    public PhysicalCardWithName getPhysicalCard() {
         return pCard;
     }
 

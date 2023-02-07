@@ -27,6 +27,7 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
     HTMLPanel cards;
     @UiField
     Button showButton;
+    Button addButton;
     boolean isVisible;
     List<PhysicalCard> deckSelectedCards;
     ImperativeHandleDeck deckHandler;
@@ -36,7 +37,7 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
     HTMLPanel actions;
 
     @UiConstructor
-    public DeckWidget(ImperativeHandleDeck deckHandler, ImperativeHandleDeckRemove customDeckHandler, ImperativeHandlePhysicalCardSelection cardSelectionHandler,
+    public DeckWidget(ImperativeHandleDeck deckHandler, ImperativeHandleCustomDeck customDeckHandler, ImperativeHandlePhysicalCardSelection cardSelectionHandler,
                       ImperativeHandlePhysicalCardEdit cardEditHandler, String name) {
         this.deckHandler = deckHandler;
         this.cardSelectionHandler = cardSelectionHandler;
@@ -57,6 +58,9 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
         }
 
         if (customDeckHandler != null) {
+            addButton = new Button("&#43;", (ClickHandler) e -> {
+                customDeckHandler.onClickAddPhysicalCardsToCustomDeck(pCards -> setData(pCards, null));
+            });
             Button removeButton = new Button("x", (ClickHandler) e -> {
                 if (Window.confirm("Are you sure you want to remove this deck?"))
                     customDeckHandler.onClickRemoveCustomDeck(deckName.getInnerText(), (Boolean isRemoved) -> {
@@ -67,7 +71,10 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
                         }
                     });
             });
+            addButton.setStyleName("deckButton");
+            addButton.setEnabled(false);
             removeButton.setStyleName("deckButton");
+            actions.add(addButton);
             actions.add(removeButton);
         }
     }
@@ -86,11 +93,21 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
 
     // factory
     private PhysicalCardWidget createPhysicalCardWidget(PhysicalCardWithName pCard) {
-        return new PhysicalCardWidget(pCard, this, deckHandler != null ? this : null, cardEditHandler != null ? this : null);
+        return new PhysicalCardWidget(pCard,
+                cardSelectionHandler != null ? this : null,
+                deckHandler != null ? this : null,
+                cardEditHandler != null ? this : null
+        );
     }
 
     public void setDeckName(String name) {
         deckName.setInnerText(name);
+    }
+
+    public void setAddButtonEnabled(boolean isEnabled) {
+        if (addButton != null) {
+            addButton.setEnabled(isEnabled);
+        }
     }
 
     public List<PhysicalCard> getDeckSelectedCards() {
