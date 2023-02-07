@@ -5,7 +5,7 @@ import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.ExchangeService;
-import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.Proposal;
@@ -14,6 +14,9 @@ import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -39,8 +42,32 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
        return physicalCards != null && !physicalCards.isEmpty();
     }
 
+    private  List<Proposal> GetProposalList(String email, boolean send, boolean received) throws BaseException {
+        if (send ^ received) {
+            Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+            List<Proposal> proposalList = new ArrayList<>();
+            if (send) {
+                for (Proposal item : proposalMap.values()) {
+                    if (email.equals(item.getSenderUserEmail())) {
+                        proposalList.add(item);
+                    }
+                }
+            }
+            if (received) {
+                for (Proposal item : proposalMap.values()) {
+                    if (email.equals(item.getReceiverUserEmail())) {
+                        proposalList.add(item);
+                    }
+                }
+            }
+            return proposalList;
+        } else throw new InputException("Invalid request");
+    }
+
+
+
     @Override
-    public boolean addProposal(String token, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards) throws AuthException, InputException {
+    public boolean addProposal(String token, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards) throws BaseException {
         String email = AuthServiceImpl.checkTokenValidity(token,
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         if (receiverUserEmail == null || receiverUserEmail.isEmpty() || !checkEmailExistence(receiverUserEmail)) {
@@ -52,9 +79,23 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         if (!checkPhysicalCardsConsistency(receiverPhysicalCards)) {
             throw new InputException("Invalid receiver physical cards");
         }
-        Proposal newProposal = new Proposal(email, receiverUserEmail, senderPhysicalCards, receiverPhysicalCards);
+        String date = new SimpleDateFormat("dd-MM-yy").format(new Date());
+        Proposal newProposal = new Proposal(email, receiverUserEmail, senderPhysicalCards, receiverPhysicalCards, date);
         Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
         return proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null;
     }
+
+    public List<Proposal> GetProposalListReceived(String token) throws BaseException {
+        String email = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        return GetProposalList(email, false, true);
+    }
+
+    public List<Proposal> GetProposalListSend(String token) throws BaseException {
+        String email = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        return GetProposalList(email, true, false);
+    }
+
 }
 
