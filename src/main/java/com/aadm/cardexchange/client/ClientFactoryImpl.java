@@ -15,6 +15,7 @@ public class ClientFactoryImpl implements ClientFactory {
     private static final AuthView authView = new AuthViewImpl();
     private static final DecksView decksView = new DecksViewImpl();
     private static final NewExchangeView newExchangeView = new NewExchangeViewImpl();
+    private static final ExchangesView exchangesView = new ExchangesViewImpl();
 
     @Override
     public EventBus getEventBus() {
@@ -51,7 +52,11 @@ public class ClientFactoryImpl implements ClientFactory {
         return authSubject;
     }
 
+    @Override
     public NewExchangeView getNewExchangeView() {
         return newExchangeView;
     }
+
+    @Override
+    public ExchangesView getExchangesView() { return exchangesView; }
 }
