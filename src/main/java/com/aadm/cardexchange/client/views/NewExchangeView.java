@@ -9,12 +9,21 @@ import java.util.List;
 public interface NewExchangeView extends IsWidget {
 
     void setReceiverDeckName(String receiverUserEmail);
-    void setSenderDeck(List<PhysicalCardWithName> physicalCardDecorators);
+    void setSenderDeck(List<PhysicalCardWithName> physicalCardDecorators, String selectedCardId);
     void setReceiverDeck(List<PhysicalCardWithName> physicalCardDecorators, String selectedCardId);
-    void setPresenter(Presenter presenter);
+
+    void setPresenter(NewExchangePresenter newExchangePresenter);
+
+    void setPresenter(ProposalPresenter proposalPresenter);
+
     void showAlert(String message);
 
-    interface Presenter {
+    interface NewExchangePresenter {
         void createProposal(List<PhysicalCard> senderDeckSelectedCards, List<PhysicalCard> receiverDeckSelectedCards);
+    }
+
+    interface ProposalPresenter {
+
+        void acceptProposal();
     }
 }

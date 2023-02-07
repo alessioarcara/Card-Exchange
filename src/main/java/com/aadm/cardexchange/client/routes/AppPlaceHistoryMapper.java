@@ -36,6 +36,9 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
                     String receiverUserEmail = parts[1];
                     String selectedCardId = parts[2];
                     return new NewExchangePlace(selectedCardId, receiverUserEmail);
+                } else if (parts[0].equals(proposalLink) && authSubject.isLoggedIn()) {
+                    int proposalId = Integer.parseInt(parts[1]);
+                    return new ProposalPlace(proposalId);
                 }
             } catch (Exception e) {
                 return defaultPlace;
@@ -54,6 +57,9 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
             return decksLink;
         } else if (place instanceof ExchangesPlace) {
             return exchangesLink;
+        } else if (place instanceof ProposalPlace) {
+            ProposalPlace proposalPlace = (ProposalPlace) place;
+            return proposalLink + DELIMITER + proposalPlace.getProposalId();
         } else if (place instanceof NewExchangePlace) {
             NewExchangePlace newExchangePlace = (NewExchangePlace) place;
             return newExchangeLink + DELIMITER + newExchangePlace.getReceiverUserEmail() + DELIMITER + newExchangePlace.getSelectedCardId();

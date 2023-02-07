@@ -10,7 +10,7 @@
             height: 100vh;
         }
 
-        .extern > h1 {
+        .extern > h1, h3 {
             width: 100%;
             text-align: center;
         }
@@ -66,7 +66,8 @@
 
     </ui:style>
     <g:HTMLPanel styleName="{style.extern}">
-        <h1>New Exchange Page</h1>
+        <h1 ui:field="pageTitle"/>
+        <h3 ui:field="pageSubtitle"/>
         <div class="{style.ow-deck-container}">
             <m:DeckWidget ui:field="senderDeck" />
         </div>

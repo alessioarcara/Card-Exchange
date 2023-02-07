@@ -7,4 +7,5 @@ public interface RouteConstants {
     String cardsLink = "cards";
     String newExchangeLink = "new-exchange";
     String exchangesLink = "exchanges";
+    String proposalLink = "proposal";
 }

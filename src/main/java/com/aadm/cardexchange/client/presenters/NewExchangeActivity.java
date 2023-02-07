@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import java.util.List;
 
-public class NewExchangeActivity extends AbstractActivity implements NewExchangeView.Presenter {
+public class NewExchangeActivity extends AbstractActivity implements NewExchangeView.NewExchangePresenter {
     private final NewExchangePlace place;
     private final NewExchangeView view;
     private final DeckServiceAsync deckService;
@@ -50,7 +50,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         deckService.getMyDeck(authSubject.getToken(), "Owned", new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
             public void onSuccess(List<PhysicalCardWithName> physicalCards) {
-                view.setSenderDeck(physicalCards);
+                view.setSenderDeck(physicalCards, null);
             }
         });
     }

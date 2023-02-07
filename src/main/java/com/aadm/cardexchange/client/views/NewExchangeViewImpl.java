@@ -4,6 +4,7 @@ import com.aadm.cardexchange.client.handlers.ImperativeHandleCardsSelection;
 import com.aadm.cardexchange.client.widgets.DeckWidget;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
@@ -16,30 +17,33 @@ import java.util.List;
 
 public class NewExchangeViewImpl extends Composite implements NewExchangeView, ImperativeHandleCardsSelection {
     private static final NewExchangeViewImpl.NewExchangeViewImplUIBinder uiBinder = GWT.create(NewExchangeViewImpl.NewExchangeViewImplUIBinder.class);
-    Presenter presenter;
+    NewExchangePresenter newExchangePresenter;
+    ProposalPresenter proposalPresenter;
+    @UiField
+    HeadingElement pageTitle;
+    @UiField
+    HeadingElement pageSubtitle;
     @UiField(provided = true)
     DeckWidget senderDeck;
     @UiField(provided = true)
     DeckWidget receiverDeck;
     @UiField
-    Button cancelButton;
+    Button cancelButton = null;
     @UiField
-    Button acceptButton;
+    Button acceptButton = null;
 
     public NewExchangeViewImpl() {
         this.senderDeck = new DeckWidget(null, null, this, "Your Owned Cards");
         this.receiverDeck = new DeckWidget(null, null, this, "");
         initWidget(uiBinder.createAndBindUi(this));
-        cancelButton.addClickHandler(e -> Window.alert("Abort Exchange"));
-        acceptButton.addClickHandler(e -> presenter.createProposal(senderDeck.getDeckSelectedCards(), receiverDeck.getDeckSelectedCards()));
     }
 
     public void setReceiverDeckName(String receiverUserEmail) {
         receiverDeck.setDeckName(receiverUserEmail);
     }
 
-    public void setSenderDeck(List<PhysicalCardWithName> physicalCards) {
-        senderDeck.setData(physicalCards, null);
+    public void setSenderDeck(List<PhysicalCardWithName> physicalCards, String selectedCardId) {
+        senderDeck.setData(physicalCards, selectedCardId);
     }
 
     public void setReceiverDeck(List<PhysicalCardWithName> physicalCards, String selectedCardId) {
@@ -47,8 +51,23 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
     }
 
     @Override
-    public void setPresenter(NewExchangeView.Presenter presenter) {
-        this.presenter = presenter;
+    public void setPresenter(NewExchangePresenter newExchangePresenter) {
+        this.newExchangePresenter = newExchangePresenter;
+        pageTitle.setInnerText("New Exchange Page");
+        pageSubtitle.setInnerText("Select the cards you want to exchange from both decks and propose a new exchange");
+
+        cancelButton.addClickHandler(e -> Window.alert("Abort Exchange"));
+        acceptButton.addClickHandler(e -> newExchangePresenter.createProposal(senderDeck.getDeckSelectedCards(), receiverDeck.getDeckSelectedCards()));
+    }
+
+    @Override
+    public void setPresenter(ProposalPresenter proposalPresenter) {
+        this.proposalPresenter = proposalPresenter;
+        pageTitle.setInnerText("Proposal Page");
+        pageSubtitle.setInnerText("Check the cards in the proposal before accepting or refusing it");
+
+        cancelButton.addClickHandler(e -> Window.alert("Abort Exchange"));
+        acceptButton.addClickHandler(e -> proposalPresenter.acceptProposal());
     }
 
     @Override
