@@ -16,20 +16,13 @@
             gap: 1rem;
         }
 
-        .showButton {
-            background: #444;
-            color: #eee;
-            border: none;
-            height: 2rem;
-            width: 2rem;
-            border-radius: 25%;
-            font-size: 1.1em;
-            transform: rotate(90deg);
+        .actions {
+            display: flex;
+            gap: 0.5rem;
         }
 
-        .showButton:hover {
-            background: #eee;
-            color: #444;
+        .showButton {
+            transform: rotate(90deg);
         }
 
         .cards {
@@ -48,7 +41,9 @@
     <g:HTMLPanel styleName="{style.deck}">
         <div class="{style.deckHeader}">
             <h2 ui:field="deckName"/>
-            <g:Button styleName="{style.showButton}" ui:field="showButton">></g:Button>
+            <g:HTMLPanel styleName="{style.actions}" ui:field="actions">
+                <g:Button styleName="deckButton {style.showButton}" ui:field="showButton">></g:Button>
+            </g:HTMLPanel>
         </div>
         <g:HTMLPanel styleName="{style.cards}" ui:field="cards"/>
     </g:HTMLPanel>

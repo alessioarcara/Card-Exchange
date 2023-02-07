@@ -6,7 +6,9 @@ import com.google.gwt.user.client.rpc.AsyncCallback;
 import java.util.List;
 
 public interface DeckServiceAsync {
-    void addDeck(String email, String deckName, AsyncCallback<Boolean> callback);
+    void addDeck(String token, String deckName, AsyncCallback<Boolean> callback);
+
+    void removeCustomDeck(String token, String deckName, AsyncCallback<Boolean> callback);
 
     void addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description, AsyncCallback<Boolean> callback);
 

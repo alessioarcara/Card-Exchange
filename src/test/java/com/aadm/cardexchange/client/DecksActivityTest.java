@@ -128,4 +128,60 @@ public class DecksActivityTest {
         decksActivity.removePhysicalCardFromDeck("Owned", new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"), Assertions::assertNotNull);
         ctrl.verify();
     }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void testCreateCustomDeckForInvalidDeckName(String input) {
+        mockDecksView.displayAlert(anyString());
+        ctrl.replay();
+        decksActivity.createCustomDeck(input);
+        ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideDifferentTypeOfErrors")
+    public void testCreateCustomDeckForValidDeckNameForFailure(Exception e) {
+        mockRpcService.addDeck(anyString(), anyString(), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
+            callback.onFailure(e);
+            return null;
+        });
+        mockDecksView.displayAlert(anyString());
+        ctrl.replay();
+        decksActivity.createCustomDeck("custom_deck");
+        ctrl.verify();
+    }
+
+    @Test
+    public void testCreateCustomDeckForValidDeckNameForSuccessAndFalseReturn() {
+        mockRpcService.addDeck(anyString(), anyString(), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
+            callback.onSuccess(false);
+            return null;
+        });
+        mockDecksView.displayAlert("deck already exists");
+        ctrl.replay();
+        decksActivity.createCustomDeck("custom_deck");
+        ctrl.verify();
+    }
+
+    @Test
+    public void testCreateCustomDeckForValidDeckNameForSuccessAndTrueReturn() {
+        String deckName = "custom_deck";
+        mockRpcService.addDeck(anyString(), anyString(), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
+            callback.onSuccess(true);
+            return null;
+        });
+        mockDecksView.displayAddedCustomDeck(deckName);
+        ctrl.replay();
+        decksActivity.createCustomDeck(deckName);
+        ctrl.verify();
+    }
 }

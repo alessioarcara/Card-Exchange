@@ -40,6 +40,15 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
         view.resetData();
     }
 
+    private void fetchUserDeckNames() {
+        rpcService.getUserDeckNames(authSubject.getToken(), new BaseAsyncCallback<List<String>>() {
+            @Override
+            public void onSuccess(List<String> result) {
+                view.setData(result);
+            }
+        });
+    }
+
     @Override
     public void fetchUserDeck(String deckName, BiConsumer<List<PhysicalCardWithName>, String> setDeckData) {
         rpcService.getMyDeck(authSubject.getToken(), deckName, new BaseAsyncCallback<List<PhysicalCardWithName>>() {
@@ -50,10 +59,18 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
         });
     }
 
+    private boolean checkDeckNameInvalidity(String deckName) {
+        return deckName == null || deckName.isEmpty();
+    }
+
     @Override
     public void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard, Consumer<Boolean> isRemoved) {
-        if (deckName == null || deckName.isEmpty() || pCard == null) {
+        if (checkDeckNameInvalidity(deckName)) {
             view.displayAlert("Invalid deck name");
+            return;
+        }
+        if (pCard == null) {
+            view.displayAlert("Invalid physical card");
             return;
         }
         rpcService.removePhysicalCardFromDeck(authSubject.getToken(), deckName, pCard, new AsyncCallback<Boolean>() {
@@ -75,12 +92,37 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
         });
     }
 
-    private void fetchUserDeckNames() {
-        rpcService.getUserDeckNames(authSubject.getToken(), new BaseAsyncCallback<List<String>>() {
+    @Override
+    public void createCustomDeck(String deckName) {
+        if (checkDeckNameInvalidity(deckName)) {
+            view.displayAlert("Invalid deck name");
+            return;
+        }
+
+        rpcService.addDeck(authSubject.getToken(), deckName, new AsyncCallback<Boolean>() {
             @Override
-            public void onSuccess(List<String> result) {
-                view.setData(result);
+            public void onFailure(Throwable caught) {
+                if (caught instanceof AuthException) {
+                    view.displayAlert(((AuthException) caught).getErrorMessage());
+                } else {
+                    view.displayAlert("Internal server error: " + caught.getMessage());
+                }
+            }
+
+            @Override
+            public void onSuccess(Boolean result) {
+                if (result) {
+                    view.displayAddedCustomDeck(deckName);
+                } else {
+                    view.displayAlert("deck already exists");
+                }
             }
         });
+
+    }
+
+    @Override
+    public void deleteCustomDeck() {
+
     }
 }

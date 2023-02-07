@@ -19,3 +19,18 @@ html, body {
     align-items: center;
     background: #fff;
 }
+
+.deckButton {
+    background: #444;
+    color: #eee;
+    border: none;
+    height: 2rem;
+    width: 2rem;
+    border-radius: 25%;
+    font-size: 1.1em;
+}
+
+.deckButton:hover {
+    background-color: #eee;
+    color: #444;
+}

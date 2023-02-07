@@ -542,4 +542,78 @@ public class DeckServiceTest {
         ctrl.verify();
     }
 
+    /* ********************************
+     *  TEST METHOD removeCustomDeck()
+     * ******************************** */
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testRemoveCustomDeckForInvalidToken(String input) {
+        Map<String, LoginInfo> loginInfoMap = new HashMap<>() {{
+            put("token1", new LoginInfo("test@test.it", System.currentTimeMillis() - 100000));
+            put("token2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 200000));
+            put("token3", new LoginInfo("test3@test.it", System.currentTimeMillis() - 300000));
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(loginInfoMap);
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> deckService.removeCustomDeck(input, "testDeckName"));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testRemoveCustomDeckForNotExistingDeck() throws AuthException {
+        setupForValidToken();
+        String email = "test@test.it";
+        String deckName = "testDeckName";
+        Map<String, Deck> userDecks = new HashMap<>();
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put(email, userDecks);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertFalse(deckService.removeCustomDeck("validToken", deckName));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testRemoveCustomDeckForDefaultDeck() throws AuthException {
+        setupForValidToken();
+        String email = "test@test.it";
+        String deckName = "testDeckName";
+        Map<String, Deck> userDecks = new HashMap<>(){{
+            put(deckName, new Deck(deckName, true));
+        }};
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put(email, userDecks);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertFalse(deckService.removeCustomDeck("validToken", deckName));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testRemoveCustomDeckForRemovableCustomDeck() throws AuthException {
+        setupForValidToken();
+        String email = "test@test.it";
+        String deckName = "testDeckName";
+        Map<String, Deck> userDecks = new HashMap<>(){{
+            put(deckName, new Deck(deckName));
+        }};
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put(email, userDecks);
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(mockDeckMap);
+        ctrl.replay();
+        Assertions.assertTrue(deckService.removeCustomDeck("validToken", deckName));
+        ctrl.verify();
+    }
 }
