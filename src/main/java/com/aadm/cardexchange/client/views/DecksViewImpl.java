@@ -2,6 +2,7 @@ package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.handlers.ImperativeHandleDeck;
 import com.aadm.cardexchange.client.handlers.ImperativeHandleDeckRemove;
+import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardEdit;
 import com.aadm.cardexchange.client.widgets.DeckWidget;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
@@ -20,7 +21,8 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class DecksViewImpl extends Composite implements DecksView, ImperativeHandleDeck, ImperativeHandleDeckRemove {
+public class DecksViewImpl extends Composite implements DecksView, ImperativeHandleDeck, ImperativeHandleDeckRemove,
+        ImperativeHandlePhysicalCardEdit {
     private static final DecksViewImpl.DecksViewImplUIBinder uiBinder = GWT.create(DecksViewImpl.DecksViewImplUIBinder.class);
     private static final String DEFAULT_CUSTOM_DECK_TEXT = "Write here name for your new custom deck";
     Presenter presenter;
@@ -59,9 +61,9 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     // factory
     private DeckWidget createDeck(String deckName) {
         if (deckName.equals("Owned") || deckName.equals("Wished")) {
-            return new DeckWidget(this, null, null, deckName);
+            return new DeckWidget(this, null, null, this, deckName);
         } else {
-            return new DeckWidget(this, this, null, deckName);
+            return new DeckWidget(this, this, null, null, deckName);
         }
     }
 
@@ -88,6 +90,11 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     @Override
     public void setPresenter(DecksView.Presenter presenter) {
         this.presenter = presenter;
+    }
+
+    @Override
+    public void onConfirmCardEdit() {
+        Window.alert("MODIFICATA!");
     }
 
     interface DecksViewImplUIBinder extends UiBinder<Widget, DecksViewImpl> {
