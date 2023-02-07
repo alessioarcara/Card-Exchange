@@ -368,6 +368,32 @@ public class DeckServiceTest {
                 .andReturn(cardMap);
     }
 
+    private void setupDefaultDecks(String deckName, String mail1, String mail2) {
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.randomGame(), 1111, Status.randomGame(), "This is the card that I want.");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.randomGame(), 1111, Status.randomGame(), "This is the card that I want.");
+        PhysicalCard mockPCard3 = new PhysicalCard(Game.randomGame(), 2222, Status.randomGame(), "This is the card that I want.");
+        PhysicalCard mockPCard4 = new PhysicalCard(Game.randomGame(), 3333, Status.randomGame(), "This is the card that I want.");
+        Deck mockDeck1 = new Deck(deckName, true);
+        Deck mockDeck2 = new Deck(deckName, true);
+
+        mockDeck1.addPhysicalCard(mockPCard1);
+        mockDeck1.addPhysicalCard(mockPCard4);
+        mockDeck2.addPhysicalCard(mockPCard3);
+        mockDeck2.addPhysicalCard(mockPCard2);
+        Map<String, Map<String, Deck>> deckMap = new LinkedHashMap<>() {{
+            put(mail1, new HashMap<>() {{
+                put(deckName, mockDeck1);
+            }});
+            put(mail2, new HashMap<>() {{
+                put(deckName, mockDeck2);
+            }});
+        }};
+
+        // expects
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class))).andReturn(deckMap);
+    }
+
     @Test
     public void testGetDeckByNameForValidEntry() throws AuthException {
         setupForValidToken();
@@ -415,40 +441,16 @@ public class DeckServiceTest {
     @Test
     public void testGetOwnedPhysicalCardsByCardIdForValidId() throws InputException {
         // init Mocks
-        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
-        PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 1111, Status.Good, "This is a valid description.");
-        PhysicalCard mockPCard3 = new PhysicalCard(Game.POKEMON, 2222, Status.Fair, "This is a valid description.");
-        PhysicalCard mockPCard4 = new PhysicalCard(Game.YUGIOH, 3333, Status.Damaged, "This is a valid description.");
-
-        Deck test1OwnedDeck = new Deck("Owned");
-        Deck test2OwnedDeck = new Deck("Owned");
-        test1OwnedDeck.addPhysicalCard(mockPCard1);
-        test1OwnedDeck.addPhysicalCard(mockPCard3);
-        test2OwnedDeck.addPhysicalCard(mockPCard2);
-        test2OwnedDeck.addPhysicalCard(mockPCard4);
-        Map<String, Deck> test1Decks = new HashMap<>() {{
-            put("Owned", test1OwnedDeck);
-        }};
-        Map<String, Deck> test2Decks = new HashMap<>() {{
-            put("Owned", test2OwnedDeck);
-        }};
-        Map<String, Map<String, Deck>> deckMap = new LinkedHashMap<>() {{
-            put("test1@test.it", test1Decks);
-            put("test2@test.it", test2Decks);
-        }};
-
-        // what I expect
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(deckMap);
-
+        String emailTest1 = "test1@test.it";
+        String emailTest2 = "test2@test.it";
+        setupDefaultDecks("Owned",  emailTest1,  emailTest2);
         ctrl.replay();
         List<PhysicalCardWithEmail> pCardsWithEmail = deckService.getOwnedPhysicalCardsByCardId(1111);
         ctrl.verify();
         Assertions.assertAll(() -> {
             Assertions.assertEquals(2, pCardsWithEmail.size());
-            Assertions.assertEquals("test1@test.it", pCardsWithEmail.get(0).getEmail());
-            Assertions.assertEquals("test2@test.it", pCardsWithEmail.get(1).getEmail());
+            Assertions.assertEquals(emailTest1, pCardsWithEmail.get(0).getEmail());
+            Assertions.assertEquals(emailTest2, pCardsWithEmail.get(1).getEmail());
         });
     }
 
@@ -555,29 +557,7 @@ public class DeckServiceTest {
         // init mocks
         String emailTest1 = "test1@test.it";
         String emailTest2 = "test2@test.it";
-        PhysicalCard mockPCard1 = new PhysicalCard(Game.randomGame(), 1111, Status.randomGame(), "This is the card that I want.");
-        PhysicalCard mockPCard2 = new PhysicalCard(Game.randomGame(), 1111, Status.randomGame(), "This is the card that I want.");
-        PhysicalCard mockPCard3 = new PhysicalCard(Game.randomGame(), 2222, Status.randomGame(), "This is the card that I want.");
-        PhysicalCard mockPCard4 = new PhysicalCard(Game.randomGame(), 3333, Status.randomGame(), "This is the card that I want.");
-        Deck mockWishedDeck1 = new Deck("Wished", true);
-        Deck mockWishedDeck2 = new Deck("Wished", true);
-
-        mockWishedDeck1.addPhysicalCard(mockPCard1);
-        mockWishedDeck1.addPhysicalCard(mockPCard4);
-        mockWishedDeck2.addPhysicalCard(mockPCard3);
-        mockWishedDeck2.addPhysicalCard(mockPCard2);
-        Map<String, Map<String, Deck>> deckMap = new LinkedHashMap<>() {{
-            put(emailTest1, new HashMap<>() {{
-                put("Wished", mockWishedDeck1);
-            }});
-            put(emailTest2, new HashMap<>() {{
-                put("Wished", mockWishedDeck2);
-            }});
-        }};
-
-        // expects
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class))).andReturn(deckMap);
+        setupDefaultDecks("Wished",  emailTest1,  emailTest2);
 
         ctrl.replay();
         List<PhysicalCardWithEmail> pCardsWithEmail = deckService.getWishedPhysicalCardsByCardId(1111);
