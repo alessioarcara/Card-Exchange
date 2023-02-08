@@ -192,12 +192,16 @@ public class ExchangeServiceTest {
     public void testGetProposalCardsForSuccess() throws AuthException, InputException {
         setupForValidToken();
 
-        // Setup physical card for proposal map and return object
-        PhysicalCard p1S = new PhysicalCard(Game.POKEMON, 111, Status.Good, "this is a valid description");
-        PhysicalCard p2S = new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description");
+        Card mockCard1 = MockCardData.createPokemonDummyCard();
+        Card mockCard2 = MockCardData.createYuGiOhDummyCard();
+        Card mockCard3 = MockCardData.createPokemonDummyCard();
 
-        PhysicalCard p1R = new PhysicalCard(Game.POKEMON, 111, Status.Excellent, "this is a valid description");
-        PhysicalCard p3R = new PhysicalCard(Game.POKEMON, 333, Status.Damaged, "this is a valid description");
+        // Setup physical card for proposal map and return object
+        PhysicalCard p1S = new PhysicalCard(Game.POKEMON, mockCard1.getId(), Status.Good, "this is a valid description");
+        PhysicalCard p2S = new PhysicalCard(Game.YUGIOH, mockCard2.getId(), Status.Good, "this is a valid description");
+
+        PhysicalCard p1R = new PhysicalCard(Game.POKEMON, mockCard1.getId(), Status.Excellent, "this is a valid description");
+        PhysicalCard p3R = new PhysicalCard(Game.POKEMON, mockCard3.getId(), Status.Damaged, "this is a valid description");
 
         Map<Integer, Proposal> proposalMap = new HashMap<>() {{
             put(0, new Proposal("sender@test.it", "receiver@test.it",
@@ -206,25 +210,22 @@ public class ExchangeServiceTest {
             ));
         }};
 
-        Map<String, List<PhysicalCardWithName>> cards = new HashMap<>() {{
-            put("Sender", new LinkedList<PhysicalCardWithName>(){{
-                add(new PhysicalCardWithName(p1S, "name1"));
-                add(new PhysicalCardWithName(p2S, "name2"));
-            }});
-            put("Receiver", new LinkedList<PhysicalCardWithName>(){{
-                add(new PhysicalCardWithName(p1R, "name1"));
-                add(new PhysicalCardWithName(p3R, "name3"));
-            }});
-        }};
+        ProposalPayload expectedPayload = new ProposalPayload("receiver@test.it",
+                new LinkedList<PhysicalCardWithName>(){{
+                    add(new PhysicalCardWithName(p1S, mockCard1.getName()));
+                    add(new PhysicalCardWithName(p2S, mockCard2.getName()));
+                }},
+                new LinkedList<PhysicalCardWithName>(){{
+                    add(new PhysicalCardWithName(p1R, mockCard1.getName()));
+                    add(new PhysicalCardWithName(p3R, mockCard3.getName()));
+                }}
+        );
 
         // create the mock for the card Map
-        Card mockCard1 = MockCardData.createPokemonDummyCard();
-        Card mockCard2 = MockCardData.createYuGiOhDummyCard();
-        Card mockCard3 = MockCardData.createPokemonDummyCard();
         Map<Integer, Card> cardMap = new HashMap<>() {{
-            put(111, mockCard1);
-            put(222, mockCard2);
-            put(333, mockCard3);
+            put(mockCard1.getId(), mockCard1);
+            put(mockCard2.getId(), mockCard2);
+            put(mockCard3.getId(), mockCard3);
         }};
 
         // setup expected calls
@@ -246,12 +247,14 @@ public class ExchangeServiceTest {
                 .andReturn(cardMap);
 
         ctrl.replay();
-        Map<String, List<PhysicalCardWithName>> proposalCards = exchangeService.getProposalCards("validToken", 0);
+        ProposalPayload proposalPayload = exchangeService.getProposalCards("validToken", 0);
         ctrl.verify();
 
         Assertions.assertAll( () -> {
-            Assertions.assertNotNull(proposalCards);
-            Assertions.assertEquals(cards, proposalCards);
+            Assertions.assertNotNull(proposalPayload);
+            Assertions.assertEquals(expectedPayload.getReceiverEmail(), proposalPayload.getReceiverEmail());
+            Assertions.assertEquals(expectedPayload.getSenderCards(), proposalPayload.getSenderCards());
+            Assertions.assertEquals(expectedPayload.getReceiverCards(), proposalPayload.getReceiverCards());
         });
     }
 }

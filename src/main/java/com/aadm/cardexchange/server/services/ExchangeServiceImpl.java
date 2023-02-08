@@ -14,10 +14,7 @@ import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 public class ExchangeServiceImpl extends RemoteServiceServlet implements ExchangeService, MapDBConstants {
@@ -25,7 +22,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     private final MapDB db;
     private final Gson gson = new Gson();
 
-    private final Type proposalType = new TypeToken<Map<Integer, Proposal>>() {}.getType();
+    private final Type proposalType = new TypeToken<Proposal>() {}.getType();
 
     public ExchangeServiceImpl() {
         db = new MapDBImpl();
@@ -57,27 +54,26 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
             throw new InputException("Invalid receiver physical cards");
         }
         Proposal newProposal = new Proposal(email, receiverUserEmail, senderPhysicalCards, receiverPhysicalCards);
-        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson, proposalType));
         return proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null;
     }
 
     @Override
-    public Map<String, List<PhysicalCardWithName>> getProposalCards(String token, int proposalId) throws AuthException, InputException {
-        String email = AuthServiceImpl.checkTokenValidity(token,
-                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-
+    public ProposalPayload getProposalCards(String token, int proposalId) throws AuthException, InputException {
+        AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         if (proposalId < 0) {
             throw new InputException("Invalid proposal Id");
         }
 
-        Map<Integer, Proposal> proposalMap = new HashMap<>(db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson, proposalType)));
+        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+
         if (proposalMap.size() == 0) {
             throw new RuntimeException("Not existing proposal");
         }
 
         Proposal proposal = proposalMap.get(proposalId);
 
-        List<PhysicalCardWithName> senderPCardsWithName = new ArrayList<>();
+        List<PhysicalCardWithName> senderPCardsWithName = new LinkedList<>();
         for (PhysicalCard pCard : proposal.getSenderPhysicalCards()) {
             String cardName = CardServiceImpl.getNameCard(
                     pCard.getCardId(),
@@ -91,7 +87,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
             senderPCardsWithName.add(new PhysicalCardWithName(pCard, cardName));
         }
 
-        List<PhysicalCardWithName> receiverPCardsWithName = new ArrayList<>();
+        List<PhysicalCardWithName> receiverPCardsWithName = new LinkedList<>();
         for (PhysicalCard pCard : proposal.getReceiverPhysicalCards()) {
             String cardName = CardServiceImpl.getNameCard(
                     pCard.getCardId(),
@@ -105,10 +101,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
             receiverPCardsWithName.add(new PhysicalCardWithName(pCard, cardName));
         }
 
-        return new HashMap<String, List<PhysicalCardWithName>>(){{
-            put("Sender", senderPCardsWithName);
-            put("Receiver", receiverPCardsWithName);
-        }};
+        return new ProposalPayload(proposal.getReceiverUserEmail(), senderPCardsWithName, receiverPCardsWithName);
     }
 }
 

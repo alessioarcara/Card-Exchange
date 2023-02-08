@@ -39,11 +39,17 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
     }
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
+        view.resetAll();
         view.setPresenter(this);
         acceptsOneWidget.setWidget(view.asWidget());
         fetchMyOwnedDeck();
         fetchUserOwnedDeck();
         view.setReceiverDeckName(place.getReceiverUserEmail());
+    }
+
+    @Override
+    public void onStop() {
+        view.resetAll();
     }
 
     private void fetchMyOwnedDeck() {
@@ -94,6 +100,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         }
     }
 
+    @Override
     public void goTo(Place place) {
         placeController.goTo(place);
     }
