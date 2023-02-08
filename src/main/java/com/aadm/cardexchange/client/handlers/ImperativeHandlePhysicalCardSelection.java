@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.client.handlers;
 
-public interface ImperativeHandleCardSelection {
+public interface ImperativeHandlePhysicalCardSelection {
     void onChangeSelection();
 
 }

@@ -118,11 +118,29 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
                 }
             }
         });
-
     }
 
     @Override
-    public void deleteCustomDeck() {
+    public void deleteCustomDeck(String deckName, Consumer<Boolean> isRemoved) {
+        if (checkDeckNameInvalidity(deckName)) {
+            view.displayAlert("Invalid deck name");
+            return;
+        }
 
+        rpcService.removeCustomDeck(authSubject.getToken(), deckName, new AsyncCallback<Boolean>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                if (caught instanceof AuthException) {
+                    view.displayAlert(((AuthException) caught).getErrorMessage());
+                } else {
+                    view.displayAlert("Internal server error: " + caught.getMessage());
+                }
+            }
+
+            @Override
+            public void onSuccess(Boolean result) {
+                isRemoved.accept(result);
+            }
+        });
     }
 }
