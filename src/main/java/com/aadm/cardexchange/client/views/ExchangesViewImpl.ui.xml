@@ -12,7 +12,7 @@
             gap: 1rem;
         }
 
-        .proposalsLists {
+        .proposalListsContainer {
             display: flex;
             flex-direction: row;
             justify-content: space-evenly;
@@ -20,7 +20,7 @@
     </ui:style>
     <g:HTMLPanel styleName="{style.deckLayout}">
         <h1>User exchange proposals</h1>
-        <div class="{style.proposalsLists}">
+        <div class="{style.proposalListsContainer}">
             <m:ProposalListWidget ui:field="fromYouProposalList"/>
             <m:ProposalListWidget ui:field="toYouProposalList"/>
         </div>

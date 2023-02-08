@@ -48,6 +48,10 @@ public class ProposalListWidget extends Composite {
         });
     }
 
+    public void resetTable() {
+        table.removeAllRows();
+    }
+
     interface ProposalListUiBinder extends UiBinder<Widget, ProposalListWidget> {
     }
 }

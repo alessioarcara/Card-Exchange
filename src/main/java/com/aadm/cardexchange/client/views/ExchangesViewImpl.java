@@ -47,6 +47,12 @@ public class ExchangesViewImpl extends Composite implements ExchangesView, Imper
     }
 
     @Override
+    public void resetProposalLists() {
+        fromYouProposalList.resetTable();
+        toYouProposalList.resetTable();
+    }
+
+    @Override
     public void setPresenter(Presenter presenter) {
         this.presenter = presenter;
     }

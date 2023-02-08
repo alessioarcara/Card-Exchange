@@ -28,4 +28,9 @@ public class ExchangesActivity extends AbstractActivity implements ExchangesView
         view.setFromYouProposalList(proposals);
         view.setToYouProposalList(proposals);
     }
+
+    @Override
+    public void onStop() {
+        view.resetProposalLists();
+    }
 }

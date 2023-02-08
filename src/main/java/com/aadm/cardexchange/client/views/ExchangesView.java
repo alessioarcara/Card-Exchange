@@ -10,6 +10,8 @@ public interface ExchangesView extends IsWidget {
 
     void setToYouProposalList(List<Proposal> proposals);
 
+    void resetProposalLists();
+
     void setPresenter(Presenter presenter);
 
     interface Presenter {
