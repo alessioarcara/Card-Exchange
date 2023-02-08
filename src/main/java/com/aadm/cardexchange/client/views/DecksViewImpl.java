@@ -25,7 +25,7 @@ import java.util.function.Consumer;
 public class DecksViewImpl extends Composite implements DecksView, ImperativeHandleDeck, ImperativeHandleCustomDeck,
         ImperativeHandlePhysicalCardSelection, ImperativeHandlePhysicalCardEdit {
     private static final DecksViewImpl.DecksViewImplUIBinder uiBinder = GWT.create(DecksViewImpl.DecksViewImplUIBinder.class);
-    private static final String DEFAULT_CUSTOM_DECK_TEXT = "Write here name for your new custom deck";
+    private static final String DEFAULT_CUSTOM_DECK_TEXT = "Write here your custom deck name";
     Presenter presenter;
     @UiField
     HTMLPanel decksContainer;
@@ -61,6 +61,7 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     public void displayAddedCustomDeck(String deckName) {
         decksContainer.add(createDeck(deckName));
         newDeckName.setInnerText(DEFAULT_CUSTOM_DECK_TEXT);
+        onChangeSelection();
     }
 
     // factory
@@ -85,8 +86,8 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     }
 
     @Override
-    public void onClickAddPhysicalCardsToCustomDeck(Consumer<List<PhysicalCardWithName>> updateCustomDeck) {
-        presenter.addPhysicalCardsToCustomDeck(ownedDeck.getDeckSelectedCards(), updateCustomDeck);
+    public void onClickAddPhysicalCardsToCustomDeck(String deckName, Consumer<List<PhysicalCardWithName>> updateCustomDeck) {
+        presenter.addPhysicalCardsToCustomDeck(deckName, ownedDeck.getDeckSelectedCards(), updateCustomDeck);
     }
 
     @Override
@@ -97,7 +98,6 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     @UiHandler(value = "newDeckButton")
     public void onClickCustomDeckAdd(ClickEvent e) {
         presenter.createCustomDeck(newDeckName.getInnerText());
-        onChangeSelection();
     }
 
     @Override

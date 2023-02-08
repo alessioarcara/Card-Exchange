@@ -18,6 +18,7 @@ import com.google.gwt.user.client.ui.Widget;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.logging.Logger;
 
 public class DeckWidget extends Composite implements ImperativeHandlePhysicalCardSelection, ImperativeHandlePhysicalCardRemove, ImperativeHandlePhysicalCardEdit {
     private static final DeckUIBinder uiBinder = GWT.create(DeckUIBinder.class);
@@ -59,7 +60,8 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
 
         if (customDeckHandler != null) {
             addButton = new Button("&#43;", (ClickHandler) e -> {
-                customDeckHandler.onClickAddPhysicalCardsToCustomDeck(pCards -> setData(pCards, null));
+                customDeckHandler.onClickAddPhysicalCardsToCustomDeck(deckName.getInnerText(),
+                        pCards -> setData(pCards, null));
             });
             Button removeButton = new Button("x", (ClickHandler) e -> {
                 if (Window.confirm("Are you sure you want to remove this deck?"))
@@ -80,6 +82,7 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
     }
 
     public void setData(List<PhysicalCardWithName> data, String selectedCardId) {
+        Logger.getLogger("adsasd").info(data.toString());
         cards.clear();
         for (PhysicalCardWithName pCard : data) {
             PhysicalCardWidget pCardWidget = createPhysicalCardWidget(pCard);

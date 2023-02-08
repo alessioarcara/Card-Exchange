@@ -31,6 +31,6 @@ public interface DecksView extends IsWidget {
 
         void deleteCustomDeck(String deckName, Consumer<Boolean> isRemoved);
 
-        void addPhysicalCardsToCustomDeck(List<PhysicalCard> pCards, Consumer<List<PhysicalCardWithName>> updateCustomDeck);
+        void addPhysicalCardsToCustomDeck(String deckName, List<PhysicalCard> pCards, Consumer<List<PhysicalCardWithName>> updateCustomDeck);
     }
 }
