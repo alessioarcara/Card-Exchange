@@ -10,9 +10,15 @@
 
         .deckHeader {
             display: flex;
+            justify-content: space-between;
             align-items: center;
             color: #fff;
-            padding-left: 1rem;
+            padding: 0 1rem 0 1rem;
+        }
+
+        .deckNameWrapper {
+            display: flex;
+            align-items: center;
             gap: 1rem;
         }
 
@@ -40,9 +46,12 @@
     </ui:style>
     <g:HTMLPanel styleName="{style.deck}">
         <div class="{style.deckHeader}">
-            <h2 ui:field="deckName"/>
-            <g:HTMLPanel styleName="{style.actions}" ui:field="actions">
+            <div class="{style.deckNameWrapper}">
+                <h2 ui:field="deckName"/>
                 <g:Button styleName="deckButton {style.showButton}" ui:field="showButton">></g:Button>
+            </div>
+            <g:HTMLPanel styleName="{style.actions}" ui:field="actions">
+                <!--                <g:Button styleName="deckButton {style.showButton}" ui:field="showButton">></g:Button>-->
             </g:HTMLPanel>
         </div>
         <g:HTMLPanel styleName="{style.cards}" ui:field="cards"/>

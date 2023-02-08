@@ -6,6 +6,7 @@ import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.DecksView;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.Game;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
@@ -20,7 +21,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import static org.easymock.EasyMock.*;
@@ -68,6 +72,7 @@ public class DecksActivityTest {
         return Stream.of(
                 Arguments.of(new AuthException("Invalid token")),
                 Arguments.of(new InputException("Invalid description")),
+                Arguments.of(new DeckNotFoundException("Dec")),
                 Arguments.of(new RuntimeException())
         );
     }
@@ -237,6 +242,80 @@ public class DecksActivityTest {
 
         ctrl.replay();
         decksActivity.deleteCustomDeck("Test", Assertions::assertTrue);
+        ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    public void testAddPhysicalCardsToCustomDeckForInvalidDeckName(String input) {
+        List<PhysicalCard> mockPCards = Arrays.asList(
+                new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description."),
+                new PhysicalCard(Game.randomGame(), 2222, Status.randomStatus(), "This is a valid description.")
+        );
+        mockDecksView.displayAlert(anyString());
+        ctrl.replay();
+        decksActivity.addPhysicalCardsToCustomDeck(input, mockPCards, (pCardsWithName -> {
+        }));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testAddPhysicalCardsToCustomDeckForEmptyList() {
+        mockDecksView.displayAlert(anyString());
+        ctrl.replay();
+        decksActivity.addPhysicalCardsToCustomDeck("test", Collections.emptyList(), (pCardsWithName) -> {
+        });
+        ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideDifferentTypeOfErrors")
+    public void testAddPhysicalCardsToCustomDeckForValidParametersForFailure(Exception e) {
+        // init mocks
+        List<PhysicalCard> mockPCards = Arrays.asList(
+                new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description."),
+                new PhysicalCard(Game.randomGame(), 2222, Status.randomStatus(), "This is a valid description.")
+        );
+
+        // expects
+        mockRpcService.addPhysicalCardsToCustomDeck(anyString(), anyString(), isA(List.class), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<List<PhysicalCardWithName>> callback = (AsyncCallback<List<PhysicalCardWithName>>) args[args.length - 1];
+            callback.onFailure(e);
+            return null;
+        });
+        mockDecksView.displayAlert(anyString());
+
+        ctrl.replay();
+        decksActivity.addPhysicalCardsToCustomDeck("test", mockPCards, (pCardsWithName) -> {
+        });
+        ctrl.verify();
+    }
+
+    @Test
+    public void testAddPhysicalCardsToCustomDeckForValidParametersForSuccess() {
+        // init mocks
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description.");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.randomGame(), 2222, Status.randomStatus(), "This is a valid description.");
+        List<PhysicalCard> mockPCards = Arrays.asList(mockPCard1, mockPCard2);
+        List<PhysicalCardWithName> mockPCardsWithName = Arrays.asList(
+                new PhysicalCardWithName(mockPCard1, "Charizard"),
+                new PhysicalCardWithName(mockPCard2, "Blastoise"));
+        Consumer<List<PhysicalCardWithName>> consumer = ctrl.createMock(Consumer.class);
+
+        // expects
+        mockRpcService.addPhysicalCardsToCustomDeck(anyString(), anyString(), isA(List.class), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<List<PhysicalCardWithName>> callback = (AsyncCallback<List<PhysicalCardWithName>>) args[args.length - 1];
+            callback.onSuccess(mockPCardsWithName);
+            return null;
+        });
+        consumer.accept(mockPCardsWithName);
+
+        ctrl.replay();
+        decksActivity.addPhysicalCardsToCustomDeck("test", mockPCards, consumer);
         ctrl.verify();
     }
 }
