@@ -23,10 +23,14 @@ public interface DecksView extends IsWidget {
     interface Presenter {
         void fetchUserDeck(String deckName, BiConsumer<List<PhysicalCardWithName>, String> setDeckData);
 
+        void updatePhysicalCard();
+
         void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard, Consumer<Boolean> isRemoved);
 
         void createCustomDeck(String deckName);
 
-        void deleteCustomDeck();
+        void deleteCustomDeck(String deckName, Consumer<Boolean> isRemoved);
+
+        void addPhysicalCardsToCustomDeck(String deckName, List<PhysicalCard> pCards, Consumer<List<PhysicalCardWithName>> updateCustomDeck);
     }
 }

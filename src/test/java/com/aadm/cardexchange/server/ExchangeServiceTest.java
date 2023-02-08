@@ -64,7 +64,6 @@ public class ExchangeServiceTest {
     private  List<PhysicalCard> generateValidListPcard(int n) {
         List<PhysicalCard> myList = new ArrayList<>();
         for (int i = 0; i<n; i++ ) {
-            //PhysicalCardImpl mockPCard = new PhysicalCardImpl(Game.randomGame(), (i+3000), Status.randomGame(), "This is a valid description.");
             PhysicalCard mockPCard = generateValidPCard(i);
             myList.add(mockPCard);
         }
@@ -113,7 +112,7 @@ public class ExchangeServiceTest {
         ctrl.verify();
     }
     @Test
-    public void testAddProposalForEmptySenderPCards() throws AuthException {
+    public void testAddProposalForEmptySenderPCards() {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
@@ -123,7 +122,7 @@ public class ExchangeServiceTest {
         ctrl.verify();
     }
     @Test
-    public void testAddProposalForNullSenderPCards() throws AuthException {
+    public void testAddProposalForNullSenderPCards() {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
@@ -134,7 +133,7 @@ public class ExchangeServiceTest {
     }
 
     @Test
-    public void testAddProposalForEmptyReceiverPCards() throws AuthException {
+    public void testAddProposalForEmptyReceiverPCards() {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
@@ -144,7 +143,7 @@ public class ExchangeServiceTest {
         ctrl.verify();
     }
     @Test
-    public void testAddProposalForNullReceiverPCards() throws AuthException {
+    public void testAddProposalForNullReceiverPCards() {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();

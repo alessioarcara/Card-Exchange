@@ -4,11 +4,14 @@ import com.aadm.cardexchange.client.handlers.ImperativeHandleAddCardToDeckModal;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.ui.*;
+import com.google.gwt.user.client.ui.Button;
+import com.google.gwt.user.client.ui.DialogBox;
+import com.google.gwt.user.client.ui.TextArea;
+import com.google.gwt.user.client.ui.Widget;
 
 public class AddCardToDeckModalWidget extends DialogBox {
     @UiField
-    ListBox status;
+    StatusWidget status;
     @UiField
     TextArea description;
     @UiField
@@ -25,12 +28,12 @@ public class AddCardToDeckModalWidget extends DialogBox {
         setGlassEnabled(true);
         setStyleName("my-Modal");
         noButton.addClickHandler(clickEvent -> hide());
-        yesButton.addClickHandler(clickEvent -> parent.onClickModalYes(status.getSelectedValue(), description.getValue()));
+        yesButton.addClickHandler(clickEvent -> parent.onClickModalYes(status.getSelection(), description.getValue()));
     }
 
     @Override
     public void hide() {
-        status.setItemSelected(0, true);
+        status.clearSelection();
         description.setText("");
         super.hide();
     }

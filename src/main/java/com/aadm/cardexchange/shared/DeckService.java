@@ -29,4 +29,8 @@ public interface DeckService extends RemoteService {
     List<PhysicalCardWithEmail> getOwnedPhysicalCardsByCardId(int cardId) throws InputException;
 
     List <PhysicalCardWithEmailDealing> getListPhysicalCardWithEmailDealing(String token, Game game, int cardId) throws BaseException;
+
+    List<PhysicalCardWithEmail> getWishedPhysicalCardsByCardId(int cardId) throws InputException;
+
+    List<PhysicalCardWithName> addPhysicalCardsToCustomDeck(String token, String customDeckName, List<PhysicalCard> pCards) throws BaseException;
 }
