@@ -88,15 +88,11 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     public boolean addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description) throws AuthException, InputException {
         /* PARAMETERS CHECK */
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        if (game == null) {
-            throw new InputException("Invalid game");
-        }
+        CardServiceImpl.checkGameInvalidity(game);
         if (deckName == null || deckName.isEmpty()) {
             throw new InputException("Invalid deck name");
         }
-        if (cardId <= 0) {
-            throw new InputException("Invalid card id");
-        }
+        CardServiceImpl.checkCardIdInvalidity(cardId);
         if (status == null) {
             throw new InputException("Invalid status");
         }
@@ -188,10 +184,14 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
 
     @Override
     public List<PhysicalCardWithEmail> getOwnedPhysicalCardsByCardId(int cardId) throws InputException {
-        if (cardId <= 0) {
-            throw new InputException("Invalid cardId");
-        }
+        CardServiceImpl.checkCardIdInvalidity(cardId);
         return getPhysicalCardByCardIdAndDeckName(cardId, OWNED_DECK);
+    }
+
+    @Override
+    public List<PhysicalCardWithEmail> getWishedPhysicalCardsByCardId(int cardId) throws InputException {
+        CardServiceImpl.checkCardIdInvalidity(cardId);
+        return getPhysicalCardByCardIdAndDeckName(cardId, WISHED_DECK);
     }
 
     private List<PhysicalCardWithName> joinPhysicalCardsWithCatalogCards(Set<PhysicalCard> pCards) {
