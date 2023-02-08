@@ -139,6 +139,7 @@ public class NewExchangeActivityTest {
             callback.onSuccess(true);
             return null;
         });
+        mockView.showAlert(anyString());
         placeController.goTo(isA(Place.class));
 
         ctrl.replay();

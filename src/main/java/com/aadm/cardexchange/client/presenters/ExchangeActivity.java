@@ -2,6 +2,7 @@ package com.aadm.cardexchange.client.presenters;
 
 import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.places.ExchangePlace;
+import com.aadm.cardexchange.client.places.ExchangesPlace;
 import com.aadm.cardexchange.client.views.NewExchangeView;
 import com.aadm.cardexchange.shared.ExchangeServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
@@ -47,6 +48,8 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
                     view.showAlert(((AuthException) caught).getErrorMessage());
                 } else if (caught instanceof InputException) {
                     view.showAlert(((InputException) caught).getErrorMessage());
+                } else if (caught instanceof NullPointerException) {
+                    view.showAlert(caught.getMessage());
                 } else {
                     view.showAlert("Internal server error: " + caught.getMessage());
                 }
@@ -69,6 +72,35 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
     @Override
     public void acceptExchangeProposal() {
         Window.alert( "Accepted proposal : " + place.getExchangeProposalId());
+    }
+
+    @Override
+    public void refuseOrWithdrawProposal() {
+        exchangeService.refuseOrWithdrawProposal(authSubject.getToken(), place.getExchangeProposalId(), new AsyncCallback<Boolean>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                if (caught instanceof AuthException) {
+                    view.showAlert(((AuthException) caught).getErrorMessage());
+                } else if (caught instanceof InputException) {
+                    view.showAlert(((InputException) caught).getErrorMessage());
+                } else if (caught instanceof NullPointerException) {
+                    view.showAlert(caught.getMessage());
+                } else {
+                    view.showAlert("Internal server error: " + caught.getMessage());
+                }
+            }
+
+            @Override
+            public void onSuccess(Boolean result) {
+                if (result) {
+                    view.showAlert("Successfully removed proposal");
+                    goTo(new ExchangesPlace());
+                }
+                else {
+                    view.showAlert("It seems this proposal doesn't exist anymore");
+                }
+            }
+        });
     }
 
     @Override

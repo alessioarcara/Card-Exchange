@@ -37,6 +37,8 @@ public interface NewExchangeView extends IsWidget {
 
         void acceptExchangeProposal();
 
+        void refuseOrWithdrawProposal();
+
         void goTo(Place place);
     }
 }
