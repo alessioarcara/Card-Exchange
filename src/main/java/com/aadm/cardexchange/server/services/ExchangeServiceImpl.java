@@ -8,12 +8,9 @@ import com.aadm.cardexchange.shared.ExchangeService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
-import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
-
-import java.lang.reflect.Type;
 import java.util.*;
 
 public class ExchangeServiceImpl extends RemoteServiceServlet implements ExchangeService, MapDBConstants {
