@@ -87,11 +87,6 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     }
 
     @Override
-    public void onShowDeck(String deckName, BiConsumer<List<PhysicalCardWithName>, String> setDeckData) {
-        presenter.fetchUserDeck(deckName, setDeckData);
-    }
-
-    @Override
     public void onClickRemoveCustomDeck(String deckName, Consumer<Boolean> isRemoved) {
         presenter.deleteCustomDeck(deckName, isRemoved);
     }
@@ -99,11 +94,6 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     @Override
     public void onClickAddPhysicalCardsToCustomDeck(String deckName, Consumer<List<PhysicalCardWithName>> updateCustomDeck) {
         presenter.addPhysicalCardsToCustomDeck(deckName, ownedDeck.getDeckSelectedCards(), updateCustomDeck);
-    }
-
-    @Override
-    public void onRemovePhysicalCard(String deckName, PhysicalCard pCard, Consumer<Boolean> isRemoved) {
-        presenter.removePhysicalCardFromDeck(deckName, pCard, isRemoved);
     }
 
     @UiHandler(value = "newDeckButton")
