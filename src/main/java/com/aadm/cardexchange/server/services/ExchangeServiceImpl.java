@@ -7,14 +7,13 @@ import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.ExchangeService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
-import com.aadm.cardexchange.shared.models.PhysicalCard;
-import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
-import com.aadm.cardexchange.shared.models.Proposal;
-import com.aadm.cardexchange.shared.models.User;
+import com.aadm.cardexchange.shared.models.*;
+import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import org.mapdb.Serializer;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +24,8 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     private static final long serialVersionUID = 5868088467963819042L;
     private final MapDB db;
     private final Gson gson = new Gson();
+
+    private final Type proposalType = new TypeToken<Map<Integer, Proposal>>() {}.getType();
 
     public ExchangeServiceImpl() {
         db = new MapDBImpl();
@@ -69,7 +70,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
             throw new InputException("Invalid proposal Id");
         }
 
-        Map<Integer, Proposal> proposalMap = new HashMap<>(db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson)));
+        Map<Integer, Proposal> proposalMap = new HashMap<>(db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson, proposalType)));
         if (proposalMap.size() == 0) {
             throw new RuntimeException("Not existing proposal");
         }
@@ -104,7 +105,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
             receiverPCardsWithName.add(new PhysicalCardWithName(pCard, cardName));
         }
 
-        return new HashMap<>() {{
+        return new HashMap<String, List<PhysicalCardWithName>>(){{
             put("Sender", senderPCardsWithName);
             put("Receiver", receiverPCardsWithName);
         }};

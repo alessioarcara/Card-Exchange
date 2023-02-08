@@ -17,10 +17,7 @@ import org.mapdb.Serializer;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.easymock.EasyMock.*;
 
@@ -178,39 +175,83 @@ public class ExchangeServiceTest {
     }
 
     @Test
-    public void testGetProposalCardsForSuccess() throws AuthException, InputException {
+    public void testGetProposalCardsForEmptyProposalMap() throws InputException, AuthException {
         setupForValidToken();
-
-        PhysicalCard p1S = new PhysicalCard(Game.MAGIC, 111, Status.Good, "this is a valid description");
-        PhysicalCard p2S = new PhysicalCard(Game.POKEMON, 222, Status.Good, "this is a valid description");
-
-        PhysicalCard p1R = new PhysicalCard(Game.MAGIC, 111, Status.Excellent, "this is a valid description");
-        PhysicalCard p3R = new PhysicalCard(Game.POKEMON, 333, Status.Damaged, "this is a valid description");
-
-        Map<Integer, Proposal> proposalMap = new HashMap<>() {{
-            put(0, new Proposal("sender@test.it", "receiver@test.it",
-                    new ArrayList<>() {{ add(p1S); add(p2S); }},
-                    new ArrayList<>(){{ add(p1R); add(p3R); }}
-            ));
-        }};
-
-        Map<String, List<PhysicalCardWithName>> cards = new HashMap<>() {{
-            put("Sender", new ArrayList<>(){{
-                add(new PhysicalCardWithName(p1S, "name1"));
-                add(new PhysicalCardWithName(p2S, "name2"));
-            }});
-            put("Receiver", new ArrayList<>(){{
-                add(new PhysicalCardWithName(p1R, "name1"));
-                add(new PhysicalCardWithName(p3R, "name3"));
-            }});
-        }};
+        Map<Integer, Proposal> proposalMap = new HashMap<>();
 
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(proposalMap);
 
         ctrl.replay();
-        Assertions.assertDoesNotThrow(() -> exchangeService.getProposalCards("validToken", 0));
+        Assertions.assertThrows(RuntimeException.class, () -> exchangeService.getProposalCards("validToken", 0));
         ctrl.verify();
+    }
+
+    @Test
+    public void testGetProposalCardsForSuccess() throws AuthException, InputException {
+        setupForValidToken();
+
+        // Setup physical card for proposal map and return object
+        PhysicalCard p1S = new PhysicalCard(Game.POKEMON, 111, Status.Good, "this is a valid description");
+        PhysicalCard p2S = new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description");
+
+        PhysicalCard p1R = new PhysicalCard(Game.POKEMON, 111, Status.Excellent, "this is a valid description");
+        PhysicalCard p3R = new PhysicalCard(Game.POKEMON, 333, Status.Damaged, "this is a valid description");
+
+        Map<Integer, Proposal> proposalMap = new HashMap<>() {{
+            put(0, new Proposal("sender@test.it", "receiver@test.it",
+                    new ArrayList<PhysicalCard>() {{ add(p1S); add(p2S); }},
+                    new ArrayList<PhysicalCard>(){{ add(p1R); add(p3R); }}
+            ));
+        }};
+
+        Map<String, List<PhysicalCardWithName>> cards = new HashMap<>() {{
+            put("Sender", new LinkedList<PhysicalCardWithName>(){{
+                add(new PhysicalCardWithName(p1S, "name1"));
+                add(new PhysicalCardWithName(p2S, "name2"));
+            }});
+            put("Receiver", new LinkedList<PhysicalCardWithName>(){{
+                add(new PhysicalCardWithName(p1R, "name1"));
+                add(new PhysicalCardWithName(p3R, "name3"));
+            }});
+        }};
+
+        // create the mock for the card Map
+        Card mockCard1 = MockCardData.createPokemonDummyCard();
+        Card mockCard2 = MockCardData.createYuGiOhDummyCard();
+        Card mockCard3 = MockCardData.createPokemonDummyCard();
+        Map<Integer, Card> cardMap = new HashMap<>() {{
+            put(111, mockCard1);
+            put(222, mockCard2);
+            put(333, mockCard3);
+        }};
+
+        // setup expected calls
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(proposalMap);
+
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(cardMap);
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(cardMap);
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(cardMap);
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(cardMap);
+
+        ctrl.replay();
+        Map<String, List<PhysicalCardWithName>> proposalCards = exchangeService.getProposalCards("validToken", 0);
+        ctrl.verify();
+
+        Assertions.assertAll( () -> {
+            Assertions.assertNotNull(proposalCards);
+            Assertions.assertEquals(cards, proposalCards);
+        });
     }
 }
