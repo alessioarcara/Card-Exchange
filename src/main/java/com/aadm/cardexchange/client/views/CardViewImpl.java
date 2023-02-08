@@ -54,6 +54,7 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
     AddCardToDeckWidget addCardToDeckWidget = new AddCardToDeckWidget(this);
     DialogBox dialog = new AddCardToDeckModalWidget(this);
     UserListWidget ownedByUserList;
+    UserListWidget wishedByUserList;
 
     public CardViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -121,13 +122,19 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
         }
         // create UserListWidget 'Exchange' buttons
         ownedByUserList = new UserListWidget("Owned by", isLoggedIn);
+        wishedByUserList = new UserListWidget("Wished by", isLoggedIn);
         userLists.add(ownedByUserList);
-        userLists.add(new UserListWidget("Wished by", isLoggedIn));
+        userLists.add(wishedByUserList);
     }
 
     @Override
     public void setOwnedByUserList(List<PhysicalCardWithEmail> pCards) {
         ownedByUserList.setTable(pCards, this);
+    }
+
+    @Override
+    public void setWishedByUserList(List<PhysicalCardWithEmail> pCards) {
+        wishedByUserList.setTable(pCards, this);
     }
 
     @Override
