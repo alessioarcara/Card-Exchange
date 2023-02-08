@@ -15,6 +15,7 @@ import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NewExchangeViewImpl extends Composite implements NewExchangeView, ImperativeHandlePhysicalCardSelection {
@@ -33,11 +34,13 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
     Button cancelButton;
     @UiField
     Button acceptButton;
+    List<HandlerRegistration> handlers;
 
     public NewExchangeViewImpl() {
         this.senderDeck = new DeckWidget(null, null, this, null, "Your Owned Cards");
         this.receiverDeck = new DeckWidget(null, null, this, null, "");
         initWidget(uiBinder.createAndBindUi(this));
+        handlers = new ArrayList<>();
     }
 
     public void setReceiverDeckName(String receiverUserEmail) {
@@ -62,6 +65,28 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
     public void setPresenter(ExchangePresenter exchangePresenter) {
         this.newExchangePresenter = null;
         this.exchangePresenter = exchangePresenter;
+    }
+
+    @Override
+    public void setNewExchangeButtons() {
+        handlers.add(cancelButton.addClickHandler(e -> newExchangePresenter.goTo(new HomePlace())));
+        handlers.add(acceptButton.addClickHandler(e -> newExchangePresenter.createProposal(senderDeck.getDeckSelectedCards(), receiverDeck.getDeckSelectedCards())));
+    }
+
+    @Override
+    public void setExchangeButtons() {
+        handlers.add(cancelButton.addClickHandler(e -> exchangePresenter.goTo(new ExchangesPlace())));
+        handlers.add(acceptButton.addClickHandler(e -> exchangePresenter.acceptExchangeProposal()));
+    }
+
+    @Override
+    public void resetHandlers() {
+        handlers.forEach(handler -> handler.removeHandler());
+    }
+
+    public void setData(String title, String subtitle) {
+        pageTitle.setInnerText(title);
+        pageSubtitle.setInnerText(subtitle);
     }
 
     @Override

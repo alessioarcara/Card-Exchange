@@ -97,6 +97,11 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
     }
 
     @Override
+    public void onStop() {
+        view.resetHandlers();
+    }
+
+    @Override
     public void goTo(Place place) {
         placeController.goTo(place);
     }
