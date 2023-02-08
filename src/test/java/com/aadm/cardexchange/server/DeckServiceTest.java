@@ -370,10 +370,10 @@ public class DeckServiceTest {
     }
 
     private void setupDefaultDecks(String deckName, String mail1, String mail2) {
-        PhysicalCard mockPCard1 = new PhysicalCard(Game.randomGame(), 1111, Status.randomGame(), "This is the card that I want.");
-        PhysicalCard mockPCard2 = new PhysicalCard(Game.randomGame(), 1111, Status.randomGame(), "This is the card that I want.");
-        PhysicalCard mockPCard3 = new PhysicalCard(Game.randomGame(), 2222, Status.randomGame(), "This is the card that I want.");
-        PhysicalCard mockPCard4 = new PhysicalCard(Game.randomGame(), 3333, Status.randomGame(), "This is the card that I want.");
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is the card that I want.");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is the card that I want.");
+        PhysicalCard mockPCard3 = new PhysicalCard(Game.randomGame(), 2222, Status.randomStatus(), "This is the card that I want.");
+        PhysicalCard mockPCard4 = new PhysicalCard(Game.randomGame(), 3333, Status.randomStatus(), "This is the card that I want.");
         Deck mockDeck1 = new Deck(deckName, true);
         Deck mockDeck2 = new Deck(deckName, true);
 
@@ -444,7 +444,7 @@ public class DeckServiceTest {
         // init Mocks
         String emailTest1 = "test1@test.it";
         String emailTest2 = "test2@test.it";
-        setupDefaultDecks("Owned",  emailTest1,  emailTest2);
+        setupDefaultDecks("Owned", emailTest1, emailTest2);
         ctrl.replay();
         List<PhysicalCardWithEmail> pCardsWithEmail = deckService.getOwnedPhysicalCardsByCardId(1111);
         ctrl.verify();
@@ -558,7 +558,7 @@ public class DeckServiceTest {
         // init mocks
         String emailTest1 = "test1@test.it";
         String emailTest2 = "test2@test.it";
-        setupDefaultDecks("Wished",  emailTest1,  emailTest2);
+        setupDefaultDecks("Wished", emailTest1, emailTest2);
 
         ctrl.replay();
         List<PhysicalCardWithEmail> pCardsWithEmail = deckService.getWishedPhysicalCardsByCardId(1111);

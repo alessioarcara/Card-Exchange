@@ -188,6 +188,12 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return getPhysicalCardByCardIdAndDeckName(cardId, OWNED_DECK);
     }
 
+    @Override
+    public List<PhysicalCardWithEmail> getWishedPhysicalCardsByCardId(int cardId) throws InputException {
+        CardServiceImpl.checkCardIdInvalidity(cardId);
+        return getPhysicalCardByCardIdAndDeckName(cardId, WISHED_DECK);
+    }
+
     private List<PhysicalCardWithName> joinPhysicalCardsWithCatalogCards(Set<PhysicalCard> pCards) {
         List<PhysicalCardWithName> pCardsWithName = new LinkedList<>();
         for (PhysicalCard pCard : pCards) {
@@ -223,11 +229,5 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         deckMap.put(customDeckName, userDecks);
         // Return the modified deck's card list
         return joinPhysicalCardsWithCatalogCards(userDeck.getPhysicalCards());
-    }
-
-    @Override
-    public List<PhysicalCardWithEmail> getWishedPhysicalCardsByCardId(int cardId) throws InputException {
-        CardServiceImpl.checkCardIdInvalidity(cardId);
-        return getPhysicalCardByCardIdAndDeckName(cardId, WISHED_DECK);
     }
 }
