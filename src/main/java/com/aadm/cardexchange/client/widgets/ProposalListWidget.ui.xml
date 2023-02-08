@@ -12,8 +12,9 @@
             text-align: left;
             border-spacing: 0;
             display: block;
-            max-height: 22vh;
+            max-height: 60vh;
             overflow-y: scroll;
+            cursor: pointer;
         }
 
         .table::-webkit-scrollbar {
@@ -24,10 +25,15 @@
             padding: 0.2rem 1rem 0.2rem 0.7rem;
         }
 
+        .table tbody tr:hover {
+            color: #efefef !important;
+            background-color: #20262E !important;
+        }
+
         .table thead {
             position: sticky;
             top: 0;
-            background-color: #ccc;
+            background-color: rgb(205, 88, 136);
             font-weight: bold;
         }
 
@@ -41,7 +47,7 @@
 
         /*noinspection ALL*/
         .table tbody > tr:nth-child\(odd\) {
-            background-color: #eee;
+            background-color: rgba(205, 88, 136, 0.1);
         }
 
         .table tbody > tr:last-child > td:first-child {

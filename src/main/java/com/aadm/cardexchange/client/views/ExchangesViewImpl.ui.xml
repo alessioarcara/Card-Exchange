@@ -1,6 +1,7 @@
 <!DOCTYPE ui:UiBinder SYSTEM "http://dl.google.com/gwt/DTD/xhtml.ent">
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
-             xmlns:g="urn:import:com.google.gwt.user.client.ui">
+             xmlns:g="urn:import:com.google.gwt.user.client.ui"
+             xmlns:m="urn:import:com.aadm.cardexchange.client.widgets">
     <ui:style>
         .deckLayout {
             display: flex;
@@ -19,6 +20,9 @@
     </ui:style>
     <g:HTMLPanel styleName="{style.deckLayout}">
         <h1>User exchange proposals</h1>
-        <g:HTMLPanel styleName="{style.proposalsLists}" ui:field="proposalLists"/>
+        <div class="{style.proposalsLists}">
+            <m:ProposalListWidget ui:field="fromYouProposalList"/>
+            <m:ProposalListWidget ui:field="toYouProposalList"/>
+        </div>
     </g:HTMLPanel>
 </ui:UiBinder>

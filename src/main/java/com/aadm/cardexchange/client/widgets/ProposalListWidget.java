@@ -1,9 +1,12 @@
 package com.aadm.cardexchange.client.widgets;
 
+import com.aadm.cardexchange.client.handlers.ImperativeHandleProposalList;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.*;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Event;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
@@ -28,29 +31,21 @@ public class ProposalListWidget extends Composite {
         row.insertCell(0).setInnerText("ID");
         row.insertCell(1).setInnerText("Date");
         row.insertCell(2).setInnerText(otherUser);
-        addRow("12212", "08-02-2023", "alessiacrimaldi@virgilio.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
-        addRow("12212", "08-02-2023", "test@test.it");
     }
 
-    private void addRow(String ID, String date, String email) {
+    public void addRow(int id, String date, String email, ImperativeHandleProposalList rowClickHandler) {
         int numRows = (table.getRowCount());
-        table.setText(numRows, 0, ID);
+        table.setText(numRows, 0, String.valueOf(id));
         table.setText(numRows, 1, date);
         table.setText(numRows, 2, email);
+        Element proposalRow = table.getRowFormatter().getElement(numRows);
+        proposalRow.setTitle("view more");
+        DOM.sinkEvents(proposalRow, Event.ONCLICK);
+        DOM.setEventListener(proposalRow, event -> {
+            if (Event.ONCLICK == event.getTypeInt()) {
+                rowClickHandler.onClickProposalRow(id);
+            }
+        });
     }
 
     interface ProposalListUiBinder extends UiBinder<Widget, ProposalListWidget> {
