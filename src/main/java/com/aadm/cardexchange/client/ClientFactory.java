@@ -21,4 +21,6 @@ public interface ClientFactory {
     AuthSubject getAuthSubject();
 
     NewExchangeView getNewExchangeView();
+
+    ExchangesView getExchangesView();
 }

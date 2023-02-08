@@ -6,10 +6,6 @@
             box-shadow: 0 0 0 4px gold inset !important;
         }
 
-        .cardDiscarded {
-            border: none;
-        }
-
         .card {
             position: relative;
             display: flex;
@@ -27,38 +23,65 @@
         }
 
         .cardStatus {
-            color: rgb(68, 68, 68);
+            color: #444;
             padding: 1rem 0;
-            font-size: 0.9em;
+            font-size: .9em;
             font-weight: bold;
             text-transform: uppercase;
         }
 
         .cardDescription {
             word-break: break-word;
+            padding: 0.55rem 0.55rem;
         }
 
-        .deleteButton {
+        .cardDescription[contenteditable="true"] {
+            outline: none;
+            border: 2px dashed #3A3FF0;
+            border-radius: 6px;
+            background: #e9efff;
+        }
+
+        .cardActions {
             position: absolute;
             top: 5px;
             right: 5px;
+            display: flex;
+            gap: 4px;
+        }
+
+        .cardActions > button {
+            font-size: 1.1em;
             width: 1.5rem;
             height: 1.5rem;
-            color: red;
             background: #fff;
-            border: solid 1px red;
             border-radius: 50%;
             text-align: center;
         }
 
+        .editButton {
+            border: 1px solid #3A3FF0;
+            color: #3A3FF0;
+            transform: scaleX(-1);
+        }
+
+        .editButton:hover, .toggle {
+            background: #e9efff !important;
+        }
+
+        .deleteButton {
+            color: #f03a3a;
+            border: 1px solid #f03a3a;
+        }
+
         .deleteButton:hover {
-            color: white;
-            background: red;
+            background: #ffe9e9;
         }
     </ui:style>
     <g:HTMLPanel styleName="{style.card}" ui:field="cardContainer">
         <h2 ui:field="cardName"/>
         <div ui:field="cardDescription" class="{style.cardDescription}"/>
-        <div ui:field="cardStatus" class="{style.cardStatus}"/>
+        <g:HTMLPanel ui:field="cardStatus" styleName="{style.cardStatus}"/>
+        <g:HTMLPanel ui:field="cardActions" styleName="{style.cardActions}"/>
     </g:HTMLPanel>
 </ui:UiBinder>

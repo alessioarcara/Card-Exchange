@@ -26,6 +26,7 @@ public class SidebarWidget extends Composite implements RouteConstants {
             links.add(new Hyperlink("Auth", authLink));
         } else {
             links.add(new Hyperlink("Decks", decksLink));
+            links.add(new Hyperlink("Exchanges", exchangesLink));
             links.add(button);
         }
     }

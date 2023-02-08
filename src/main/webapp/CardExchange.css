@@ -34,3 +34,8 @@ html, body {
     background-color: #eee;
     color: #444;
 }
+
+.deckButton:disabled {
+    background: gainsboro;
+    color: #444;
+}
