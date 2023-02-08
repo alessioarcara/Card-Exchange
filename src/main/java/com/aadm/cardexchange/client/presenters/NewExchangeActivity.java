@@ -42,10 +42,9 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         view.setPresenter(this);
         view.setNewExchangeButtons();
         acceptsOneWidget.setWidget(view.asWidget());
-        view.setData("New Exchange Page", "Select the cards you want to exchange from both decks and propose a new exchange");
+        view.setData(true, "New Exchange Page", "Select the cards you want to exchange from both decks and propose a new exchange");
         fetchMyOwnedDeck();
         fetchUserOwnedDeck();
-        view.setReceiverDeckName(place.getReceiverUserEmail());
     }
 
     private void fetchMyOwnedDeck() {
@@ -61,7 +60,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         deckService.getUserOwnedDeck(place.getReceiverUserEmail(), new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
             public void onSuccess(List<PhysicalCardWithName> physicalCards) {
-                view.setReceiverDeck(physicalCards, place.getSelectedCardId());
+                view.setReceiverDeck(physicalCards, place.getSelectedCardId(), place.getReceiverUserEmail());
             }
         });
     }

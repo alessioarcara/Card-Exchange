@@ -35,11 +35,11 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
         view.setPresenter(this);
         view.setExchangeButtons();
         acceptsOneWidget.setWidget(view.asWidget());
-        view.setData("Exchange proposal Page", "Check the cards in the exchange proposal before accepting or refusing it");
-        setDecksData();
+        view.setData(false, "Exchange proposal Page", "Check the cards in the exchange proposal before accepting or refusing it");
+        fetchProposalData();
     }
 
-    private void setDecksData() {
+    private void fetchProposalData() {
         exchangeService.getProposalCards(authSubject.getToken(), place.getExchangeProposalId(), new AsyncCallback<ProposalPayload>() {
             @Override
             public void onFailure(Throwable caught) {
@@ -55,8 +55,7 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
             @Override
             public void onSuccess(ProposalPayload payload) {
                 view.setSenderDeck(payload.getSenderCards(), null);
-                view.setReceiverDeck(payload.getReceiverCards(), null);
-                view.setReceiverDeckName(payload.getReceiverEmail());
+                view.setReceiverDeck(payload.getReceiverCards(), null, payload.getReceiverEmail());
                 view.setAcceptButtonEnabled(true);
             }
         });

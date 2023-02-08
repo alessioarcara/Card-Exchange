@@ -13,6 +13,7 @@ import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
+import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
@@ -26,33 +27,42 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
     HeadingElement pageTitle;
     @UiField
     HeadingElement pageSubtitle;
-    @UiField(provided = true)
-    DeckWidget senderDeck;
-    @UiField(provided = true)
-    DeckWidget receiverDeck;
+    @UiField
+    HTMLPanel exchangeDecks;
     @UiField
     Button cancelButton;
     @UiField
     Button acceptButton;
     List<HandlerRegistration> handlers;
+    DeckWidget senderDeck;
+    DeckWidget receiverDeck;
 
     public NewExchangeViewImpl() {
-        this.senderDeck = new DeckWidget(null, null, this, null, "Your Owned Cards");
-        this.receiverDeck = new DeckWidget(null, null, this, null, "");
         initWidget(uiBinder.createAndBindUi(this));
         handlers = new ArrayList<>();
     }
 
-    public void setReceiverDeckName(String receiverUserEmail) {
-        receiverDeck.setDeckName(receiverUserEmail);
+    @Override
+    public void setData(boolean clickable, String title, String subtitle) {
+        pageTitle.setInnerText(title);
+        pageSubtitle.setInnerText(subtitle);
+
+        exchangeDecks.clear();
+        senderDeck = new DeckWidget(null, null, clickable ? this : null, null, "Your Owned Cards");
+        receiverDeck = new DeckWidget(null, null, clickable ? this : null, null, "");
+        exchangeDecks.add(senderDeck);
+        exchangeDecks.add(receiverDeck);
     }
 
+    @Override
     public void setSenderDeck(List<PhysicalCardWithName> physicalCards, String selectedCardId) {
         senderDeck.setData(physicalCards, selectedCardId);
     }
 
-    public void setReceiverDeck(List<PhysicalCardWithName> physicalCards, String selectedCardId) {
+    @Override
+    public void setReceiverDeck(List<PhysicalCardWithName> physicalCards, String selectedCardId, String receiverUserEmail) {
         receiverDeck.setData(physicalCards, selectedCardId);
+        receiverDeck.setDeckName(receiverUserEmail);
     }
 
     @Override
@@ -82,11 +92,6 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
     @Override
     public void resetHandlers() {
         handlers.forEach(handler -> handler.removeHandler());
-    }
-
-    public void setData(String title, String subtitle) {
-        pageTitle.setInnerText(title);
-        pageSubtitle.setInnerText(subtitle);
     }
 
     @Override

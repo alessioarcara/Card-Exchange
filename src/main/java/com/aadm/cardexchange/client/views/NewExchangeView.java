@@ -9,9 +9,10 @@ import java.util.List;
 
 public interface NewExchangeView extends IsWidget {
 
-    void setReceiverDeckName(String receiverUserEmail);
+    void setData(boolean clickable, String title, String subtitle);
+
     void setSenderDeck(List<PhysicalCardWithName> physicalCardDecorators, String selectedCardId);
-    void setReceiverDeck(List<PhysicalCardWithName> physicalCardDecorators, String selectedCardId);
+    void setReceiverDeck(List<PhysicalCardWithName> physicalCardDecorators, String selectedCardId,  String receiverUserEmail);
 
     void setPresenter(NewExchangePresenter newExchangePresenter);
 
@@ -20,8 +21,6 @@ public interface NewExchangeView extends IsWidget {
     void setAcceptButtonEnabled(boolean enabled);
 
     void showAlert(String message);
-
-    void setData(String title, String subtitle);
 
     void setNewExchangeButtons();
 
