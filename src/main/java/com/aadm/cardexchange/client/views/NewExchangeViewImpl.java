@@ -46,7 +46,6 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
     public void setData(boolean clickable, String title, String subtitle) {
         pageTitle.setInnerText(title);
         pageSubtitle.setInnerText(subtitle);
-
         exchangeDecks.clear();
         senderDeck = new DeckWidget(null, null, clickable ? this : null, null, "Your Owned Cards");
         receiverDeck = new DeckWidget(null, null, clickable ? this : null, null, "");
