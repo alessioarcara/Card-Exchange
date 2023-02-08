@@ -153,16 +153,44 @@ public class ExchangeServiceTest {
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"invalidToken"})
-    public void testGetProposalCardsForInvalidUser(String input) throws AuthException {
+    public void testGetProposalCardsForInvalidUserToken(String input) throws AuthException {
+        setupForValidToken();
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> exchangeService.getProposalCards(input, 0));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetProposalCardsForNotAllowedUser() throws AuthException {
         Map<String, LoginInfo> loginInfoMap = new HashMap<>() {{
             put("validToken1", new LoginInfo("test@test.it", System.currentTimeMillis() - 10000));
             put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 20000));
         }};
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-            .andReturn(loginInfoMap);
+                .andReturn(loginInfoMap);
+
+        // Setup physical card for proposal map and return object
+        PhysicalCard p1S = new PhysicalCard(Game.POKEMON, 111, Status.Good, "this is a valid description");
+        PhysicalCard p2S = new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description");
+
+        PhysicalCard p1R = new PhysicalCard(Game.POKEMON, 111, Status.Excellent, "this is a valid description");
+        PhysicalCard p3R = new PhysicalCard(Game.POKEMON, 333, Status.Damaged, "this is a valid description");
+
+        Map<Integer, Proposal> proposalMap = new HashMap<>() {{
+            put(0, new Proposal("sender@test.it", "receiver@test.it",
+                    new ArrayList<PhysicalCard>() {{ add(p1S); add(p2S); }},
+                    new ArrayList<PhysicalCard>(){{ add(p1R); add(p3R); }}
+            ));
+        }};
+
+        // setup expected calls
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(proposalMap);
+
         ctrl.replay();
-        Assertions.assertThrows(AuthException.class, () -> exchangeService.getProposalCards(input, 0));
+        Assertions.assertThrows(AuthException.class, () -> exchangeService.getProposalCards("validToken1", 0));
         ctrl.verify();
     }
 
@@ -204,7 +232,7 @@ public class ExchangeServiceTest {
         PhysicalCard p3R = new PhysicalCard(Game.POKEMON, mockCard3.getId(), Status.Damaged, "this is a valid description");
 
         Map<Integer, Proposal> proposalMap = new HashMap<>() {{
-            put(0, new Proposal("sender@test.it", "receiver@test.it",
+            put(0, new Proposal("test@test.it", "receiver@test.it",
                     new ArrayList<PhysicalCard>() {{ add(p1S); add(p2S); }},
                     new ArrayList<PhysicalCard>(){{ add(p1R); add(p3R); }}
             ));

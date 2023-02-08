@@ -58,9 +58,10 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         return proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null;
     }
 
+
     @Override
-    public ProposalPayload getProposalCards(String token, int proposalId) throws AuthException, InputException {
-        AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+    public ProposalPayload getProposalCards(String token, int proposalId) throws AuthException, InputException, NullPointerException {
+        String email = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         if (proposalId < 0) {
             throw new InputException("Invalid proposal Id");
         }
@@ -72,6 +73,10 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         }
 
         Proposal proposal = proposalMap.get(proposalId);
+
+        if (!email.equals(proposal.getSenderUserEmail()) && !email.equals(proposal.getReceiverUserEmail())) {
+            throw new AuthException("You can only view proposals linked to your account as sender or receiver");
+        }
 
         List<PhysicalCardWithName> senderPCardsWithName = new LinkedList<>();
         for (PhysicalCard pCard : proposal.getSenderPhysicalCards()) {
