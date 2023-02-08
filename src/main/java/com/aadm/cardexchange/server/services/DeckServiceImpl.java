@@ -37,7 +37,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     }
 
     private static boolean addDeck(String email, String deckName, boolean isDefault, Map<String, Map<String, Deck>> deckMap) {
-        Map<String, Deck> userDecks = deckMap.computeIfAbsent(email, k -> new HashMap<>());
+        Map<String, Deck> userDecks = deckMap.computeIfAbsent(email, k -> new LinkedHashMap<>());
         // if deck already exists in decks container do nothing
         if (userDecks.get(deckName) != null) {
             return false;
@@ -129,7 +129,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             throw new InputException("Invalid deck name");
         }
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
-        Map<String, Deck> decks = new HashMap<>(deckMap.get(userEmail));
+        Map<String, Deck> decks = new LinkedHashMap<>(deckMap.get(userEmail));
         if (decks.size() == 0) {
             throw new RuntimeException("Not existing decks");
         }
@@ -226,7 +226,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         if (userDeck == null)
             throw new DeckNotFoundException("Custom deck '" + customDeckName + "' not found.");
         pCards.forEach(userDeck::addPhysicalCard);
-        deckMap.put(customDeckName, userDecks);
+        deckMap.put(userEmail, userDecks);
         // Return the modified deck's card list
         return joinPhysicalCardsWithCatalogCards(userDeck.getPhysicalCards());
     }

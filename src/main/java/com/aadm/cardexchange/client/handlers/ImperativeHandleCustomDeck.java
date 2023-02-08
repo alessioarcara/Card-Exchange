@@ -8,5 +8,5 @@ import java.util.function.Consumer;
 public interface ImperativeHandleCustomDeck {
     void onClickRemoveCustomDeck(String deck, Consumer<Boolean> isRemoved);
 
-    void onClickAddPhysicalCardsToCustomDeck(Consumer<List<PhysicalCardWithName>> getSelectedPhysicalCards);
+    void onClickAddPhysicalCardsToCustomDeck(String deckName, Consumer<List<PhysicalCardWithName>> getSelectedPhysicalCards);
 }
