@@ -6,6 +6,7 @@ import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.DeckService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.common.reflect.TypeToken;
@@ -24,7 +25,8 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     private static final String WISHED_DECK = "Wished";
     private final MapDB db;
     private final Gson gson = new Gson();
-    private final Type type = new TypeToken<Map<String, Deck>>() {}.getType();
+    private final Type type = new TypeToken<Map<String, Deck>>() {
+    }.getType();
 
     public DeckServiceImpl() {
         db = new MapDBImpl();
@@ -151,22 +153,9 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
 
     private List<PhysicalCardWithName> getUserDeck(String userEmail, String deckName) {
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
-        Map<String, Deck> allUserDecks = deckMap.get(userEmail);
-        Deck userDeck = allUserDecks.get(deckName);
-        List<PhysicalCardWithName> pCardsWithName = new ArrayList<>();
-        for (PhysicalCard pCard : userDeck.getPhysicalCards()) {
-            String cardName = CardServiceImpl.getNameCard(
-                    pCard.getCardId(),
-                    db.getCachedMap(
-                            getServletContext(),
-                            CardServiceImpl.getCardMap(pCard.getGameType()),
-                            Serializer.INTEGER,
-                            new GsonSerializer<>(gson)
-                    )
-            );
-            pCardsWithName.add(new PhysicalCardWithName(pCard, cardName));
-        }
-        return pCardsWithName;
+        Map<String, Deck> userDecks = deckMap.get(userEmail);
+        Deck userDeck = userDecks.get(deckName);
+        return joinPhysicalCardsWithCatalogCards(userDeck.getPhysicalCards());
     }
 
     @Override
@@ -203,5 +192,42 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             throw new InputException("Invalid cardId");
         }
         return getPhysicalCardByCardIdAndDeckName(cardId, OWNED_DECK);
+    }
+
+    private List<PhysicalCardWithName> joinPhysicalCardsWithCatalogCards(Set<PhysicalCard> pCards) {
+        List<PhysicalCardWithName> pCardsWithName = new LinkedList<>();
+        for (PhysicalCard pCard : pCards) {
+            pCardsWithName.add(new PhysicalCardWithName(
+                    pCard,
+                    CardServiceImpl.getNameCard(pCard.getCardId(), db.getCachedMap(
+                            getServletContext(),
+                            CardServiceImpl.getCardMap(pCard.getGameType()),
+                            Serializer.INTEGER,
+                            new GsonSerializer<>(gson)
+                    ))
+            ));
+        }
+        return pCardsWithName;
+    }
+
+    @Override
+    public List<PhysicalCardWithName> addPhysicalCardsToCustomDeck(String token, String customDeckName, List<PhysicalCard> pCards) throws AuthException, InputException, DeckNotFoundException {
+        String userEmail = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        if (customDeckName == null || customDeckName.isEmpty())
+            throw new InputException("Invalid deck name");
+        if (customDeckName.equals(OWNED_DECK) || customDeckName.equals(WISHED_DECK))
+            throw new InputException("Default deck names not allowed for custom deck");
+        if (pCards.isEmpty())
+            throw new InputException("Empty list of physical cards");
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
+        Map<String, Deck> userDecks = deckMap.get(userEmail);
+        Deck userDeck = userDecks.get(customDeckName);
+        if (userDeck == null)
+            throw new DeckNotFoundException("Custom deck '" + customDeckName + "' not found.");
+        pCards.forEach(userDeck::addPhysicalCard);
+        deckMap.put(customDeckName, userDecks);
+        // Return the modified deck's card list
+        return joinPhysicalCardsWithCatalogCards(userDeck.getPhysicalCards());
     }
 }

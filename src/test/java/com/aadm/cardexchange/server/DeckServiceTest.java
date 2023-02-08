@@ -4,6 +4,7 @@ import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.services.DeckServiceImpl;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.BaseException;
+import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
@@ -350,11 +351,11 @@ public class DeckServiceTest {
         Map<String, Deck> userDecks = new HashMap<>() {{
             put("Owned", new Deck("Owned", true));
         }};
+        userDecks.get("Owned").addPhysicalCard(mockPCard1);
+        userDecks.get("Owned").addPhysicalCard(mockPCard2);
         Map<String, Map<String, Deck>> deckMap = new HashMap<>() {{
             put("test@test.it", userDecks);
         }};
-        userDecks.get("Owned").addPhysicalCard(mockPCard1);
-        userDecks.get("Owned").addPhysicalCard(mockPCard2);
 
         // what I expect
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
@@ -584,7 +585,7 @@ public class DeckServiceTest {
         setupForValidToken();
         String email = "test@test.it";
         String deckName = "testDeckName";
-        Map<String, Deck> userDecks = new HashMap<>(){{
+        Map<String, Deck> userDecks = new HashMap<>() {{
             put(deckName, new Deck(deckName, true));
         }};
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
@@ -603,7 +604,7 @@ public class DeckServiceTest {
         setupForValidToken();
         String email = "test@test.it";
         String deckName = "testDeckName";
-        Map<String, Deck> userDecks = new HashMap<>(){{
+        Map<String, Deck> userDecks = new HashMap<>() {{
             put(deckName, new Deck(deckName));
         }};
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
@@ -615,5 +616,120 @@ public class DeckServiceTest {
         ctrl.replay();
         Assertions.assertTrue(deckService.removeCustomDeck("validToken", deckName));
         ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testAddPhysicalCardsToCustomDeckForInvalidToken(String input) {
+        Map<String, LoginInfo> loginInfoMap = new HashMap<>() {{
+            put("validToken1", new LoginInfo("test@test.it", System.currentTimeMillis() - 10000));
+            put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 20000));
+            put("validToken3", new LoginInfo("test3@test.it", System.currentTimeMillis() - 30000));
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(loginInfoMap);
+
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> deckService.addPhysicalCardsToCustomDeck(input, "test",
+                Arrays.asList(
+                        new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description."),
+                        new PhysicalCard(Game.randomGame(), 2222, Status.randomStatus(), "This is a valid description."),
+                        new PhysicalCard(Game.randomGame(), 3333, Status.randomStatus(), "This is a valid description.")
+                )));
+        ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"Owned", "Wished"})
+    public void testAddPhysicalCardsToCustomDeckForInvalidDeckName(String input) {
+        setupForValidToken();
+
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> deckService.addPhysicalCardsToCustomDeck("validToken", input,
+                Arrays.asList(
+                        new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description."),
+                        new PhysicalCard(Game.randomGame(), 2222, Status.randomStatus(), "This is a valid description."),
+                        new PhysicalCard(Game.randomGame(), 3333, Status.randomStatus(), "This is a valid description.")
+                )));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testAddPhysicalCardsToCustomDeckForEmptyList() {
+        setupForValidToken();
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> deckService.addPhysicalCardsToCustomDeck("validToken",
+                "test", Collections.emptyList()));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testAddPhysicalCardsToCustomDeckForCustomDeckNotFound() {
+        setupForValidToken();
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(new HashMap<>() {{
+                    put("test@test.it", new HashMap<>() {{
+                        put("Owned", new Deck("Owned", true));
+                        put("Wished", new Deck("Wished", true));
+                    }});
+                }});
+
+        ctrl.replay();
+        Assertions.assertThrows(DeckNotFoundException.class, () -> deckService.addPhysicalCardsToCustomDeck("validToken", "test",
+                Arrays.asList(
+                        new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description."),
+                        new PhysicalCard(Game.randomGame(), 2222, Status.randomStatus(), "This is a valid description."),
+                        new PhysicalCard(Game.randomGame(), 3333, Status.randomStatus(), "This is a valid description.")
+                )));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testAddPhysicalCardsToCustomDeckForValidParameters() throws InputException, AuthException, DeckNotFoundException {
+        // init mocks
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 0, Status.randomStatus(), "This is a valid description.");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 1, Status.randomStatus(), "This is a valid description.");
+        Deck testDeck = new Deck("test", false);
+        testDeck.addPhysicalCard(mockPCard1);
+        testDeck.addPhysicalCard(mockPCard2);
+        Map<Integer, MagicCard> cardMap = MockCardData.createMagicDummyMap();
+
+        // expects
+        setupForValidToken();
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(new HashMap<>() {{
+                    put("test@test.it", new HashMap<>() {{
+                        put("Owned", new Deck("Owned", true));
+                        put("Wished", new Deck("Wished", true));
+                        put("test", testDeck);
+                    }});
+                }});
+
+        for (int i = 0; i < 5; i++) {
+            expect(mockConfig.getServletContext()).andReturn(mockCtx);
+            expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                    .andReturn(cardMap);
+        }
+
+        ctrl.replay();
+        List<PhysicalCardWithName> pCardsWithNames = deckService.addPhysicalCardsToCustomDeck("validToken", "test",
+                Arrays.asList(
+                        new PhysicalCard(Game.MAGIC, 2, Status.randomStatus(), "This is a valid description."),
+                        new PhysicalCard(Game.MAGIC, 3, Status.randomStatus(), "This is a valid description."),
+                        new PhysicalCard(Game.MAGIC, 4, Status.randomStatus(), "This is a valid description."),
+                        // duplicate cards
+                        mockPCard1,
+                        mockPCard2
+                ));
+        ctrl.verify();
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(5, pCardsWithNames.size());
+            Assertions.assertEquals("Lightning Bolt", pCardsWithNames.get(0).getName());
+        });
     }
 }
