@@ -1,8 +1,9 @@
 package com.aadm.cardexchange.client.views;
 
+import com.aadm.cardexchange.client.handlers.ImperativeHandleCustomDeck;
 import com.aadm.cardexchange.client.handlers.ImperativeHandleDeck;
-import com.aadm.cardexchange.client.handlers.ImperativeHandleDeckRemove;
 import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardEdit;
+import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardSelection;
 import com.aadm.cardexchange.client.widgets.DeckWidget;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
@@ -21,8 +22,8 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class DecksViewImpl extends Composite implements DecksView, ImperativeHandleDeck, ImperativeHandleDeckRemove,
-        ImperativeHandlePhysicalCardEdit {
+public class DecksViewImpl extends Composite implements DecksView, ImperativeHandleDeck, ImperativeHandleCustomDeck,
+        ImperativeHandlePhysicalCardSelection, ImperativeHandlePhysicalCardEdit {
     private static final DecksViewImpl.DecksViewImplUIBinder uiBinder = GWT.create(DecksViewImpl.DecksViewImplUIBinder.class);
     private static final String DEFAULT_CUSTOM_DECK_TEXT = "Write here name for your new custom deck";
     Presenter presenter;
@@ -30,6 +31,7 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     HTMLPanel decksContainer;
     @UiField
     HeadingElement newDeckName;
+    DeckWidget ownedDeck;
 
     public DecksViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -38,7 +40,10 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     @Override
     public void setData(List<String> data) {
         for (String deckName : data) {
-            decksContainer.add(createDeck(deckName));
+            boolean isOwned = deckName.equals("Owned");
+            DeckWidget deck = createDeck(deckName);
+            if (isOwned) ownedDeck = deck;
+            decksContainer.add(deck);
         }
     }
 
@@ -60,7 +65,9 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
 
     // factory
     private DeckWidget createDeck(String deckName) {
-        if (deckName.equals("Owned") || deckName.equals("Wished")) {
+        if (deckName.equals("Owned")) {
+            return new DeckWidget(this, null, this, this, deckName);
+        } else if (deckName.equals("Wished")) {
             return new DeckWidget(this, null, null, this, deckName);
         } else {
             return new DeckWidget(this, this, null, null, deckName);
@@ -78,6 +85,11 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     }
 
     @Override
+    public void onClickAddPhysicalCardsToCustomDeck(Consumer<List<PhysicalCardWithName>> updateCustomDeck) {
+        presenter.addPhysicalCardsToCustomDeck(ownedDeck.getDeckSelectedCards(), updateCustomDeck);
+    }
+
+    @Override
     public void onRemovePhysicalCard(String deckName, PhysicalCard pCard, Consumer<Boolean> isRemoved) {
         presenter.removePhysicalCardFromDeck(deckName, pCard, isRemoved);
     }
@@ -85,6 +97,7 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     @UiHandler(value = "newDeckButton")
     public void onClickCustomDeckAdd(ClickEvent e) {
         presenter.createCustomDeck(newDeckName.getInnerText());
+        onChangeSelection();
     }
 
     @Override
@@ -94,7 +107,13 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
 
     @Override
     public void onConfirmCardEdit() {
-        Window.alert("MODIFICATA!");
+        presenter.updatePhysicalCard();
+    }
+
+    @Override
+    public void onChangeSelection() {
+        for (Widget w : decksContainer)
+            ((DeckWidget) w).setAddButtonEnabled(ownedDeck.getDeckSelectedCards() != null && !ownedDeck.getDeckSelectedCards().isEmpty());
     }
 
     interface DecksViewImplUIBinder extends UiBinder<Widget, DecksViewImpl> {

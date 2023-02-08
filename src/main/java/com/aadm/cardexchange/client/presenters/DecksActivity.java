@@ -59,6 +59,11 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
         });
     }
 
+    @Override
+    public void updatePhysicalCard() {
+
+    }
+
     private boolean checkDeckNameInvalidity(String deckName) {
         return deckName == null || deckName.isEmpty();
     }
@@ -142,5 +147,10 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
                 isRemoved.accept(result);
             }
         });
+    }
+
+    @Override
+    public void addPhysicalCardsToCustomDeck(List<PhysicalCard> pCards, Consumer<List<PhysicalCardWithName>> updateCustomDeck) {
+
     }
 }
