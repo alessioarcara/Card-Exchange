@@ -24,7 +24,7 @@
         <h1>User decks</h1>
         <g:HTMLPanel ui:field="decksContainer"/>
         <div class="{style.newDeck}">
-            <h2 ui:field="newDeckName" contenteditable="true">Write here name for your custom deck</h2>
+            <h2 ui:field="newDeckName" contenteditable="true">Write here your custom deck name</h2>
             <g:Button ui:field="newDeckButton" styleName="deckButton">&#10003;</g:Button>
         </div>
     </g:HTMLPanel>
