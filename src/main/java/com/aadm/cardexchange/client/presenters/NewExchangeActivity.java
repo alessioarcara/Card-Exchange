@@ -39,17 +39,13 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
     }
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
-        view.resetAll();
         view.setPresenter(this);
+        view.setNewExchangeButtons();
         acceptsOneWidget.setWidget(view.asWidget());
+        view.setData("New Exchange Page", "Select the cards you want to exchange from both decks and propose a new exchange");
         fetchMyOwnedDeck();
         fetchUserOwnedDeck();
         view.setReceiverDeckName(place.getReceiverUserEmail());
-    }
-
-    @Override
-    public void onStop() {
-        view.resetAll();
     }
 
     private void fetchMyOwnedDeck() {

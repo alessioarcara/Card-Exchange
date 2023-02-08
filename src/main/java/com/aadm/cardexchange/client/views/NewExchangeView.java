@@ -15,22 +15,28 @@ public interface NewExchangeView extends IsWidget {
 
     void setPresenter(NewExchangePresenter newExchangePresenter);
 
-    void setPresenter(ProposalPresenter proposalPresenter);
+    void setPresenter(ExchangePresenter exchangePresenter);
 
     void setAcceptButtonEnabled(boolean enabled);
 
     void showAlert(String message);
 
-    void resetAll();
+    void setData(String title, String subtitle);
+
+    void setNewExchangeButtons();
+
+    void setExchangeButtons();
+
+    void resetHandlers();
 
     interface NewExchangePresenter {
         void createProposal(List<PhysicalCard> senderDeckSelectedCards, List<PhysicalCard> receiverDeckSelectedCards);
         void goTo(Place place);
     }
 
-    interface ProposalPresenter {
+    interface ExchangePresenter {
 
-        void acceptProposal();
+        void acceptExchangeProposal();
 
         void goTo(Place place);
     }

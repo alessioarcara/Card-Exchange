@@ -2,14 +2,14 @@ package com.aadm.cardexchange.client.places;
 
 import com.google.gwt.place.shared.Place;
 
-public class ProposalPlace extends Place {
+public class ExchangePlace extends Place {
     private final int proposalId;
 
-    public ProposalPlace(int proposalId) {
+    public ExchangePlace(int proposalId) {
         this.proposalId = proposalId;
     }
 
-    public int getProposalId() {
+    public int getExchangeProposalId() {
         return proposalId;
     }
 }

@@ -35,8 +35,8 @@ public class AppActivityMapper implements ActivityMapper {
                     clientFactory.getAuthSubject(), clientFactory.getPlaceController());
         if (place instanceof ExchangesPlace)
             return new ExchangesActivity(clientFactory.getExchangesView());
-        if (place instanceof ProposalPlace)
-            return new ProposalActivity((ProposalPlace) place, clientFactory.getNewExchangeView(), GWT.create(ExchangeService.class),
+        if (place instanceof ExchangePlace)
+            return new ExchangeActivity((ExchangePlace) place, clientFactory.getNewExchangeView(), GWT.create(ExchangeService.class),
                     clientFactory.getAuthSubject(), clientFactory.getPlaceController());
         return null;
     }
