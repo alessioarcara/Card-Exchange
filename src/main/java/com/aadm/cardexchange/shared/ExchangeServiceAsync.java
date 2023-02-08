@@ -10,4 +10,6 @@ public interface ExchangeServiceAsync {
     void addProposal(String token, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards, AsyncCallback<Boolean> callback);
 
     void getProposalCards(String token, int proposalId, AsyncCallback<ProposalPayload> callback);
+
+    void refuseOrWithdrawProposal(String token, int proposalId, AsyncCallback<Boolean> async);
 }

@@ -103,5 +103,25 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
 
         return new ProposalPayload(proposal.getReceiverUserEmail(), senderPCardsWithName, receiverPCardsWithName);
     }
+
+    @Override
+    public boolean refuseOrWithdrawProposal(String token, int proposalId) throws AuthException, InputException, NullPointerException {
+        String email = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        if (proposalId < 0) {
+            throw new InputException("Invalid proposal Id");
+        }
+
+        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+        if (proposalMap.size() == 0) {
+            throw new RuntimeException("Not existing proposal");
+        }
+
+        Proposal proposal = proposalMap.get(proposalId);
+        if (!email.equals(proposal.getSenderUserEmail()) && !email.equals(proposal.getReceiverUserEmail())) {
+            throw new AuthException("You can only interact with proposals of which you are the sender or the receiver");
+        }
+
+        return proposalMap.remove(proposalId, proposal);
+    }
 }
 

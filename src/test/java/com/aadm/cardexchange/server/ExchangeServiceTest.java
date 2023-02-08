@@ -148,8 +148,9 @@ public class ExchangeServiceTest {
     }
 
 
-    // Test for getProposalCards();
-
+    /* *****************************
+        Test for getProposalCards();
+     ******************************* */
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"invalidToken"})
@@ -256,5 +257,125 @@ public class ExchangeServiceTest {
             Assertions.assertEquals(expectedPayload.getSenderCards(), proposalPayload.getSenderCards());
             Assertions.assertEquals(expectedPayload.getReceiverCards(), proposalPayload.getReceiverCards());
         });
+    }
+
+
+    /* **************************************
+        Test for refuseOrWithDrawProposal();
+     **************************************** */
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testRefuseOrWithDrawProposalForInvalidUserToken(String input) throws AuthException {
+        setupForValidToken();
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> exchangeService.refuseOrWithdrawProposal(input, 0));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testRefuseOrWithDrawProposalForInvalidUser() throws InputException, AuthException {
+        setupForValidToken();
+
+        // Setup physical card for proposal map and return object
+        PhysicalCard p1S = new PhysicalCard(Game.POKEMON, 111, Status.Good, "this is a valid description");
+        PhysicalCard p2S = new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description");
+
+        PhysicalCard p1R = new PhysicalCard(Game.POKEMON, 111, Status.Excellent, "this is a valid description");
+        PhysicalCard p3R = new PhysicalCard(Game.POKEMON, 222, Status.Damaged, "this is a valid description");
+
+        Map<Integer, Proposal> proposalMap = new HashMap<>() {{
+            put(0, new Proposal("sender@test.it", "receiver@test.it",
+                    new ArrayList<PhysicalCard>() {{ add(p1S); add(p2S); }},
+                    new ArrayList<PhysicalCard>(){{ add(p1R); add(p3R); }}
+            ));
+        }};
+
+        // setup expected calls
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(proposalMap);
+
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> exchangeService.refuseOrWithdrawProposal("validToken", 0));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testRefuseOrWithDrawProposalForInvalidProposalId() throws InputException, AuthException {
+        setupForValidToken();
+        ctrl.replay();
+        Assertions.assertThrows(InputException.class, () -> exchangeService.refuseOrWithdrawProposal("validToken", -1));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testRefuseOrWithDrawProposalForEmptyProposalMap() throws InputException, AuthException {
+        setupForValidToken();
+        Map<Integer, Proposal> proposalMap = new HashMap<>();
+
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(proposalMap);
+
+        ctrl.replay();
+        Assertions.assertThrows(RuntimeException.class, () -> exchangeService.refuseOrWithdrawProposal("validToken", 0));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testRefuseOrWithdrawProposalForNotExistingProposal() throws InputException, AuthException {
+        setupForValidToken();
+
+        // Setup physical card for proposal map and return object
+        PhysicalCard p1S = new PhysicalCard(Game.POKEMON, 111, Status.Good, "this is a valid description");
+        PhysicalCard p2S = new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description");
+
+        PhysicalCard p1R = new PhysicalCard(Game.POKEMON, 111, Status.Excellent, "this is a valid description");
+        PhysicalCard p3R = new PhysicalCard(Game.POKEMON, 222, Status.Damaged, "this is a valid description");
+
+        Map<Integer, Proposal> proposalMap = new HashMap<>() {{
+            put(0, new Proposal("test@test.it", "receiver@test.it",
+                    new ArrayList<PhysicalCard>() {{ add(p1S); add(p2S); }},
+                    new ArrayList<PhysicalCard>(){{ add(p1R); add(p3R); }}
+            ));
+        }};
+
+        // setup expected calls
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(proposalMap);
+
+        ctrl.replay();
+        Assertions.assertThrows(NullPointerException.class, () -> exchangeService.refuseOrWithdrawProposal("validToken", 1));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testRefuseOrWithdrawProposalForOnSuccess() throws InputException, AuthException {
+        setupForValidToken();
+
+        // Setup physical card for proposal map and return object
+        PhysicalCard p1S = new PhysicalCard(Game.POKEMON, 111, Status.Good, "this is a valid description");
+        PhysicalCard p2S = new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description");
+
+        PhysicalCard p1R = new PhysicalCard(Game.POKEMON, 111, Status.Excellent, "this is a valid description");
+        PhysicalCard p3R = new PhysicalCard(Game.POKEMON, 222, Status.Damaged, "this is a valid description");
+
+        Map<Integer, Proposal> proposalMap = new HashMap<>() {{
+            put(0, new Proposal("test@test.it", "receiver@test.it",
+                    new ArrayList<PhysicalCard>() {{ add(p1S); add(p2S); }},
+                    new ArrayList<PhysicalCard>(){{ add(p1R); add(p3R); }}
+            ));
+        }};
+
+        // setup expected calls
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(proposalMap);
+
+        ctrl.replay();
+        Assertions.assertTrue(exchangeService.refuseOrWithdrawProposal("validToken", 0));
+        ctrl.verify();
     }
 }

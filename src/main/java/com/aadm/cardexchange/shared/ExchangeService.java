@@ -17,4 +17,5 @@ public interface ExchangeService extends RemoteService {
 
    ProposalPayload getProposalCards(String token, int proposalId) throws AuthException, InputException, RuntimeException;
 
+    boolean refuseOrWithdrawProposal(String token, int proposalId) throws AuthException, InputException;
 }
