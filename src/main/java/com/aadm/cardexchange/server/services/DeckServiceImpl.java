@@ -6,6 +6,7 @@ import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.DeckService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
@@ -233,7 +234,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
 
 
     @Override
-    public List <PhysicalCardWithEmailDealing> getListPhysicalCardWithEmailDealing(String token, Game game, int cardId) throws BaseException {
+    public List <PhysicalCardWithEmailDealing> getListPhysicalCardWithEmailDealing(String token, Game game, int cardId) throws BaseException, AuthException, InputException {
         System.out.println("parameter cardID: " + cardId);
         String userEmail = AuthServiceImpl.checkTokenValidity(token,
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));

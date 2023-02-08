@@ -51,7 +51,7 @@ public class DeckServiceTest {
                 .andReturn(mockLoginMap);
     }
 
-    private void setupForValidCardsAndUserDecks() {
+    /*private void setupForValidCardsAndUserDecks() {
         // init Mocks
         PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
         PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 2222, Status.Fair, "This is a valid bis description.");
@@ -81,6 +81,8 @@ public class DeckServiceTest {
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(cardMap);
     }
+    */
+
 
     private  Map<Integer, MagicCard>  generateValidMagicCardMap(){
         return createMagicDummyMap();
@@ -168,15 +170,6 @@ public class DeckServiceTest {
                 deckService.addPhysicalCardToDeck(input, Game.MAGIC, "Owned", 111, Status.Damaged, "This is a valid description.")
         );
         ctrl.verify();
-    }
-
-    private void setupForValidToken() {
-        Map<String, LoginInfo> mockLoginMap = new HashMap<>() {{
-            put("validToken", new LoginInfo("test@test.it", System.currentTimeMillis() - 10000));
-        }};
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockLoginMap);
     }
 
     @Test
@@ -1094,12 +1087,13 @@ public class DeckServiceTest {
     @Test
     public void testAddPhysicalCardsToCustomDeckForValidParameters() throws InputException, AuthException, DeckNotFoundException {
         // init mocks
-        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 0, Status.randomStatus(), "This is a valid description.");
-        PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 1, Status.randomStatus(), "This is a valid description.");
+        Map<Integer, MagicCard> cardMap = MockCardData.createMagicDummyMap();
+        List<Integer> indexCardId = new ArrayList<>(cardMap.keySet());
+        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, indexCardId.get(0), Status.randomStatus(), "This is a valid description.");
+        PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, indexCardId.get(1), Status.randomStatus(), "This is a valid description.");
         Deck testDeck = new Deck("test", false);
         testDeck.addPhysicalCard(mockPCard1);
         testDeck.addPhysicalCard(mockPCard2);
-        Map<Integer, MagicCard> cardMap = MockCardData.createMagicDummyMap();
 
         // expects
         setupForValidToken();
@@ -1122,9 +1116,9 @@ public class DeckServiceTest {
         ctrl.replay();
         List<PhysicalCardWithName> pCardsWithNames = deckService.addPhysicalCardsToCustomDeck("validToken", "test",
                 Arrays.asList(
-                        new PhysicalCard(Game.MAGIC, 2, Status.randomStatus(), "This is a valid description."),
-                        new PhysicalCard(Game.MAGIC, 3, Status.randomStatus(), "This is a valid description."),
-                        new PhysicalCard(Game.MAGIC, 4, Status.randomStatus(), "This is a valid description."),
+                        new PhysicalCard(Game.MAGIC, indexCardId.get(2), Status.randomStatus(), "This is a valid description."),
+                        new PhysicalCard(Game.MAGIC, indexCardId.get(3), Status.randomStatus(), "This is a valid description."),
+                        new PhysicalCard(Game.MAGIC, indexCardId.get(4), Status.randomStatus(), "This is a valid description."),
                         // duplicate cards
                         mockPCard1,
                         mockPCard2
