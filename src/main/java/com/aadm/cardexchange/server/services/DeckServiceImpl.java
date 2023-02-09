@@ -247,39 +247,40 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> allUserDecks = deckMap.get(userEmail);
         Deck userDeck = allUserDecks.get("Owned");
-        List<PhysicalCard> myPCardsMatching = new ArrayList<>();
         if (userDeck == null) {
             throw new BaseException("Deck not found");
         }
+        //Prepare Owned array of idPCard matching id and switched by status
+        String[] ownedMatchingPCardId = new String[5];
+        int position;
         for (PhysicalCard pCard : userDeck.getPhysicalCards()) {
-            if (cardId== pCard.getCardId()) {
+            if (cardId == pCard.getCardId()) {
                 System.out.println("PCardOwned matching with id: " + pCard.getId() + "because have cardId: " + pCard.getCardId());
-                myPCardsMatching.add(pCard);
+                position = pCard.getStatus().getValue() - 1;
+                if (ownedMatchingPCardId[position] == null) {
+                    ownedMatchingPCardId[position] = pCard.getId();
+                    if (Arrays.stream(ownedMatchingPCardId).filter(e -> e != null).count() == 5) {
+                        break;
+                    }
+                }
             }
         }
-        myPCardsMatching.sort(Comparator.comparing(PhysicalCard::getStatus));
-        //Collections.reverse(myPCardsMatching);
-        for (PhysicalCard item : myPCardsMatching) {
-            System.out.println(item.getStatus());
-        }
+
         List<PhysicalCardWithEmail> listWishedPCard =  getPhysicalCardByCardIdAndDeckName(cardId, WISHED_DECK);
-        int statusWished;
         String offerPCardId = null;
         List <PhysicalCardWithEmailDealing> result = new ArrayList<>();
+
         for (PhysicalCardWithEmail pCardWished : listWishedPCard) {
             System.out.println("Evaluate Wished cardid: " + pCardWished.getId() + "with status " + pCardWished.getStatus());
-            statusWished =  pCardWished.getStatus().getValue();
-            for(PhysicalCard pCardOwned : myPCardsMatching) {
-                System.out.println("Check matching with Owned card id: " + pCardOwned.getId() + "with status: " + pCardOwned.getStatus());
-                if  (statusWished <= pCardOwned.getStatus().getValue()) {
-                    System.out.println("MAtch!");
-                    offerPCardId = pCardOwned.getId();
+            for(int i=(pCardWished.getStatus().getValue()-1); i<5;i++ ) {
+                if  (ownedMatchingPCardId[i]!=null){
+                    offerPCardId = ownedMatchingPCardId[i];
+                    System.out.println("Match!");
                     break;
                 }
-                System.out.println("Don't MAtch!");
-                offerPCardId = null;
-
+                System.out.println("Don't Match!");
             } result.add(new PhysicalCardWithEmailDealing(pCardWished, offerPCardId));
+            offerPCardId = null;
         }
         return result;
     }
