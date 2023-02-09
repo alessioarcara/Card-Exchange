@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.shared;
 
-import com.aadm.cardexchange.shared.models.AuthPayload;
+import com.aadm.cardexchange.shared.payloads.AuthPayload;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 public interface AuthServiceAsync {

@@ -4,7 +4,8 @@ import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.services.ExchangeServiceImpl;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
-import com.aadm.cardexchange.shared.models.*;
+import com.aadm.cardexchange.shared.models.LoginInfo;
+import com.aadm.cardexchange.shared.models.User;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,9 +18,7 @@ import org.mapdb.Serializer;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static org.easymock.EasyMock.*;
@@ -58,15 +57,6 @@ public class ExchangeServiceTest {
                 .andReturn(userMap);
     }
 
-    private List<PhysicalCard> generateValidListPcard(int n) {
-        List<PhysicalCard> myList = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
-            PhysicalCard mockPCard = new PhysicalCard(Game.randomGame(), (i + 3000), Status.randomStatus(), "This is a valid description.");
-            myList.add(mockPCard);
-        }
-        return myList;
-    }
-
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"invalidToken"})
@@ -80,7 +70,7 @@ public class ExchangeServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(loginInfoMap);
         ctrl.replay();
-        Assertions.assertThrows(AuthException.class, () -> exchangeService.addProposal(input, "valid@receiverUserEmail.it", generateValidListPcard(2), generateValidListPcard(2)));
+        Assertions.assertThrows(AuthException.class, () -> exchangeService.addProposal(input, "valid@receiverUserEmail.it", DummyData.createPhysicalCardDummyList(2), DummyData.createPhysicalCardDummyList(2)));
         ctrl.verify();
     }
 
@@ -89,7 +79,7 @@ public class ExchangeServiceTest {
     public void testAddProposalForInvalidReceiverUserEmail(String input) {
         setupForValidToken();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", input, generateValidListPcard(2), generateValidListPcard(2)));
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", input, DummyData.createPhysicalCardDummyList(2), DummyData.createPhysicalCardDummyList(2)));
         ctrl.verify();
     }
 
@@ -98,7 +88,7 @@ public class ExchangeServiceTest {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "NotExisting@Mail.it", generateValidListPcard(2), generateValidListPcard(2)));
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "NotExisting@Mail.it", DummyData.createPhysicalCardDummyList(2), DummyData.createPhysicalCardDummyList(2)));
         ctrl.verify();
     }
 
@@ -107,7 +97,7 @@ public class ExchangeServiceTest {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(0), generateValidListPcard(2)));
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", DummyData.createPhysicalCardDummyList((0)), DummyData.createPhysicalCardDummyList(2)));
         ctrl.verify();
     }
 
@@ -116,7 +106,7 @@ public class ExchangeServiceTest {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", null, generateValidListPcard(2)));
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", null, DummyData.createPhysicalCardDummyList(2)));
         ctrl.verify();
     }
 
@@ -125,7 +115,7 @@ public class ExchangeServiceTest {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(2), generateValidListPcard(0)));
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", DummyData.createPhysicalCardDummyList((2)), DummyData.createPhysicalCardDummyList(0)));
         ctrl.verify();
     }
 
@@ -134,7 +124,7 @@ public class ExchangeServiceTest {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(2), null));
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", DummyData.createPhysicalCardDummyList(2), null));
         ctrl.verify();
     }
 
@@ -146,7 +136,7 @@ public class ExchangeServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(new HashMap<>());
         ctrl.replay();
-        Assertions.assertTrue(exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", generateValidListPcard(1), generateValidListPcard(2)));
+        Assertions.assertTrue(exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", DummyData.createPhysicalCardDummyList(1), DummyData.createPhysicalCardDummyList(2)));
         ctrl.verify();
     }
 }

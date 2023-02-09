@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.shared;
 
-import com.aadm.cardexchange.server.MockCardData;
+import com.aadm.cardexchange.server.DummyData;
 import com.aadm.cardexchange.shared.models.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,7 @@ public class DeckTest {
     public void initialize() {
         deck = new Deck("Deck_name");
         defaultDeck = new Deck("Deck_default", true);
-        Card card = MockCardData.createPokemonDummyCard();
+        Card card = DummyData.createPokemonDummyCard();
         pCard = new PhysicalCard(Game.POKEMON, card.getId(), Status.Excellent, "test description card");
         pCard2 = new PhysicalCard(Game.POKEMON, card.getId(), Status.Good, "test card 2");
     }

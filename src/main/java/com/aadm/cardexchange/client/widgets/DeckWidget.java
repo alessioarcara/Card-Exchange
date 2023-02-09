@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.Widget;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 public class DeckWidget extends Composite implements ImperativeHandlePhysicalCardSelection, ImperativeHandlePhysicalCardRemove, ImperativeHandlePhysicalCardEdit {
     private static final DeckUIBinder uiBinder = GWT.create(DeckUIBinder.class);
@@ -82,7 +81,6 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
     }
 
     public void setData(List<PhysicalCardWithName> data, String selectedCardId) {
-        Logger.getLogger("adsasd").info(data.toString());
         cards.clear();
         for (PhysicalCardWithName pCard : data) {
             PhysicalCardWidget pCardWidget = createPhysicalCardWidget(pCard);
