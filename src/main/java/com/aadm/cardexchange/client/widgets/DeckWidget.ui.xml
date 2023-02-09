@@ -50,9 +50,7 @@
                 <h2 ui:field="deckName"/>
                 <g:Button styleName="deckButton {style.showButton}" ui:field="showButton">></g:Button>
             </div>
-            <g:HTMLPanel styleName="{style.actions}" ui:field="actions">
-                <!--                <g:Button styleName="deckButton {style.showButton}" ui:field="showButton">></g:Button>-->
-            </g:HTMLPanel>
+            <g:HTMLPanel styleName="{style.actions}" ui:field="actions"/>
         </div>
         <g:HTMLPanel styleName="{style.cards}" ui:field="cards"/>
     </g:HTMLPanel>
