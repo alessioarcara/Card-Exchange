@@ -1,17 +1,14 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.shared.models.Card;
-import com.aadm.cardexchange.shared.models.MagicCard;
-import com.aadm.cardexchange.shared.models.PokemonCard;
-import com.aadm.cardexchange.shared.models.YuGiOhCard;
+import com.aadm.cardexchange.shared.models.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-// Create mocks cards with distinct fields for testing purposes
-public class MockCardData {
+// Create dummy cards with distinct fields for testing purposes
+public class DummyData {
     public static PokemonCard createPokemonDummyCard() {
         return new PokemonCard("Charizard", "The flame Pokemon", "Flame",
                 "Ken Sugimori", "http://www.charizard-image.jpg", "Rare",
@@ -99,5 +96,12 @@ public class MockCardData {
 
     public static List<Card> createYuGiOhDummyList() {
         return new ArrayList<>(createYuGiOhDummyMap().values());
+    }
+
+    public static List<PhysicalCard> createPhysicalCardDummyList(int n) {
+        List<PhysicalCard> list = new ArrayList<>();
+        for (int i = 0; i < n; i++)
+            list.add(new PhysicalCard(Game.randomGame(), (i + 3000), Status.randomStatus(), "This is a valid description."));
+        return list;
     }
 }

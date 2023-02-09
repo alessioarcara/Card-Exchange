@@ -8,7 +8,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Proposal implements Serializable {
     private static final long serialVersionUID = 997487558313555532L;
     private static final AtomicInteger uniqueId = new AtomicInteger();
-
     private int id;
     private String senderUserEmail;
     private String receiverUserEmail;

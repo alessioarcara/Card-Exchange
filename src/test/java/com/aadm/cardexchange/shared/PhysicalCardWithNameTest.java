@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.shared;
 
-import com.aadm.cardexchange.server.MockCardData;
+import com.aadm.cardexchange.server.DummyData;
 import com.aadm.cardexchange.shared.models.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,7 +13,7 @@ public class PhysicalCardWithNameTest {
 
     @BeforeEach
     public void initialize() {
-        card = MockCardData.createPokemonDummyCard();
+        card = DummyData.createPokemonDummyCard();
         String sampleDesc = "this is a valid test description";
         physicalCard = new PhysicalCard(Game.POKEMON, card.getId(), Status.Good, sampleDesc);
         physicalCardWithName = new PhysicalCardWithName(physicalCard, card.getName());

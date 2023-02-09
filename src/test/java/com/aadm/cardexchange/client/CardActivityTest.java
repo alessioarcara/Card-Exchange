@@ -4,12 +4,14 @@ import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.places.CardPlace;
 import com.aadm.cardexchange.client.presenters.CardActivity;
 import com.aadm.cardexchange.client.views.CardView;
-import com.aadm.cardexchange.server.MockCardData;
+import com.aadm.cardexchange.server.DummyData;
 import com.aadm.cardexchange.shared.CardServiceAsync;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
-import com.aadm.cardexchange.shared.models.*;
+import com.aadm.cardexchange.shared.models.Card;
+import com.aadm.cardexchange.shared.models.Game;
+import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.easymock.IMocksControl;
@@ -53,9 +55,17 @@ public class CardActivityTest {
         ctrl.verify();
     }
 
+    private static Stream<Arguments> provideDifferentTypeOfErrors() {
+        return Stream.of(
+                Arguments.of(new AuthException("Invalid token")),
+                Arguments.of(new InputException("Invalid description")),
+                Arguments.of(new RuntimeException())
+        );
+    }
+
     @Test
     public void testFetchCardForOnSuccess() {
-        Card card = MockCardData.createPokemonDummyCard();
+        Card card = DummyData.createPokemonDummyCard();
         mockCardService.getGameCard(isA(Game.class), anyInt(), isA(AsyncCallback.class));
         expectLastCall().andAnswer(() -> {
             Object[] args = getCurrentArguments();
@@ -68,14 +78,6 @@ public class CardActivityTest {
         ctrl.replay();
         cardActivity.fetchCard();
         ctrl.verify();
-    }
-
-   private static Stream<Arguments> provideDifferentTypeOfErrors() {
-        return Stream.of(
-            Arguments.of(new AuthException("Invalid token")),
-            Arguments.of(new InputException("Invalid description")),
-            Arguments.of(new RuntimeException())
-        );
     }
 
     @ParameterizedTest
