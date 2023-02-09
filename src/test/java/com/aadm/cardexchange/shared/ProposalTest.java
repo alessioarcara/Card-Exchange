@@ -13,9 +13,7 @@ import org.mapdb.DataInput2;
 import org.mapdb.DataOutput2;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ProposalTest {
@@ -28,7 +26,6 @@ public class ProposalTest {
     private PhysicalCard senderCard2;
     private PhysicalCard receiverCard1;
     private PhysicalCard receiverCard2;
-    private String date;
 
     Proposal prop;
 
@@ -53,9 +50,6 @@ public class ProposalTest {
 
         senderEmail = "sender@test.it";
         receiverEmail = "receiver@test.it";
-
-        date = new SimpleDateFormat("dd-MM-yy").format(new Date());
-
         prop = new Proposal(senderEmail, receiverEmail, senderCards, receiversCards);
     }
 
