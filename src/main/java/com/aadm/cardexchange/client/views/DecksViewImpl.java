@@ -7,6 +7,7 @@ import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardSelecti
 import com.aadm.cardexchange.client.widgets.DeckWidget;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
+import com.aadm.cardexchange.shared.payloads.ModifiedDeckPayload;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.event.dom.client.ClickEvent;
@@ -19,8 +20,11 @@ import com.google.gwt.user.client.ui.HTMLPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class DecksViewImpl extends Composite implements DecksView, ImperativeHandleDeck, ImperativeHandleCustomDeck,
         ImperativeHandlePhysicalCardSelection, ImperativeHandlePhysicalCardEdit {
@@ -55,6 +59,17 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     @Override
     public void displayAlert(String message) {
         Window.alert(message);
+    }
+
+    @Override
+    public void replaceData(List<ModifiedDeckPayload> data) {
+        Map<String, ModifiedDeckPayload> lookup = data.stream()
+                .collect(Collectors.toMap(ModifiedDeckPayload::getDeckName, Function.identity()));
+        decksContainer.forEach(w -> {
+            DeckWidget deckWidget = ((DeckWidget) w);
+            ModifiedDeckPayload modifiedDeck = lookup.get(deckWidget.getDeckName());
+            if (modifiedDeck != null) deckWidget.setData(modifiedDeck.getPhysicalCardsWithName(), null);
+        });
     }
 
     @Override
@@ -106,8 +121,8 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     }
 
     @Override
-    public void onConfirmCardEdit() {
-        presenter.updatePhysicalCard();
+    public void onConfirmCardEdit(String deckName, PhysicalCard editedPcard) {
+        presenter.updatePhysicalCard(deckName, editedPcard);
     }
 
     @Override
