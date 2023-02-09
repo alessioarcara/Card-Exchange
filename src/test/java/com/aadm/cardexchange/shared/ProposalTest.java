@@ -56,12 +56,12 @@ public class ProposalTest {
 
         date = new SimpleDateFormat("dd-MM-yy").format(new Date());
 
-        prop = new Proposal(senderEmail, receiverEmail, senderCards, receiversCards, date);
+        prop = new Proposal(senderEmail, receiverEmail, senderCards, receiversCards);
     }
 
     @Test
     public void testIfGetIdReturnsUniqueIds() {
-        Proposal prop2 = new Proposal(senderEmail, receiverEmail, senderCards, receiversCards, date);
+        Proposal prop2 = new Proposal(senderEmail, receiverEmail, senderCards, receiversCards);
         Assertions.assertNotEquals(prop.getId(), prop2.getId());
     }
 

@@ -1,9 +1,14 @@
 package com.aadm.cardexchange.shared.models;
 
+import com.google.gwt.i18n.shared.DateTimeFormat;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+
+
 
 public class Proposal implements Serializable {
     private static final long serialVersionUID = 997487558313555532L;
@@ -15,13 +20,14 @@ public class Proposal implements Serializable {
     private List<PhysicalCard> receiverPhysicalCards;
     private String date;
 
-    public Proposal(String senderUserEmail, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards, String date) {
+    public Proposal(String senderUserEmail, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards) {
         this.id = uniqueId.getAndIncrement();
         this.senderUserEmail = senderUserEmail;
         this.receiverUserEmail = receiverUserEmail;
         this.senderPhysicalCards = senderPhysicalCards;
         this.receiverPhysicalCards = receiverPhysicalCards;
-        this.date = date;
+        //this.date = today();
+        this.date = "20-02-2022";
     }
 
     public Proposal() {
@@ -50,8 +56,16 @@ public class Proposal implements Serializable {
     public String getDate() {
         return date;
     }
+    /*
+      private String today() {
+          Date today = new Date();
+          return DateTimeFormat.getShortDateFormat().format(today);
+      }
 
-
+      private String today2() {
+          return new SimpleDateFormat("dd-MM-yy").format(new Date());
+      }
+  */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
