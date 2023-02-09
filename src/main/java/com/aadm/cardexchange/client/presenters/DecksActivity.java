@@ -102,7 +102,7 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
     }
 
     @Override
-    public void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard, Consumer<Boolean> isRemoved) {
+    public void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard) {
         if (checkDeckNameInvalidity(deckName)) {
             view.displayAlert("Invalid deck name");
             return;
@@ -111,21 +111,23 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
             view.displayAlert("Invalid physical card");
             return;
         }
-        rpcService.removePhysicalCardFromDeck(authSubject.getToken(), deckName, pCard, new AsyncCallback<Boolean>() {
+        rpcService.removePhysicalCardFromDeck(authSubject.getToken(), deckName, pCard, new AsyncCallback<List<ModifiedDeckPayload>>() {
             @Override
             public void onFailure(Throwable caught) {
                 if (caught instanceof AuthException) {
                     view.displayAlert(((AuthException) caught).getErrorMessage());
                 } else if (caught instanceof InputException) {
                     view.displayAlert(((InputException) caught).getErrorMessage());
+                } else if (caught instanceof DeckNotFoundException) {
+                    view.displayAlert(((DeckNotFoundException) caught).getErrorMessage());
                 } else {
                     view.displayAlert("Internal server error: " + caught.getMessage());
                 }
             }
 
             @Override
-            public void onSuccess(Boolean result) {
-                isRemoved.accept(result);
+            public void onSuccess(List<ModifiedDeckPayload> result) {
+                view.replaceData(result);
             }
         });
     }

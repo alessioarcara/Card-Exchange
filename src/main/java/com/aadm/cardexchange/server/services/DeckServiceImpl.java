@@ -56,6 +56,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return addDeck(email, deckName, false, deckMap);
     }
 
+    @Override
     public boolean removeCustomDeck(String token, String deckName) throws AuthException {
         String email = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
@@ -131,22 +132,32 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     }
 
     @Override
-    public boolean removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException {
+    public List<ModifiedDeckPayload> removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException, DeckNotFoundException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         checkDeckNameInvalidity(deckName);
+        if (pCard == null)
+            throw new InputException("Invalid physical card");
+
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
-        Map<String, Deck> decks = new LinkedHashMap<>(deckMap.get(userEmail));
-        if (decks.size() == 0) {
-            throw new RuntimeException("Not existing decks");
-        }
-        Deck foundDeck = decks.get(deckName);
+        Map<String, Deck> userDecks = deckMap.get(userEmail);
+        List<ModifiedDeckPayload> modifiedDecks = new LinkedList<>();
+        Deck foundDeck = userDecks.get(deckName);
         if (foundDeck == null) {
-            return false;
+            throw new DeckNotFoundException("Deck '" + deckName + "' not found.");
         }
-        if (foundDeck.removePhysicalCard(pCard)) {
-            deckMap.put(userEmail, decks);
-            return true;
-        } else return false;
+        if (deckName.equals("Owned")) {
+            for (Deck deck : userDecks.values()) {
+                if (deck.removePhysicalCard(pCard)) {
+                    modifiedDecks.add(new ModifiedDeckPayload(deck.getName(), joinPhysicalCardsWithCatalogCards(deck.getPhysicalCards())));
+                }
+            }
+        } else {
+            foundDeck.removePhysicalCard(pCard);
+            modifiedDecks.add(new ModifiedDeckPayload(foundDeck.getName(), joinPhysicalCardsWithCatalogCards(foundDeck.getPhysicalCards())));
+        }
+
+        deckMap.put(userEmail, userDecks);
+        return modifiedDecks;
     }
 
     @Override

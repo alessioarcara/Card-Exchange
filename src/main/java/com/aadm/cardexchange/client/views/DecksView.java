@@ -28,7 +28,7 @@ public interface DecksView extends IsWidget {
 
         void updatePhysicalCard(String deckName, PhysicalCard editedPcard);
 
-        void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard, Consumer<Boolean> isRemoved);
+        void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard);
 
         void createCustomDeck(String deckName);
 
