@@ -131,20 +131,13 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return false;
     }
 
-    private List<Deck> removeCardFromAllDecks(PhysicalCard pCard, Map<String, Deck> decks) {
-        List<Deck> updatedDecks = new ArrayList<>();
-        for (Deck deck : decks.values()) {
-            if (deck.removePhysicalCard(pCard)) {
-                updatedDecks.add(deck);
-            }
-        }
-        return updatedDecks;
-    }
-
     @Override
     public List<ModifiedDeckPayload> removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException, DeckNotFoundException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         checkDeckNameInvalidity(deckName);
+        if (pCard == null)
+            throw new InputException("Invalid physical card");
+
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> userDecks = deckMap.get(userEmail);
         List<ModifiedDeckPayload> modifiedDecks = new LinkedList<>();
@@ -158,14 +151,13 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
                     modifiedDecks.add(new ModifiedDeckPayload(deck.getName(), joinPhysicalCardsWithCatalogCards(deck.getPhysicalCards())));
                 }
             }
-        }
-        else {
+        } else {
             foundDeck.removePhysicalCard(pCard);
             modifiedDecks.add(new ModifiedDeckPayload(foundDeck.getName(), joinPhysicalCardsWithCatalogCards(foundDeck.getPhysicalCards())));
         }
 
-        deckMap.put(userEmail, decks);
-        return  opResult;
+        deckMap.put(userEmail, userDecks);
+        return modifiedDecks;
     }
 
     @Override

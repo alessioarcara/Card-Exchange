@@ -118,6 +118,8 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
                     view.displayAlert(((AuthException) caught).getErrorMessage());
                 } else if (caught instanceof InputException) {
                     view.displayAlert(((InputException) caught).getErrorMessage());
+                } else if (caught instanceof DeckNotFoundException) {
+                    view.displayAlert(((DeckNotFoundException) caught).getErrorMessage());
                 } else {
                     view.displayAlert("Internal server error: " + caught.getMessage());
                 }

@@ -466,7 +466,7 @@ public class DeckServiceTest {
     }
 
     @Test
-    public void testRemovePhysicalCardFromDeckForNotExistingDeck() throws AuthException, InputException {
+    public void testRemovePhysicalCardFromDeckForNotExistingDeck() throws AuthException, InputException, DeckNotFoundException {
         setupForValidToken();
         PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
         Map<String, Deck> deckMap = new HashMap<>() {{
@@ -479,7 +479,7 @@ public class DeckServiceTest {
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(mockDeckMap);
         ctrl.replay();
-        Assertions.assertEquals(Collections.emptyList(), deckService.removePhysicalCardFromDeck("validToken", "Owned", mockPCard1));
+        Assertions.assertThrows(DeckNotFoundException.class, () -> deckService.removePhysicalCardFromDeck("validToken", "Owned", mockPCard1));
         ctrl.verify();
     }
 
@@ -506,10 +506,12 @@ public class DeckServiceTest {
     }
 
     @Test
-    public void testRemovePhysicalCardFromDeckSuccess() throws AuthException, InputException {
+    public void testRemovePhysicalCardFromDeckSuccess() throws AuthException, InputException, DeckNotFoundException {
         setupForValidToken();
-        PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
-        PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 2222, Status.Good, "This is a valid description.");
+        final int numOfCards = 4;
+
+        // init mocks
+        PhysicalCard targetPCard = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
 
         List<Deck> decks = Arrays.asList(
             new Deck("Owned", true),
@@ -539,6 +541,13 @@ public class DeckServiceTest {
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(mockDeckMap);
+
+        for (int i = 0; i < numOfCards * 3; i++) {
+            expect(mockConfig.getServletContext()).andReturn(mockCtx);
+            expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                    .andReturn(new HashMap<>());
+        }
+
         ctrl.replay();
         Assertions.assertEquals(3, deckService.removePhysicalCardFromDeck("validToken", "Owned", targetPCard).size());
         ctrl.verify();
