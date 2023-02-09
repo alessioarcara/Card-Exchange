@@ -1,6 +1,6 @@
 package com.aadm.cardexchange.shared;
 
-import com.aadm.cardexchange.server.MockCardData;
+import com.aadm.cardexchange.server.DummyData;
 import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
 import com.aadm.cardexchange.shared.models.Card;
 import com.aadm.cardexchange.shared.models.Game;
@@ -24,7 +24,7 @@ public class PhysicalCardTest {
 
     @BeforeEach
     public void initialize() {
-        card = MockCardData.createPokemonDummyCard();
+        card = DummyData.createPokemonDummyCard();
         pCard = new PhysicalCard(Game.POKEMON, card.getId(), Status.Excellent, "well handled card during almost 10 years");
     }
 

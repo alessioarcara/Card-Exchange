@@ -8,8 +8,10 @@ import com.aadm.cardexchange.shared.DeckService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
+import com.aadm.cardexchange.shared.exceptions.ExistingProposal;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
+import com.aadm.cardexchange.shared.payloads.ModifiedDeckPayload;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -85,14 +87,24 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return false;
     }
 
+    private void checkDeckNameInvalidity(String deckName) throws InputException {
+        if (deckName == null || deckName.isEmpty())
+            throw new InputException("Invalid deck name");
+    }
+
+    private void checkIfCardExistsInProposal(PhysicalCard pCard) throws ExistingProposal {
+        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+        if (proposalMap.values().stream().anyMatch(proposal -> proposal.getSenderPhysicalCards().contains(pCard) ||
+                proposal.getReceiverPhysicalCards().contains(pCard)))
+            throw new ExistingProposal("Physical card edit/remove is not allowed as it already exists in a proposal.");
+    }
+
     @Override
     public boolean addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description) throws AuthException, InputException {
         /* PARAMETERS CHECK */
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         CardServiceImpl.checkGameInvalidity(game);
-        if (deckName == null || deckName.isEmpty()) {
-            throw new InputException("Invalid deck name");
-        }
+        checkDeckNameInvalidity(deckName);
         CardServiceImpl.checkCardIdInvalidity(cardId);
         if (status == null) {
             throw new InputException("Invalid status");
@@ -122,9 +134,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     @Override
     public boolean removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        if (deckName == null || deckName.isEmpty()) {
-            throw new InputException("Invalid deck name");
-        }
+        checkDeckNameInvalidity(deckName);
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> decks = new LinkedHashMap<>(deckMap.get(userEmail));
         if (decks.size() == 0) {
@@ -138,6 +148,28 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             deckMap.put(userEmail, decks);
             return true;
         } else return false;
+    }
+
+    @Override
+    public List<ModifiedDeckPayload> editPhysicalCard(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException, ExistingProposal {
+        String email = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        checkDeckNameInvalidity(deckName);
+        if (!deckName.equals(OWNED_DECK) && !deckName.equals(WISHED_DECK))
+            throw new InputException("Sorry, you can only edit physical cards in Default decks.");
+        if (pCard == null)
+            throw new InputException("Invalid physical card");
+        checkIfCardExistsInProposal(pCard);
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
+        Map<String, Deck> userDecks = deckMap.get(email);
+        List<ModifiedDeckPayload> modifiedDecks = new LinkedList<>();
+        userDecks.values().forEach(deck -> {
+            if (deck.removePhysicalCard(pCard)) {
+                deck.addPhysicalCard(pCard);
+                modifiedDecks.add(new ModifiedDeckPayload(deck.getName(), joinPhysicalCardsWithCatalogCards(deck.getPhysicalCards())));
+            }
+        });
+        deckMap.put(email, userDecks);
+        return modifiedDecks;
     }
 
     @Override
@@ -215,8 +247,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     public List<PhysicalCardWithName> addPhysicalCardsToCustomDeck(String token, String customDeckName, List<PhysicalCard> pCards) throws AuthException, InputException, DeckNotFoundException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token,
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        if (customDeckName == null || customDeckName.isEmpty())
-            throw new InputException("Invalid deck name");
+        checkDeckNameInvalidity(customDeckName);
         if (customDeckName.equals(OWNED_DECK) || customDeckName.equals(WISHED_DECK))
             throw new InputException("Default deck names not allowed for custom deck");
         if (pCards.isEmpty())

@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.Widget;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
 public class DeckWidget extends Composite implements ImperativeHandlePhysicalCardSelection, ImperativeHandlePhysicalCardRemove, ImperativeHandlePhysicalCardEdit {
     private static final DeckUIBinder uiBinder = GWT.create(DeckUIBinder.class);
@@ -82,7 +81,6 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
     }
 
     public void setData(List<PhysicalCardWithName> data, String selectedCardId) {
-        Logger.getLogger("adsasd").info(data.toString());
         cards.clear();
         for (PhysicalCardWithName pCard : data) {
             PhysicalCardWidget pCardWidget = createPhysicalCardWidget(pCard);
@@ -101,6 +99,10 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
                 deckHandler != null ? this : null,
                 cardEditHandler != null ? this : null
         );
+    }
+
+    public String getDeckName() {
+        return deckName.getInnerText();
     }
 
     public void setDeckName(String name) {
@@ -143,8 +145,8 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
     }
 
     @Override
-    public void onConfirmCardEdit() {
-        cardEditHandler.onConfirmCardEdit();
+    public void onConfirmCardEdit(String deckName, PhysicalCard editedPcard) {
+        cardEditHandler.onConfirmCardEdit(this.deckName.getInnerText(), editedPcard);
     }
 
     interface DeckUIBinder extends UiBinder<Widget, DeckWidget> {
