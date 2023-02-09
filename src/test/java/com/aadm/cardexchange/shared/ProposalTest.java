@@ -51,6 +51,7 @@ public class ProposalTest {
         senderEmail = "sender@test.it";
         receiverEmail = "receiver@test.it";
         prop = new Proposal(senderEmail, receiverEmail, senderCards, receiversCards);
+        System.out.println(prop.getDate());
     }
 
     @Test

@@ -1,7 +1,6 @@
 package com.aadm.cardexchange.shared.models;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -14,7 +13,7 @@ public class Proposal implements Serializable {
     private String receiverUserEmail;
     private List<PhysicalCard> senderPhysicalCards;
     private List<PhysicalCard> receiverPhysicalCards;
-    private String date;
+    private long date;
 
     public Proposal(String senderUserEmail, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards) {
         this.id = uniqueId.getAndIncrement();
@@ -22,7 +21,7 @@ public class Proposal implements Serializable {
         this.receiverUserEmail = receiverUserEmail;
         this.senderPhysicalCards = senderPhysicalCards;
         this.receiverPhysicalCards = receiverPhysicalCards;
-        this.date = today();
+        this.date = System.currentTimeMillis();
     }
 
     public Proposal() {
@@ -48,15 +47,9 @@ public class Proposal implements Serializable {
         return receiverPhysicalCards;
     }
 
-    public String getDate() {
+    public long getDate() {
         return date;
     }
-
-    private String today() {
-        Date now = new Date();
-        return now.toLocaleString().split(",")[0];
-    }
-
 
     @Override
     public boolean equals(Object o) {
