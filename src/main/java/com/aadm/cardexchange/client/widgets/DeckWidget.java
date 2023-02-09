@@ -101,6 +101,10 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
         );
     }
 
+    public String getDeckName() {
+        return deckName.getInnerText();
+    }
+
     public void setDeckName(String name) {
         deckName.setInnerText(name);
     }
@@ -141,8 +145,8 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
     }
 
     @Override
-    public void onConfirmCardEdit() {
-        cardEditHandler.onConfirmCardEdit();
+    public void onConfirmCardEdit(String deckName, PhysicalCard editedPcard) {
+        cardEditHandler.onConfirmCardEdit(this.deckName.getInnerText(), editedPcard);
     }
 
     interface DeckUIBinder extends UiBinder<Widget, DeckWidget> {
