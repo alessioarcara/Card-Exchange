@@ -4,6 +4,7 @@ import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardEdit;
 import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardRemove;
 import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardSelection;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
+import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.HeadingElement;
@@ -53,8 +54,13 @@ public class PhysicalCardWidget extends Composite {
         if (editHandler != null) {
             editButton = new Button("&#9998", (ClickHandler) e -> {
                 e.stopPropagation();
+                if (isEditable) {
+                    editHandler.onConfirmCardEdit(null, pCard.copyWithModifiedStatusAndDescription(
+                            Status.getStatus(Integer.parseInt(((StatusWidget) cardStatus.getWidget(0)).getSelection())),
+                            cardDescription.getInnerText()
+                    ));
+                }
                 toggleEditMode();
-                editHandler.onConfirmCardEdit();
             });
             editButton.setStyleName(style.editButton());
             cardActions.add(editButton);
@@ -121,7 +127,6 @@ public class PhysicalCardWidget extends Composite {
     }
 
     interface PhysicalCardStyle extends CssResource {
-
         String cardSelected();
 
         String deleteButton();

@@ -1,6 +1,7 @@
 package com.aadm.cardexchange.shared;
 
 import com.aadm.cardexchange.shared.models.*;
+import com.aadm.cardexchange.shared.payloads.ModifiedDeckPayload;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 
 import java.util.List;
@@ -13,6 +14,8 @@ public interface DeckServiceAsync {
     void addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description, AsyncCallback<Boolean> callback);
 
     void removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard, AsyncCallback<List<Deck>> callback);
+
+    void editPhysicalCard(String token, String deckName, PhysicalCard pCard, AsyncCallback<List<ModifiedDeckPayload>> callback);
 
     void getUserDeckNames(String token, AsyncCallback<List<String>> callback);
 

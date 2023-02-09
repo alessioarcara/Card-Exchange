@@ -7,16 +7,38 @@
             position: sticky;
             top: 0;
             display: flex;
+            gap: 2rem;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             background: #20262E;
         }
 
-        .sidebar div {
-            background: #E9E8E8;
-            margin: 1rem;
+        .sidebar > div, .sidebar > button {
+            display: flex;
+            justify-content: center;
+            width: 6rem;
+            background-color: #eee;
+            border: 0;
+            border-radius: 4px;
+            font-family: "Inter var", ui-sans-serif, system-ui, -apple-system, system-ui, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-size: 1.1em;
+            font-weight: 500;
             padding: 1rem;
+        }
+
+
+        .sidebar > div:hover, .sidebar > button:hover {
+            background-color: #fff;
+        }
+
+        .sidebar > div > a {
+            color: #444;
+            text-decoration: none;
+        }
+
+        .sidebar > button {
+            color: #f03a3a;
         }
     </ui:style>
     <g:HTMLPanel styleName="{style.sidebar}" ui:field="links"/>

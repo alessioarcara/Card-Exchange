@@ -3,6 +3,7 @@ package com.aadm.cardexchange.client.views;
 import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
+import com.aadm.cardexchange.shared.payloads.ModifiedDeckPayload;
 import com.google.gwt.user.client.ui.IsWidget;
 
 import java.util.List;
@@ -17,6 +18,8 @@ public interface DecksView extends IsWidget {
 
     void displayAlert(String message);
 
+    void replaceData(List<ModifiedDeckPayload> data);
+
     void displayAddedCustomDeck(String deckName);
 
     void setPresenter(Presenter presenter);
@@ -24,9 +27,9 @@ public interface DecksView extends IsWidget {
     interface Presenter {
         void fetchUserDeck(String deckName, BiConsumer<List<PhysicalCardWithName>, String> setDeckData);
 
-        void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard, Consumer<List<Deck>> isRemoved);
+        void updatePhysicalCard(String deckName, PhysicalCard editedPcard);
 
-        void updatePhysicalCard();
+        void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard, Consumer<List<Deck>> isRemoved);
 
         void createCustomDeck(String deckName);
 

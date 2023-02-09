@@ -29,7 +29,7 @@ rectangle CardExchange {
 V <- U
 
 V ----> UC1
-U ----> UC2
+V ----> UC2
 
 V ----> UC3
 UC3 <.. UC4 : <<extend>>

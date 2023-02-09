@@ -4,10 +4,17 @@ import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.presenters.DecksActivity;
 import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
 import com.aadm.cardexchange.client.views.DecksView;
+import com.aadm.cardexchange.server.DummyData;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
+import com.aadm.cardexchange.shared.exceptions.ExistingProposal;
 import com.aadm.cardexchange.shared.exceptions.InputException;
+import com.aadm.cardexchange.shared.models.Game;
+import com.aadm.cardexchange.shared.models.PhysicalCard;
+import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
+import com.aadm.cardexchange.shared.models.Status;
+import com.aadm.cardexchange.shared.payloads.ModifiedDeckPayload;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.easymock.IMocksControl;
@@ -69,7 +76,8 @@ public class DecksActivityTest {
         return Stream.of(
                 Arguments.of(new AuthException("Invalid token")),
                 Arguments.of(new InputException("Invalid description")),
-                Arguments.of(new DeckNotFoundException("Dec")),
+                Arguments.of(new DeckNotFoundException("Deck not found")),
+                Arguments.of(new ExistingProposal("Physical card edit/remove is not allowed as it already exists in a proposal.")),
                 Arguments.of(new RuntimeException())
         );
     }
@@ -322,6 +330,74 @@ public class DecksActivityTest {
 
         ctrl.replay();
         decksActivity.addPhysicalCardsToCustomDeck("test", mockPCards, consumer);
+        ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"Custom"})
+    public void testUpdatePhysicalCardForInvalidDeckName(String input) {
+        mockDecksView.displayAlert(anyString());
+        ctrl.replay();
+        decksActivity.updatePhysicalCard(input, new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description."));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testUpdatePhysicalCardForNullPhysicalCard() {
+        mockDecksView.displayAlert("Invalid physical card");
+        ctrl.replay();
+        decksActivity.updatePhysicalCard("Owned", null);
+        ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideDifferentTypeOfErrors")
+    public void testUpdatePhysicalCardForValidParametersForFailure(Exception e) {
+        mockRpcService.editPhysicalCard(anyString(), anyString(), isA(PhysicalCard.class), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<List<ModifiedDeckPayload>> callback = (AsyncCallback<List<ModifiedDeckPayload>>) args[args.length - 1];
+            callback.onFailure(e);
+            return null;
+        });
+        mockDecksView.displayAlert(anyString());
+        ctrl.replay();
+        decksActivity.updatePhysicalCard("Owned", new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description."));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testUpdatePhysicalCardForValidParametersForSuccess() {
+        // init mocks
+        PhysicalCard editedPCard = new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description.")
+                .copyWithModifiedStatusAndDescription(Status.Excellent, "This is an edited description");
+        PhysicalCardWithName editedPCardWithName = new PhysicalCardWithName(editedPCard, "test");
+
+        List<PhysicalCardWithName> mockPCards1 = DummyData.createPhysicalCardWithNameDummyList(5);
+        List<PhysicalCardWithName> mockPCards2 = DummyData.createPhysicalCardWithNameDummyList(5);
+
+        mockPCards1.addAll(mockPCards2);
+        mockPCards1.add(editedPCardWithName);
+        mockPCards2.add(editedPCardWithName);
+
+        List<ModifiedDeckPayload> modifiedDecks = Arrays.asList(
+                new ModifiedDeckPayload("Owned", mockPCards1),
+                new ModifiedDeckPayload("Custom", mockPCards2)
+        );
+
+        // expects
+        mockRpcService.editPhysicalCard(anyString(), anyString(), isA(PhysicalCard.class), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<List<ModifiedDeckPayload>> callback = (AsyncCallback<List<ModifiedDeckPayload>>) args[args.length - 1];
+            callback.onSuccess(modifiedDecks);
+            return null;
+        });
+        mockDecksView.replaceData(isA(List.class));
+
+        ctrl.replay();
+        decksActivity.updatePhysicalCard("Owned", editedPCard);
         ctrl.verify();
     }
 }

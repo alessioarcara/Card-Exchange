@@ -6,10 +6,12 @@ import com.aadm.cardexchange.client.views.DecksView;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
+import com.aadm.cardexchange.shared.exceptions.ExistingProposal;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
+import com.aadm.cardexchange.shared.payloads.ModifiedDeckPayload;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -62,8 +64,38 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
     }
 
     @Override
-    public void updatePhysicalCard() {
+    public void updatePhysicalCard(String deckName, PhysicalCard editedPcard) {
+        if (checkDeckNameInvalidity(deckName)) {
+            view.displayAlert("Invalid deck name");
+            return;
+        }
+        if (!deckName.equals("Owned") && !deckName.equals("Wished")) {
+            view.displayAlert("Sorry, you can only edit physical cards in Default decks.");
+            return;
+        }
+        if (editedPcard == null) {
+            view.displayAlert("Invalid physical card");
+            return;
+        }
+        rpcService.editPhysicalCard(authSubject.getToken(), deckName, editedPcard, new AsyncCallback<List<ModifiedDeckPayload>>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                if (caught instanceof AuthException) {
+                    view.displayAlert(((AuthException) caught).getErrorMessage());
+                } else if (caught instanceof InputException) {
+                    view.displayAlert(((InputException) caught).getErrorMessage());
+                } else if (caught instanceof ExistingProposal) {
+                    view.displayAlert(((ExistingProposal) caught).getErrorMessage());
+                } else {
+                    view.displayAlert("Internal server error: " + caught.getMessage());
+                }
+            }
 
+            @Override
+            public void onSuccess(List<ModifiedDeckPayload> result) {
+                view.replaceData(result);
+            }
+        });
     }
 
     private boolean checkDeckNameInvalidity(String deckName) {

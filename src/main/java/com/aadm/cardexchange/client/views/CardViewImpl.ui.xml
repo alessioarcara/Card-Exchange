@@ -52,7 +52,7 @@
             align-self: center;
         }
 
-        .usersLists {
+        .userListsContainer {
             display: flex;
             justify-content: space-around;
         }
@@ -87,6 +87,6 @@
             </div>
         </div>
         <g:HTMLPanel styleName="{style.addCardToDeckContainer}" ui:field="addCardToDeckContainer"/>
-        <g:HTMLPanel styleName="{style.usersLists}" ui:field="userLists"/>
+        <g:HTMLPanel styleName="{style.userListsContainer}" ui:field="userLists"/>
     </g:HTMLPanel>
 </ui:UiBinder>

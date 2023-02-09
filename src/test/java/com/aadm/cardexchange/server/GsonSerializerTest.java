@@ -43,7 +43,7 @@ public class GsonSerializerTest implements CardTestConstants {
 
         byte[] data = out.copyBytes();
         GsonSerializer<Card> deserializer = new GsonSerializer<>(gson);
-        Object deserializedCard = deserializer.deserialize(new DataInput2.ByteArray(data), 0);
+        Card deserializedCard = deserializer.deserialize(new DataInput2.ByteArray(data), 0);
 
         Assertions.assertEquals(card, deserializedCard);
     }
