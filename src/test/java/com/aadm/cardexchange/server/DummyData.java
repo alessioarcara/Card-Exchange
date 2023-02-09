@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 // Create dummy cards with distinct fields for testing purposes
 public class DummyData {
@@ -103,5 +104,9 @@ public class DummyData {
         for (int i = 0; i < n; i++)
             list.add(new PhysicalCard(Game.randomGame(), (i + 3000), Status.randomStatus(), "This is a valid description."));
         return list;
+    }
+
+    public static List<PhysicalCardWithName> createPhysicalCardWithNameDummyList(int n) {
+        return createPhysicalCardDummyList(n).stream().map(pCard -> new PhysicalCardWithName(pCard, "test")).collect(Collectors.toList());
     }
 }
