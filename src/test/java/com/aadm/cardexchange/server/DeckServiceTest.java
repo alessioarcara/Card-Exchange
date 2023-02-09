@@ -484,7 +484,7 @@ public class DeckServiceTest {
     }
 
     @Test
-    public void testRemovePhysicalCardFromDeckForNotExistingPhysicalCard() throws AuthException, InputException {
+    public void testRemovePhysicalCardFromDeckForNotExistingPhysicalCard() throws AuthException, InputException, DeckNotFoundException {
         setupForValidToken();
         PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
         PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 1221, Status.Fair, "This is a valid bis description.");
@@ -511,25 +511,36 @@ public class DeckServiceTest {
         PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
         PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 2222, Status.Good, "This is a valid description.");
 
-        Deck ownedDeck = new Deck("Owned", true);
-        Map<String, Deck> deckMap = new HashMap<>() {{
-            put("Owned", ownedDeck);
-        }};
-        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
-            put("test@test.it", deckMap);
-        }};
-        deckMap.get("Owned").addPhysicalCard(mockPCard1);
-        deckMap.get("Owned").addPhysicalCard(mockPCard2);
+        List<Deck> decks = Arrays.asList(
+            new Deck("Owned", true),
+            new Deck("Wished", true),
+            new Deck("custom1"),
+            new Deck("custom2"),
+            new Deck("custom3")
+        );
 
-        ownedDeck.addPhysicalCard(mockPCard2);
-        List<Deck> decksList = new LinkedList<>(){{
-            add(ownedDeck);
+        Map<String, Deck> mockUserDeckMap = new HashMap<>();
+
+        // load physical cards on existing decks
+        for (Deck deck : decks) {
+            for (PhysicalCard pCard : DummyData.createPhysicalCardDummyList(numOfCards)) {
+                deck.addPhysicalCard(pCard);
+            }
+            if (!deck.getName().equals("Wished") && !deck.getName().equals("custom2")) {
+                deck.addPhysicalCard(targetPCard);
+            }
+            mockUserDeckMap.put(deck.getName(), deck);
+        }
+
+        Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+            put("test@test.it", mockUserDeckMap);
         }};
+
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(mockDeckMap);
         ctrl.replay();
-        Assertions.assertEquals(decksList, deckService.removePhysicalCardFromDeck("validToken", "Owned", mockPCard1));
+        Assertions.assertEquals(3, deckService.removePhysicalCardFromDeck("validToken", "Owned", targetPCard).size());
         ctrl.verify();
     }
 

@@ -8,7 +8,6 @@ import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
 import com.aadm.cardexchange.shared.exceptions.ExistingProposal;
 import com.aadm.cardexchange.shared.exceptions.InputException;
-import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.aadm.cardexchange.shared.payloads.ModifiedDeckPayload;
@@ -103,7 +102,7 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
     }
 
     @Override
-    public void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard, Consumer<List<Deck>> isRemoved) {
+    public void removePhysicalCardFromDeck(String deckName, PhysicalCard pCard) {
         if (checkDeckNameInvalidity(deckName)) {
             view.displayAlert("Invalid deck name");
             return;
@@ -112,7 +111,7 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
             view.displayAlert("Invalid physical card");
             return;
         }
-        rpcService.removePhysicalCardFromDeck(authSubject.getToken(), deckName, pCard, new AsyncCallback<List<Deck>>() {
+        rpcService.removePhysicalCardFromDeck(authSubject.getToken(), deckName, pCard, new AsyncCallback<List<ModifiedDeckPayload>>() {
             @Override
             public void onFailure(Throwable caught) {
                 if (caught instanceof AuthException) {
@@ -125,8 +124,8 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
             }
 
             @Override
-            public void onSuccess(List<Deck> result) {
-                isRemoved.accept(result);
+            public void onSuccess(List<ModifiedDeckPayload> result) {
+                view.replaceData(result);
             }
         });
     }

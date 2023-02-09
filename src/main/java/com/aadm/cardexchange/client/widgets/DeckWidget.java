@@ -1,7 +1,6 @@
 package com.aadm.cardexchange.client.widgets;
 
 import com.aadm.cardexchange.client.handlers.*;
-import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
@@ -18,7 +17,6 @@ import com.google.gwt.user.client.ui.Widget;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Consumer;
 
 public class DeckWidget extends Composite implements ImperativeHandlePhysicalCardSelection, ImperativeHandlePhysicalCardRemove, ImperativeHandlePhysicalCardEdit {
     private static final DeckUIBinder uiBinder = GWT.create(DeckUIBinder.class);
@@ -139,9 +137,9 @@ public class DeckWidget extends Composite implements ImperativeHandlePhysicalCar
     }
 
     @Override
-    public void onClickDeleteButton(PhysicalCard pCard, Consumer<List<Deck>> isRemoved) {
+    public void onClickDeleteButton(PhysicalCard pCard) {
         if (deckHandler != null) {
-            deckHandler.onRemovePhysicalCard(deckName.getInnerText(), pCard, isRemoved);
+            deckHandler.onRemovePhysicalCard(deckName.getInnerText(), pCard);
         }
     }
 

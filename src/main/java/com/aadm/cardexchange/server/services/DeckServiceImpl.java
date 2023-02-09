@@ -142,30 +142,26 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     }
 
     @Override
-    public List<Deck> removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException {
+    public List<ModifiedDeckPayload> removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException, DeckNotFoundException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         checkDeckNameInvalidity(deckName);
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
-        Map<String, Deck> decks = new LinkedHashMap<>(deckMap.get(userEmail));
-        if (decks.size() == 0) {
-            throw new RuntimeException("Not existing decks");
+        Map<String, Deck> userDecks = deckMap.get(userEmail);
+        List<ModifiedDeckPayload> modifiedDecks = new LinkedList<>();
+        Deck foundDeck = userDecks.get(deckName);
+        if (foundDeck == null) {
+            throw new DeckNotFoundException("Deck '" + deckName + "' not found.");
         }
-
-        List<Deck> opResult = new LinkedList<>();
-
-        Deck foundDeck = decks.get(deckName);
-        if (foundDeck == null) { return opResult; }
-
         if (deckName.equals("Owned")) {
-            List<Deck> updatedDecks = removeCardFromAllDecks(pCard, decks);
-            for (Deck updatedDeck : updatedDecks) {
-                decks.put(updatedDeck.getName(), updatedDeck);
-                opResult.add(updatedDeck);
+            for (Deck deck : userDecks.values()) {
+                if (deck.removePhysicalCard(pCard)) {
+                    modifiedDecks.add(new ModifiedDeckPayload(deck.getName(), joinPhysicalCardsWithCatalogCards(deck.getPhysicalCards())));
+                }
             }
         }
         else {
             foundDeck.removePhysicalCard(pCard);
-            opResult.add(foundDeck);
+            modifiedDecks.add(new ModifiedDeckPayload(foundDeck.getName(), joinPhysicalCardsWithCatalogCards(foundDeck.getPhysicalCards())));
         }
 
         deckMap.put(userEmail, decks);

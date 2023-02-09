@@ -5,7 +5,6 @@ import com.aadm.cardexchange.client.handlers.ImperativeHandleDeck;
 import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardEdit;
 import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardSelection;
 import com.aadm.cardexchange.client.widgets.DeckWidget;
-import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.aadm.cardexchange.shared.payloads.ModifiedDeckPayload;
@@ -58,8 +57,8 @@ public class DecksViewImpl extends Composite implements DecksView, ImperativeHan
     }
 
     @Override
-    public void onRemovePhysicalCard(String deckName, PhysicalCard pCard, Consumer<List<Deck>> isRemoved) {
-        presenter.removePhysicalCardFromDeck(deckName, pCard, isRemoved);
+    public void onRemovePhysicalCard(String deckName, PhysicalCard pCard) {
+        presenter.removePhysicalCardFromDeck(deckName, pCard);
     }
 
     @Override

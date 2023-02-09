@@ -1,6 +1,5 @@
 package com.aadm.cardexchange.client.views;
 
-import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.aadm.cardexchange.shared.payloads.ModifiedDeckPayload;

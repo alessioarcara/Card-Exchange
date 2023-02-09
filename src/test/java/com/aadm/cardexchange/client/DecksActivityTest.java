@@ -15,7 +15,6 @@ import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.aadm.cardexchange.shared.models.Status;
 import com.aadm.cardexchange.shared.payloads.ModifiedDeckPayload;
-import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
@@ -87,9 +86,7 @@ public class DecksActivityTest {
     public void testRemovePhysicalCardFromDeckForInvalidDeckName(String input) {
         mockDecksView.displayAlert(anyString());
         ctrl.replay();
-        decksActivity.removePhysicalCardFromDeck(input, new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"), (List<Deck> res) -> {
-            Assertions.assertTrue(res.isEmpty());
-        });
+        decksActivity.removePhysicalCardFromDeck(input, new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"));
         ctrl.verify();
     }
 
@@ -109,7 +106,7 @@ public class DecksActivityTest {
         mockRpcService.removePhysicalCardFromDeck(anyString(), anyString(), isA(PhysicalCard.class), isA(AsyncCallback.class));
         expectLastCall().andAnswer(() -> {
             Object[] args = getCurrentArguments();
-            AsyncCallback<List<Deck>> callback = (AsyncCallback<List<Deck>>) args[args.length - 1];
+            AsyncCallback<List<ModifiedDeckPayload>> callback = (AsyncCallback<List<ModifiedDeckPayload>>) args[args.length - 1];
             callback.onFailure(e);
             return null;
         });
@@ -141,7 +138,7 @@ public class DecksActivityTest {
         });
 
         ctrl.replay();
-        decksActivity.removePhysicalCardFromDeck("Owned", new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"), Assertions::assertNotNull);
+        decksActivity.removePhysicalCardFromDeck("Owned", removedPCard);
         ctrl.verify();
     }
 
