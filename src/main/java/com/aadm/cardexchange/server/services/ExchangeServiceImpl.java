@@ -110,4 +110,3 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         return proposalList;
     }
 }
-
