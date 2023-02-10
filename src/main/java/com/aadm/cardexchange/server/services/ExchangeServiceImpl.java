@@ -23,7 +23,6 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     private static final long serialVersionUID = 5868088467963819042L;
     private final MapDB db;
     private final Gson gson = new Gson();
-
     public ExchangeServiceImpl() {
         db = new MapDBImpl();
     }
@@ -62,28 +61,6 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         return proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null;
     }
 
-//    private  List<Proposal> GetProposalList(String email, boolean send, boolean received) throws BaseException {
-//        if (send ^ received) {
-//            Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
-//            List<Proposal> proposalList = new ArrayList<>();
-//            if (send) {
-//                for (Proposal item : proposalMap.values()) {
-//                    if (email.equals(item.getSenderUserEmail())) {
-//                        proposalList.add(item);
-//                    }
-//                }
-//            }
-//            if (received) {
-//                for (Proposal item : proposalMap.values()) {
-//                    if (email.equals(item.getReceiverUserEmail())) {
-//                        proposalList.add(item);
-//                    }
-//                }
-//            }
-//            return proposalList;
-//        } else throw new InputException("Invalid request");
-//    }
-
     public List<Proposal> getProposalListReceived(String token) throws AuthException {
         String email = AuthServiceImpl.checkTokenValidity(token,
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
@@ -109,5 +86,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         }
         return proposalList;
     }
+
+
 }
 

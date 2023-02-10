@@ -74,6 +74,13 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return addDeck(email, OWNED_DECK, true, deckMap) && addDeck(email, WISHED_DECK, true, deckMap);
     }
 
+    private static void checkFoundDeckValidity(String deckName, Deck foundDeck) throws DeckNotFoundException {
+        if (foundDeck == null) {
+            throw new DeckNotFoundException("Deck '" + deckName + "' not found.");
+        }
+    }
+
+
     private boolean checkDescriptionValidity(String description) {
         int count = 0;
         for (int i = 0; i < description.length(); i++) {
@@ -98,6 +105,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
                 proposal.getReceiverPhysicalCards().contains(pCard)))
             throw new ExistingProposal("Physical card edit/remove is not allowed as it already exists in a proposal.");
     }
+
 
     @Override
     public boolean addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description) throws AuthException, InputException {
@@ -272,4 +280,66 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         // Return the modified deck's card list
         return joinPhysicalCardsWithCatalogCards(userDeck.getPhysicalCards());
     }
+    private Map<Integer, List<PhysicalCard>> WishedLookUpTable(Deck senderWishedDeck) {
+        Map<Integer, List<PhysicalCard>> wishedLookUpTable = new HashMap<>();
+        int cardId;
+        for (PhysicalCard pCardWished : senderWishedDeck.getPhysicalCards()) {
+            cardId = pCardWished.getCardId();
+            if (!wishedLookUpTable.containsKey(cardId)) {
+                wishedLookUpTable.put(cardId, new ArrayList<PhysicalCard>());
+            }
+            wishedLookUpTable.get(cardId).add(pCardWished);
+        }
+        return wishedLookUpTable;
+    }
+
+    public boolean removePhysicalCardsFromWishedDeckAfterExchange (int proposalId) throws InputException, DeckNotFoundException {
+        //Initial checks
+        if (proposalId <= 0) {
+            throw new InputException("Invalid proposal id");
+        }
+        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME,
+                Serializer.INTEGER, new GsonSerializer<>(gson));
+        if (proposalMap.size() == 0) {
+            throw new RuntimeException("Proposal not found");
+        }
+        //Fetch proposal data
+        Proposal proposal = proposalMap.get(proposalId);
+        String senderEmail = proposal.getSenderUserEmail();
+        String receiverEmail = proposal.getReceiverUserEmail();
+
+        //Fetch decks data
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
+        Map<String, Deck> senderDecks = deckMap.get(senderEmail);
+        Deck senderWishedDeck = senderDecks.get(WISHED_DECK);
+        checkFoundDeckValidity(WISHED_DECK, senderWishedDeck);
+
+        Map<String, Deck> receiverDecks = deckMap.get(senderEmail);
+        Deck receiverWishedDeck = senderDecks.get(WISHED_DECK);
+        checkFoundDeckValidity(WISHED_DECK, receiverWishedDeck);
+
+        //Create a lookup Table to direct access to PCardsWished by Catalogue CardId
+        Map<Integer, List<PhysicalCard>> wishedLookUpTable = WishedLookUpTable(senderWishedDeck);
+        List<PhysicalCard> filteredWishedCard = null;
+        int cardId;
+
+        if (senderWishedDeck!=null) {
+            for (PhysicalCard pCardProposal : proposal.getReceiverPhysicalCards()) {
+                cardId = pCardProposal.getCardId();
+                filteredWishedCard = wishedLookUpTable.get(cardId);
+                for (PhysicalCard pCardWished : filteredWishedCard) {
+                    if (pCardProposal.getCardId() == pCardWished.getCardId()) {
+                        if (pCardProposal.getStatus().getValue() >= pCardWished.getStatus().getValue()) {
+                            senderWishedDeck.removePhysicalCard(pCardWished);
+                        }
+                    }
+                }
+            }
+        }
+        deckMap.put(senderEmail, senderDecks);
+        //repeat for recever wished deck (or create a parametric method)
+        //if a user is deleted (or decks map for that user don't exist), there is a nullpoint to catch
+        return true;
+    }
+
 }

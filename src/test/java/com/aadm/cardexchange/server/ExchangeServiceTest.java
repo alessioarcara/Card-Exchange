@@ -5,9 +5,7 @@ import com.aadm.cardexchange.server.services.ExchangeServiceImpl;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
-import com.aadm.cardexchange.shared.models.LoginInfo;
-import com.aadm.cardexchange.shared.models.Proposal;
-import com.aadm.cardexchange.shared.models.User;
+import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -253,4 +251,6 @@ public class ExchangeServiceTest {
             Assertions.assertEquals("UserMail3", proposalList.get(0).getSenderUserEmail());
         });
     }
+
+
 }
