@@ -514,11 +514,11 @@ public class DeckServiceTest {
         PhysicalCard targetPCard = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
 
         List<Deck> decks = Arrays.asList(
-            new Deck("Owned", true),
-            new Deck("Wished", true),
-            new Deck("custom1"),
-            new Deck("custom2"),
-            new Deck("custom3")
+                new Deck("Owned", true),
+                new Deck("Wished", true),
+                new Deck("custom1"),
+                new Deck("custom2"),
+                new Deck("custom3")
         );
 
         Map<String, Deck> mockUserDeckMap = new HashMap<>();
@@ -870,104 +870,63 @@ public class DeckServiceTest {
         Assertions.assertEquals(numOfDecksModified, modifiedDecks.size());
     }
 
-    @ParameterizedTest
-    @ValueSource(ints = {-1})
-    public void testRemovePhysicalCardsFromWishedDeckAfterExchangeWithInvalidParameter(int input) {
+    @Test
+    public void testRemovePhysicalCardsFromWishedDeckAfterExchangeForEmptyDeck() {
+        Deck emptyDeck = new Deck("empty");
+
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> deckService.removePhysicalCardsFromWishedDeckAfterExchange(input));
+        Deck actual = DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(emptyDeck, new ArrayList<>());
+        Assertions.assertTrue(actual.getPhysicalCards().isEmpty());
         ctrl.verify();
     }
 
     @Test
-    public void testRemovePhysicalCardsFromWishedDeckAfterExchangeWithProposalNotFound() {
-        Map<Integer, Proposal> proposalMap = new HashMap<>();
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(proposalMap);
+    public void testRemovePhysicalCardsFromWishedDeckAfterExchangeForEmptyCards() {
+        Deck deck = new Deck("deck");
+        for (PhysicalCard pCard : DummyData.createPhysicalCardDummyList(5)) {
+            deck.addPhysicalCard(pCard);
+        }
+
         ctrl.replay();
-        Assertions.assertThrows(RuntimeException.class, () -> deckService.removePhysicalCardsFromWishedDeckAfterExchange(1));
+        Deck actual = DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(deck, new ArrayList<>());
+        Assertions.assertEquals(actual.getPhysicalCards().size(), deck.getPhysicalCards().size());
         ctrl.verify();
     }
+
     @Test
-    public void testRemovePhysicalCardsFromWishedDeckAfterExchangeSuccess() throws DeckNotFoundException, InputException {
-        // init mocks
-        // setup Proposal
-        List<PhysicalCard>senderPhysicalCards = new ArrayList<> ();
-        senderPhysicalCards.add(new PhysicalCard(Game.MAGIC, 8, Status.randomStatus(), "This is a valid description."));
-        senderPhysicalCards.add(new PhysicalCard(Game.MAGIC, 4, Status.Excellent, "This is a valid description."));     //Match
-        senderPhysicalCards.add(new PhysicalCard(Game.MAGIC, 2, Status.Good, "This is a valid description."));          //Match
+    public void testRemovePhysicalCardsFromWishedDeckAfterExchangeSuccess() {
+        // Wished Deck
+        PhysicalCard pCard1 = new PhysicalCard(Game.MAGIC, 111, Status.VeryDamaged, "This is a valid description.");
+        PhysicalCard pCard2 = new PhysicalCard(Game.MAGIC, 123, Status.Excellent, "This is a valid description.");
+        PhysicalCard pCard3 = new PhysicalCard(Game.MAGIC, 123, Status.Good, "This is a valid description.");        //Match
+        PhysicalCard pCard4 = new PhysicalCard(Game.MAGIC, 123, Status.VeryDamaged, "This is a valid description."); //Match
 
-        List<PhysicalCard>receiverPhysicalCards = new ArrayList<> ();
-        receiverPhysicalCards.add(new PhysicalCard(Game.MAGIC, 1, Status.VeryDamaged, "This is a valid description.")); //Match
-        receiverPhysicalCards.add(new PhysicalCard(Game.MAGIC, 4, Status.Excellent, "This is a valid description."));
-        receiverPhysicalCards.add(new PhysicalCard(Game.MAGIC, 4, Status.Excellent, "This is a valid description."));
-        receiverPhysicalCards.add(new PhysicalCard(Game.MAGIC, 4, Status.Excellent, "This is a valid description."));
-        receiverPhysicalCards.add(new PhysicalCard(Game.MAGIC, 2, Status.Good, "This is a valid description."));        //Match
+        Deck wishedDeck = new Deck("Wished", true);
+        wishedDeck.addPhysicalCard(pCard1);
+        wishedDeck.addPhysicalCard(pCard2);
+        wishedDeck.addPhysicalCard(pCard3);
+        wishedDeck.addPhysicalCard(pCard4);
 
-        Proposal p1 = new Proposal("UserMail1", "UserMail2", new ArrayList<>(), new ArrayList<>());
-        Proposal p2 = new Proposal("UserMail1", "UserMail3", new ArrayList<>(), new ArrayList<>());
-        Proposal p3 = new Proposal("UserMail1", "UserMail4", senderPhysicalCards, receiverPhysicalCards);  //Match
-        Proposal p4 = new Proposal("UserMail2", "UserMail3", new ArrayList<>(), new ArrayList<>());
-        Proposal p5 = new Proposal("UserMail2", "UserMail4", new ArrayList<>(), new ArrayList<>());
-        Proposal p6 = new Proposal("UserMail3", "UserMail4", new ArrayList<>(), new ArrayList<>());
-
-        Map<Integer, Proposal> proposalMap = new HashMap<>() {{
-            put(p1.getId(), p1);
-            put(p2.getId(), p2);
-            put(p3.getId(), p3);
-            put(p4.getId(), p4);
-            put(p5.getId(), p5);
-            put(p6.getId(), p6);
-        }};
-
-
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(proposalMap);
-
-
-        // Sender Wished Deck
-        PhysicalCard senderPCard1 = new PhysicalCard(Game.MAGIC, 0, Status.VeryDamaged, "This is a valid description.");
-        PhysicalCard senderPCard2 = new PhysicalCard(Game.MAGIC, 1, Status.Excellent, "This is a valid description.");
-        PhysicalCard senderPCard3 = new PhysicalCard(Game.MAGIC, 1, Status.Good, "This is a valid description.");
-        PhysicalCard senderPCard4 = new PhysicalCard(Game.MAGIC, 1, Status.VeryDamaged, "This is a valid description."); //Match
-        PhysicalCard senderPCard5 = new PhysicalCard(Game.MAGIC, 3, Status.Excellent, "This is a valid description.");   //Match
-        Deck senderWishedDeck = new Deck("Wished", true);
-        senderWishedDeck.addPhysicalCard(senderPCard1);
-        senderWishedDeck.addPhysicalCard(senderPCard2);
-        senderWishedDeck.addPhysicalCard(senderPCard3);
-        senderWishedDeck.addPhysicalCard(senderPCard4);
-        senderWishedDeck.addPhysicalCard(senderPCard5);
-
-        // Sender Wished Deck
-        PhysicalCard receiverPCard1 = new PhysicalCard(Game.MAGIC, 0, Status.randomStatus(), "This is a valid description.");
-        PhysicalCard receiverPCard2 = new PhysicalCard(Game.MAGIC, 2, Status.Excellent, "This is a valid description.");
-        PhysicalCard receiverPCard3 = new PhysicalCard(Game.MAGIC, 2, Status.Good, "This is a valid description.");        //Match
-        PhysicalCard receiverPCard4 = new PhysicalCard(Game.MAGIC, 2, Status.VeryDamaged, "This is a valid description."); //Match
-        PhysicalCard receiverPCard5 = new PhysicalCard(Game.MAGIC, 4, Status.Damaged, "This is a valid description.");     //Match
-        Deck reveiverWishedDeck = new Deck("Wished", true);
-        senderWishedDeck.addPhysicalCard(receiverPCard1);
-        senderWishedDeck.addPhysicalCard(receiverPCard2);
-        senderWishedDeck.addPhysicalCard(receiverPCard3);
-        senderWishedDeck.addPhysicalCard(receiverPCard4);
-        senderWishedDeck.addPhysicalCard(receiverPCard5);
-
-        // expects
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(new HashMap<>() {{
-                    put("UserMail1", new HashMap<>() {{
-                        put("Wished", senderWishedDeck);
-                    }});
-                    put("UserMail4", new HashMap<>() {{
-                        put("Wished", reveiverWishedDeck);
-                    }});
-                }});
-
+        // setup cards list
+        List<PhysicalCard> listPhysicalCards = new ArrayList<>();
+        listPhysicalCards.add(new PhysicalCard(Game.MAGIC, 888, Status.randomStatus(), "This is a valid description."));
+        listPhysicalCards.add(new PhysicalCard(Game.MAGIC, 444, Status.Excellent, "This is a valid description."));
+        listPhysicalCards.add(pCard3);          //Match
 
         ctrl.replay();
-        Assertions.assertTrue(deckService.removePhysicalCardsFromWishedDeckAfterExchange(p3.getId()));
+        Deck actual = DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(wishedDeck, listPhysicalCards);
         ctrl.verify();
-    }
 
+        Status actualPCardStatus = null;
+        for (PhysicalCard pCard : actual.getPhysicalCards()) {
+            if (pCard.getCardId() == pCard3.getCardId())
+                actualPCardStatus = pCard.getStatus();
+        }
+
+        Status finalActualPCardStatus = actualPCardStatus;
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(2, actual.getPhysicalCards().size());
+            Assertions.assertEquals(Status.Excellent, finalActualPCardStatus);
+        });
+    }
 }
