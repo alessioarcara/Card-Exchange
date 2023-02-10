@@ -916,7 +916,7 @@ public class DeckServiceTest {
         PhysicalCard wishedCard1 = new PhysicalCard(Game.MAGIC, 1, Status.Excellent, "This is a valid description.");
         PhysicalCard wishedCard2 = new PhysicalCard(Game.MAGIC, 1, Status.Fair, "This is a valid description.");
         PhysicalCard wishedCard3 = new PhysicalCard(Game.MAGIC, 3, Status.Fair, "This is a valid description.");
-        Deck wishedDeck = new Deck("test", false);
+        Deck wishedDeck = new Deck("Wished", true);
         wishedDeck.addPhysicalCard(wishedCard1);
         wishedDeck.addPhysicalCard(wishedCard2);
         wishedDeck.addPhysicalCard(wishedCard3);
@@ -957,7 +957,7 @@ public class DeckServiceTest {
         PhysicalCard ownedCard1 = new PhysicalCard(Game.MAGIC, 1, Status.VeryDamaged, "This is a valid description.");
         PhysicalCard ownedCard2 = new PhysicalCard(Game.MAGIC, 1, Status.Fair, "This is a valid description.");        //Match
         PhysicalCard ownedCard3 = new PhysicalCard(Game.MAGIC, 2, Status.Good, "This is a valid description.");
-        Deck ownedDeck = new Deck("test", false);
+        Deck ownedDeck = new Deck("Owned", true);
         ownedDeck.addPhysicalCard(ownedCard1);
         ownedDeck.addPhysicalCard(ownedCard2);
         ownedDeck.addPhysicalCard(ownedCard3);
@@ -967,7 +967,7 @@ public class DeckServiceTest {
         PhysicalCard wishedCard1 = new PhysicalCard(Game.MAGIC, 1, Status.Excellent, "This is a valid description.");
         PhysicalCard wishedCard2 = new PhysicalCard(Game.MAGIC, 1, Status.Fair, "This is a valid description.");
         PhysicalCard wishedCard3 = new PhysicalCard(Game.MAGIC, 3, Status.Fair, "This is a valid description.");
-        Deck wishedDeck = new Deck("test", false);
+        Deck wishedDeck = new Deck("Wished", true);
         wishedDeck.addPhysicalCard(wishedCard1);
         wishedDeck.addPhysicalCard(wishedCard2);
         wishedDeck.addPhysicalCard(wishedCard3);
