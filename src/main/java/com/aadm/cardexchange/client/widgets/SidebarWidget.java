@@ -17,6 +17,7 @@ public class SidebarWidget extends Composite implements RouteConstants {
     public SidebarWidget(ImperativeHandleSidebar parent) {
         initWidget(uiBinder.createAndBindUi(this));
         button = new Button("Logout", (ClickHandler) event -> parent.onClickLogout());
+        button.setStyleName("");
     }
 
     public void setLinks(boolean isLoggedIn) {
