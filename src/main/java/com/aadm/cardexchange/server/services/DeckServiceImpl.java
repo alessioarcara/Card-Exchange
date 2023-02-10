@@ -266,6 +266,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
 
     @Override
     public List <PhysicalCardWithEmailDealing> getListPhysicalCardWithEmailDealing(String token, Game game, int cardId) throws BaseException, AuthException, InputException {
+        //Initial checks
         System.out.println("parameter cardID: " + cardId);
         String userEmail = AuthServiceImpl.checkTokenValidity(token,
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
@@ -288,9 +289,12 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             if (cardId == pCard.getCardId()) {
                 System.out.println("PCardOwned matching with id: " + pCard.getId() + "because have cardId: " + pCard.getCardId());
                 position = pCard.getStatus().getValue() - 1;
+                //If position for this Status is empty, fill with this Pcard
                 if (ownedMatchingPCardId[position] == null) {
                     ownedMatchingPCardId[position] = pCard.getId();
+                    //if all Status positions are filled, exit from cycle
                     if (Arrays.stream(ownedMatchingPCardId).filter(e -> e != null).count() == 5) {
+                        System.out.println("I'm full!");
                         break;
                     }
                 }
@@ -298,20 +302,20 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         }
 
         List<PhysicalCardWithEmail> listWishedPCard =  getPhysicalCardByCardIdAndDeckName(cardId, WISHED_DECK);
-        String offerPCardId = null;
+        String offeredPCardId = null;
         List <PhysicalCardWithEmailDealing> result = new ArrayList<>();
 
         for (PhysicalCardWithEmail pCardWished : listWishedPCard) {
             System.out.println("Evaluate Wished cardid: " + pCardWished.getId() + "with status " + pCardWished.getStatus());
             for(int i=(pCardWished.getStatus().getValue()-1); i<5;i++ ) {
                 if  (ownedMatchingPCardId[i]!=null){
-                    offerPCardId = ownedMatchingPCardId[i];
+                    offeredPCardId = ownedMatchingPCardId[i];
                     System.out.println("Match!");
                     break;
                 }
                 System.out.println("Don't Match!");
-            } result.add(new PhysicalCardWithEmailDealing(pCardWished, offerPCardId));
-            offerPCardId = null;
+            } result.add(new PhysicalCardWithEmailDealing(pCardWished, offeredPCardId));
+            offeredPCardId = null;
         }
         return result;
     }
