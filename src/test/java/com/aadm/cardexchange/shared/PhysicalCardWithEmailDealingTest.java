@@ -23,6 +23,6 @@ public class PhysicalCardWithEmailDealingTest {
     }
     @Test
     public void testGetIdPhysicalCardOwned() {
-        Assertions.assertEquals(physicalCardOwned.getId(), physicalCardWithEmailDealing.getIdPhysicalCarPawn());
+        Assertions.assertEquals(physicalCardOwned.getId(), physicalCardWithEmailDealing.getIdPhysicalCardPawn());
     }
 }

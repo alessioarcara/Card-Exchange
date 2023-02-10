@@ -13,7 +13,7 @@ public class PhysicalCardWithEmailDealing extends PhysicalCardWithEmail {
     public PhysicalCardWithEmailDealing() {
     }
 
-    public String getIdPhysicalCarPawn() {
+    public String getIdPhysicalCardPawn() {
         return idPhysicalCarPawn;
     }
 }

@@ -182,7 +182,7 @@ public class ExchangeServiceTest {
     }
 
     @Test
-    public void testGetProposalListReceivedForEmptyProposalMap() throws AuthException {
+    public void testGetProposalListReceivedForEmptyProposalMap() throws BaseException {
         setupForValidToken();
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
@@ -193,7 +193,7 @@ public class ExchangeServiceTest {
     }
 
     @Test
-    public void testGetProposalListReceivedForNoProposalForThisUser() throws AuthException {
+    public void testGetProposalListReceivedForNoProposalForThisUser() throws BaseException {
         setupForValidToken();
         setupForProposalMap();
         ctrl.replay();
@@ -202,7 +202,7 @@ public class ExchangeServiceTest {
     }
 
     @Test
-    public void testGetProposalListReceivedForSuccess() throws AuthException {
+    public void testGetProposalListReceivedForSuccess() throws BaseException {
         setupForValidToken();
         setupForProposalMap();
         ctrl.replay();
@@ -224,7 +224,7 @@ public class ExchangeServiceTest {
     }
 
     @Test
-    public void testGetProposalListSendForEmptyProposalMap() throws AuthException {
+    public void testGetProposalListSendForEmptyProposalMap() throws BaseException {
         setupForValidToken();
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
@@ -235,7 +235,7 @@ public class ExchangeServiceTest {
     }
 
     @Test
-    public void testGetProposalListSendForNoProposalForThisUser() throws AuthException {
+    public void testGetProposalListSendForNoProposalForThisUser() throws BaseException {
         setupForValidToken();
         setupForProposalMap();
         ctrl.replay();
@@ -244,7 +244,7 @@ public class ExchangeServiceTest {
     }
 
     @Test
-    public void testGetProposalListSendForSuccess() throws AuthException {
+    public void testGetProposalListSendForSuccess() throws BaseException {
         setupForValidToken();
         setupForProposalMap();
         ctrl.replay();

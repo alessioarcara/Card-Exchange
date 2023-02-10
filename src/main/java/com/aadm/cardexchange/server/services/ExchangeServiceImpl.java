@@ -61,5 +61,31 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
         return proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null;
     }
+
+    public List<Proposal> getProposalListReceived(String token) throws AuthException {
+        String email = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+        List<Proposal> proposalList = new ArrayList<>();
+        for (Proposal item : proposalMap.values()) {
+            if (email.equals(item.getReceiverUserEmail())) {
+                proposalList.add(item);
+            }
+        }
+        return proposalList;
+    }
+
+    public List<Proposal> getProposalListSend(String token) throws AuthException {
+        String email = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+        List<Proposal> proposalList = new ArrayList<>();
+        for (Proposal item : proposalMap.values()) {
+            if (email.equals(item.getSenderUserEmail())) {
+                proposalList.add(item);
+            }
+        }
+        return proposalList;
+    }
 }
 
