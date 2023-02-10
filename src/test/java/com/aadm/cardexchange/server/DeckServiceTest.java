@@ -749,7 +749,7 @@ public class DeckServiceTest {
         ctrl.verify();
         Assertions.assertAll(() -> {
             Assertions.assertEquals(5, pCardsWithNames.size());
-            Assertions.assertEquals("Lighning Bolt", pCardsWithNames.get(0).getName());
+            Assertions.assertEquals("Lightning Bolt", pCardsWithNames.get(0).getName());
         });
     }
 
@@ -864,7 +864,7 @@ public class DeckServiceTest {
         // number of decks modified should be equal of number of decks returned
         Assertions.assertEquals(numOfDecksModified, modifiedDecks.size());
     }
-    
+
     @ParameterizedTest
     @NullAndEmptySource
     @ValueSource(strings = {"invalidToken"})

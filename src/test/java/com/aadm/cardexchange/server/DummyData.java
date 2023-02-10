@@ -2,10 +2,7 @@ package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.models.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // Create dummy cards with distinct fields for testing purposes
@@ -23,7 +20,7 @@ public class DummyData {
     }
 
     public static Map<Integer, MagicCard> createMagicDummyMap() {
-        return new HashMap<>() {{
+        return new LinkedHashMap<>() {{
             MagicCard mcd1 = new MagicCard("Lightning Bolt", "Deal 3 damage to any target", "Cast",
                     "Christopher Rush", "Rare", "hasFoil"
             );
