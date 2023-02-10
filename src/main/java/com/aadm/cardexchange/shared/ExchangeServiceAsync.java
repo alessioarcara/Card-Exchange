@@ -9,7 +9,7 @@ import java.util.List;
 public interface ExchangeServiceAsync {
     void addProposal(String token, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards, AsyncCallback<Boolean> callback);
 
-    void GetProposalListReceived(String token, AsyncCallback<List<Proposal>> async);
+    void getProposalListReceived(String token, AsyncCallback<List<Proposal>> callback);
 
-    void GetProposalListSend(String token, AsyncCallback<List<Proposal>> async);
+    void getProposalListSend(String token, AsyncCallback<List<Proposal>> callback);
 }

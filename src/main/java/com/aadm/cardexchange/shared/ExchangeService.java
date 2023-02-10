@@ -13,8 +13,8 @@ public interface ExchangeService extends RemoteService {
 
     boolean addProposal(String token, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards) throws BaseException;
 
-    List<Proposal> GetProposalListReceived(String token) throws BaseException;
+    List<Proposal> getProposalListReceived(String token) throws BaseException;
 
-    List<Proposal> GetProposalListSend(String token) throws BaseException;
+    List<Proposal> getProposalListSend(String token) throws BaseException;
 
 }
