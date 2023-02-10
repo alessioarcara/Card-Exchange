@@ -31,7 +31,7 @@ public class ExchangesActivity extends AbstractActivity implements ExchangesView
     }
 
     private void fetchSentProposals() {
-        rpcService.getProposalListSend(authSubject.getToken(), new BaseAsyncCallback<List<Proposal>>() {
+        rpcService.getProposalListSent(authSubject.getToken(), new BaseAsyncCallback<List<Proposal>>() {
             @Override
             public void onSuccess(List<Proposal> proposals) {
                 view.setFromYouProposalList(proposals);
