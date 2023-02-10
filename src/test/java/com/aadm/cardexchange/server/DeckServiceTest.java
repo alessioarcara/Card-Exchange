@@ -1153,8 +1153,6 @@ public class DeckServiceTest {
 
         String[] expectedPawnListId = new String[] {arrOwned[2].getId(), arrOwned[3].getId(), null, null, null, null, null};
 
-        Integer[] mockListId = new Integer[] {arrWished[0].getCardId(), arrWished[1].getCardId(), arrWished[2].getCardId(), arrWished[3].getCardId()};
-
         int counter = 0;
         for (PhysicalCard whishedPcard : deckWishedMap.get("Wished").getPhysicalCards()) {
             expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(whishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
@@ -1211,11 +1209,9 @@ public class DeckServiceTest {
 
         String[] expectedPawnListId = new String[] {arrOwned[2].getId(), arrOwned[3].getId(), null, null, null, null, null, null, null, null, null, null, null, null};
 
-        Integer[] mockListId = new Integer[] {arrWished[0].getCardId(), arrWished[1].getCardId(), arrWished[2].getCardId(), arrWished[3].getCardId()};
-
         int counter = 0;
-        for (PhysicalCard whishedPcard : deckWishedMap.get("Wished").getPhysicalCards()) {
-            expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(whishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
+        for (PhysicalCard wishedPcard : deckWishedMap.get("Wished").getPhysicalCards()) {
+            expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(wishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
             counter++;
         }
         //Setup Mocks
@@ -1264,9 +1260,9 @@ public class DeckServiceTest {
         Integer[] mockListId = new Integer[] {arrWished[0].getCardId(), arrWished[1].getCardId(), arrWished[2].getCardId(), arrWished[3].getCardId()};
 
         int counter = 0;
-        for (PhysicalCard whishedPcard : deckWishedMap.get("Wished").getPhysicalCards()) {
+        for (PhysicalCard wishedPcard : deckWishedMap.get("Wished").getPhysicalCards()) {
 
-            expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(whishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
+            expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(wishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
             counter++;
         }
         //Setup Mocks
@@ -1304,9 +1300,9 @@ public class DeckServiceTest {
         Integer[] mockListId = new Integer[] {arrWished[0].getCardId(), arrWished[1].getCardId(), arrWished[2].getCardId(), arrWished[3].getCardId()};
 
         int counter = 0;
-        for (PhysicalCard whishedPcard : deckWishedMap.get("Wished").getPhysicalCards()) {
+        for (PhysicalCard wishedPcard : deckWishedMap.get("Wished").getPhysicalCards()) {
 
-            expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(whishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
+            expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(wishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
             counter++;
         }
         //Setup Mocks
@@ -1343,9 +1339,9 @@ public class DeckServiceTest {
         Integer[] mockListId = new Integer[] {arrWished[0].getCardId(), arrWished[1].getCardId(), arrWished[2].getCardId(), arrWished[3].getCardId()};
 
         int counter = 0;
-        for (PhysicalCard whishedPcard : deckWishedMap.get("Wished").getPhysicalCards()) {
+        for (PhysicalCard wishedPcard : deckWishedMap.get("Wished").getPhysicalCards()) {
 
-            expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(whishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
+            expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(wishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
             counter++;
         }
         //Setup Mocks
@@ -1383,9 +1379,9 @@ public class DeckServiceTest {
         Integer[] mockListId = new Integer[] {arrWished[0].getCardId(), arrWished[1].getCardId(), arrWished[2].getCardId(), arrWished[3].getCardId()};
 
         int counter = 0;
-        for (PhysicalCard whishedPcard : deckWishedMap.get("Wished").getPhysicalCards()) {
+        for (PhysicalCard wishedPcard : deckWishedMap.get("Wished").getPhysicalCards()) {
 
-            expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(whishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
+            expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(wishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
             counter++;
         }
         //Setup Mocks
