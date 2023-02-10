@@ -15,6 +15,9 @@ import org.mapdb.Serializer;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 
 public class ExchangeServiceImpl extends RemoteServiceServlet implements ExchangeService, MapDBConstants {
@@ -31,14 +34,17 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
     public ExchangeServiceImpl(MapDB mockDB) {
         db = mockDB;
     }
+
     private boolean checkEmailExistence(String email) {
         Map<String, User> userMap = db.getPersistentMap(
                 getServletContext(), USER_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
         return userMap.get(email) != null;
     }
+
     private boolean checkPhysicalCardsConsistency(List<PhysicalCard> physicalCards) {
-       return physicalCards != null && !physicalCards.isEmpty();
+        return physicalCards != null && !physicalCards.isEmpty();
     }
+
 
     @Override
     public boolean addProposal(String token, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards) throws AuthException, InputException {
@@ -53,6 +59,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         if (!checkPhysicalCardsConsistency(receiverPhysicalCards)) {
             throw new InputException("Invalid receiver physical cards");
         }
+
         Proposal newProposal = new Proposal(email, receiverUserEmail, senderPhysicalCards, receiverPhysicalCards);
         Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson, proposalType));
         return proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null;
@@ -107,6 +114,54 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         }
 
         return new ProposalPayload(proposal.getReceiverUserEmail(), senderPCardsWithName, receiverPCardsWithName);
+    }
+
+//    private  List<Proposal> GetProposalList(String email, boolean send, boolean received) throws BaseException {
+//        if (send ^ received) {
+//            Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+//            List<Proposal> proposalList = new ArrayList<>();
+//            if (send) {
+//                for (Proposal item : proposalMap.values()) {
+//                    if (email.equals(item.getSenderUserEmail())) {
+//                        proposalList.add(item);
+//                    }
+//                }
+//            }
+//            if (received) {
+//                for (Proposal item : proposalMap.values()) {
+//                    if (email.equals(item.getReceiverUserEmail())) {
+//                        proposalList.add(item);
+//                    }
+//                }
+//            }
+//            return proposalList;
+//        } else throw new InputException("Invalid request");
+//    }
+
+    public List<Proposal> getProposalListReceived(String token) throws AuthException {
+        String email = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+        List<Proposal> proposalList = new ArrayList<>();
+        for (Proposal item : proposalMap.values()) {
+            if (email.equals(item.getReceiverUserEmail())) {
+                proposalList.add(item);
+            }
+        }
+        return proposalList;
+    }
+
+    public List<Proposal> getProposalListSend(String token) throws AuthException {
+        String email = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+        List<Proposal> proposalList = new ArrayList<>();
+        for (Proposal item : proposalMap.values()) {
+            if (email.equals(item.getSenderUserEmail())) {
+                proposalList.add(item);
+            }
+        }
+        return proposalList;
     }
 }
 

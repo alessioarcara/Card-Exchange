@@ -43,17 +43,17 @@ public class CardServiceTest {
 
     private static Stream<Arguments> provideClassAndMockData() {
         return Stream.of(
-                Arguments.of(Game.MAGIC, MagicCard.class, MockCardData.createMagicDummyMap()),
-                Arguments.of(Game.POKEMON, PokemonCard.class, MockCardData.createPokemonDummyMap()),
-                Arguments.of(Game.YUGIOH, YuGiOhCard.class, MockCardData.createYuGiOhDummyMap())
+                Arguments.of(Game.MAGIC, MagicCard.class, DummyData.createMagicDummyMap()),
+                Arguments.of(Game.POKEMON, PokemonCard.class, DummyData.createPokemonDummyMap()),
+                Arguments.of(Game.YUGIOH, YuGiOhCard.class, DummyData.createYuGiOhDummyMap())
         );
     }
 
     private static Stream<Arguments> provideMockData() {
         return Stream.of(
-                Arguments.of(Game.MAGIC, MockCardData.createMagicDummyMap()),
-                Arguments.of(Game.POKEMON, MockCardData.createPokemonDummyMap()),
-                Arguments.of(Game.YUGIOH, MockCardData.createYuGiOhDummyMap())
+                Arguments.of(Game.MAGIC, DummyData.createMagicDummyMap()),
+                Arguments.of(Game.POKEMON, DummyData.createPokemonDummyMap()),
+                Arguments.of(Game.YUGIOH, DummyData.createYuGiOhDummyMap())
         );
     }
 
