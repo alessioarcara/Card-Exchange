@@ -40,6 +40,16 @@ public class DeckServiceTest {
         deckService.init(mockConfig);
     }
 
+    private void setupMockCall(Map<String, Map<String, Deck>>[] mockMap){
+        for (Map<String, Map<String, Deck>> map : mockMap)
+        {
+            expect(mockConfig.getServletContext()).andReturn(mockCtx);
+            expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                    .andReturn(map);
+        }
+
+    }
+
     private  Map<Integer, MagicCard>  generateValidMagicCardMap(){
         return createMagicDummyMap();
     }
@@ -61,7 +71,30 @@ public class DeckServiceTest {
         deckMap.get(deckName).addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(3), Status.VeryDamaged, validDescription));  // index 5
         return deckMap;
     }
+
+    private Map<String, Deck>  generateValidExtendedDeckofMagicPhysicalCardMap(Map<Integer, MagicCard> magicCardMap, String deckName){
+        //Extended deck, with repetitions, is use for specific tests
+        //normal deck population
+        Map<String, Deck> deckMap =  generateValidDeckofMagicPhysicalCardMap(magicCardMap,deckName);
+        ArrayList<Integer> allIdCards = new ArrayList<>(magicCardMap.size());
+        for (Map.Entry<Integer, MagicCard> entry : magicCardMap.entrySet()) {
+            allIdCards.add(entry.getValue().getId());
+        }
+        String validDescription = "This is a super valid description";
+        //add repetitions
+        deckMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Excellent, validDescription));
+        deckMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Good, validDescription));
+        deckMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Good, validDescription));
+        deckMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Fair, validDescription));
+        deckMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Damaged, validDescription));
+        deckMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.VeryDamaged, validDescription));
+        deckMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.VeryDamaged, validDescription));
+        return deckMap;
+    }
+
+
     private Map<String, Deck>  generateValidWishedDeckofMagicPhysicalCardMap(Map<Integer, MagicCard> magicCardMap){
+        //
         String deckName="Wished";
         Map<String, Deck> deckMap = new HashMap<>() {{
             put(deckName, new Deck(deckName, true));
@@ -75,7 +108,7 @@ public class DeckServiceTest {
         deckMap.get(deckName).addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Good, validDescription));
         deckMap.get(deckName).addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(1), Status.Good, validDescription));
         deckMap.get(deckName).addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(2), Status.Excellent, validDescription));
-        deckMap.get(deckName).addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(2), Status.Excellent, validDescription)); //uguale a prima
+        deckMap.get(deckName).addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(2), Status.Excellent, validDescription)); // repeated
         deckMap.get(deckName).addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(4), Status.Excellent, validDescription));
         deckMap.get(deckName).addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(4), Status.Good, validDescription));
         deckMap.get(deckName).addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(4), Status.VeryDamaged, validDescription));
@@ -83,8 +116,54 @@ public class DeckServiceTest {
         return deckMap;
     }
 
+    private Map<String, Deck>  generateValidExtendedWishedDeckofMagicPhysicalCardMap(Map<Integer, MagicCard> magicCardMap) {
+        //Extended wished deck, with repetitions, is use for specific tests
+        //normal wished deck population
+        Map<String, Deck> deckWishedMap = generateValidWishedDeckofMagicPhysicalCardMap(magicCardMap);
+        Set<Map.Entry<Integer, MagicCard>> entrySet = magicCardMap.entrySet();
+        ArrayList<Integer> allIdCards = new ArrayList<>(magicCardMap.size());
+        for (Map.Entry<Integer, MagicCard> entry : magicCardMap.entrySet()) {
+            allIdCards.add(entry.getValue().getId());
+        }
+        //add repetitions
+        String validDescription = "This is a super valid description";
+        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Excellent, validDescription));
+        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Good, validDescription));
+        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Good, validDescription));
+        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Fair, validDescription));
+        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Damaged, validDescription));
+        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.VeryDamaged, validDescription));
+        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.VeryDamaged, validDescription));
+
+        return deckWishedMap;
+    }
+/*
+    private String[] getExpectedMatchingPhysicalCardWithEmailDealingByTestCase (int testCase,  Map<String, Deck> deck, String deckName) {
+        String[] expectedPawnListId;
+        PhysicalCard[]arrDeck = new PhysicalCard [deck.get(deckName).getPhysicalCards().size()];
+        deck.get(deckName).getPhysicalCards().toArray(arrDeck);
+        switch(testCase) {
+            case 1:
+                //case "1": standard Owned deck & standard Wished deck
+                expectedPawnListId = new String[] {arrDeck[2].getId(), arrDeck[3].getId(), null, null, null, null, null, null, null, null, null, null, null, null};
+                break;
+            case 2:
+                //case "2": standard Owned deck & standard Wished deck
+                expectedPawnListId = new String[] {arrDeck[2].getId(), arrDeck[3].getId(), null, null, null, null, null, null, null, null, null, null, null, null};
+                break;
+            case 3:
+                //case "3": standard Owned deck & standard Wished deck
+                expectedPawnListId = new String[] {arrDeck[2].getId(), arrDeck[3].getId(), null, null, null, null, null, null, null, null, null, null, null, null};
+                break;
+            default:
+                // code block
+        }
 
 
+
+    }
+
+*/
 
     @Test
     public void testIfDeckAlreadyExist() {
@@ -914,9 +993,8 @@ public class DeckServiceTest {
             put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 20000));
             put("validToken3", new LoginInfo("test3@test.it", System.currentTimeMillis() - 30000));
         }};
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(loginInfoMap);
+        //Setup Mocks
+        setupMockCall(new Map[]{loginInfoMap});
         ctrl.replay();
         Assertions.assertThrows(AuthException.class, () -> deckService.getListPhysicalCardWithEmailDealing(input, Game.randomGame(), 1));
         ctrl.verify();
@@ -948,9 +1026,8 @@ public class DeckServiceTest {
     public void testGetListPhysicalCardWithEmailDealingForUserWithoutDecksMap() {
         setupForValidToken();
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>();
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockDeckMap);
+        //Setup Mocks
+        setupMockCall(new Map[]{mockDeckMap});
         ctrl.replay();
         Assertions.assertThrows(RuntimeException.class, () ->
                 deckService.getListPhysicalCardWithEmailDealing("validToken", Game.randomGame(), 3)
@@ -965,9 +1042,8 @@ public class DeckServiceTest {
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
             put("test@test.it", null);
         }};
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockDeckMap);
+        //Setup Mocks
+        setupMockCall(new Map[]{mockDeckMap});
         ctrl.replay();
         Assertions.assertThrows(RuntimeException.class, () ->
                 deckService.getListPhysicalCardWithEmailDealing("validToken", Game.randomGame(), 3)
@@ -983,9 +1059,8 @@ public class DeckServiceTest {
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
             put("test@test.it", deckMap);
         }};
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockDeckMap);
+        //Setup Mocks
+        setupMockCall(new Map[]{mockDeckMap});
         ctrl.replay();
         Assertions.assertThrows(BaseException.class, () ->
                 deckService.getListPhysicalCardWithEmailDealing("validToken", Game.randomGame(), 3)
@@ -995,21 +1070,20 @@ public class DeckServiceTest {
 
     @Test
     public void testGetListPhysicalCardWithEmailDealingWithoutOwnedDeck() throws InputException, AuthException {
-        //serve per catturare l'eccezione BaseException, con mazzo "Owned" non trovato
         setupForValidToken();
         Map<String, Deck> deckMap =  generateValidDeckofMagicPhysicalCardMap(generateValidMagicCardMap(),"owd");
         Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
             put("test@test.it", deckMap);
         }};
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockDeckMap);
+        //Setup Mocks
+        setupMockCall(new Map[]{mockDeckMap});
         ctrl.replay();
         Assertions.assertThrows(BaseException.class, () ->
                 deckService.getListPhysicalCardWithEmailDealing("validToken", Game.randomGame(), 3)
         );
         ctrl.verify();
     }
+
 
     @Test
     public void testGetListPhysicalCardWithEmailDealingWithEmptyOwnedDeck() throws BaseException {
@@ -1029,12 +1103,8 @@ public class DeckServiceTest {
         }};
         PhysicalCard[]arrWished = new PhysicalCard [deckWishedMap.get("Wished").getPhysicalCards().size()];
         deckWishedMap.get("Wished").getPhysicalCards().toArray(arrWished);
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockDeckMap);
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockWishedDeckMap);
+        //Setup Mocks
+        setupMockCall(new Map[]{mockDeckMap, mockWishedDeckMap});
         ctrl.replay();
         List<PhysicalCardWithEmailDealing> actual = deckService.getListPhysicalCardWithEmailDealing("validToken", Game.MAGIC, arrWished[4].getCardId());
         int countNullPawnCard = 0;
@@ -1061,16 +1131,9 @@ public class DeckServiceTest {
         for (Map.Entry<Integer, MagicCard> entry : magicCardMap.entrySet()) {
             allIdCards.add(entry.getValue().getId());
         }
-        Map<String, Deck> deckOwnedMap =  generateValidDeckofMagicPhysicalCardMap(magicCardMap,"Owned");
-        //add multiple and repeated cards
-        String validDescription = "This is a super valid description";
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Excellent, validDescription));
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Good, validDescription));
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Good, validDescription));
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Fair, validDescription));
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Damaged, validDescription));
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.VeryDamaged, validDescription));
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.VeryDamaged, validDescription));
+        //use extended owned deck map, with multiple and repeated cards
+        Map<String, Deck> deckOwnedMap =  generateValidExtendedDeckofMagicPhysicalCardMap(magicCardMap,"Owned");
+
         Map<String, Map<String, Deck>> mockOwnedDeckMap = new HashMap<>() {{
             put("test@test.it", deckOwnedMap);
         }};
@@ -1097,12 +1160,8 @@ public class DeckServiceTest {
             expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(whishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
             counter++;
         }
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockOwnedDeckMap);
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockWishedDeckMap);
+        //Setup Mocks
+        setupMockCall(new Map[]{mockOwnedDeckMap, mockWishedDeckMap});
         ctrl.replay();
         List<PhysicalCardWithEmailDealing> actual = deckService.getListPhysicalCardWithEmailDealing("validToken", Game.MAGIC, arrWished[0].getCardId());
         int countNullPawnCard = 0;
@@ -1130,29 +1189,14 @@ public class DeckServiceTest {
         for (Map.Entry<Integer, MagicCard> entry : magicCardMap.entrySet()) {
             allIdCards.add(entry.getValue().getId());
         }
-        Map<String, Deck> deckOwnedMap =  generateValidDeckofMagicPhysicalCardMap(magicCardMap,"Owned");
-        //add multiple and repeated Pcards
-        String validDescription = "This is a super valid description";
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Excellent, validDescription));
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Good, validDescription));
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Good, validDescription));
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Fair, validDescription));
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Damaged, validDescription));
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.VeryDamaged, validDescription));
-        deckOwnedMap.get("Owned").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.VeryDamaged, validDescription));
+        //use extended owned deck map, with multiple and repeated cards
+        Map<String, Deck> deckOwnedMap =  generateValidExtendedDeckofMagicPhysicalCardMap(magicCardMap,"Owned");
         Map<String, Map<String, Deck>> mockOwnedDeckMap = new HashMap<>() {{
             put("test@test.it", deckOwnedMap);
         }};
-        //Generate wished consistence deck
-        Map<String, Deck> deckWishedMap =  generateValidWishedDeckofMagicPhysicalCardMap(magicCardMap);
-        //add multiple and repeated Pcards
-        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Excellent, validDescription));
-        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Good, validDescription));
-        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Good, validDescription));
-        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Fair, validDescription));
-        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.Damaged, validDescription));
-        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.VeryDamaged, validDescription));
-        deckWishedMap.get("Wished").addPhysicalCard(new PhysicalCard(Game.MAGIC, allIdCards.get(0), Status.VeryDamaged, validDescription));
+        //Generate wished extended consistence deck, with multiple and repeated cards
+        Map<String, Deck> deckWishedMap =  generateValidExtendedWishedDeckofMagicPhysicalCardMap(magicCardMap);
+
         Map<String, Map<String, Deck>> mockWishedDeckMap = new HashMap<>() {{
             put("wisher@test.it", deckWishedMap);
         }};
@@ -1174,12 +1218,8 @@ public class DeckServiceTest {
             expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(whishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
             counter++;
         }
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockOwnedDeckMap);
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockWishedDeckMap);
+        //Setup Mocks
+        setupMockCall(new Map[]{mockOwnedDeckMap, mockWishedDeckMap});
         ctrl.replay();
         List<PhysicalCardWithEmailDealing> actual = deckService.getListPhysicalCardWithEmailDealing("validToken", Game.MAGIC, arrWished[0].getCardId());
         int countNullPawnCard = 0;
@@ -1229,13 +1269,8 @@ public class DeckServiceTest {
             expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(whishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
             counter++;
         }
-
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockOwnedDeckMap);
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockWishedDeckMap);
+        //Setup Mocks
+        setupMockCall(new Map[]{mockOwnedDeckMap, mockWishedDeckMap});
         ctrl.replay();
 
         Assertions.assertEquals(expectedPawnListId[0], deckService.getListPhysicalCardWithEmailDealing("validToken", Game.MAGIC, mockListId[0]).get(0).getIdPhysicalCarPawn());
@@ -1274,13 +1309,8 @@ public class DeckServiceTest {
             expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(whishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
             counter++;
         }
-
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockOwnedDeckMap);
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockWishedDeckMap);
+        //Setup Mocks
+        setupMockCall(new Map[]{mockOwnedDeckMap, mockWishedDeckMap});
         ctrl.replay();
 
         Assertions.assertEquals(expectedPawnListId[1], deckService.getListPhysicalCardWithEmailDealing("validToken", Game.MAGIC, mockListId[1]).get(0).getIdPhysicalCarPawn());
@@ -1318,13 +1348,8 @@ public class DeckServiceTest {
             expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(whishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
             counter++;
         }
-
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockOwnedDeckMap);
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockWishedDeckMap);
+        //Setup Mocks
+        setupMockCall(new Map[]{mockOwnedDeckMap, mockWishedDeckMap});
         ctrl.replay();
 
         Assertions.assertEquals(expectedPawnListId[2], deckService.getListPhysicalCardWithEmailDealing("validToken", Game.MAGIC, mockListId[2]).get(0).getIdPhysicalCarPawn());
@@ -1363,13 +1388,8 @@ public class DeckServiceTest {
             expectedResponse.add(new PhysicalCardWithEmailDealing(new PhysicalCardWithEmail(whishedPcard, "wisher@test.it"), expectedPawnListId[counter]));
             counter++;
         }
-
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockOwnedDeckMap);
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(mockWishedDeckMap);
+        //Setup Mocks
+        setupMockCall(new Map[]{mockOwnedDeckMap, mockWishedDeckMap});
         ctrl.replay();
 
         Assertions.assertEquals(expectedPawnListId[3], deckService.getListPhysicalCardWithEmailDealing("validToken", Game.MAGIC, mockListId[3]).get(0).getIdPhysicalCarPawn());
