@@ -116,8 +116,8 @@ public class HomeActivityTest {
     private static Stream<Arguments> provideMockCardsAndBooleanFields() {
         Map<Integer, MagicCard> MagicDummy = DummyData.createMagicDummyMap();
         Set<Integer> magicKeys = MagicDummy.keySet();
-        Integer[] magicKeysArray = magicKeys.toArray(new Integer[magicKeys.size()]);
-        List<Card>  MagicDummyList = new ArrayList<>(MagicDummy.values());
+        Integer[] magicKeysArray = magicKeys.toArray(new Integer[0]);
+        List<Card> MagicDummyList = new ArrayList<>(MagicDummy.values());
         return Stream.of(
                 Arguments.of(
                         Game.MAGIC, MagicDummyList, MagicDummy.get(magicKeysArray[0]),

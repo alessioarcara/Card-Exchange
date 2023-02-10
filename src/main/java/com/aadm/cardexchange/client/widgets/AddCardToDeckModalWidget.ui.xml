@@ -52,10 +52,6 @@
             resize: none;
         }
 
-        .com-aadm-cardexchange-client-widgets-UserListWidget_UserListUIBinderImpl_GenCss_style-table th, td {
-            padding: 0 !important;
-        }
-
         .actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
