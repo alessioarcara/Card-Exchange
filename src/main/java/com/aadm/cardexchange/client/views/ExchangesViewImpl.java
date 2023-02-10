@@ -1,13 +1,13 @@
 package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.handlers.ImperativeHandleProposalList;
+import com.aadm.cardexchange.client.places.ExchangesPlace;
 import com.aadm.cardexchange.client.widgets.ProposalListWidget;
 import com.aadm.cardexchange.shared.models.Proposal;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Composite;
 import com.google.gwt.user.client.ui.Widget;
 
@@ -46,8 +46,7 @@ public class ExchangesViewImpl extends Composite implements ExchangesView, Imper
 
     @Override
     public void onClickProposalRow(int selectedProposalId) {
-        // There will be the code for opening the Proposal Page
-        Window.alert("This is the " + selectedProposalId + " proposal");
+        presenter.goTo(new ExchangesPlace(selectedProposalId));
     }
 
     @Override
