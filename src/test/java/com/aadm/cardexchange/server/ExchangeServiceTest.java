@@ -3,8 +3,11 @@ package com.aadm.cardexchange.server;
 import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.services.ExchangeServiceImpl;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.BaseException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
-import com.aadm.cardexchange.shared.models.*;
+import com.aadm.cardexchange.shared.models.LoginInfo;
+import com.aadm.cardexchange.shared.models.Proposal;
+import com.aadm.cardexchange.shared.models.User;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -17,7 +20,10 @@ import org.mapdb.Serializer;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.easymock.EasyMock.*;
 
@@ -42,6 +48,7 @@ public class ExchangeServiceTest {
     private void setupForValidToken() {
         Map<String, LoginInfo> mockLoginMap = new HashMap<>() {{
             put("validToken", new LoginInfo("test@test.it", System.currentTimeMillis() - 10000));
+            put("validToken2", new LoginInfo("UserMail3", System.currentTimeMillis() - 10000));
         }};
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
@@ -56,29 +63,7 @@ public class ExchangeServiceTest {
                 .andReturn(userMap);
     }
 
-    private PhysicalCard generateValidPCard(int i) {
-        return new PhysicalCard(Game.randomGame(), (i+3000), Status.randomStatus(), "This is a valid description.");
-    }
-
-
-    private  List<PhysicalCard> generateValidListPcard(int n) {
-        List<PhysicalCard> myList = new ArrayList<>();
-        for (int i = 0; i<n; i++ ) {
-            PhysicalCard mockPCard = generateValidPCard(i);
-            myList.add(mockPCard);
-        }
-        return myList;
-    }
-
-
-
-
-    //#### UNIT TESTS #####
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"invalidToken"})
-    public void testAddProposalForInvalidToken(String input) {
+    private void generateLoginInfoMap() {
         Map<String, LoginInfo> loginInfoMap = new HashMap<>() {{
             put("validToken1", new LoginInfo("test@test.it", System.currentTimeMillis() - 10000));
             put("validToken2", new LoginInfo("test2@test.it", System.currentTimeMillis() - 20000));
@@ -87,10 +72,39 @@ public class ExchangeServiceTest {
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
         expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(loginInfoMap);
+    }
+
+    private void setupForProposalMap() {
+        Map<Integer, Proposal> proposalMap = new HashMap<>() {{
+            Proposal p1 = new Proposal("UserMail1", "UserMail2", new ArrayList<>(), new ArrayList<>());
+            put(p1.getId(), p1);
+            Proposal p2 = new Proposal("UserMail1", "UserMail3", new ArrayList<>(), new ArrayList<>());
+            put(p2.getId(), p2);
+            Proposal p3 = new Proposal("UserMail1", "UserMail4", new ArrayList<>(), new ArrayList<>());
+            put(p3.getId(), p3);
+            Proposal p4 = new Proposal("UserMail2", "UserMail3", new ArrayList<>(), new ArrayList<>());
+            put(p4.getId(), p4);
+            Proposal p5 = new Proposal("UserMail2", "UserMail4", new ArrayList<>(), new ArrayList<>());
+            put(p5.getId(), p5);
+            Proposal p6 = new Proposal("UserMail3", "UserMail4", new ArrayList<>(), new ArrayList<>());
+            put(p6.getId(), p6);
+
+        }};
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(proposalMap);
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testAddProposalForInvalidToken(String input) {
+        generateLoginInfoMap();
         ctrl.replay();
         Assertions.assertThrows(AuthException.class, () -> exchangeService.addProposal(input, "valid@receiverUserEmail.it", DummyData.createPhysicalCardDummyList(2), DummyData.createPhysicalCardDummyList(2)));
         ctrl.verify();
     }
+
     @ParameterizedTest
     @NullAndEmptySource
     public void testAddProposalForInvalidReceiverUserEmail(String input) {
@@ -99,6 +113,7 @@ public class ExchangeServiceTest {
         Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", input, DummyData.createPhysicalCardDummyList(2), DummyData.createPhysicalCardDummyList(2)));
         ctrl.verify();
     }
+
     @Test
     public void testAddProposalForNotExistingReceiverUserEmail() {
         setupForValidToken();
@@ -113,7 +128,7 @@ public class ExchangeServiceTest {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", DummyData.createPhysicalCardDummyList((0)), DummyData.createPhysicalCardDummyList(2)));
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", DummyData.createPhysicalCardDummyList(0), DummyData.createPhysicalCardDummyList(2)));
         ctrl.verify();
     }
 
@@ -122,7 +137,7 @@ public class ExchangeServiceTest {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", null, generateValidListPcard(2)));
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", null, DummyData.createPhysicalCardDummyList(2)));
         ctrl.verify();
     }
 
@@ -131,7 +146,7 @@ public class ExchangeServiceTest {
         setupForValidToken();
         setupForValidEmail();
         ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", DummyData.createPhysicalCardDummyList((2)), DummyData.createPhysicalCardDummyList(0)));
+        Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", DummyData.createPhysicalCardDummyList(2), DummyData.createPhysicalCardDummyList(0)));
         ctrl.verify();
     }
 
@@ -145,7 +160,7 @@ public class ExchangeServiceTest {
     }
 
     @Test
-    public void testAddProposalSuccess() throws AuthException, InputException {
+    public void testAddProposalSuccess() throws BaseException {
         setupForValidToken();
         setupForValidEmail();
         expect(mockConfig.getServletContext()).andReturn(mockCtx);
@@ -154,5 +169,89 @@ public class ExchangeServiceTest {
         ctrl.replay();
         Assertions.assertTrue(exchangeService.addProposal("validToken", "valid@receiverUserEmail.it", DummyData.createPhysicalCardDummyList(1), DummyData.createPhysicalCardDummyList(2)));
         ctrl.verify();
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testGetProposalListReceivedForInvalidToken(String input) {
+        generateLoginInfoMap();
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> exchangeService.getProposalListSend(input));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetProposalListReceivedForEmptyProposalMap() throws AuthException {
+        setupForValidToken();
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(new HashMap<>());
+        ctrl.replay();
+        Assertions.assertTrue(exchangeService.getProposalListReceived("validToken").isEmpty());
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetProposalListReceivedForNoProposalForThisUser() throws AuthException {
+        setupForValidToken();
+        setupForProposalMap();
+        ctrl.replay();
+        Assertions.assertTrue(exchangeService.getProposalListReceived("validToken").isEmpty());
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetProposalListReceivedForSuccess() throws AuthException {
+        setupForValidToken();
+        setupForProposalMap();
+        ctrl.replay();
+        List<Proposal> proposalList = exchangeService.getProposalListReceived("validToken2");
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(2, proposalList.size());
+            Assertions.assertEquals("UserMail3", proposalList.get(0).getReceiverUserEmail());
+        });
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testGetProposalListSendForInvalidToken(String input) {
+        generateLoginInfoMap();
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> exchangeService.getProposalListSend(input));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetProposalListSendForEmptyProposalMap() throws AuthException {
+        setupForValidToken();
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                .andReturn(new HashMap<>());
+        ctrl.replay();
+        Assertions.assertTrue(exchangeService.getProposalListSend("validToken").isEmpty());
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetProposalListSendForNoProposalForThisUser() throws AuthException {
+        setupForValidToken();
+        setupForProposalMap();
+        ctrl.replay();
+        Assertions.assertTrue(exchangeService.getProposalListSend("validToken").isEmpty());
+        ctrl.verify();
+    }
+
+    @Test
+    public void testGetProposalListSendForSuccess() throws AuthException {
+        setupForValidToken();
+        setupForProposalMap();
+        ctrl.replay();
+        List<Proposal> proposalList = exchangeService.getProposalListSend("validToken2");
+        Assertions.assertAll(() -> {
+            Assertions.assertEquals(1, proposalList.size());
+            Assertions.assertEquals("UserMail3", proposalList.get(0).getSenderUserEmail());
+        });
     }
 }

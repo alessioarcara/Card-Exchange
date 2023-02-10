@@ -13,7 +13,7 @@ public interface DeckServiceAsync {
 
     void addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description, AsyncCallback<Boolean> callback);
 
-    void removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard, AsyncCallback<Boolean> callback);
+    void removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard, AsyncCallback<List<ModifiedDeckPayload>> callback);
 
     void editPhysicalCard(String token, String deckName, PhysicalCard pCard, AsyncCallback<List<ModifiedDeckPayload>> callback);
 
@@ -30,4 +30,5 @@ public interface DeckServiceAsync {
     void getWishedPhysicalCardsByCardId(int cardId, AsyncCallback<List<PhysicalCardWithEmail>> callback);
 
     void addPhysicalCardsToCustomDeck(String token, String customDeckName, List<PhysicalCard> pCards, AsyncCallback<List<PhysicalCardWithName>> callback);
+
 }
