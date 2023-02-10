@@ -20,7 +20,7 @@ import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import java.util.List;
 
-public class NewExchangeActivity extends AbstractActivity implements NewExchangeView.Presenter {
+public class NewExchangeActivity extends AbstractActivity implements NewExchangeView.NewExchangePresenter {
     private final NewExchangePlace place;
     private final NewExchangeView view;
     private final DeckServiceAsync deckService;
@@ -40,17 +40,18 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         view.setPresenter(this);
+        view.setNewExchangeButtons();
         acceptsOneWidget.setWidget(view.asWidget());
+        view.setData(true, "New Exchange Page", "Select the cards you want to exchange from both decks and propose a new exchange");
         fetchMyOwnedDeck();
         fetchUserOwnedDeck();
-        view.setReceiverDeckName(place.getReceiverUserEmail());
     }
 
     private void fetchMyOwnedDeck() {
         deckService.getMyDeck(authSubject.getToken(), "Owned", new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
             public void onSuccess(List<PhysicalCardWithName> physicalCards) {
-                view.setSenderDeck(physicalCards);
+                view.setSenderDeck(physicalCards, null);
             }
         });
     }
@@ -59,7 +60,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         deckService.getUserOwnedDeck(place.getReceiverUserEmail(), new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
             public void onSuccess(List<PhysicalCardWithName> physicalCards) {
-                view.setReceiverDeck(physicalCards, place.getSelectedCardId());
+                view.setReceiverDeck(physicalCards, place.getSelectedCardId(), place.getReceiverUserEmail());
             }
         });
     }
@@ -94,6 +95,12 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         }
     }
 
+    @Override
+    public void onStop() {
+        view.resetHandlers();
+    }
+
+    @Override
     public void goTo(Place place) {
         placeController.goTo(place);
     }
