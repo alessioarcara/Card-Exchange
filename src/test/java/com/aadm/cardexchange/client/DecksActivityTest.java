@@ -86,8 +86,7 @@ public class DecksActivityTest {
     public void testRemovePhysicalCardFromDeckForInvalidDeckName(String input) {
         mockDecksView.displayAlert(anyString());
         ctrl.replay();
-        decksActivity.removePhysicalCardFromDeck(input, new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"), (Boolean bool) -> {
-        });
+        decksActivity.removePhysicalCardFromDeck(input, new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"));
         ctrl.verify();
     }
 
@@ -95,8 +94,7 @@ public class DecksActivityTest {
     public void testRemovePhysicalCardFromDeckForNullPhysicalCard() {
         mockDecksView.displayAlert(anyString());
         ctrl.replay();
-        decksActivity.removePhysicalCardFromDeck("Owned", null, (Boolean bool) -> {
-        });
+        decksActivity.removePhysicalCardFromDeck("Owned", null);
         ctrl.verify();
     }
 
@@ -106,32 +104,49 @@ public class DecksActivityTest {
         mockRpcService.removePhysicalCardFromDeck(anyString(), anyString(), isA(PhysicalCard.class), isA(AsyncCallback.class));
         expectLastCall().andAnswer(() -> {
             Object[] args = getCurrentArguments();
-            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
+            AsyncCallback<List<ModifiedDeckPayload>> callback = (AsyncCallback<List<ModifiedDeckPayload>>) args[args.length - 1];
             callback.onFailure(e);
             return null;
         });
         mockDecksView.displayAlert(anyString());
 
         ctrl.replay();
-        decksActivity.removePhysicalCardFromDeck("Owned", new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"),
-                (Boolean bool) -> {
-                });
+        decksActivity.removePhysicalCardFromDeck("Owned", new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"));
         ctrl.verify();
     }
 
-    @ParameterizedTest
-    @ValueSource(booleans = {true, false})
-    public void testRemovePhysicalCardFromDeckForSuccess(Boolean input) {
+    static List<ModifiedDeckPayload> provideModifiedDecks(PhysicalCard editedPCard) {
+        PhysicalCardWithName editedPCardWithName = new PhysicalCardWithName(editedPCard, "test");
+
+        List<PhysicalCardWithName> mockPCards1 = DummyData.createPhysicalCardWithNameDummyList(5);
+        List<PhysicalCardWithName> mockPCards2 = DummyData.createPhysicalCardWithNameDummyList(5);
+
+        mockPCards1.addAll(mockPCards2);
+        mockPCards1.add(editedPCardWithName);
+        mockPCards2.add(editedPCardWithName);
+
+        return Arrays.asList(
+                new ModifiedDeckPayload("Owned", mockPCards1),
+                new ModifiedDeckPayload("Custom", mockPCards2)
+        );
+    }
+
+    @Test
+    public void testRemovePhysicalCardFromDeckForSuccess() {
+        PhysicalCard removedPCard = new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description.")
+                .copyWithModifiedStatusAndDescription(Status.Excellent, "This is an edited description");
+        List<ModifiedDeckPayload> modifiedDecks = provideModifiedDecks(removedPCard);
         mockRpcService.removePhysicalCardFromDeck(anyString(), anyString(), isA(PhysicalCard.class), isA(AsyncCallback.class));
         expectLastCall().andAnswer(() -> {
             Object[] args = getCurrentArguments();
-            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
-            callback.onSuccess(input);
+            AsyncCallback<List<ModifiedDeckPayload>> callback = (AsyncCallback<List<ModifiedDeckPayload>>) args[args.length - 1];
+            callback.onSuccess(modifiedDecks);
             return null;
         });
+        mockDecksView.replaceData(isA(List.class));
 
         ctrl.replay();
-        decksActivity.removePhysicalCardFromDeck("Owned", new PhysicalCard(Game.MAGIC, 111, Status.Good, "This is a valid description"), Assertions::assertNotNull);
+        decksActivity.removePhysicalCardFromDeck("Owned", removedPCard);
         ctrl.verify();
     }
 
@@ -362,19 +377,7 @@ public class DecksActivityTest {
         // init mocks
         PhysicalCard editedPCard = new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description.")
                 .copyWithModifiedStatusAndDescription(Status.Excellent, "This is an edited description");
-        PhysicalCardWithName editedPCardWithName = new PhysicalCardWithName(editedPCard, "test");
-
-        List<PhysicalCardWithName> mockPCards1 = DummyData.createPhysicalCardWithNameDummyList(5);
-        List<PhysicalCardWithName> mockPCards2 = DummyData.createPhysicalCardWithNameDummyList(5);
-
-        mockPCards1.addAll(mockPCards2);
-        mockPCards1.add(editedPCardWithName);
-        mockPCards2.add(editedPCardWithName);
-
-        List<ModifiedDeckPayload> modifiedDecks = Arrays.asList(
-                new ModifiedDeckPayload("Owned", mockPCards1),
-                new ModifiedDeckPayload("Custom", mockPCards2)
-        );
+        List<ModifiedDeckPayload> modifiedDecks = provideModifiedDecks(editedPCard);
 
         // expects
         mockRpcService.editPhysicalCard(anyString(), anyString(), isA(PhysicalCard.class), isA(AsyncCallback.class));
