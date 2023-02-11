@@ -1,4 +1,4 @@
-package com.aadm.cardexchange.shared.models;
+package com.aadm.cardexchange.shared.payloads;
 
 import java.io.Serializable;
 

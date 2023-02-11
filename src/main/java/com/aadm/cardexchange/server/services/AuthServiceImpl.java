@@ -6,10 +6,10 @@ import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.AuthService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
-import com.aadm.cardexchange.shared.models.AuthPayload;
 import com.aadm.cardexchange.shared.models.Deck;
 import com.aadm.cardexchange.shared.models.LoginInfo;
 import com.aadm.cardexchange.shared.models.User;
+import com.aadm.cardexchange.shared.payloads.AuthPayload;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
@@ -52,7 +52,7 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
                 (password == null || password.isBlank() || password.length() < 8);
     }
 
-    //Generazione token tramite hashing
+    // create token
     private static String generateHash(String userEmail) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -74,10 +74,12 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
     }
 
     private String generateAndStoreLoginToken(User user) {
-        Map<String, LoginInfo> loginMap = db.getPersistentMap(
-                getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
         String token = generateHash(user.getEmail());
-        loginMap.put(token, new LoginInfo(user.getEmail(), System.currentTimeMillis()));
+        db.writeOperation(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson),
+                (Map<String, LoginInfo> loginMap) -> {
+                    loginMap.put(token, new LoginInfo(user.getEmail(), System.currentTimeMillis()));
+                    return null;
+                });
         return token;
     }
 
@@ -106,23 +108,19 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
 
     @Override
     public AuthPayload signup(String email, String password) throws AuthException {
-        if (validateCredentials(email, password)) {
+        if (validateCredentials(email, password))
             throw new AuthException("Invalid credentials");
-        }
         Map<String, User> userMap = db.getPersistentMap(
                 getServletContext(), USER_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
         User user = new User(email, BCrypt.hashpw(password, BCrypt.gensalt()));
-        if (userMap.putIfAbsent(email, user) != null) {
+        if (userMap.get(email) != null)
             throw new AuthException("User already exists");
-        }
-        DeckServiceImpl.createDefaultDecks(email,
-                db.getPersistentMap(
-                        getServletContext(),
-                        DECK_MAP_NAME,
-                        Serializer.STRING,
-                        new GsonSerializer<>(gson, type)
-                )
-        );
+        db.writeOperation(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type),
+                (Map<String, Map<String, Deck>> deckMap) -> {
+                    userMap.put(email, user);
+                    DeckServiceImpl.createDefaultDecks(email, deckMap);
+                    return null;
+                });
         return new AuthPayload(generateAndStoreLoginToken(user), email);
     }
 
@@ -145,14 +143,11 @@ public class AuthServiceImpl extends RemoteServiceServlet implements AuthService
 
     @Override
     public Boolean logout(String token) throws AuthException {
-        if (token == null) {
+        if (token == null)
             throw new AuthException("Invalid token");
-        }
-        Map<String, LoginInfo> loginMap = db.getPersistentMap(
-                getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson));
-        if (loginMap.remove(token) == null) {
+        if (db.writeOperation(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson),
+                (Map<String, LoginInfo> loginMap) -> loginMap.remove(token) == null))
             throw new AuthException("User not found");
-        }
         return true;
     }
 }

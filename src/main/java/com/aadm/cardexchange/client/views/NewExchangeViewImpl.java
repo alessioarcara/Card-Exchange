@@ -46,10 +46,14 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
         pageTitle.setInnerText(title);
         pageSubtitle.setInnerText(subtitle);
         exchangeDecks.clear();
-        senderDeck = new DeckWidget(null, null, clickable ? this : null, null, "Your Owned Cards");
-        receiverDeck = new DeckWidget(null, null, clickable ? this : null, null, "");
+        senderDeck = createDeck(clickable, "Your Owned Cards");
+        receiverDeck = createDeck(clickable, "");
         exchangeDecks.add(senderDeck);
         exchangeDecks.add(receiverDeck);
+    }
+
+    private DeckWidget createDeck(boolean clickable, String deckName) {
+        return new DeckWidget(null, null, clickable ? this : null, null, deckName);
     }
 
     @Override
@@ -89,7 +93,7 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
 
     @Override
     public void resetHandlers() {
-        handlers.forEach(handler -> handler.removeHandler());
+        handlers.forEach(HandlerRegistration::removeHandler);
     }
 
     @Override
