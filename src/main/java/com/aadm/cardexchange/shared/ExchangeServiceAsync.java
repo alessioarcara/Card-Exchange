@@ -17,4 +17,6 @@ public interface ExchangeServiceAsync {
     void getProposalListReceived(String token, AsyncCallback<List<Proposal>> callback);
 
     void getProposalListSent(String token, AsyncCallback<List<Proposal>> callback);
+
+    void refuseOrWithdrawProposal(String token, int proposalId, AsyncCallback<Boolean> async);
 }
