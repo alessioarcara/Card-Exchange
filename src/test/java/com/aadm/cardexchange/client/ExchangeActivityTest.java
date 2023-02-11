@@ -1,13 +1,13 @@
 package com.aadm.cardexchange.client;
 
 import com.aadm.cardexchange.client.auth.AuthSubject;
-import com.aadm.cardexchange.client.places.ExchangePlace;
 import com.aadm.cardexchange.client.places.ExchangesPlace;
 import com.aadm.cardexchange.client.presenters.ExchangeActivity;
 import com.aadm.cardexchange.client.views.NewExchangeView;
 import com.aadm.cardexchange.shared.ExchangeServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
+import com.aadm.cardexchange.shared.exceptions.ProposalNotFoundException;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -29,10 +29,19 @@ public class ExchangeActivityTest {
     ExchangeActivity exchangeActivity;
     ExchangeServiceAsync mockExchangeService;
 
+    private static Stream<Arguments> provideDifferentTypeOfErrors() {
+        return Stream.of(
+                Arguments.of(new AuthException("Invalid token")),
+                Arguments.of(new InputException("Invalid proposal Id")),
+                Arguments.of(new ProposalNotFoundException("Not existing proposal")),
+                Arguments.of(new RuntimeException("Internal server error"))
+        );
+    }
+
     @BeforeEach
     public void initialize() {
         ctrl = createStrictControl();
-        ExchangePlace mockPlace = new ExchangePlace(0);
+        ExchangesPlace mockPlace = new ExchangesPlace(0);
         mockView = ctrl.createMock(NewExchangeView.class);
         mockExchangeService = ctrl.createMock(ExchangeServiceAsync.class);
         AuthSubject mockAuthSubject = new AuthSubject();
@@ -46,17 +55,8 @@ public class ExchangeActivityTest {
         placeController.goTo(isA(Place.class));
         expectLastCall();
         ctrl.replay();
-        exchangeActivity.goTo(new ExchangesPlace());
+        exchangeActivity.goTo(new ExchangesPlace(null));
         ctrl.verify();
-    }
-
-    private static Stream<Arguments> provideDifferentTypeOfErrors() {
-        return Stream.of(
-                Arguments.of(new AuthException("Invalid token")),
-                Arguments.of(new InputException("Invalid proposal Id")),
-                Arguments.of(new NullPointerException("Not existing proposal")),
-                Arguments.of(new RuntimeException("Internal server error"))
-        );
     }
 
     @ParameterizedTest

@@ -76,7 +76,7 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
 
     @Override
     public void refuseOrWithdrawProposal() {
-        exchangeService.refuseOrWithdrawProposal(authSubject.getToken(), place.getExchangeProposalId(), new AsyncCallback<Boolean>() {
+        exchangeService.refuseOrWithdrawProposal(authSubject.getToken(), place.getProposalId(), new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable caught) {
                 if (caught instanceof AuthException) {
@@ -94,9 +94,8 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
             public void onSuccess(Boolean result) {
                 if (result) {
                     view.showAlert("Successfully removed proposal");
-                    goTo(new ExchangesPlace());
-                }
-                else {
+                    goTo(new ExchangesPlace(null));
+                } else {
                     view.showAlert("It seems this proposal doesn't exist anymore");
                 }
             }
