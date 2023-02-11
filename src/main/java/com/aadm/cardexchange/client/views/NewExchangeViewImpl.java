@@ -1,7 +1,6 @@
 package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardSelection;
-import com.aadm.cardexchange.client.places.ExchangesPlace;
 import com.aadm.cardexchange.client.places.HomePlace;
 import com.aadm.cardexchange.client.widgets.DeckWidget;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
@@ -88,7 +87,7 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
 
     @Override
     public void setExchangeButtons() {
-        handlers.add(cancelButton.addClickHandler(e -> exchangePresenter.goTo(new ExchangesPlace(null))));
+        handlers.add(cancelButton.addClickHandler(e -> exchangePresenter.refuseOrWithdrawProposal()));
         handlers.add(acceptButton.addClickHandler(e -> exchangePresenter.acceptExchangeProposal()));
     }
 

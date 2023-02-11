@@ -31,6 +31,7 @@ import org.junit.platform.suite.api.Suite;
         DecksActivityTest.class,
         NewExchangeActivityTest.class,
         ExchangesActivityTest.class,
+        ExchangeActivityTest.class,
         AuthSubjectTest.class,
         AuthPayloadTest.class,
         DeckServiceTest.class,

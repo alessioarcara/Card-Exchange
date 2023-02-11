@@ -86,6 +86,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
                 @Override
                 public void onSuccess(Boolean result) {
                     if (result) {
+                        view.showAlert("Proposal successfully created");
                         goTo(new HomePlace());
                     } else {
                         view.showAlert("Something went wrong...\nThis proposal already exists");
