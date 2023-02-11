@@ -157,8 +157,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             foundDeck.removePhysicalCard(pCard);
             modifiedDecks.add(new ModifiedDeckPayload(foundDeck.getName(), joinPhysicalCardsWithCatalogCards(foundDeck.getPhysicalCards())));
         }
-
-        deckMap.put(userEmail, userDecks);
+        db.writeOperation(getServletContext(), () -> deckMap.put(userEmail, userDecks));
         return modifiedDecks;
     }
 
@@ -180,7 +179,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
                 modifiedDecks.add(new ModifiedDeckPayload(deck.getName(), joinPhysicalCardsWithCatalogCards(deck.getPhysicalCards())));
             }
         });
-        deckMap.put(email, userDecks);
+        db.writeOperation(getServletContext(), () -> deckMap.put(userEmail, userDecks));
         return modifiedDecks;
     }
 
