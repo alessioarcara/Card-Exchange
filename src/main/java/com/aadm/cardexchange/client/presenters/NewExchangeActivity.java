@@ -37,6 +37,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         this.authSubject = authSubject;
         this.placeController = placeController;
     }
+
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         view.setPresenter(this);
@@ -69,8 +70,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
     public void createProposal(List<PhysicalCard> senderDeckSelectedCards, List<PhysicalCard> receiverDeckSelectedCards) {
         if (senderDeckSelectedCards.isEmpty() || receiverDeckSelectedCards.isEmpty()) {
             view.showAlert("Invalid selection error:\nProvide at least one card form each deck");
-        }
-        else {
+        } else {
             exchangeService.addProposal(authSubject.getToken(), place.getReceiverUserEmail(), senderDeckSelectedCards, receiverDeckSelectedCards, new AsyncCallback<Boolean>() {
                 @Override
                 public void onFailure(Throwable caught) {

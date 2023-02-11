@@ -60,8 +60,12 @@ public class NewExchangeActivityTest {
 
     @Test
     public void testCreateProposalForInvalidLists() {
-        List<PhysicalCard> senderList = new ArrayList<>(){{ add(new PhysicalCard(Game.MAGIC, 111, Status.Fair, "this is a valid description.")); }};
-        List<PhysicalCard> receiverList = new ArrayList<>(){{ add(new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description.")); }};
+        List<PhysicalCard> senderList = new ArrayList<>() {{
+            add(new PhysicalCard(Game.MAGIC, 111, Status.Fair, "this is a valid description."));
+        }};
+        List<PhysicalCard> receiverList = new ArrayList<>() {{
+            add(new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description."));
+        }};
 
         mockView.showAlert(anyString());
         expectLastCall().times(3);
@@ -86,8 +90,12 @@ public class NewExchangeActivityTest {
     @MethodSource("provideDifferentTypeOfErrors")
     public void testCreateProposalForFailure(Exception error) {
         // init
-        List<PhysicalCard> senderList = new ArrayList<>(){{ add(new PhysicalCard(Game.MAGIC, 111, Status.Fair, "this is a valid description.")); }};
-        List<PhysicalCard> receiverList = new ArrayList<>(){{ add(new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description.")); }};
+        List<PhysicalCard> senderList = new ArrayList<>() {{
+            add(new PhysicalCard(Game.MAGIC, 111, Status.Fair, "this is a valid description."));
+        }};
+        List<PhysicalCard> receiverList = new ArrayList<>() {{
+            add(new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description."));
+        }};
 
         // expects
         mockExchangeService.addProposal(anyString(), anyString(), isA(List.class), isA(List.class), isA(AsyncCallback.class));
@@ -107,8 +115,12 @@ public class NewExchangeActivityTest {
     @Test
     public void testCreateProposalForFalseResult() {
         // init
-        List<PhysicalCard> senderList = new ArrayList<>(){{ add(new PhysicalCard(Game.MAGIC, 111, Status.Fair, "this is a valid description.")); }};
-        List<PhysicalCard> receiverList = new ArrayList<>(){{ add(new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description.")); }};
+        List<PhysicalCard> senderList = new ArrayList<>() {{
+            add(new PhysicalCard(Game.MAGIC, 111, Status.Fair, "this is a valid description."));
+        }};
+        List<PhysicalCard> receiverList = new ArrayList<>() {{
+            add(new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description."));
+        }};
 
         // expects
         mockExchangeService.addProposal(anyString(), anyString(), isA(List.class), isA(List.class), isA(AsyncCallback.class));
@@ -128,8 +140,12 @@ public class NewExchangeActivityTest {
     @Test
     public void testCreateProposalForTrueResult() {
         // init
-        List<PhysicalCard> senderList = new ArrayList<>(){{ add(new PhysicalCard(Game.MAGIC, 111, Status.Fair, "this is a valid description.")); }};
-        List<PhysicalCard> receiverList = new ArrayList<>(){{ add(new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description.")); }};
+        List<PhysicalCard> senderList = new ArrayList<>() {{
+            add(new PhysicalCard(Game.MAGIC, 111, Status.Fair, "this is a valid description."));
+        }};
+        List<PhysicalCard> receiverList = new ArrayList<>() {{
+            add(new PhysicalCard(Game.YUGIOH, 222, Status.Good, "this is a valid description."));
+        }};
 
         // expects
         mockExchangeService.addProposal(anyString(), anyString(), isA(List.class), isA(List.class), isA(AsyncCallback.class));

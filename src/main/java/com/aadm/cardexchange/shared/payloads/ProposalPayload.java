@@ -1,4 +1,6 @@
-package com.aadm.cardexchange.shared.models;
+package com.aadm.cardexchange.shared.payloads;
+
+import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 
 import java.io.Serializable;
 import java.util.List;
@@ -15,7 +17,8 @@ public class ProposalPayload implements Serializable {
         this.receiverCards = receiverCards;
     }
 
-    public ProposalPayload() {}
+    public ProposalPayload() {
+    }
 
     public String getReceiverEmail() {
         return receiverEmail;

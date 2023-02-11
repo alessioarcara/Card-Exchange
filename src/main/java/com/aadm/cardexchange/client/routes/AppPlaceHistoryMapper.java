@@ -23,8 +23,6 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
             return new AuthPlace();
         } else if (token.equals(decksLink) && authSubject.isLoggedIn()) {
             return new DecksPlace();
-        } else if (token.equals(exchangesLink) && authSubject.isLoggedIn()) {
-            return new ExchangesPlace();
         } else {
             try {
                 String[] parts = token.split(DELIMITER);
@@ -36,9 +34,8 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
                     String receiverUserEmail = parts[1];
                     String selectedCardId = parts[2];
                     return new NewExchangePlace(selectedCardId, receiverUserEmail);
-                } else if (parts[0].equals(proposalLink) && authSubject.isLoggedIn()) {
-                    int proposalId = Integer.parseInt(parts[1]);
-                    return new ExchangePlace(proposalId);
+                } else if (parts[0].equals(exchangesLink) && authSubject.isLoggedIn()) {
+                    return new ExchangesPlace(parts[1] != null ? Integer.parseInt(parts[1]) : null);
                 }
             } catch (Exception e) {
                 return defaultPlace;
@@ -55,11 +52,11 @@ public class AppPlaceHistoryMapper implements PlaceHistoryMapper, RouteConstants
             return authLink;
         } else if (place instanceof DecksPlace) {
             return decksLink;
-        } else if (place instanceof ExchangesPlace) {
+        } else if (place instanceof ExchangesPlace && ((ExchangesPlace) place).getProposalId() == null) {
             return exchangesLink;
-        } else if (place instanceof ExchangePlace) {
-            ExchangePlace exchangePlace = (ExchangePlace) place;
-            return proposalLink + DELIMITER + exchangePlace.getExchangeProposalId();
+        } else if (place instanceof ExchangesPlace) {
+            ExchangesPlace exchangePlace = (ExchangesPlace) place;
+            return exchangesLink + DELIMITER + exchangePlace.getProposalId();
         } else if (place instanceof NewExchangePlace) {
             NewExchangePlace newExchangePlace = (NewExchangePlace) place;
             return newExchangeLink + DELIMITER + newExchangePlace.getReceiverUserEmail() + DELIMITER + newExchangePlace.getSelectedCardId();
