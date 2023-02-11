@@ -562,6 +562,142 @@ public class DeckServiceTest {
                     "Owned", mockPCard));
             ctrl.verify();
         }
+
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        @ValueSource(strings = {"invalidToken"})
+        public void testGetListPhysicalCardWithEmailDealingForInvalidToken(String input) {
+            setupForInvalidToken();
+            ctrl.replay();
+            Assertions.assertThrows(AuthException.class, () -> deckService.getListPhysicalCardWithEmailDealing(input, Game.randomGame(), 1));
+            ctrl.verify();
+        }
+
+        @Test
+        public void testGetListPhysicalCardWithEmailDealingForNullGame() {
+            setupForValidToken();
+            ctrl.replay();
+            Assertions.assertThrows(InputException.class, () -> {
+                deckService.getListPhysicalCardWithEmailDealing("validToken", null, 1);
+                ctrl.verify();
+            });
+        }
+
+        @Test
+        public void testGetListPhysicalCardWithEmailDealingForNegativeCardId() {
+            setupForValidToken();
+            ctrl.replay();
+            Assertions.assertThrows(InputException.class, () -> {
+                deckService.getListPhysicalCardWithEmailDealing("validToken", Game.randomGame(), -1);
+                ctrl.verify();
+            });
+        }
+
+        @Test
+        public void testGetListPhysicalCardWithEmailDealingForDeckNotFound() {
+            setupForValidToken();
+            expect(mockConfig.getServletContext()).andReturn(mockCtx);
+            expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                    .andReturn(new HashMap<>() {{
+                        put("test@test.it", new HashMap<>());
+                    }});
+
+            ctrl.replay();
+            Assertions.assertThrows(DeckNotFoundException.class, () -> deckService.getListPhysicalCardWithEmailDealing("validToken", Game.randomGame(), 1));
+            ctrl.verify();
+        }
+
+        @Test
+        public void testGetListPhysicalCardWithEmailDealingWithEmptyOwnedDeck() throws DeckNotFoundException, InputException, AuthException {
+            // init mocks
+            //Generate empty Owned deck and  Wished consistent deck
+            PhysicalCard wishedCard1 = new PhysicalCard(Game.MAGIC, 1, Status.Excellent, "This is a valid description.");
+            PhysicalCard wishedCard2 = new PhysicalCard(Game.MAGIC, 1, Status.Fair, "This is a valid description.");
+            PhysicalCard wishedCard3 = new PhysicalCard(Game.MAGIC, 3, Status.Fair, "This is a valid description.");
+            Deck wishedDeck = new Deck("Wished", true);
+            wishedDeck.addPhysicalCard(wishedCard1);
+            wishedDeck.addPhysicalCard(wishedCard2);
+            wishedDeck.addPhysicalCard(wishedCard3);
+
+            // expects
+            setupForValidToken();
+            expect(mockConfig.getServletContext()).andReturn(mockCtx);
+            expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                    .andReturn(new HashMap<>() {{
+                        put("test@test.it", new HashMap<>() {{
+                            put("Owned", new Deck("Owned", true));
+                        }});
+                    }});
+
+            expect(mockConfig.getServletContext()).andReturn(mockCtx);
+            expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                    .andReturn(new HashMap<>() {{
+                        put("test@test.it", new HashMap<>() {{
+                            put("Wished", wishedDeck);
+                        }});
+                    }});
+
+            ctrl.replay();
+            List<PhysicalCardWithEmailDealing> actual = deckService.getListPhysicalCardWithEmailDealing("validToken", Game.MAGIC, 1);
+            Assertions.assertAll(() -> {
+                Assertions.assertEquals(2, actual.size());
+                Assertions.assertNull(actual.get(0).getIdPhysicalCardPawn());
+                Assertions.assertNull(actual.get(1).getIdPhysicalCardPawn());
+            });
+            ctrl.verify();
+        }
+
+
+        @Test
+        public void testGetListPhysicalCardWithEmailDealingMatchingIdCard() throws DeckNotFoundException, InputException, AuthException {
+            // init mocks
+            //Generate empty Owned deck
+            PhysicalCard ownedCard1 = new PhysicalCard(Game.MAGIC, 1, Status.VeryDamaged, "This is a valid description.");
+            PhysicalCard ownedCard2 = new PhysicalCard(Game.MAGIC, 1, Status.Fair, "This is a valid description.");        //Match
+            PhysicalCard ownedCard3 = new PhysicalCard(Game.MAGIC, 2, Status.Good, "This is a valid description.");
+            Deck ownedDeck = new Deck("Owned", true);
+            ownedDeck.addPhysicalCard(ownedCard1);
+            ownedDeck.addPhysicalCard(ownedCard2);
+            ownedDeck.addPhysicalCard(ownedCard3);
+
+
+            //Generate Wished consistent deck
+            PhysicalCard wishedCard1 = new PhysicalCard(Game.MAGIC, 1, Status.Excellent, "This is a valid description.");
+            PhysicalCard wishedCard2 = new PhysicalCard(Game.MAGIC, 1, Status.Fair, "This is a valid description.");
+            PhysicalCard wishedCard3 = new PhysicalCard(Game.MAGIC, 3, Status.Fair, "This is a valid description.");
+            Deck wishedDeck = new Deck("Wished", true);
+            wishedDeck.addPhysicalCard(wishedCard1);
+            wishedDeck.addPhysicalCard(wishedCard2);
+            wishedDeck.addPhysicalCard(wishedCard3);
+
+            // expects
+            setupForValidToken();
+            expect(mockConfig.getServletContext()).andReturn(mockCtx);
+            expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                    .andReturn(new HashMap<>() {{
+                        put("test@test.it", new HashMap<>() {{
+                            put("Owned", ownedDeck);
+                        }});
+                    }});
+
+            expect(mockConfig.getServletContext()).andReturn(mockCtx);
+            expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                    .andReturn(new HashMap<>() {{
+                        put("test@test.it", new HashMap<>() {{
+                            put("Wished", wishedDeck);
+                        }});
+                    }});
+
+            ctrl.replay();
+            List<PhysicalCardWithEmailDealing> actual = deckService.getListPhysicalCardWithEmailDealing("validToken", Game.MAGIC, 1);
+            Assertions.assertAll(() -> {
+                Assertions.assertEquals(2, actual.size());                                     //like wished card list size
+                Assertions.assertNull(actual.get(0).getIdPhysicalCardPawn());                          //first wished card in list don't match
+                Assertions.assertEquals(ownedCard2.getId(), actual.get(1).getIdPhysicalCardPawn());    //second wished card in list match with second Owned card
+            });
+            ctrl.verify();
+        }
     }
 
     @Nested
@@ -827,140 +963,5 @@ public class DeckServiceTest {
             // number of decks modified should be equal of number of decks returned
             Assertions.assertEquals(numOfDecksModified, modifiedDecks.size());
         }
-    }
-
-    @ParameterizedTest
-    @NullAndEmptySource
-    @ValueSource(strings = {"invalidToken"})
-    public void testGetListPhysicalCardWithEmailDealingForInvalidToken(String input) {
-        setupForInvalidToken();
-        ctrl.replay();
-        Assertions.assertThrows(AuthException.class, () -> deckService.getListPhysicalCardWithEmailDealing(input, Game.randomGame(), 1));
-        ctrl.verify();
-    }
-
-    @Test
-    public void testGetListPhysicalCardWithEmailDealingForNullGame() {
-        setupForValidToken();
-        ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> {
-            deckService.getListPhysicalCardWithEmailDealing("validToken", null, 1);
-            ctrl.verify();
-        });
-    }
-
-    @Test
-    public void testGetListPhysicalCardWithEmailDealingForNegativeCardId() {
-        setupForValidToken();
-        ctrl.replay();
-        Assertions.assertThrows(InputException.class, () -> {
-            deckService.getListPhysicalCardWithEmailDealing("validToken", Game.randomGame(), -1);
-            ctrl.verify();
-        });
-    }
-
-    @Test
-    public void testGetListPhysicalCardWithEmailDealingForDeckNotFound() {
-        setupForValidToken();
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(new HashMap<>() {{
-                    put("test@test.it", new HashMap<>());
-                }});
-
-        ctrl.replay();
-        Assertions.assertThrows(DeckNotFoundException.class, () -> deckService.getListPhysicalCardWithEmailDealing("validToken", Game.randomGame(), 1));
-        ctrl.verify();
-    }
-
-    @Test
-    public void testGetListPhysicalCardWithEmailDealingWithEmptyOwnedDeck() throws BaseException {
-        // init mocks
-        //Generate empty Owned deck and  Wished consistent deck
-        PhysicalCard wishedCard1 = new PhysicalCard(Game.MAGIC, 1, Status.Excellent, "This is a valid description.");
-        PhysicalCard wishedCard2 = new PhysicalCard(Game.MAGIC, 1, Status.Fair, "This is a valid description.");
-        PhysicalCard wishedCard3 = new PhysicalCard(Game.MAGIC, 3, Status.Fair, "This is a valid description.");
-        Deck wishedDeck = new Deck("Wished", true);
-        wishedDeck.addPhysicalCard(wishedCard1);
-        wishedDeck.addPhysicalCard(wishedCard2);
-        wishedDeck.addPhysicalCard(wishedCard3);
-
-        // expects
-        setupForValidToken();
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(new HashMap<>() {{
-                    put("test@test.it", new HashMap<>() {{
-                        put("Owned", new Deck("Owned", true));
-                    }});
-                }});
-
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(new HashMap<>() {{
-                    put("test@test.it", new HashMap<>() {{
-                        put("Wished", wishedDeck);
-                    }});
-                }});
-
-        ctrl.replay();
-        List<PhysicalCardWithEmailDealing> actual = deckService.getListPhysicalCardWithEmailDealing("validToken", Game.MAGIC, 1);
-        Assertions.assertAll(() -> {
-            Assertions.assertEquals(2, actual.size());
-            Assertions.assertNull(actual.get(0).getIdPhysicalCardPawn());
-            Assertions.assertNull(actual.get(1).getIdPhysicalCardPawn());
-        });
-        ctrl.verify();
-    }
-
-
-    @Test
-    public void testGetListPhysicalCardWithEmailDealingMatchingIdCard() throws BaseException {
-        // init mocks
-        //Generate empty Owned deck
-        PhysicalCard ownedCard1 = new PhysicalCard(Game.MAGIC, 1, Status.VeryDamaged, "This is a valid description.");
-        PhysicalCard ownedCard2 = new PhysicalCard(Game.MAGIC, 1, Status.Fair, "This is a valid description.");        //Match
-        PhysicalCard ownedCard3 = new PhysicalCard(Game.MAGIC, 2, Status.Good, "This is a valid description.");
-        Deck ownedDeck = new Deck("Owned", true);
-        ownedDeck.addPhysicalCard(ownedCard1);
-        ownedDeck.addPhysicalCard(ownedCard2);
-        ownedDeck.addPhysicalCard(ownedCard3);
-
-
-        //Generate Wished consistent deck
-        PhysicalCard wishedCard1 = new PhysicalCard(Game.MAGIC, 1, Status.Excellent, "This is a valid description.");
-        PhysicalCard wishedCard2 = new PhysicalCard(Game.MAGIC, 1, Status.Fair, "This is a valid description.");
-        PhysicalCard wishedCard3 = new PhysicalCard(Game.MAGIC, 3, Status.Fair, "This is a valid description.");
-        Deck wishedDeck = new Deck("Wished", true);
-        wishedDeck.addPhysicalCard(wishedCard1);
-        wishedDeck.addPhysicalCard(wishedCard2);
-        wishedDeck.addPhysicalCard(wishedCard3);
-
-        // expects
-        setupForValidToken();
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(new HashMap<>() {{
-                    put("test@test.it", new HashMap<>() {{
-                        put("Owned", ownedDeck);
-                    }});
-                }});
-
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(new HashMap<>() {{
-                    put("test@test.it", new HashMap<>() {{
-                        put("Wished", wishedDeck);
-                    }});
-                }});
-
-        ctrl.replay();
-        List<PhysicalCardWithEmailDealing> actual = deckService.getListPhysicalCardWithEmailDealing("validToken", Game.MAGIC, 1);
-        Assertions.assertAll(() -> {
-            Assertions.assertEquals(2, actual.size());                                     //like wished card list size
-            Assertions.assertNull(actual.get(0).getIdPhysicalCardPawn());                          //first wished card in list don't match
-            Assertions.assertEquals(ownedCard2.getId(), actual.get(1).getIdPhysicalCardPawn());    //second wished card in list match with second Owned card
-        });
-        ctrl.verify();
     }
 }
