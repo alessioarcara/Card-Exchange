@@ -23,5 +23,6 @@ public interface ExchangeService extends RemoteService {
     List<Proposal> getProposalListReceived(String token) throws BaseException;
 
     List<Proposal> getProposalListSent(String token) throws BaseException;
-    boolean refuseOrWithdrawProposal(String token, int proposalId) throws AuthException, InputException;
+
+    boolean refuseOrWithdrawProposal(String token, int proposalId) throws BaseException;
 }

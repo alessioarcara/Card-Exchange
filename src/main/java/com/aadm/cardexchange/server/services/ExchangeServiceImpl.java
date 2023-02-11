@@ -129,6 +129,20 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
                 }) != null;
     }
 
+    @Override
+    public boolean refuseOrWithdrawProposal(String token, int proposalId) throws AuthException, InputException, NullPointerException, ProposalNotFoundException {
+        String email = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        if (proposalId < 0)
+            throw new InputException("Invalid proposal Id");
+        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
+        Proposal proposal = proposalMap.get(proposalId);
+        if (proposal == null)
+            throw new ProposalNotFoundException("Not existing proposal");
+        if (!email.equals(proposal.getSenderUserEmail()) && !email.equals(proposal.getReceiverUserEmail()))
+            throw new AuthException("You can only interact with proposals of which you are the sender or the receiver");
+        return db.writeOperation(getServletContext(), () -> proposalMap.remove(proposalId, proposal));
+    }
+
     public List<Proposal> getProposalListReceived(String token) throws AuthException {
         String email = AuthServiceImpl.checkTokenValidity(token,
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
@@ -149,25 +163,5 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
             if (email.equals(item.getSenderUserEmail()))
                 proposalList.add(item);
         return proposalList;
-    }
-
-    @Override
-    public boolean refuseOrWithdrawProposal(String token, int proposalId) throws AuthException, InputException, NullPointerException {
-        String email = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        if (proposalId < 0) {
-            throw new InputException("Invalid proposal Id");
-        }
-
-        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
-        if (proposalMap.size() == 0) {
-            throw new RuntimeException("Not existing proposal");
-        }
-
-        Proposal proposal = proposalMap.get(proposalId);
-        if (!email.equals(proposal.getSenderUserEmail()) && !email.equals(proposal.getReceiverUserEmail())) {
-            throw new AuthException("You can only interact with proposals of which you are the sender or the receiver");
-        }
-
-        return proposalMap.remove(proposalId, proposal);
     }
 }
