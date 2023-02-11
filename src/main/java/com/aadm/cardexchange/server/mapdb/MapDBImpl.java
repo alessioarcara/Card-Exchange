@@ -56,6 +56,7 @@ public class MapDBImpl implements MapDB, MapDBConstants {
         DB db = getDB(ctx, DB_FILE_TYPE);
         try {
             runnable.run();
+            db.commit();
             return true;
         } catch (Exception e) {
             db.rollback();
