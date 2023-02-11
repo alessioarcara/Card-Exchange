@@ -6,7 +6,7 @@ import com.aadm.cardexchange.client.views.DecksView;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
-import com.aadm.cardexchange.shared.exceptions.ExistingProposal;
+import com.aadm.cardexchange.shared.exceptions.ExistingProposalException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
@@ -83,8 +83,8 @@ public class DecksActivity extends AbstractActivity implements DecksView.Present
                     view.displayAlert(((AuthException) caught).getErrorMessage());
                 } else if (caught instanceof InputException) {
                     view.displayAlert(((InputException) caught).getErrorMessage());
-                } else if (caught instanceof ExistingProposal) {
-                    view.displayAlert(((ExistingProposal) caught).getErrorMessage());
+                } else if (caught instanceof ExistingProposalException) {
+                    view.displayAlert(((ExistingProposalException) caught).getErrorMessage());
                 } else {
                     view.displayAlert("Internal server error: " + caught.getMessage());
                 }
