@@ -6,12 +6,9 @@ import org.mapdb.Serializer;
 
 import javax.servlet.ServletContext;
 import java.util.Map;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 
-/*
-    TODO: Refactor MapDBImpl
- */
 public class MapDBImpl implements MapDB, MapDBConstants {
 
     private static DB getDB(ServletContext ctx, String dbType) {
@@ -42,11 +39,23 @@ public class MapDBImpl implements MapDB, MapDBConstants {
     }
 
     @Override
-    public <K, V> boolean writeOperation(ServletContext ctx, String mapName, Serializer<K> keySerializer, Serializer<V> valueSerializer, Consumer<Map<K, V>> operation) {
+    public <K, V, T> T writeOperation(ServletContext ctx, String mapName, Serializer<K> keySerializer, Serializer<V> valueSerializer, Function<Map<K, V>, T> operation) {
         DB db = getDB(ctx, DB_FILE_TYPE);
         try {
-            operation.accept(db.hashMap(mapName, keySerializer, valueSerializer).createOrOpen());
+            T value = operation.apply(db.hashMap(mapName, keySerializer, valueSerializer).createOrOpen());
             db.commit();
+            return value;
+        } catch (Exception e) {
+            db.rollback();
+            return null;
+        }
+    }
+
+    @Override
+    public boolean writeOperation(ServletContext ctx, Runnable runnable) {
+        DB db = getDB(ctx, DB_FILE_TYPE);
+        try {
+            runnable.run();
             return true;
         } catch (Exception e) {
             db.rollback();

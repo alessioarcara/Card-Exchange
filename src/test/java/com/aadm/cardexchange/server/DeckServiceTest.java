@@ -2,12 +2,16 @@ package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.services.DeckServiceImpl;
-import com.aadm.cardexchange.shared.exceptions.*;
+import com.aadm.cardexchange.shared.exceptions.AuthException;
+import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
+import com.aadm.cardexchange.shared.exceptions.ExistingProposalException;
+import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import com.aadm.cardexchange.shared.payloads.ModifiedDeckPayload;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
@@ -22,11 +26,13 @@ import java.util.*;
 import static org.easymock.EasyMock.*;
 
 public class DeckServiceTest {
-    private IMocksControl ctrl;
-    private MapDB mockDB;
-    ServletConfig mockConfig;
-    ServletContext mockCtx;
-    private DeckServiceImpl deckService;
+    @Nested
+    class WithMockDB {
+        ServletConfig mockConfig;
+        ServletContext mockCtx;
+        private IMocksControl ctrl;
+        private MapDB mockDB;
+        private DeckServiceImpl deckService;
 
     @BeforeEach
     public void initialize() throws ServletException {
@@ -799,74 +805,283 @@ public class DeckServiceTest {
         Proposal mockProposal2 = new Proposal("test3@test.it", "test4@test.it",
                 DummyData.createPhysicalCardDummyList(5), DummyData.createPhysicalCardDummyList(5));
 
-        // expects
-        setupForValidToken();
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(new HashMap<>() {{
-                    put(0, mockProposal1);
-                    put(1, mockProposal2);
-                }});
-        ctrl.replay();
-        Assertions.assertThrows(ExistingProposalException.class, () -> deckService.editPhysicalCard("validToken",
-                "Owned", mockPCard));
-        ctrl.verify();
+            // expects
+            setupForValidToken();
+            expect(mockConfig.getServletContext()).andReturn(mockCtx);
+            expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                    .andReturn(new HashMap<>() {{
+                        put(0, mockProposal1);
+                        put(1, mockProposal2);
+                    }});
+            ctrl.replay();
+            Assertions.assertThrows(ExistingProposalException.class, () -> deckService.editPhysicalCard("validToken",
+                    "Owned", mockPCard));
+            ctrl.verify();
+        }
     }
 
-    @Test
-    public void testEditPhysicalCardForValidParameters() throws ExistingProposalException, InputException, AuthException {
-        // init mocks
-        PhysicalCard mockPCard = new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description.");
-        PhysicalCard editedPCard = mockPCard.copyWithModifiedStatusAndDescription(Status.randomStatus(), "This is a modified description");
-        List<Deck> decks = Arrays.asList(
-                new Deck("Owned", true),
-                new Deck("Wished", true),
-                new Deck("test1", false),
-                new Deck("test2", false),
-                new Deck("test3", false)
-        );
+    @Nested
+    class WithFakeDB {
+        ServletConfig mockConfig;
+        ServletContext mockCtx;
 
-        // modify random number of decks
-        Random r = new Random(42);
-        int numOfCards = 4;
-        int numOfDecksModified = 0;
-
-        for (Deck deck : decks) {
-            // load deck with dummy physical cards (#numOfCards)
-            for (PhysicalCard pCard : DummyData.createPhysicalCardDummyList(numOfCards)) {
-                deck.addPhysicalCard(pCard);
-            }
-            // insert target physical card to edit in random number of decks (+1)
-            if (!deck.getName().equals("Wished") && r.nextBoolean()) {
-                deck.addPhysicalCard(mockPCard);
-                numOfDecksModified++;
-            }
+        @BeforeEach
+        public void initialize() throws ServletException {
+            mockConfig = createStrictMock(ServletConfig.class);
+            mockCtx = createStrictMock(ServletContext.class);
         }
 
-        // expects
-        setupForValidToken();
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(new HashMap<>());
-        expect(mockConfig.getServletContext()).andReturn(mockCtx);
-        expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                .andReturn(new HashMap<>() {{
-                    put("test@test.it", new LinkedHashMap<>() {{
-                        for (Deck deck : decks)
-                            put(deck.getName(), deck);
-                    }});
+        private DeckServiceImpl initializeDeckService(Map<String, Map<String, Deck>> deckMap) throws ServletException {
+            FakeDB fakeDB = new FakeDB(new HashMap<>(), deckMap);
+            DeckServiceImpl deckService = new DeckServiceImpl(fakeDB);
+            deckService.init(mockConfig);
+            return deckService;
+        }
+
+        @Test
+        public void testAddDeckForNotAlreadyExistingDeck() throws AuthException, ServletException {
+            DeckServiceImpl deckService = initializeDeckService(new HashMap<>() {{
+                put("test@test.it", new LinkedHashMap<>() {{
+                    put("Owned", new Deck("Owned", true));
+                    put("Wished", new Deck("Wished", true));
                 }});
+            }});
 
-        for (int i = 0; i < numOfDecksModified * (numOfCards + 1); i++) {
-            expect(mockConfig.getServletContext()).andReturn(mockCtx);
-            expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
-                    .andReturn(new HashMap());
+            expect(mockConfig.getServletContext()).andReturn(mockCtx).times(2);
+            replay(mockConfig, mockCtx);
+            Assertions.assertTrue(deckService.addDeck("validToken", "testDeckName"));
+            verify(mockConfig, mockCtx);
         }
 
-        ctrl.replay();
-        List<ModifiedDeckPayload> modifiedDecks = deckService.editPhysicalCard("validToken", "Owned", editedPCard);
-        ctrl.verify();
-        // number of decks modified should be equal of number of decks returned
-        Assertions.assertEquals(numOfDecksModified, modifiedDecks.size());
+        @Test
+        public void testAddDeckForAlreadyExistingDeck() throws AuthException, ServletException {
+            String deckName = "testDeckName";
+            DeckServiceImpl deckService = initializeDeckService(new HashMap<>() {{
+                put("test@test.it", new LinkedHashMap<>() {{
+                    put(deckName, new Deck(deckName, false));
+                }});
+            }});
+
+            expect(mockConfig.getServletContext()).andReturn(mockCtx).times(2);
+            replay(mockConfig, mockCtx);
+            Assertions.assertFalse(deckService.addDeck("validToken", deckName));
+            verify(mockConfig, mockCtx);
+        }
+
+        @Test
+        public void testRemoveCustomDeckForNotExistingDeck() throws AuthException, ServletException {
+            DeckServiceImpl deckService = initializeDeckService(new HashMap<>() {{
+                put("test@test.it", new LinkedHashMap<>());
+            }});
+
+            expect(mockConfig.getServletContext()).andReturn(mockCtx).times(2);
+            replay(mockConfig, mockCtx);
+            Assertions.assertFalse(deckService.removeCustomDeck("validToken", "testDeckName"));
+            verify(mockConfig, mockCtx);
+        }
+
+        @Test
+        public void testRemoveCustomDeckForDefaultDeck() throws AuthException, ServletException {
+            String deckName = "testDeckName";
+            DeckServiceImpl deckService = initializeDeckService(new HashMap<>() {{
+                put("test@test.it", new LinkedHashMap<>() {{
+                    put(deckName, new Deck(deckName, true));
+                }});
+            }});
+
+            expect(mockConfig.getServletContext()).andReturn(mockCtx).times(2);
+            replay(mockConfig, mockCtx);
+            Assertions.assertFalse(deckService.removeCustomDeck("validToken", deckName));
+            verify(mockConfig, mockCtx);
+        }
+
+        @Test
+        public void testRemoveCustomDeckForRemovableCustomDeck() throws AuthException, ServletException {
+            String deckName = "testDeckName";
+            DeckServiceImpl deckService = initializeDeckService(new HashMap<>() {{
+                put("test@test.it", new LinkedHashMap<>() {{
+                    put(deckName, new Deck(deckName, false));
+                }});
+            }});
+            expect(mockConfig.getServletContext()).andReturn(mockCtx).times(2);
+            replay(mockConfig, mockCtx);
+            Assertions.assertTrue(deckService.removeCustomDeck("validToken", deckName));
+            verify(mockConfig, mockCtx);
+        }
+
+        @Test
+        public void testAddPhysicalCardToDeckForNotExistingUserDecks() throws ServletException, InputException, AuthException {
+            DeckServiceImpl deckService = initializeDeckService(new HashMap<>());
+            expect(mockConfig.getServletContext()).andReturn(mockCtx).times(2);
+            replay(mockConfig, mockCtx);
+            Assertions.assertFalse(deckService.addPhysicalCardToDeck("validToken", Game.MAGIC, "Owned", 111, Status.Excellent, "This is a valid description."));
+            verify(mockConfig, mockCtx);
+        }
+
+        @Test
+        public void testAddPhysicalCardToDeckForNotExistingDeck() throws ServletException, InputException, AuthException {
+            DeckServiceImpl deckService = initializeDeckService(new HashMap<>() {{
+                put("test@test.it", new LinkedHashMap<>());
+            }});
+            expect(mockConfig.getServletContext()).andReturn(mockCtx).times(2);
+            replay(mockConfig, mockCtx);
+            Assertions.assertFalse(deckService.addPhysicalCardToDeck("validToken", Game.MAGIC, "Owned", 111, Status.Excellent, "This is a valid description."));
+            verify(mockConfig, mockCtx);
+        }
+
+        @Test
+        public void testAddPhysicalCardToDeckForCardAddition() throws ServletException, InputException, AuthException {
+            DeckServiceImpl deckService = initializeDeckService(new HashMap<>() {{
+                put("test@test.it", new LinkedHashMap<>() {{
+                    put("Owned", new Deck("Owned", true));
+                }});
+            }});
+            expect(mockConfig.getServletContext()).andReturn(mockCtx).times(2);
+            replay(mockConfig, mockCtx);
+            Assertions.assertTrue(deckService.addPhysicalCardToDeck("validToken", Game.MAGIC, "Owned", 111, Status.Excellent, "This is a valid description."));
+            verify(mockConfig, mockCtx);
+        }
+
+        @Test
+        public void testRemovePhysicalCardFromDeckForNotExistingPhysicalCard() throws ServletException, DeckNotFoundException, InputException, AuthException {
+            PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+            PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 1221, Status.Fair, "This is a valid bis description.");
+            Map<String, Deck> deckMap = new LinkedHashMap<>() {{
+                put("Owned", new Deck("Owned", true));
+            }};
+            deckMap.get("Owned").addPhysicalCard(mockPCard2);
+
+            DeckServiceImpl deckService = initializeDeckService(new HashMap<>() {{
+                put("test@test.it", deckMap);
+            }});
+
+            expect(mockConfig.getServletContext()).andReturn(mockCtx).times(3);
+            replay(mockConfig, mockCtx);
+            Assertions.assertEquals(Collections.emptyList(), deckService.removePhysicalCardFromDeck("validToken", "Owned", mockPCard1));
+            verify(mockConfig, mockCtx);
+        }
+
+        @Test
+        public void testRemovePhysicalCardFromDeckSuccess() throws ServletException, DeckNotFoundException, InputException, AuthException {
+            final int numOfCards = 4;
+
+            // init mocks
+            PhysicalCard targetPCard = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
+
+            List<Deck> decks = Arrays.asList(
+                    new Deck("Owned", true),
+                    new Deck("Wished", true),
+                    new Deck("custom1"),
+                    new Deck("custom2"),
+                    new Deck("custom3")
+            );
+
+            Map<String, Deck> mockUserDeckMap = new HashMap<>();
+            // load physical cards on existing decks
+            for (Deck deck : decks) {
+                for (PhysicalCard pCard : DummyData.createPhysicalCardDummyList(numOfCards)) {
+                    deck.addPhysicalCard(pCard);
+                }
+                if (!deck.getName().equals("Wished") && !deck.getName().equals("custom2")) {
+                    deck.addPhysicalCard(targetPCard);
+                }
+                mockUserDeckMap.put(deck.getName(), deck);
+            }
+
+            Map<String, Map<String, Deck>> mockDeckMap = new HashMap<>() {{
+                put("test@test.it", mockUserDeckMap);
+            }};
+            DeckServiceImpl deckService = initializeDeckService(mockDeckMap);
+
+            // expects
+            expect(mockConfig.getServletContext()).andReturn(mockCtx).times((3 * numOfCards) + 3);
+
+            replay(mockConfig, mockCtx);
+            Assertions.assertEquals(3, deckService.removePhysicalCardFromDeck("validToken", "Owned", targetPCard).size());
+            verify(mockConfig, mockCtx);
+        }
+
+        @Test
+        public void testAddPhysicalCardsToCustomDeckForValidParameters() throws ServletException, DeckNotFoundException, InputException, AuthException {
+            // init mocks
+            PhysicalCard mockPCard1 = new PhysicalCard(Game.MAGIC, 0, Status.randomStatus(), "This is a valid description.");
+            PhysicalCard mockPCard2 = new PhysicalCard(Game.MAGIC, 1, Status.randomStatus(), "This is a valid description.");
+            Deck testDeck = new Deck("test", false);
+            testDeck.addPhysicalCard(mockPCard1);
+            testDeck.addPhysicalCard(mockPCard2);
+            DeckServiceImpl deckService = initializeDeckService(new HashMap<>() {{
+                put("test@test.it", new HashMap<>() {{
+                    put("Owned", new Deck("Owned", true));
+                    put("Wished", new Deck("Wished", true));
+                    put("test", testDeck);
+                }});
+            }});
+
+            // expects
+            expect(mockConfig.getServletContext()).andReturn(mockCtx).times(8);
+
+            replay(mockConfig, mockCtx);
+            List<PhysicalCardWithName> pCardsWithNames = deckService.addPhysicalCardsToCustomDeck("validToken", "test",
+                    Arrays.asList(
+                            new PhysicalCard(Game.MAGIC, 2, Status.randomStatus(), "This is a valid description."),
+                            new PhysicalCard(Game.MAGIC, 3, Status.randomStatus(), "This is a valid description."),
+                            new PhysicalCard(Game.MAGIC, 4, Status.randomStatus(), "This is a valid description."),
+                            // duplicated cards
+                            mockPCard1,
+                            mockPCard2
+                    ));
+            verify(mockConfig, mockCtx);
+            Assertions.assertAll(() -> {
+                Assertions.assertEquals(5, pCardsWithNames.size());
+                Assertions.assertEquals("Lightning Bolt", pCardsWithNames.get(0).getName());
+            });
+        }
+
+        @Test
+        public void testEditPhysicalCardForValidParameters() throws ServletException, InputException, ExistingProposalException, AuthException {
+            Map<String, Deck> deckMap = new HashMap<>();
+
+            // init mocks
+            PhysicalCard mockPCard = new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description.");
+            PhysicalCard editedPCard = mockPCard.copyWithModifiedStatusAndDescription(Status.randomStatus(), "This is a modified description");
+            List<Deck> decks = Arrays.asList(
+                    new Deck("Owned", true),
+                    new Deck("Wished", true),
+                    new Deck("test1", false),
+                    new Deck("test2", false),
+                    new Deck("test3", false)
+            );
+
+            // modify random number of decks
+            Random r = new Random(42);
+            int numOfCards = 4;
+            int numOfDecksModified = 0;
+
+            for (Deck deck : decks) {
+                // load deck with dummy physical cards (#numOfCards)
+                for (PhysicalCard pCard : DummyData.createPhysicalCardDummyList(numOfCards)) {
+                    deck.addPhysicalCard(pCard);
+                }
+                // insert target physical card to edit in random number of decks (+1)
+                if (!deck.getName().equals("Wished") && r.nextBoolean()) {
+                    deck.addPhysicalCard(mockPCard);
+                    numOfDecksModified++;
+                }
+                deckMap.put(deck.getName(), deck);
+            }
+
+            DeckServiceImpl deckService = initializeDeckService(new HashMap<>() {{
+                put("test@test.it", deckMap);
+            }});
+
+            // expects
+            // db call for token, check if physical card exists in a proposal, read and write
+            expect(mockConfig.getServletContext()).andReturn(mockCtx).times(((numOfCards + 1) * numOfDecksModified) + 4);
+            replay(mockConfig, mockCtx);
+            List<ModifiedDeckPayload> modifiedDecks = deckService.editPhysicalCard("validToken", "Owned", editedPCard);
+            verify(mockConfig, mockCtx);
+            // number of decks modified should be equal of number of decks returned
+            Assertions.assertEquals(numOfDecksModified, modifiedDecks.size());
+        }
     }
 }

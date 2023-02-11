@@ -1,7 +1,5 @@
 package com.aadm.cardexchange.server;
 
-import com.aadm.cardexchange.server.mapdb.MapDB;
-import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.services.ExchangeServiceImpl;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.ProposalNotFoundException;
@@ -9,7 +7,6 @@ import com.aadm.cardexchange.shared.models.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mapdb.Serializer;
 
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletContext;
@@ -18,7 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static org.easymock.EasyMock.*;
 
@@ -124,52 +120,5 @@ public class AcceptProposalTest {
         replay(mockConfig, mockCtx);
         Assertions.assertThrows(RuntimeException.class, () -> exchangeService.acceptProposal("validToken", 1));
         verify(mockConfig, mockCtx);
-    }
-}
-
-class FakeDB implements MapDB, MapDBConstants {
-    Map<String, LoginInfo> loginMap = new HashMap<>() {
-        {
-            put("validToken", new LoginInfo("test@test.it", System.currentTimeMillis() - 10000));
-        }
-    };
-
-    Map<Integer, Proposal> proposalMap;
-    Map<String, Map<String, Deck>> deckMap;
-
-    public FakeDB(Map<Integer, Proposal> proposalMap, Map<String, Map<String, Deck>> deckMap) {
-        this.proposalMap = proposalMap;
-        this.deckMap = deckMap;
-    }
-
-    public Map<Integer, Proposal> getProposalMap() {
-        return proposalMap;
-    }
-
-    public Map<String, Map<String, Deck>> getDeckMap() {
-        return deckMap;
-    }
-
-    @Override
-    public <K, V> Map<K, V> getCachedMap(ServletContext ctx, String mapName, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <K, V> Map<K, V> getPersistentMap(ServletContext ctx, String mapName, Serializer<K> keySerializer, Serializer<V> valueSerializer) {
-        if (mapName.equals(LOGIN_MAP_NAME)) {
-            return (Map<K, V>) loginMap;
-        } else if (mapName.equals(PROPOSAL_MAP_NAME)) {
-            return (Map<K, V>) proposalMap;
-        }
-        return null;
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <K, V> boolean writeOperation(ServletContext ctx, String mapName, Serializer<K> keySerializer, Serializer<V> valueSerializer, Consumer<Map<K, V>> operation) {
-        operation.accept((Map<K, V>) deckMap);
-        return true;
     }
 }

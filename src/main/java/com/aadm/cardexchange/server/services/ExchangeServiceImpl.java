@@ -61,8 +61,8 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
             throw new InputException("Invalid receiver physical cards");
 
         Proposal newProposal = new Proposal(email, receiverUserEmail, senderPhysicalCards, receiverPhysicalCards);
-        Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
-        return proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null;
+        return db.writeOperation(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson),
+                (Map<Integer, Proposal> proposalMap) -> proposalMap.putIfAbsent(newProposal.getId(), newProposal) == null);
     }
 
     private List<PhysicalCardWithName> joinPhysicalCardsWithCatalogCards(List<PhysicalCard> pCards) {
@@ -110,7 +110,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         if (!email.equals(proposal.getReceiverUserEmail()))
             throw new AuthException("You can only accept proposals made to you.");
 
-        boolean isSuccessful = db.writeOperation(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type),
+        return db.writeOperation(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type),
                 (Map<String, Map<String, Deck>> deckMap) -> {
                     Map<String, Deck> receiverDecks = deckMap.get(proposal.getReceiverUserEmail());
                     Map<String, Deck> senderDecks = deckMap.get(proposal.getSenderUserEmail());
@@ -124,9 +124,9 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
                             throw new RuntimeException("DB ROLLBACK!");
                     deckMap.put(proposal.getReceiverUserEmail(), receiverDecks);
                     deckMap.put(proposal.getSenderUserEmail(), senderDecks);
-                });
-        proposalMap.remove(proposalId, proposal);
-        return isSuccessful;
+                    proposalMap.remove(proposalId, proposal);
+                    return true;
+                }) != null;
     }
 
     public List<Proposal> getProposalListReceived(String token) throws AuthException {
