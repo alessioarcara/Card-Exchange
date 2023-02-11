@@ -1,13 +1,13 @@
 package com.aadm.cardexchange.shared.exceptions;
 
 
-public class ExistingProposal extends BaseException {
+public class ExistingProposalException extends BaseException {
     private static final long serialVersionUID = -4945745055104091701L;
 
-    public ExistingProposal(String errorMessage) {
+    public ExistingProposalException(String errorMessage) {
         super(errorMessage);
     }
 
-    public ExistingProposal() {
+    public ExistingProposalException() {
     }
 }

@@ -8,7 +8,7 @@ import com.aadm.cardexchange.server.DummyData;
 import com.aadm.cardexchange.shared.DeckServiceAsync;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
-import com.aadm.cardexchange.shared.exceptions.ExistingProposal;
+import com.aadm.cardexchange.shared.exceptions.ExistingProposalException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.Game;
 import com.aadm.cardexchange.shared.models.PhysicalCard;
@@ -76,7 +76,7 @@ public class DecksActivityTest {
                 Arguments.of(new AuthException("Invalid token")),
                 Arguments.of(new InputException("Invalid description")),
                 Arguments.of(new DeckNotFoundException("Deck not found")),
-                Arguments.of(new ExistingProposal("Physical card edit/remove is not allowed as it already exists in a proposal.")),
+                Arguments.of(new ExistingProposalException("Physical card edit/remove is not allowed as it already exists in a proposal.")),
                 Arguments.of(new RuntimeException())
         );
     }
