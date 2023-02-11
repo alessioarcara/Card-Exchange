@@ -4,6 +4,7 @@ import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.services.ExchangeServiceImpl;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
+import com.aadm.cardexchange.shared.exceptions.ProposalNotFoundException;
 import com.aadm.cardexchange.shared.models.*;
 import com.aadm.cardexchange.shared.payloads.ProposalPayload;
 import org.easymock.IMocksControl;
@@ -233,12 +234,12 @@ public class ExchangeServiceTest {
                 .andReturn(proposalMap);
 
         ctrl.replay();
-        Assertions.assertThrows(RuntimeException.class, () -> exchangeService.getProposal("validToken", 0));
+        Assertions.assertThrows(ProposalNotFoundException.class, () -> exchangeService.getProposal("validToken", 0));
         ctrl.verify();
     }
 
     @Test
-    public void testGetProposalCardsForSuccess() throws AuthException, InputException {
+    public void testGetProposalCardsForSuccess() throws AuthException, InputException, ProposalNotFoundException {
         setupForValidToken();
 
         Card mockCard1 = DummyData.createPokemonDummyCard();
@@ -342,6 +343,7 @@ public class ExchangeServiceTest {
         setupForProposalMap();
         ctrl.replay();
         List<Proposal> proposalList = exchangeService.getProposalListReceived("validToken2");
+        ctrl.verify();
         Assertions.assertAll(() -> {
             Assertions.assertEquals(2, proposalList.size());
             Assertions.assertEquals("UserMail3", proposalList.get(0).getReceiverUserEmail());
@@ -384,9 +386,54 @@ public class ExchangeServiceTest {
         setupForProposalMap();
         ctrl.replay();
         List<Proposal> proposalList = exchangeService.getProposalListSent("validToken2");
+        ctrl.verify();
         Assertions.assertAll(() -> {
             Assertions.assertEquals(1, proposalList.size());
             Assertions.assertEquals("UserMail3", proposalList.get(0).getSenderUserEmail());
         });
+    }
+
+    @ParameterizedTest
+    @NullAndEmptySource
+    @ValueSource(strings = {"invalidToken"})
+    public void testAcceptProposalForInvalidToken(String input) {
+        setupForInvalidToken();
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> exchangeService.acceptProposal(input, 1));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testAcceptProposalForInvalidCardId() {
+        setupForValidToken();
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class));
+        expectLastCall().andReturn(
+                new HashMap<>() {{
+                    put(0, new Proposal("test@test.it", "test2@test.it", new ArrayList<>(), new ArrayList<>()));
+                    put(1, new Proposal("test@test.it", "test2@test.it", new ArrayList<>(), new ArrayList<>()));
+                    put(2, new Proposal("test@test.it", "test2@test.it", new ArrayList<>(), new ArrayList<>()));
+                }}
+        );
+        ctrl.replay();
+        Assertions.assertThrows(ProposalNotFoundException.class, () -> exchangeService.acceptProposal("validToken", -1));
+        ctrl.verify();
+    }
+
+    @Test
+    public void testAcceptProposalForInvalidUser() {
+        setupForValidToken();
+        expect(mockConfig.getServletContext()).andReturn(mockCtx);
+        mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class));
+        expectLastCall().andReturn(
+                new HashMap<>() {{
+                    put(1, new Proposal("test@test.it", "test2@test.it",
+                            DummyData.createPhysicalCardDummyList(5), DummyData.createPhysicalCardDummyList(5)));
+                }}
+        );
+
+        ctrl.replay();
+        Assertions.assertThrows(AuthException.class, () -> exchangeService.acceptProposal("validToken", 1));
+        ctrl.verify();
     }
 }

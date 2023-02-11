@@ -514,11 +514,11 @@ public class DeckServiceTest {
         PhysicalCard targetPCard = new PhysicalCard(Game.MAGIC, 1111, Status.Excellent, "This is a valid description.");
 
         List<Deck> decks = Arrays.asList(
-            new Deck("Owned", true),
-            new Deck("Wished", true),
-            new Deck("custom1"),
-            new Deck("custom2"),
-            new Deck("custom3")
+                new Deck("Owned", true),
+                new Deck("Wished", true),
+                new Deck("custom1"),
+                new Deck("custom2"),
+                new Deck("custom3")
         );
 
         Map<String, Deck> mockUserDeckMap = new HashMap<>();
@@ -808,13 +808,13 @@ public class DeckServiceTest {
                     put(1, mockProposal2);
                 }});
         ctrl.replay();
-        Assertions.assertThrows(ExistingProposal.class, () -> deckService.editPhysicalCard("validToken",
+        Assertions.assertThrows(ExistingProposalException.class, () -> deckService.editPhysicalCard("validToken",
                 "Owned", mockPCard));
         ctrl.verify();
     }
 
     @Test
-    public void testEditPhysicalCardForValidParameters() throws ExistingProposal, InputException, AuthException {
+    public void testEditPhysicalCardForValidParameters() throws ExistingProposalException, InputException, AuthException {
         // init mocks
         PhysicalCard mockPCard = new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description.");
         PhysicalCard editedPCard = mockPCard.copyWithModifiedStatusAndDescription(Status.randomStatus(), "This is a modified description");

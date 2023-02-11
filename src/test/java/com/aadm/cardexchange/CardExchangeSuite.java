@@ -24,6 +24,7 @@ import org.junit.platform.suite.api.Suite;
         AuthServiceTest.class,
         DeckServiceTest.class,
         ListenerImplTest.class,
+        AcceptProposalTest.class,
         HomeActivityTest.class,
         CardActivityTest.class,
         AuthActivityTest.class,

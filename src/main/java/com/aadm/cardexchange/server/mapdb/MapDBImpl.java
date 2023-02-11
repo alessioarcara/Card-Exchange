@@ -6,6 +6,7 @@ import org.mapdb.Serializer;
 
 import javax.servlet.ServletContext;
 import java.util.Map;
+import java.util.function.Consumer;
 
 
 /*
@@ -18,9 +19,9 @@ public class MapDBImpl implements MapDB, MapDBConstants {
             DB db = (DB) ctx.getAttribute(dbType + "_CTX_ATTRIBUTE");
             if (db == null) {
                 if (dbType.equals(DB_MEMORY_TYPE)) {
-                    db = DBMaker.memoryDB().closeOnJvmShutdown().make();
+                    db = DBMaker.memoryDB().make();
                 } else if (dbType.equals(DB_FILE_TYPE)) {
-                    db = DBMaker.fileDB(DB_FILENAME).closeOnJvmShutdown().make();
+                    db = DBMaker.fileDB(DB_FILENAME).transactionEnable().closeOnJvmShutdown().make();
                 }
                 ctx.setAttribute(dbType + "_CTX_ATTRIBUTE", db);
             }
@@ -38,5 +39,18 @@ public class MapDBImpl implements MapDB, MapDBConstants {
     public <K, V> Map<K, V> getPersistentMap(ServletContext ctx, String mapName, Serializer<K> keySerializer,
                                              Serializer<V> valueSerializer) {
         return getDB(ctx, DB_FILE_TYPE).hashMap(mapName, keySerializer, valueSerializer).createOrOpen();
+    }
+
+    @Override
+    public <K, V> boolean writeOperation(ServletContext ctx, String mapName, Serializer<K> keySerializer, Serializer<V> valueSerializer, Consumer<Map<K, V>> operation) {
+        DB db = getDB(ctx, DB_FILE_TYPE);
+        try {
+            operation.accept(db.hashMap(mapName, keySerializer, valueSerializer).createOrOpen());
+            db.commit();
+            return true;
+        } catch (Exception e) {
+            db.rollback();
+            return false;
+        }
     }
 }

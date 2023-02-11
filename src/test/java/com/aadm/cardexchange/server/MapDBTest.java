@@ -92,6 +92,23 @@ public class MapDBTest {
         Assertions.assertEquals(HTreeMap.class, db.getPersistentMap(mockCtx, "map", Serializer.STRING, Serializer.STRING).getClass());
         verify(mockCtx);
     }
+
+//    @Test
+//    public void testWriteOperationForWrite() {
+//        // init mocks
+//        MapDB db = new MapDBImpl();
+//        ServletContext mockCtx = createStrictMock(ServletContext.class);
+//
+//        // write
+//        db.writeOperation(MAP_NAME, Serializer.STRING, Serializer.STRING, (Map<String, String> testMap) -> testMap.put("key", "value"));
+//
+//        // read
+//        expect(mockCtx.getAttribute(anyString())).andReturn(null);
+//        mockCtx.setAttribute(anyString(), isA(DB.class));
+//        Map<String, String> testMap = db.getPersistentMap(mockCtx, "map", Serializer.STRING, Serializer.STRING);
+//
+//        Assertions.assertTrue(testMap.get("key").equals("value"));
+//    }
 }
 
 class Mock1 implements MockObject {

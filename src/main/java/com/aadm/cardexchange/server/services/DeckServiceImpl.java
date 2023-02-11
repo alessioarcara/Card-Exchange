@@ -7,7 +7,7 @@ import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.DeckService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
-import com.aadm.cardexchange.shared.exceptions.ExistingProposal;
+import com.aadm.cardexchange.shared.exceptions.ExistingProposalException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import com.aadm.cardexchange.shared.payloads.ModifiedDeckPayload;
@@ -92,11 +92,11 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             throw new InputException("Invalid deck name");
     }
 
-    private void checkIfCardExistsInProposal(PhysicalCard pCard) throws ExistingProposal {
+    private void checkIfCardExistsInProposal(PhysicalCard pCard) throws ExistingProposalException {
         Map<Integer, Proposal> proposalMap = db.getPersistentMap(getServletContext(), PROPOSAL_MAP_NAME, Serializer.INTEGER, new GsonSerializer<>(gson));
         if (proposalMap.values().stream().anyMatch(proposal -> proposal.getSenderPhysicalCards().contains(pCard) ||
                 proposal.getReceiverPhysicalCards().contains(pCard)))
-            throw new ExistingProposal("Physical card edit/remove is not allowed as it already exists in a proposal.");
+            throw new ExistingProposalException("Physical card edit/remove is not allowed as it already exists in a proposal.");
     }
 
     @Override
@@ -161,7 +161,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     }
 
     @Override
-    public List<ModifiedDeckPayload> editPhysicalCard(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException, ExistingProposal {
+    public List<ModifiedDeckPayload> editPhysicalCard(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException, ExistingProposalException {
         String email = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         checkDeckNameInvalidity(deckName);
         if (!deckName.equals(OWNED_DECK) && !deckName.equals(WISHED_DECK))
