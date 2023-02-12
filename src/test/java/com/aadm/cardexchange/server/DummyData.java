@@ -2,10 +2,7 @@ package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.shared.models.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // Create dummy cards with distinct fields for testing purposes
@@ -23,27 +20,22 @@ public class DummyData {
     }
 
     public static Map<Integer, MagicCard> createMagicDummyMap() {
-        return new HashMap<>() {{
+        return new LinkedHashMap<>() {{
             put(0, new MagicCard("Lightning Bolt", "Deal 3 damage to any target", "Cast",
-                    "Christopher Rush", "Rare",
-                    "hasFoil"
-            ));
+                    "Christopher Rush", "Rare", "hasFoil")
+            );
             put(1, new MagicCard("Counterspell", "Counter target spell", "Instant",
-                    "Mark Poole", "Uncommon",
-                    "isAlternative"
-            ));
+                    "Mark Poole", "Uncommon", "isAlternative")
+            );
             put(2, new MagicCard("Plague Wind", "Deal X damage to each creature and each player, where X is the number of creatures you control.", "Sorcery",
-                    "Ron Spencer", "Mythic Rare",
-                    "isFullArt"
-            ));
+                    "Ron Spencer", "Mythic Rare", "isFullArt")
+            );
             put(3, new MagicCard("Angel of Mercy", "When Angel of Mercy enters the battlefield, you gain 3 life", "Creature",
-                    "Volkan Baa", "Mega Rare",
-                    "isPromo"
-            ));
+                    "Volkan Baa", "Mega Rare", "isPromo")
+            );
             put(4, new MagicCard("Heart of Light", "Enchant creature (Target a creature as you cast this. This card enters the battlefield attached to that creature.)", "Counter",
-                    "Luca Zontini", "Unique",
-                    "isReprint"
-            ));
+                    "Luca Zontini", "Unique", "isReprint")
+            );
         }};
     }
 

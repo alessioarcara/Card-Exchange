@@ -31,7 +31,7 @@ interface MockObject {
 }
 
 public class MapDBTest {
-    final static String PATH = "test.mapdb";
+    final static String PATH = "db";
     final static String MAP_NAME = "testMapName";
     final static String MAP_KEY = "test";
 

@@ -43,12 +43,12 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
         }
     }
 
-    public static void checkGameInvalidity(Game game) throws InputException {
+    public static void checkGameValidity(Game game) throws InputException {
         if (game == null)
             throw new InputException("game cannot be null");
     }
 
-    public static void checkCardIdInvalidity(int cardId) throws InputException {
+    public static void checkCardIdValidity(int cardId) throws InputException {
         if (cardId <= 0) {
             throw new InputException("Invalid cardId provided. cardId must be a positive integer greater than 0");
         }
@@ -56,7 +56,7 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
 
     @Override
     public List<Card> getGameCards(Game game) throws InputException {
-        checkGameInvalidity(game);
+        checkGameValidity(game);
         Map<Integer, Card> map = db.getCachedMap(getServletContext(), getCardMap(game),
                 Serializer.INTEGER, serializer);
         return new ArrayList<>(map.values());
@@ -64,8 +64,8 @@ public class CardServiceImpl extends RemoteServiceServlet implements CardService
 
     @Override
     public Card getGameCard(Game game, int cardId) throws InputException {
-        checkGameInvalidity(game);
-        checkCardIdInvalidity(cardId);
+        checkGameValidity(game);
+        checkCardIdValidity(cardId);
         Map<Integer, Card> map = db.getCachedMap(getServletContext(), getCardMap(game),
                 Serializer.INTEGER, serializer);
         return map.get(cardId);
