@@ -89,9 +89,10 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return false;
     }
 
-    private void checkDeckNameInvalidity(String deckName) throws InputException {
-        if (deckName == null || deckName.isEmpty())
-            throw new InputException("Invalid deck name");
+    private static void checkFoundDeckValidity(String deckName, Deck foundDeck) throws DeckNotFoundException {
+        if (foundDeck == null) {
+            throw new DeckNotFoundException("Deck '" + deckName + "' not found.");
+        }
     }
 
     private void checkIfCardExistsInProposal(PhysicalCard pCard) throws ExistingProposalException {
@@ -101,13 +102,18 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             throw new ExistingProposalException("Physical card edit/remove is not allowed as it already exists in a proposal.");
     }
 
+    private void checkDeckNameValidity(String deckName) throws InputException {
+        if (deckName == null || deckName.isEmpty())
+            throw new InputException("Invalid deck name");
+    }
+
     @Override
     public boolean addPhysicalCardToDeck(String token, Game game, String deckName, int cardId, Status status, String description) throws AuthException, InputException {
         /* PARAMETERS CHECK */
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        CardServiceImpl.checkGameInvalidity(game);
-        checkDeckNameInvalidity(deckName);
-        CardServiceImpl.checkCardIdInvalidity(cardId);
+        CardServiceImpl.checkGameValidity(game);
+        checkDeckNameValidity(deckName);
+        CardServiceImpl.checkCardIdValidity(cardId);
         if (status == null) {
             throw new InputException("Invalid status");
         }
@@ -137,16 +143,14 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     @Override
     public List<ModifiedDeckPayload> removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException, DeckNotFoundException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        checkDeckNameInvalidity(deckName);
+        checkDeckNameValidity(deckName);
         if (pCard == null)
             throw new InputException("Invalid physical card");
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> userDecks = deckMap.get(userEmail);
         List<ModifiedDeckPayload> modifiedDecks = new LinkedList<>();
         Deck foundDeck = userDecks.get(deckName);
-        if (foundDeck == null) {
-            throw new DeckNotFoundException("Deck '" + deckName + "' not found.");
-        }
+        checkFoundDeckValidity(deckName, foundDeck);
         if (deckName.equals("Owned")) {
             for (Deck deck : userDecks.values()) {
                 if (deck.removePhysicalCard(pCard)) {
@@ -164,7 +168,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     @Override
     public List<ModifiedDeckPayload> editPhysicalCard(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException, ExistingProposalException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        checkDeckNameInvalidity(deckName);
+        checkDeckNameValidity(deckName);
         if (!deckName.equals(OWNED_DECK) && !deckName.equals(WISHED_DECK))
             throw new InputException("Sorry, you can only edit physical cards in Default decks.");
         if (pCard == null)
@@ -228,13 +232,13 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
 
     @Override
     public List<PhysicalCardWithEmail> getOwnedPhysicalCardsByCardId(int cardId) throws InputException {
-        CardServiceImpl.checkCardIdInvalidity(cardId);
+        CardServiceImpl.checkCardIdValidity(cardId);
         return getPhysicalCardByCardIdAndDeckName(cardId, OWNED_DECK);
     }
 
     @Override
     public List<PhysicalCardWithEmail> getWishedPhysicalCardsByCardId(int cardId) throws InputException {
-        CardServiceImpl.checkCardIdInvalidity(cardId);
+        CardServiceImpl.checkCardIdValidity(cardId);
         return getPhysicalCardByCardIdAndDeckName(cardId, WISHED_DECK);
     }
 
@@ -258,7 +262,7 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     public List<PhysicalCardWithName> addPhysicalCardsToCustomDeck(String token, String customDeckName, List<PhysicalCard> pCards) throws AuthException, InputException, DeckNotFoundException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token,
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
-        checkDeckNameInvalidity(customDeckName);
+        checkDeckNameValidity(customDeckName);
         if (customDeckName.equals(OWNED_DECK) || customDeckName.equals(WISHED_DECK))
             throw new InputException("Default deck names not allowed for custom deck");
         if (pCards.isEmpty())
@@ -266,11 +270,55 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> userDecks = deckMap.get(userEmail);
         Deck userDeck = userDecks.get(customDeckName);
-        if (userDeck == null)
-            throw new DeckNotFoundException("Custom deck '" + customDeckName + "' not found.");
+        checkFoundDeckValidity(customDeckName, userDeck);
         pCards.forEach(userDeck::addPhysicalCard);
         db.writeOperation(getServletContext(), () -> deckMap.put(userEmail, userDecks));
         // Return the modified deck's card list
         return joinPhysicalCardsWithCatalogCards(userDeck.getPhysicalCards());
+    }
+
+
+    @Override
+    public List<PhysicalCardWithEmailDealing> getListPhysicalCardWithEmailDealing(String token, Game game, int cardId) throws AuthException, InputException, DeckNotFoundException {
+        //Initial checks
+        String userEmail = AuthServiceImpl.checkTokenValidity(token,
+                db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
+        CardServiceImpl.checkGameValidity(game);
+        CardServiceImpl.checkCardIdValidity(cardId);
+        Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
+        Map<String, Deck> userDecks = deckMap.get(userEmail);
+        Deck userDeck = userDecks.get(OWNED_DECK);
+        checkFoundDeckValidity(OWNED_DECK, userDeck);
+        //Prepare Owned array of idPCard matching id and switched by status
+        String[] ownedMatchingPCardId = new String[5];
+        int position;
+        for (PhysicalCard pCard : userDeck.getPhysicalCards()) {
+            if (cardId == pCard.getCardId()) {
+                position = pCard.getStatus().getValue() - 1;
+                //If position for this Status is empty, fill with this Pcard
+                if (ownedMatchingPCardId[position] == null) {
+                    ownedMatchingPCardId[position] = pCard.getId();
+                    //if all Status positions are filled, exit from cycle
+                    if (Arrays.stream(ownedMatchingPCardId).allMatch(Objects::nonNull))
+                        break;
+                }
+            }
+        }
+
+        List<PhysicalCardWithEmail> listWishedPCard = getPhysicalCardByCardIdAndDeckName(cardId, WISHED_DECK);
+        String offeredPCardId = null;
+        List<PhysicalCardWithEmailDealing> result = new ArrayList<>();
+
+        for (PhysicalCardWithEmail pCardWished : listWishedPCard) {
+            for (int i = (pCardWished.getStatus().getValue() - 1); i < 5; i++) {
+                if (ownedMatchingPCardId[i] != null) {
+                    offeredPCardId = ownedMatchingPCardId[i];
+                    break;
+                }
+            }
+            result.add(new PhysicalCardWithEmailDealing(pCardWished, offeredPCardId));
+            offeredPCardId = null;
+        }
+        return result;
     }
 }
