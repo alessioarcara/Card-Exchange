@@ -94,7 +94,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         if (!email.equals(proposal.getSenderUserEmail()) && !email.equals(proposal.getReceiverUserEmail()))
             throw new AuthException("You can only view proposals linked to your account as sender or receiver");
 
-        return new ProposalPayload(proposal.getReceiverUserEmail(),
+        return new ProposalPayload(proposal.getSenderUserEmail(), proposal.getReceiverUserEmail(),
                 joinPhysicalCardsWithCatalogCards(proposal.getSenderPhysicalCards()),
                 joinPhysicalCardsWithCatalogCards(proposal.getReceiverPhysicalCards())
         );

@@ -2,72 +2,68 @@
 <ui:UiBinder xmlns:ui="urn:ui:com.google.gwt.uibinder"
              xmlns:g="urn:import:com.google.gwt.user.client.ui">
     <ui:style>
-        .extern {
+        .layout {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            align-items: stretch;
             width: 100%;
-            height: 90vh;
-        }
-
-        .extern > h1, h3 {
-            width: 100%;
+            height: 100%;
+            padding: 1rem 0 2rem 0;
             text-align: center;
         }
 
-        .buttons {
+        .actions {
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            width: 20%;
-            margin-top: 50px;
+            gap: 0.5rem;
             align-self: center;
         }
 
-        .buttons Button {
-            font-size: 14px;
-            font-weight: bold;
-            border: 2px solid white;
-            border-radius: .7em;
-            width: 100px;
-            height: 40px;
-            color: white;
+        .actions Button {
+            font-size: 1.2em;
+            border-radius: 8px;
+            padding: 0.5em 1em;
         }
 
-        .green {
-            background-color: darkgreen;
+        .acceptButton {
+            color: #4CAF50;
+            background: #f0ffdf;
+            border: 2px solid #4CAF50;
         }
 
-        .green:hover {
-            background-color: forestgreen;
-            color: black;;
-            border: 3px solid black;
+        .acceptButton:hover {
+            background: #4CAF50;
+            color: #fff;
             cursor: pointer;
         }
 
-        .green:disabled {
+        .actions Button:disabled {
             background-color: gainsboro;
+            color: #aaa;
+            border: none;
+            cursor: not-allowed;
         }
 
-        .red {
-            background-color: firebrick;
+        .cancelButton {
+            color: #f03a3a;
+            background: #ffe9e9;
+            border: 2px solid #f03a3a;
         }
 
-        .red:hover {
-            background-color: #e50000;
-            color: black;;
-            border: 3px solid black;
+        .cancelButton:hover {
+            background: #f03a3a;
+            color: #fff;
             cursor: pointer;
         }
 
     </ui:style>
-    <g:HTMLPanel styleName="{style.extern}">
+    <g:HTMLPanel styleName="{style.layout}">
         <h1 ui:field="pageTitle"/>
-        <h3 ui:field="pageSubtitle"/>
-        <g:HTMLPanel ui:field="exchangeDecks" />
-        <div class="{style.buttons}">
-            <g:Button ui:field="cancelButton" styleName="{style.red}">&#10006;</g:Button>
-            <g:Button ui:field="acceptButton" styleName="{style.green}">&#10004;</g:Button>
+        <g:SimplePanel ui:field="senderDeckContainer"/>
+        <g:SimplePanel ui:field="receiverDeckContainer"/>
+        <div class="{style.actions}">
+            <g:Button ui:field="cancelButton" styleName="{style.cancelButton}"/>
+            <g:Button ui:field="acceptButton" styleName="{style.acceptButton}"/>
         </div>
     </g:HTMLPanel>
 </ui:UiBinder>
