@@ -5,6 +5,7 @@ import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.DeckService;
+import com.aadm.cardexchange.shared.DefaultDecksConstants;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
 import com.aadm.cardexchange.shared.exceptions.ExistingProposalException;
@@ -21,10 +22,8 @@ import java.util.*;
 
 import static com.aadm.cardexchange.server.services.AuthServiceImpl.validateEmail;
 
-public class DeckServiceImpl extends RemoteServiceServlet implements DeckService, MapDBConstants {
+public class DeckServiceImpl extends RemoteServiceServlet implements DeckService, DefaultDecksConstants, MapDBConstants {
     private static final long serialVersionUID = 5868007467963819042L;
-    private static final String OWNED_DECK = "Owned";
-    private static final String WISHED_DECK = "Wished";
     private final MapDB db;
     private final Gson gson = new Gson();
     private final Type type = new TypeToken<Map<String, Deck>>() {
@@ -339,7 +338,9 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
 
         for (PhysicalCard pCardProposal : cardsToExchange) {
             int cardId = pCardProposal.getCardId();
-            if (!wishedLookUpTable.containsKey(cardId)) { continue; }
+            if (!wishedLookUpTable.containsKey(cardId)) {
+                continue;
+            }
 
             for (PhysicalCard pCardWished : wishedLookUpTable.get(cardId)) {
                 if (pCardWished.getStatus().getValue() <= pCardProposal.getStatus().getValue())
