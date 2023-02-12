@@ -257,7 +257,7 @@ public class ExchangeServiceTest {
                 ));
             }};
 
-            ProposalPayload expectedPayload = new ProposalPayload("receiver@test.it",
+            ProposalPayload expectedPayload = new ProposalPayload("test@test.it", "receiver@test.it",
                     new LinkedList<>() {{
                         add(new PhysicalCardWithName(p1S, mockCard1.getName()));
                         add(new PhysicalCardWithName(p2S, mockCard2.getName()));

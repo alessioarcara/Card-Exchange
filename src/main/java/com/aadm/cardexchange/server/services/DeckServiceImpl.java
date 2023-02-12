@@ -5,6 +5,7 @@ import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
 import com.aadm.cardexchange.shared.DeckService;
+import com.aadm.cardexchange.shared.DefaultDecksConstants;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.DeckNotFoundException;
 import com.aadm.cardexchange.shared.exceptions.ExistingProposalException;
@@ -21,10 +22,8 @@ import java.util.*;
 
 import static com.aadm.cardexchange.server.services.AuthServiceImpl.validateEmail;
 
-public class DeckServiceImpl extends RemoteServiceServlet implements DeckService, MapDBConstants {
+public class DeckServiceImpl extends RemoteServiceServlet implements DeckService, DefaultDecksConstants, MapDBConstants {
     private static final long serialVersionUID = 5868007467963819042L;
-    private static final String OWNED_DECK = "Owned";
-    private static final String WISHED_DECK = "Wished";
     private final MapDB db;
     private final Gson gson = new Gson();
     private final Type type = new TypeToken<Map<String, Deck>>() {
@@ -141,11 +140,12 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
     }
 
     @Override
-    public List<ModifiedDeckPayload> removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException, DeckNotFoundException {
+    public List<ModifiedDeckPayload> removePhysicalCardFromDeck(String token, String deckName, PhysicalCard pCard) throws AuthException, InputException, DeckNotFoundException, ExistingProposalException {
         String userEmail = AuthServiceImpl.checkTokenValidity(token, db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         checkDeckNameValidity(deckName);
         if (pCard == null)
             throw new InputException("Invalid physical card");
+        checkIfCardExistsInProposal(pCard);
         Map<String, Map<String, Deck>> deckMap = db.getPersistentMap(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type));
         Map<String, Deck> userDecks = deckMap.get(userEmail);
         List<ModifiedDeckPayload> modifiedDecks = new LinkedList<>();
@@ -320,5 +320,35 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
             offeredPCardId = null;
         }
         return result;
+    }
+
+    private static Map<Integer, List<PhysicalCard>> WishedLookUpTable(Deck wishedDeck) {
+        Map<Integer, List<PhysicalCard>> wishedLookUpTable = new HashMap<>();
+
+        for (PhysicalCard pCardWished : wishedDeck.getPhysicalCards()) {
+            int cardId = pCardWished.getCardId();
+            wishedLookUpTable.computeIfAbsent(cardId, k -> new LinkedList<>());
+            wishedLookUpTable.get(cardId).add(pCardWished);
+        }
+        return wishedLookUpTable;
+    }
+
+    public static Deck removePhysicalCardsFromWishedDecksAfterExchange(Deck wishedDeck, List<PhysicalCard> cardsToExchange) {
+        //Create a lookup Table to direct access to PCardsWished by Catalogue CardId
+        Map<Integer, List<PhysicalCard>> wishedLookUpTable = WishedLookUpTable(wishedDeck);
+
+        for (PhysicalCard pCardProposal : cardsToExchange) {
+            int cardId = pCardProposal.getCardId();
+            if (!wishedLookUpTable.containsKey(cardId)) {
+                continue;
+            }
+
+            for (PhysicalCard pCardWished : wishedLookUpTable.get(cardId)) {
+                if (pCardWished.getStatus().getValue() <= pCardProposal.getStatus().getValue())
+                    wishedDeck.removePhysicalCard(pCardWished);
+            }
+        }
+
+        return wishedDeck;
     }
 }

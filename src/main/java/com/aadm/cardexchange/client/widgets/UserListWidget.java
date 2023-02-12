@@ -18,10 +18,12 @@ import java.util.List;
 
 public class UserListWidget extends Composite {
     private static final UserListUIBinder uiBinder = GWT.create(UserListUIBinder.class);
+    private static final String NO_CARDS_TEXT = "No Cards";
     @UiField
     HeadingElement tableHeading;
     @UiField(provided = true)
     FlexTable table;
+    int noCardsRow;
     boolean showExchangeButton;
 
     @UiConstructor
@@ -32,16 +34,25 @@ public class UserListWidget extends Composite {
         tableHeading.setInnerText(title);
     }
 
+    private void setNoCardsText() {
+        noCardsRow = table.getRowCount();
+        table.setText(noCardsRow, 0, NO_CARDS_TEXT);
+        table.getFlexCellFormatter().setColSpan(noCardsRow, 0, 3);
+    }
+
     private void setupTable() {
         table = new FlexTable();
         TableSectionElement tHead = ((TableElement) ((Element) table.getElement())).createTHead();
         TableRowElement row = tHead.insertRow(0);
         row.insertCell(0).setInnerText("User");
         row.insertCell(1).setInnerText("Status");
+        setNoCardsText();
         if (showExchangeButton) row.insertCell(2).setInnerText("");
     }
 
     public void setTable(List<PhysicalCardWithEmail> pCards, ImperativeHandleUserList parent) {
+        if (!pCards.isEmpty())
+            table.removeRow(noCardsRow);
         pCards.forEach(pCard -> addRow(pCard.getEmail(), pCard.getStatus(), new Button(
                 "Exchange", (ClickHandler) event -> parent.onClickExchange(pCard.getEmail(), pCard.getId())
         )));

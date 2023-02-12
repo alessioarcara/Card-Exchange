@@ -1,7 +1,6 @@
 package com.aadm.cardexchange.client.views;
 
 import com.aadm.cardexchange.client.handlers.ImperativeHandlePhysicalCardSelection;
-import com.aadm.cardexchange.client.places.HomePlace;
 import com.aadm.cardexchange.client.widgets.DeckWidget;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.core.client.GWT;
@@ -9,10 +8,11 @@ import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.event.shared.HandlerRegistration;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
+import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
@@ -25,9 +25,9 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
     @UiField
     HeadingElement pageTitle;
     @UiField
-    HeadingElement pageSubtitle;
+    SimplePanel senderDeckContainer;
     @UiField
-    HTMLPanel exchangeDecks;
+    SimplePanel receiverDeckContainer;
     @UiField
     Button cancelButton;
     @UiField
@@ -42,14 +42,10 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
     }
 
     @Override
-    public void setData(boolean clickable, String title, String subtitle) {
+    public void setData(String title, String cancelTextButton, String acceptTextButton) {
         pageTitle.setInnerText(title);
-        pageSubtitle.setInnerText(subtitle);
-        exchangeDecks.clear();
-        senderDeck = createDeck(clickable, "Your Owned Cards");
-        receiverDeck = createDeck(clickable, "");
-        exchangeDecks.add(senderDeck);
-        exchangeDecks.add(receiverDeck);
+        cancelButton.setText(cancelTextButton);
+        acceptButton.setText(acceptTextButton);
     }
 
     private DeckWidget createDeck(boolean clickable, String deckName) {
@@ -57,14 +53,17 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
     }
 
     @Override
-    public void setSenderDeck(List<PhysicalCardWithName> physicalCards, String selectedCardId) {
+    public void setSenderDeck(boolean isClickable, List<PhysicalCardWithName> physicalCards, String selectedCardId, String senderEmail) {
+        senderDeck = createDeck(isClickable, "Proposal sender: " + senderEmail);
         senderDeck.setData(physicalCards, selectedCardId);
+        senderDeckContainer.add(senderDeck);
     }
 
     @Override
-    public void setReceiverDeck(List<PhysicalCardWithName> physicalCards, String selectedCardId, String receiverUserEmail) {
+    public void setReceiverDeck(boolean isClickable, List<PhysicalCardWithName> physicalCards, String selectedCardId, String receiverEmail) {
+        receiverDeck = createDeck(isClickable, "Proposal receiver: " + receiverEmail);
         receiverDeck.setData(physicalCards, selectedCardId);
-        receiverDeck.setDeckName(receiverUserEmail);
+        receiverDeckContainer.add(receiverDeck);
     }
 
     @Override
@@ -79,21 +78,40 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
         this.exchangePresenter = exchangePresenter;
     }
 
+    private String confirmMessage(String str) {
+        return "Do you want to " + str + " this exchange proposal?";
+    }
+
     @Override
     public void setNewExchangeButtons() {
-        handlers.add(cancelButton.addClickHandler(e -> newExchangePresenter.goTo(new HomePlace())));
-        handlers.add(acceptButton.addClickHandler(e -> newExchangePresenter.createProposal(senderDeck.getDeckSelectedCards(), receiverDeck.getDeckSelectedCards())));
+        handlers.add(cancelButton.addClickHandler(e -> History.back()));
+        handlers.add(acceptButton.addClickHandler(e -> {
+            if (Window.confirm(confirmMessage("send")))
+                newExchangePresenter.createProposal(senderDeck.getDeckSelectedCards(), receiverDeck.getDeckSelectedCards());
+        }));
     }
 
     @Override
     public void setExchangeButtons() {
-        handlers.add(cancelButton.addClickHandler(e -> exchangePresenter.refuseOrWithdrawProposal()));
-        handlers.add(acceptButton.addClickHandler(e -> exchangePresenter.acceptExchangeProposal()));
+        handlers.add(cancelButton.addClickHandler(e -> {
+            if (Window.confirm(confirmMessage("cancel"))) {
+                exchangePresenter.refuseOrWithdrawProposal();
+                History.back();
+            }
+        }));
+        handlers.add(acceptButton.addClickHandler(e -> {
+            if (Window.confirm(confirmMessage("accept"))) {
+                exchangePresenter.acceptExchangeProposal();
+                History.back();
+            }
+        }));
     }
 
     @Override
     public void resetHandlers() {
         handlers.forEach(HandlerRegistration::removeHandler);
+        senderDeckContainer.clear();
+        receiverDeckContainer.clear();
     }
 
     @Override
@@ -108,7 +126,8 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
 
     @Override
     public void onChangeSelection() {
-        acceptButton.setEnabled(!receiverDeck.getDeckSelectedCards().isEmpty() && !senderDeck.getDeckSelectedCards().isEmpty());
+        acceptButton.setEnabled(receiverDeck != null && !receiverDeck.getDeckSelectedCards().isEmpty()
+                && senderDeck != null && !senderDeck.getDeckSelectedCards().isEmpty());
     }
 
     interface NewExchangeViewImplUIBinder extends UiBinder<Widget, NewExchangeViewImpl> {

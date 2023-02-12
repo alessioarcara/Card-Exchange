@@ -4,6 +4,7 @@ import com.aadm.cardexchange.server.gsonserializer.GsonSerializer;
 import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.mapdb.MapDBConstants;
 import com.aadm.cardexchange.server.mapdb.MapDBImpl;
+import com.aadm.cardexchange.shared.DefaultDecksConstants;
 import com.aadm.cardexchange.shared.ExchangeService;
 import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
@@ -22,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ExchangeServiceImpl extends RemoteServiceServlet implements ExchangeService, MapDBConstants {
+public class ExchangeServiceImpl extends RemoteServiceServlet implements ExchangeService, DefaultDecksConstants, MapDBConstants {
     private static final long serialVersionUID = 5868088467963819042L;
     private final MapDB db;
     private final Gson gson = new Gson();
@@ -93,7 +94,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         if (!email.equals(proposal.getSenderUserEmail()) && !email.equals(proposal.getReceiverUserEmail()))
             throw new AuthException("You can only view proposals linked to your account as sender or receiver");
 
-        return new ProposalPayload(proposal.getReceiverUserEmail(),
+        return new ProposalPayload(proposal.getSenderUserEmail(), proposal.getReceiverUserEmail(),
                 joinPhysicalCardsWithCatalogCards(proposal.getSenderPhysicalCards()),
                 joinPhysicalCardsWithCatalogCards(proposal.getReceiverPhysicalCards())
         );
@@ -112,16 +113,32 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
 
         return db.writeOperation(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type),
                 (Map<String, Map<String, Deck>> deckMap) -> {
+
+                    // update ownership of exchanged cards
                     Map<String, Deck> receiverDecks = deckMap.get(proposal.getReceiverUserEmail());
                     Map<String, Deck> senderDecks = deckMap.get(proposal.getSenderUserEmail());
-                    Deck senderOwnedDeck = senderDecks.get("Owned");
-                    Deck receiverOwnedDeck = receiverDecks.get("Owned");
+                    Deck senderOwnedDeck = senderDecks.get(OWNED_DECK);
+                    Deck receiverOwnedDeck = receiverDecks.get(OWNED_DECK);
                     for (PhysicalCard pCard : proposal.getSenderPhysicalCards())
                         if (!senderOwnedDeck.removePhysicalCard(pCard) || !receiverOwnedDeck.addPhysicalCard(pCard))
                             throw new RuntimeException("DB ROLLBACK!");
                     for (PhysicalCard pCard : proposal.getReceiverPhysicalCards())
                         if (!receiverOwnedDeck.removePhysicalCard(pCard) || !senderOwnedDeck.addPhysicalCard(pCard))
                             throw new RuntimeException("DB ROLLBACK!");
+                    Deck senderWishedDeck = senderDecks.get(WISHED_DECK);
+                    Deck receiverWishedDeck = receiverDecks.get(WISHED_DECK);
+
+                    // clear wished deck of both users based on the status of exchanged cards
+                    if (senderWishedDeck != null)
+                        senderDecks.put(WISHED_DECK, DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(
+                                senderWishedDeck, proposal.getReceiverPhysicalCards())
+                        );
+                    if (receiverWishedDeck != null)
+                        receiverDecks.put(WISHED_DECK, DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(
+                                receiverWishedDeck, proposal.getSenderPhysicalCards())
+                        );
+
+                    // save
                     deckMap.put(proposal.getReceiverUserEmail(), receiverDecks);
                     deckMap.put(proposal.getSenderUserEmail(), senderDecks);
                     proposalMap.remove(proposalId, proposal);
