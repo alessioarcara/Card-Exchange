@@ -392,7 +392,7 @@ public class DeckServiceTest {
             PhysicalCard mockPCard = new PhysicalCard(Game.randomGame(), 1111, Status.randomStatus(), "This is a valid description.");
             List<PhysicalCard> testList = DummyData.createPhysicalCardDummyList(5);
             testList.add(mockPCard);
-            Proposal mockProposal1 = new Proposal("test2@test.it", "test2@test.it",
+            Proposal mockProposal1 = new Proposal("test1@test.it", "test2@test.it",
                     testList, DummyData.createPhysicalCardDummyList(5));
             Proposal mockProposal2 = new Proposal("test3@test.it", "test4@test.it",
                     DummyData.createPhysicalCardDummyList(5), DummyData.createPhysicalCardDummyList(5));
