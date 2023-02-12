@@ -157,6 +157,20 @@ public class ExchangeServiceTest {
             ctrl.verify();
         }
 
+        @Test
+        public void testAddProposalForSameSenderAndReceiver() {
+            setupForValidToken();
+            Map<String, User> userMap = new HashMap<>();
+            userMap.put("test@test.it", new User("test@test.it", "password"));
+            expect(mockConfig.getServletContext()).andReturn(mockCtx);
+            expect(mockDB.getPersistentMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
+                    .andReturn(userMap);
+
+            ctrl.replay();
+            Assertions.assertThrows(InputException.class, () -> exchangeService.addProposal("validToken", "test@test.it", DummyData.createPhysicalCardDummyList(2), DummyData.createPhysicalCardDummyList(2)));
+            ctrl.verify();
+        }
+
         @ParameterizedTest
         @NullAndEmptySource
         @ValueSource(strings = {"invalidToken"})

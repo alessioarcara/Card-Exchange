@@ -56,6 +56,8 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
                 db.getPersistentMap(getServletContext(), LOGIN_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson)));
         if (receiverUserEmail == null || receiverUserEmail.isEmpty() || !checkEmailExistence(receiverUserEmail))
             throw new InputException("Invalid receiver email");
+        if (email.equals(receiverUserEmail))
+            throw new InputException("You cannot propose an exchange with yourself.");
         if (!checkPhysicalCardsConsistency(senderPhysicalCards))
             throw new InputException("Invalid sender physical cards");
         if (!checkPhysicalCardsConsistency(receiverPhysicalCards))

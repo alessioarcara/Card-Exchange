@@ -13,6 +13,7 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
@@ -127,14 +128,24 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
         userLists.add(wishedByUserList);
     }
 
-    @Override
-    public void setOwnedByUserList(List<PhysicalCardWithEmail> pCards) {
-        ownedByUserList.setTable(pCards, this);
+    public Button createWishedButton(PhysicalCardWithEmail pCard) {
+        if (pCard instanceof PhysicalCardWithEmailDealing && ((PhysicalCardWithEmailDealing) pCard).getIdPhysicalCardPawn() != null) {
+            return new Button("Exchange", (ClickHandler) e -> presenter.goTo(new NewExchangePlace(
+                    ((PhysicalCardWithEmailDealing) pCard).getIdPhysicalCardPawn(), pCard.getEmail())));
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public void setWishedByUserList(List<PhysicalCardWithEmail> pCards) {
-        wishedByUserList.setTable(pCards, this);
+    public void setOwnedByUserList(List<PhysicalCardWithEmail> pCards) {
+        ownedByUserList.setTable(pCards, pCard -> new Button("Exchange", (ClickHandler) e ->
+                presenter.goTo(new NewExchangePlace(pCard.getId(), pCard.getEmail()))));
+    }
+
+    @Override
+    public void setWishedByUserList(List<? extends PhysicalCardWithEmail> pCards) {
+        wishedByUserList.setTable(pCards, this::createWishedButton);
     }
 
     @Override
