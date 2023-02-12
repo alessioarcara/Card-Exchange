@@ -12,7 +12,6 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
@@ -71,7 +70,26 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
 
     @Override
     public void acceptExchangeProposal() {
-        Window.alert("Accepted proposal : " + place.getProposalId());
+        exchangeService.acceptProposal(authSubject.getToken(), place.getProposalId(), new AsyncCallback<Boolean>() {
+            @Override
+            public void onFailure(Throwable caught) {
+                if (caught instanceof AuthException)
+                    view.showAlert(((AuthException) caught).getErrorMessage());
+                else if (caught instanceof ProposalNotFoundException)
+                    view.showAlert(((ProposalNotFoundException) caught).getErrorMessage());
+                else
+                    view.showAlert("Internal server error: " + caught.getMessage());
+            }
+
+            @Override
+            public void onSuccess(Boolean result) {
+                if (result) {
+                    view.showAlert("Successfully accepted proposal: " +  place.getProposalId());
+                }
+                else
+                    view.showAlert("It seems this proposal doesn't exist anymore");
+            }
+        });
     }
 
     @Override
@@ -79,25 +97,24 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
         exchangeService.refuseOrWithdrawProposal(authSubject.getToken(), place.getProposalId(), new AsyncCallback<Boolean>() {
             @Override
             public void onFailure(Throwable caught) {
-                if (caught instanceof AuthException) {
+                if (caught instanceof AuthException)
                     view.showAlert(((AuthException) caught).getErrorMessage());
-                } else if (caught instanceof InputException) {
+                else if (caught instanceof InputException)
                     view.showAlert(((InputException) caught).getErrorMessage());
-                } else if (caught instanceof NullPointerException) {
+                else if (caught instanceof NullPointerException)
                     view.showAlert(caught.getMessage());
-                } else {
+                else
                     view.showAlert("Internal server error: " + caught.getMessage());
-                }
             }
 
             @Override
             public void onSuccess(Boolean result) {
                 if (result) {
-                    view.showAlert("Successfully removed proposal");
+                    view.showAlert("Successfully refused/withdrawn proposal: " + place.getProposalId());
                     goTo(new ExchangesPlace(null));
-                } else {
-                    view.showAlert("It seems this proposal doesn't exist anymore");
                 }
+                else
+                    view.showAlert("It seems this proposal doesn't exist anymore");
             }
         });
     }
