@@ -36,7 +36,7 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
         view.setPresenter(this);
         acceptsOneWidget.setWidget(view.asWidget());
         view.setExchangeButtons();
-        view.setData(false, "Exchange proposal Page", "Check the cards in the exchange proposal before accepting or refusing it");
+        view.setData("Exchange proposal Page", "Cancel Proposal", "Accept Proposal");
         fetchProposalData();
     }
 
@@ -57,8 +57,8 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
 
             @Override
             public void onSuccess(ProposalPayload payload) {
-                view.setSenderDeck(payload.getSenderCards(), null);
-                view.setReceiverDeck(payload.getReceiverCards(), null, payload.getReceiverEmail());
+                view.setSenderDeck(false, payload.getSenderCards(), null, payload.getSenderEmail());
+                view.setReceiverDeck(false, payload.getReceiverCards(), null, payload.getReceiverEmail());
                 view.setAcceptButtonEnabled(true);
             }
         });
@@ -94,7 +94,6 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
             public void onSuccess(Boolean result) {
                 if (result) {
                     view.showAlert("Successfully removed proposal");
-                    goTo(new ExchangesPlace(null));
                 } else {
                     view.showAlert("It seems this proposal doesn't exist anymore");
                 }

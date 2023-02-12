@@ -50,15 +50,6 @@ public class NewExchangeActivityTest {
     }
 
     @Test
-    public void testForGoTo() {
-        placeController.goTo(isA(Place.class));
-        expectLastCall();
-        ctrl.replay();
-        newExchangeActivity.goTo(new NewExchangePlace("y132154654", "receiver@test.it"));
-        ctrl.verify();
-    }
-
-    @Test
     public void testCreateProposalForInvalidLists() {
         List<PhysicalCard> senderList = new ArrayList<>() {{
             add(new PhysicalCard(Game.MAGIC, 111, Status.Fair, "this is a valid description."));
