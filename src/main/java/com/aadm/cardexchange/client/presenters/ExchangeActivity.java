@@ -85,6 +85,7 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
             public void onSuccess(Boolean result) {
                 if (result) {
                     view.showAlert("Successfully accepted proposal: " +  place.getProposalId());
+                    goTo(new ExchangesPlace(null));
                 }
                 else
                     view.showAlert("It seems this proposal doesn't exist anymore");
