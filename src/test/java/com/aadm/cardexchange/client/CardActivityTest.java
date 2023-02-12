@@ -49,7 +49,8 @@ public class CardActivityTest {
     @Test
     public void testUpdate() {
         mockView.createUserWidgets(anyBoolean());
-        expectLastCall();
+        mockDeckService.getOwnedPhysicalCardsByCardId(anyInt(), isA(AsyncCallback.class));
+        mockDeckService.getWishedPhysicalCardsByCardId(anyInt(), isA(AsyncCallback.class));
         ctrl.replay();
         cardActivity.update();
         ctrl.verify();
