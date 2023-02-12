@@ -105,7 +105,6 @@ public class ExchangeActivityTest {
             return null;
         });
         mockView.showAlert(anyString());
-        placeController.goTo(isA(Place.class));
 
         ctrl.replay();
         exchangeActivity.refuseOrWithdrawProposal();
