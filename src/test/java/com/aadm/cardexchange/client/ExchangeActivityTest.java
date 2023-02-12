@@ -29,7 +29,7 @@ public class ExchangeActivityTest {
     ExchangeActivity exchangeActivity;
     ExchangeServiceAsync mockExchangeService;
 
-    private static Stream<Arguments> provideDifferentTypeOfErrors() {
+    private static Stream<Arguments> provideDifferentTypeOfErrorsForRefuse() {
         return Stream.of(
                 Arguments.of(new AuthException("Invalid token")),
                 Arguments.of(new InputException("Invalid proposal Id")),
@@ -60,7 +60,7 @@ public class ExchangeActivityTest {
     }
 
     @ParameterizedTest
-    @MethodSource("provideDifferentTypeOfErrors")
+    @MethodSource("provideDifferentTypeOfErrorsForRefuse")
     public void testRefuseOrWithdrawProposalForFailure(Exception error) {
         // expects
         mockExchangeService.refuseOrWithdrawProposal(anyString(), anyInt(), isA(AsyncCallback.class));
@@ -108,6 +108,66 @@ public class ExchangeActivityTest {
 
         ctrl.replay();
         exchangeActivity.refuseOrWithdrawProposal();
+        ctrl.verify();
+    }
+
+    private static Stream<Arguments> provideDifferentTypeOfErrorsForAccept() {
+        return Stream.of(
+                Arguments.of(new AuthException("Invalid token")),
+                Arguments.of(new ProposalNotFoundException("Not existing proposal")),
+                Arguments.of(new RuntimeException("Internal server error"))
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideDifferentTypeOfErrorsForAccept")
+    public void testAcceptProposalForFailure(Exception error) {
+        // expects
+        mockExchangeService.acceptProposal(anyString(), anyInt(), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
+            callback.onFailure(error);
+            return null;
+        });
+        mockView.showAlert(anyString());
+
+        ctrl.replay();
+        exchangeActivity.acceptExchangeProposal();
+        ctrl.verify();
+    }
+
+    @Test
+    public void testAcceptProposalForFalseResult() {
+        // expects
+        mockExchangeService.acceptProposal(anyString(), anyInt(), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
+            callback.onSuccess(false);
+            return null;
+        });
+        mockView.showAlert(anyString());
+
+        ctrl.replay();
+        exchangeActivity.acceptExchangeProposal();
+        ctrl.verify();
+    }
+
+    @Test
+    public void testAcceptProposalForTrueResult() {
+        // expects
+        mockExchangeService.acceptProposal(anyString(), anyInt(), isA(AsyncCallback.class));
+        expectLastCall().andAnswer(() -> {
+            Object[] args = getCurrentArguments();
+            AsyncCallback<Boolean> callback = (AsyncCallback<Boolean>) args[args.length - 1];
+            callback.onSuccess(true);
+            return null;
+        });
+        mockView.showAlert(anyString());
+
+        ctrl.replay();
+        exchangeActivity.acceptExchangeProposal();
         ctrl.verify();
     }
 }
