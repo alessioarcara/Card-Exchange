@@ -13,7 +13,6 @@ import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
@@ -41,9 +40,9 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         view.setPresenter(this);
-        view.setNewExchangeButtons();
         acceptsOneWidget.setWidget(view.asWidget());
-        view.setData(true, "New Exchange Page", "Select the cards you want to exchange from both decks and propose a new exchange");
+        view.setNewExchangeButtons();
+        view.setData("New Exchange Page", "Go back", "Send proposal");
         fetchMyOwnedDeck();
         fetchUserOwnedDeck();
     }
@@ -87,7 +86,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
                 public void onSuccess(Boolean result) {
                     if (result) {
                         view.showAlert("Proposal successfully created");
-                        goTo(new HomePlace());
+                        placeController.goTo(new HomePlace());
                     } else {
                         view.showAlert("Something went wrong...\nThis proposal already exists");
                     }
@@ -99,10 +98,5 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
     @Override
     public void onStop() {
         view.resetHandlers();
-    }
-
-    @Override
-    public void goTo(Place place) {
-        placeController.goTo(place);
     }
 }
