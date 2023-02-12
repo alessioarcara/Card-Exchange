@@ -12,7 +12,6 @@ import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
-import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
@@ -103,8 +102,8 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
                     view.showAlert(((AuthException) caught).getErrorMessage());
                 } else if (caught instanceof InputException) {
                     view.showAlert(((InputException) caught).getErrorMessage());
-                } else if (caught instanceof NullPointerException) {
-                    view.showAlert(caught.getMessage());
+                } else if (caught instanceof ProposalNotFoundException) {
+                    view.showAlert(((ProposalNotFoundException) caught).getErrorMessage());
                 } else {
                     view.showAlert("Internal server error: " + caught.getMessage());
                 }
