@@ -51,7 +51,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         deckService.getMyDeck(authSubject.getToken(), "Owned", new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
             public void onSuccess(List<PhysicalCardWithName> physicalCards) {
-                view.setSenderDeck(physicalCards, null);
+                view.setSenderDeck(true, physicalCards, null, authSubject.getEmail());
             }
         });
     }
@@ -60,7 +60,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         deckService.getUserOwnedDeck(place.getReceiverUserEmail(), new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
             public void onSuccess(List<PhysicalCardWithName> physicalCards) {
-                view.setReceiverDeck(physicalCards, place.getSelectedCardId(), place.getReceiverUserEmail());
+                view.setReceiverDeck(true, physicalCards, place.getSelectedCardId(), place.getReceiverUserEmail());
             }
         });
     }

@@ -12,7 +12,7 @@ import com.google.gwt.user.client.History;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.HTMLPanel;
+import com.google.gwt.user.client.ui.SimplePanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.ArrayList;
@@ -25,7 +25,9 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
     @UiField
     HeadingElement pageTitle;
     @UiField
-    HTMLPanel exchangeDecks;
+    SimplePanel senderDeckContainer;
+    @UiField
+    SimplePanel receiverDeckContainer;
     @UiField
     Button cancelButton;
     @UiField
@@ -91,8 +93,18 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
 
     @Override
     public void setExchangeButtons() {
-        handlers.add(cancelButton.addClickHandler(e -> exchangePresenter.refuseOrWithdrawProposal()));
-        handlers.add(acceptButton.addClickHandler(e -> exchangePresenter.acceptExchangeProposal()));
+        handlers.add(cancelButton.addClickHandler(e -> {
+            if (Window.confirm(confirmMessage("cancel"))) {
+                exchangePresenter.refuseOrWithdrawProposal();
+                History.back();
+            }
+        }));
+        handlers.add(acceptButton.addClickHandler(e -> {
+            if (Window.confirm(confirmMessage("accept"))) {
+                exchangePresenter.acceptExchangeProposal();
+                History.back();
+            }
+        }));
     }
 
     @Override
