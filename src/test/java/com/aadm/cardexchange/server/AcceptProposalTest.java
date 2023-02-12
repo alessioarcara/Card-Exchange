@@ -57,6 +57,7 @@ public class AcceptProposalTest {
                     }});
                     put("test2@test.it", new LinkedHashMap<>() {{
                         put("Owned", senderDeck);
+//                        put("Wished", new Deck("Wished", true));
                     }});
                 }});
         ExchangeServiceImpl exchangeService = new ExchangeServiceImpl(fakeDB);

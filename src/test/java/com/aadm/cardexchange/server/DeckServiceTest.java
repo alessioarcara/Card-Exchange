@@ -698,6 +698,66 @@ public class DeckServiceTest {
             });
             ctrl.verify();
         }
+
+        @Test
+        public void testRemovePhysicalCardsFromWishedDeckAfterExchangeForEmptyDeck() {
+            Deck emptyDeck = new Deck("empty");
+
+            ctrl.replay();
+            Deck actual = DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(emptyDeck, new ArrayList<>());
+            Assertions.assertTrue(actual.getPhysicalCards().isEmpty());
+            ctrl.verify();
+        }
+
+        @Test
+        public void testRemovePhysicalCardsFromWishedDeckAfterExchangeForEmptyCards() {
+            Deck deck = new Deck("deck");
+            for (PhysicalCard pCard : DummyData.createPhysicalCardDummyList(5)) {
+                deck.addPhysicalCard(pCard);
+            }
+
+            ctrl.replay();
+            Deck actual = DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(deck, new ArrayList<>());
+            Assertions.assertEquals(actual.getPhysicalCards().size(), deck.getPhysicalCards().size());
+            ctrl.verify();
+        }
+
+        @Test
+        public void testRemovePhysicalCardsFromWishedDeckAfterExchangeSuccess() {
+            // Wished Deck
+            PhysicalCard pCard1 = new PhysicalCard(Game.MAGIC, 111, Status.VeryDamaged, "This is a valid description.");
+            PhysicalCard pCard2 = new PhysicalCard(Game.MAGIC, 123, Status.Excellent, "This is a valid description.");
+            PhysicalCard pCard3 = new PhysicalCard(Game.MAGIC, 123, Status.Good, "This is a valid description.");        //Match
+            PhysicalCard pCard4 = new PhysicalCard(Game.MAGIC, 123, Status.VeryDamaged, "This is a valid description."); //Match
+
+            Deck wishedDeck = new Deck("Wished", true);
+            wishedDeck.addPhysicalCard(pCard1);
+            wishedDeck.addPhysicalCard(pCard2);
+            wishedDeck.addPhysicalCard(pCard3);
+            wishedDeck.addPhysicalCard(pCard4);
+
+            // setup cards list
+            List<PhysicalCard> listPhysicalCards = new ArrayList<>();
+            listPhysicalCards.add(new PhysicalCard(Game.MAGIC, 888, Status.randomStatus(), "This is a valid description."));
+            listPhysicalCards.add(new PhysicalCard(Game.MAGIC, 444, Status.Excellent, "This is a valid description."));
+            listPhysicalCards.add(pCard3);          //Match
+
+            ctrl.replay();
+            Deck actual = DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(wishedDeck, listPhysicalCards);
+            ctrl.verify();
+
+            Status actualPCardStatus = null;
+            for (PhysicalCard pCard : actual.getPhysicalCards()) {
+                if (pCard.getCardId() == pCard3.getCardId())
+                    actualPCardStatus = pCard.getStatus();
+            }
+
+            Status finalActualPCardStatus = actualPCardStatus;
+            Assertions.assertAll(() -> {
+                Assertions.assertEquals(2, actual.getPhysicalCards().size());
+                Assertions.assertEquals(Status.Excellent, finalActualPCardStatus);
+            });
+        }
     }
 
     @Nested
@@ -963,65 +1023,5 @@ public class DeckServiceTest {
             // number of decks modified should be equal of number of decks returned
             Assertions.assertEquals(numOfDecksModified, modifiedDecks.size());
         }
-    }
-
-    @Test
-    public void testRemovePhysicalCardsFromWishedDeckAfterExchangeForEmptyDeck() {
-        Deck emptyDeck = new Deck("empty");
-
-        ctrl.replay();
-        Deck actual = DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(emptyDeck, new ArrayList<>());
-        Assertions.assertTrue(actual.getPhysicalCards().isEmpty());
-        ctrl.verify();
-    }
-
-    @Test
-    public void testRemovePhysicalCardsFromWishedDeckAfterExchangeForEmptyCards() {
-        Deck deck = new Deck("deck");
-        for (PhysicalCard pCard : DummyData.createPhysicalCardDummyList(5)) {
-            deck.addPhysicalCard(pCard);
-        }
-
-        ctrl.replay();
-        Deck actual = DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(deck, new ArrayList<>());
-        Assertions.assertEquals(actual.getPhysicalCards().size(), deck.getPhysicalCards().size());
-        ctrl.verify();
-    }
-
-    @Test
-    public void testRemovePhysicalCardsFromWishedDeckAfterExchangeSuccess() {
-        // Wished Deck
-        PhysicalCard pCard1 = new PhysicalCard(Game.MAGIC, 111, Status.VeryDamaged, "This is a valid description.");
-        PhysicalCard pCard2 = new PhysicalCard(Game.MAGIC, 123, Status.Excellent, "This is a valid description.");
-        PhysicalCard pCard3 = new PhysicalCard(Game.MAGIC, 123, Status.Good, "This is a valid description.");        //Match
-        PhysicalCard pCard4 = new PhysicalCard(Game.MAGIC, 123, Status.VeryDamaged, "This is a valid description."); //Match
-
-        Deck wishedDeck = new Deck("Wished", true);
-        wishedDeck.addPhysicalCard(pCard1);
-        wishedDeck.addPhysicalCard(pCard2);
-        wishedDeck.addPhysicalCard(pCard3);
-        wishedDeck.addPhysicalCard(pCard4);
-
-        // setup cards list
-        List<PhysicalCard> listPhysicalCards = new ArrayList<>();
-        listPhysicalCards.add(new PhysicalCard(Game.MAGIC, 888, Status.randomStatus(), "This is a valid description."));
-        listPhysicalCards.add(new PhysicalCard(Game.MAGIC, 444, Status.Excellent, "This is a valid description."));
-        listPhysicalCards.add(pCard3);          //Match
-
-        ctrl.replay();
-        Deck actual = DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(wishedDeck, listPhysicalCards);
-        ctrl.verify();
-
-        Status actualPCardStatus = null;
-        for (PhysicalCard pCard : actual.getPhysicalCards()) {
-            if (pCard.getCardId() == pCard3.getCardId())
-                actualPCardStatus = pCard.getStatus();
-        }
-
-        Status finalActualPCardStatus = actualPCardStatus;
-        Assertions.assertAll(() -> {
-            Assertions.assertEquals(2, actual.getPhysicalCards().size());
-            Assertions.assertEquals(Status.Excellent, finalActualPCardStatus);
-        });
     }
 }
