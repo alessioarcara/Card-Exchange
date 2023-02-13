@@ -19,6 +19,7 @@ import org.mapdb.Serializer;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.aadm.cardexchange.server.services.AuthServiceImpl.validateEmail;
 
@@ -322,33 +323,51 @@ public class DeckServiceImpl extends RemoteServiceServlet implements DeckService
         return result;
     }
 
-    private static Map<Integer, List<PhysicalCard>> WishedLookUpTable(Deck wishedDeck) {
-        Map<Integer, List<PhysicalCard>> wishedLookUpTable = new HashMap<>();
+    /*
+     * 1. Adds received exchanged cards and removes exchanged away cards from the user's owned deck
+     * 2. Update the user's wished deck to remove the wished card if the user has obtained it
+     * 3. Remove the exchanged away cards from the user's custom decks as they no longer possess them.
+     *
+     * @param userDecks the map of user's decks, where the key is the deck name and the value is the deck
+     * @param received_exchanged_cards the list of physical cards received through an exchange
+     * @param exchanged_away_cards the list of physical cards exchanged away
+     * @return the updated map of user's decks
+     * @throws RuntimeException if adding or removing a physical card from the owned deck fails,
+     * indicating a need for a database rollback
+     */
+    public static Map<String, Deck> updateUserDecks(Map<String, Deck> userDecks, List<PhysicalCard> received_exchanged_cards, List<PhysicalCard> exchanged_away_cards) {
+        for (Deck deck : userDecks.values()) {
+            String deckName = deck.getName();
+            if (deckName.equals(OWNED_DECK)) {
+                for (PhysicalCard pCard : received_exchanged_cards) {
+                    if (!deck.addPhysicalCard(pCard)) {
+                        throw new RuntimeException("DB ROLLBACK!");
+                    }
+                }
+                for (PhysicalCard pCard : exchanged_away_cards) {
+                    if (!deck.removePhysicalCard(pCard)) {
+                        throw new RuntimeException("DB ROLLBACK!");
+                    }
+                }
+            } else if (deckName.equals(WISHED_DECK)) {
+                Map<Integer, List<PhysicalCard>> lookUp = deck.getPhysicalCards().stream().collect(
+                        Collectors.groupingBy(PhysicalCard::getCardId, Collectors.toCollection(LinkedList::new)));
 
-        for (PhysicalCard pCardWished : wishedDeck.getPhysicalCards()) {
-            int cardId = pCardWished.getCardId();
-            wishedLookUpTable.computeIfAbsent(cardId, k -> new LinkedList<>());
-            wishedLookUpTable.get(cardId).add(pCardWished);
-        }
-        return wishedLookUpTable;
-    }
-
-    public static Deck removePhysicalCardsFromWishedDecksAfterExchange(Deck wishedDeck, List<PhysicalCard> cardsToExchange) {
-        //Create a lookup Table to direct access to PCardsWished by Catalogue CardId
-        Map<Integer, List<PhysicalCard>> wishedLookUpTable = WishedLookUpTable(wishedDeck);
-
-        for (PhysicalCard pCardProposal : cardsToExchange) {
-            int cardId = pCardProposal.getCardId();
-            if (!wishedLookUpTable.containsKey(cardId)) {
-                continue;
+                for (PhysicalCard received_pcard : received_exchanged_cards) {
+                    int cardId = received_pcard.getCardId();
+                    if (!lookUp.containsKey(cardId)) {
+                        continue;
+                    }
+                    for (PhysicalCard wished_pcard : lookUp.get(cardId)) {
+                        if (wished_pcard.getStatus().getValue() <= received_pcard.getStatus().getValue()) {
+                            deck.removePhysicalCard(wished_pcard);
+                        }
+                    }
+                }
+            } else {
+                exchanged_away_cards.forEach(deck::removePhysicalCard);
             }
-
-            for (PhysicalCard pCardWished : wishedLookUpTable.get(cardId)) {
-                if (pCardWished.getStatus().getValue() <= pCardProposal.getStatus().getValue())
-                    wishedDeck.removePhysicalCard(pCardWished);
-            }
         }
-
-        return wishedDeck;
+        return userDecks;
     }
 }

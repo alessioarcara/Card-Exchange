@@ -115,34 +115,8 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
 
         return db.writeOperation(getServletContext(), DECK_MAP_NAME, Serializer.STRING, new GsonSerializer<>(gson, type),
                 (Map<String, Map<String, Deck>> deckMap) -> {
-
-                    // update ownership of exchanged cards
-                    Map<String, Deck> receiverDecks = deckMap.get(proposal.getReceiverUserEmail());
-                    Map<String, Deck> senderDecks = deckMap.get(proposal.getSenderUserEmail());
-                    Deck senderOwnedDeck = senderDecks.get(OWNED_DECK);
-                    Deck receiverOwnedDeck = receiverDecks.get(OWNED_DECK);
-                    for (PhysicalCard pCard : proposal.getSenderPhysicalCards())
-                        if (!senderOwnedDeck.removePhysicalCard(pCard) || !receiverOwnedDeck.addPhysicalCard(pCard))
-                            throw new RuntimeException("DB ROLLBACK!");
-                    for (PhysicalCard pCard : proposal.getReceiverPhysicalCards())
-                        if (!receiverOwnedDeck.removePhysicalCard(pCard) || !senderOwnedDeck.addPhysicalCard(pCard))
-                            throw new RuntimeException("DB ROLLBACK!");
-                    Deck senderWishedDeck = senderDecks.get(WISHED_DECK);
-                    Deck receiverWishedDeck = receiverDecks.get(WISHED_DECK);
-
-                    // clear wished deck of both users based on the status of exchanged cards
-                    if (senderWishedDeck != null)
-                        senderDecks.put(WISHED_DECK, DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(
-                                senderWishedDeck, proposal.getReceiverPhysicalCards())
-                        );
-                    if (receiverWishedDeck != null)
-                        receiverDecks.put(WISHED_DECK, DeckServiceImpl.removePhysicalCardsFromWishedDecksAfterExchange(
-                                receiverWishedDeck, proposal.getSenderPhysicalCards())
-                        );
-
-                    // save
-                    deckMap.put(proposal.getReceiverUserEmail(), receiverDecks);
-                    deckMap.put(proposal.getSenderUserEmail(), senderDecks);
+                    deckMap.put(proposal.getReceiverUserEmail(), DeckServiceImpl.updateUserDecks(deckMap.get(proposal.getReceiverUserEmail()), proposal.getSenderPhysicalCards(), proposal.getReceiverPhysicalCards()));
+                    deckMap.put(proposal.getSenderUserEmail(), DeckServiceImpl.updateUserDecks(deckMap.get(proposal.getSenderUserEmail()), proposal.getReceiverPhysicalCards(), proposal.getSenderPhysicalCards()));
                     proposalMap.remove(proposalId, proposal);
                     return true;
                 }) != null;

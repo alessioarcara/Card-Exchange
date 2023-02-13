@@ -47,17 +47,22 @@ public class AcceptProposalTest {
         FakeDB fakeDB = new FakeDB(dummyProposalMap,
                 // deck map
                 new HashMap<>() {{
-                    Deck senderDeck = createDummyOwnedDeck();
-                    senderDeck.addPhysicalCard(dummySenderPhysicalCard);
-                    Deck receiverDeck = createDummyOwnedDeck();
-                    receiverDeck.addPhysicalCard(dummyReceiverPhysicalCard);
+                    Deck receiverOwnedDeck = createDummyOwnedDeck();
+                    Deck senderOwnedDeck = createDummyOwnedDeck();
+                    Deck receiverWishedDeck = new Deck("Wished", true);
+                    Deck receiverCustomDeck = new Deck("Custom", false);
+                    senderOwnedDeck.addPhysicalCard(dummySenderPhysicalCard);
+                    receiverOwnedDeck.addPhysicalCard(dummyReceiverPhysicalCard);
+                    receiverWishedDeck.addPhysicalCard(new PhysicalCard(dummySenderPhysicalCard.getGameType(), dummySenderPhysicalCard.getCardId(), Status.VeryDamaged, "Any card is fine"));
+                    receiverCustomDeck.addPhysicalCard(dummyReceiverPhysicalCard);
                     put("test@test.it", new LinkedHashMap<>() {{
-                        put("Owned", receiverDeck);
-//                        put("Wished", new Deck("Wished", true));
+                        put("Owned", receiverOwnedDeck);
+                        put("Wished", receiverWishedDeck);
+                        put("Custom", receiverCustomDeck);
                     }});
                     put("test2@test.it", new LinkedHashMap<>() {{
-                        put("Owned", senderDeck);
-//                        put("Wished", new Deck("Wished", true));
+                        put("Owned", senderOwnedDeck);
+                        put("Wished", new Deck("Wished", true));
                     }});
                 }});
         ExchangeServiceImpl exchangeService = new ExchangeServiceImpl(fakeDB);
@@ -73,6 +78,8 @@ public class AcceptProposalTest {
             Assertions.assertNull(fakeDB.getProposalMap().get(1));
             Assertions.assertTrue(fakeDB.getDeckMap().get("test@test.it").get("Owned").getPhysicalCards().stream().anyMatch(pCard -> pCard.equals(dummySenderPhysicalCard)));
             Assertions.assertTrue(fakeDB.getDeckMap().get("test2@test.it").get("Owned").getPhysicalCards().stream().anyMatch(pCard -> pCard.equals(dummyReceiverPhysicalCard)));
+            Assertions.assertTrue(fakeDB.getDeckMap().get("test@test.it").get("Wished").getPhysicalCards().isEmpty());
+            Assertions.assertTrue(fakeDB.getDeckMap().get("test@test.it").get("Custom").getPhysicalCards().isEmpty());
         });
     }
 
