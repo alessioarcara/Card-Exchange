@@ -21,6 +21,9 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class ExchangeServiceImpl extends RemoteServiceServlet implements ExchangeService, DefaultDecksConstants, MapDBConstants {
@@ -102,6 +105,16 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
         );
     }
 
+    private void deleteReferredProposals(Map<Integer, Proposal> proposalMap, List<PhysicalCard> receiver_cards, List<PhysicalCard> sender_cards) {
+        List<PhysicalCard> allCards = Stream.concat(receiver_cards.stream(), sender_cards.stream()).collect(Collectors.toList());
+        Map<String, PhysicalCard> lookUp = allCards.stream().collect(Collectors.toMap(PhysicalCard::getId, Function.identity()));
+
+        proposalMap.values().removeIf(proposal ->
+                proposal.getSenderPhysicalCards().stream().anyMatch(pCard -> lookUp.containsKey(pCard.getId())) ||
+                        proposal.getReceiverPhysicalCards().stream().anyMatch(pCard -> lookUp.containsKey(pCard.getId()))
+        );
+    }
+
     @Override
     public boolean acceptProposal(String token, int proposalId) throws AuthException, ProposalNotFoundException {
         String email = AuthServiceImpl.checkTokenValidity(token,
@@ -117,7 +130,7 @@ public class ExchangeServiceImpl extends RemoteServiceServlet implements Exchang
                 (Map<String, Map<String, Deck>> deckMap) -> {
                     deckMap.put(proposal.getReceiverUserEmail(), DeckServiceImpl.updateUserDecks(deckMap.get(proposal.getReceiverUserEmail()), proposal.getSenderPhysicalCards(), proposal.getReceiverPhysicalCards()));
                     deckMap.put(proposal.getSenderUserEmail(), DeckServiceImpl.updateUserDecks(deckMap.get(proposal.getSenderUserEmail()), proposal.getReceiverPhysicalCards(), proposal.getSenderPhysicalCards()));
-                    proposalMap.remove(proposalId, proposal);
+                    deleteReferredProposals(proposalMap, proposal.getSenderPhysicalCards(), proposal.getReceiverPhysicalCards());
                     return true;
                 }) != null;
     }
