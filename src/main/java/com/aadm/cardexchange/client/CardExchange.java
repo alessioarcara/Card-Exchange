@@ -84,6 +84,6 @@ public class CardExchange implements EntryPoint, Observer, ImperativeHandleSideb
 
     @Override
     public void update() {
-        appSidebar.setLinks(authSubject.isLoggedIn());
+        appSidebar.setLinks(authSubject.getEmail(), authSubject.isLoggedIn());
     }
 }

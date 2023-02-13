@@ -18,7 +18,7 @@ public interface CardView extends IsWidget {
 
     void createUserWidgets(boolean isLoggedIn);
 
-    void setWishedByUserList(List<PhysicalCardWithEmail> pCards);
+    void setWishedByUserList(List<? extends PhysicalCardWithEmail> pCards);
 
     void setOwnedByUserList(List<PhysicalCardWithEmail> pCards);
 

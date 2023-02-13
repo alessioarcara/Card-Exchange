@@ -1,11 +1,9 @@
 package com.aadm.cardexchange.client.widgets;
 
-import com.aadm.cardexchange.client.handlers.ImperativeHandleUserList;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithEmail;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.*;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
 import com.google.gwt.uibinder.client.UiField;
@@ -15,15 +13,16 @@ import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class UserListWidget extends Composite {
     private static final UserListUIBinder uiBinder = GWT.create(UserListUIBinder.class);
-    private static final String NO_CARDS_TEXT = "No Cards";
+    private static final String NO_CARDS_TEXT = "No users";
     @UiField
     HeadingElement tableHeading;
     @UiField(provided = true)
     FlexTable table;
-    int noCardsRow;
+    int noUsersRow;
     boolean showExchangeButton;
 
     @UiConstructor
@@ -34,10 +33,10 @@ public class UserListWidget extends Composite {
         tableHeading.setInnerText(title);
     }
 
-    private void setNoCardsText() {
-        noCardsRow = table.getRowCount();
-        table.setText(noCardsRow, 0, NO_CARDS_TEXT);
-        table.getFlexCellFormatter().setColSpan(noCardsRow, 0, 3);
+    private void setNoUsersText() {
+        noUsersRow = table.getRowCount();
+        table.setText(noUsersRow, 0, NO_CARDS_TEXT);
+        table.getFlexCellFormatter().setColSpan(noUsersRow, 0, 3);
     }
 
     private void setupTable() {
@@ -46,16 +45,13 @@ public class UserListWidget extends Composite {
         TableRowElement row = tHead.insertRow(0);
         row.insertCell(0).setInnerText("User");
         row.insertCell(1).setInnerText("Status");
-        setNoCardsText();
+        setNoUsersText();
         if (showExchangeButton) row.insertCell(2).setInnerText("");
     }
 
-    public void setTable(List<PhysicalCardWithEmail> pCards, ImperativeHandleUserList parent) {
-        if (!pCards.isEmpty())
-            table.removeRow(noCardsRow);
-        pCards.forEach(pCard -> addRow(pCard.getEmail(), pCard.getStatus(), new Button(
-                "Exchange", (ClickHandler) event -> parent.onClickExchange(pCard.getEmail(), pCard.getId())
-        )));
+    public void setTable(List<? extends PhysicalCardWithEmail> pCards, Function<PhysicalCardWithEmail, Button> createButton) {
+        if (!pCards.isEmpty()) table.removeRow(noUsersRow);
+        pCards.forEach(pCard -> addRow(pCard.getEmail(), pCard.getStatus(), createButton.apply(pCard)));
     }
 
     private void addRow(String email, Status status, Button button) {

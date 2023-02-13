@@ -51,7 +51,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         deckService.getMyDeck(authSubject.getToken(), "Owned", new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
             public void onSuccess(List<PhysicalCardWithName> physicalCards) {
-                view.setSenderDeck(true, physicalCards, null, authSubject.getEmail());
+                view.setSenderDeck(true, physicalCards, place.getSelectedCardId(), authSubject.getEmail());
             }
         });
     }
