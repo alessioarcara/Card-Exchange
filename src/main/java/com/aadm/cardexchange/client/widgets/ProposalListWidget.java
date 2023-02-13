@@ -2,38 +2,35 @@ package com.aadm.cardexchange.client.widgets;
 
 import com.aadm.cardexchange.client.handlers.ImperativeHandleProposalList;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.*;
+import com.google.gwt.dom.client.Element;
+import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.uibinder.client.UiBinder;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Event;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 
-public class ProposalListWidget extends Composite {
+public class ProposalListWidget extends BaseListWidget {
     private static final ProposalListUiBinder uiBinder = GWT.create(ProposalListUiBinder.class);
-    @UiField
-    HeadingElement tableHeading;
-    @UiField(provided = true)
-    FlexTable table;
+    private static final String NO_PROPOSALS_TEXT = "No proposals";
+    String otherUser;
 
     public ProposalListWidget(String title, String otherUser) {
-        setupTable(otherUser);
+        this.otherUser = otherUser;
+        setupTable();
         initWidget(uiBinder.createAndBindUi(this));
         tableHeading.setInnerText(title);
+        setNoItemsText(NO_PROPOSALS_TEXT);
     }
 
-    private void setupTable(String otherUser) {
-        table = new FlexTable();
-        TableSectionElement tHead = ((TableElement) ((Element) table.getElement())).createTHead();
-        TableRowElement row = tHead.insertRow(0);
+    @Override
+    protected void setupTableHeader(TableRowElement row) {
         row.insertCell(0).setInnerText("ID");
         row.insertCell(1).setInnerText("Date");
         row.insertCell(2).setInnerText(otherUser);
     }
 
     public void addRow(int id, String date, String email, ImperativeHandleProposalList rowClickHandler) {
+        if (table.getRowCount() == noItemsRow) table.removeRow(noItemsRow);
         int numRows = (table.getRowCount());
         table.setText(numRows, 0, String.valueOf(id));
         table.setText(numRows, 1, date);
@@ -50,6 +47,7 @@ public class ProposalListWidget extends Composite {
 
     public void resetTable() {
         table.removeAllRows();
+        setNoItemsText(NO_PROPOSALS_TEXT);
     }
 
     interface ProposalListUiBinder extends UiBinder<Widget, ProposalListWidget> {
