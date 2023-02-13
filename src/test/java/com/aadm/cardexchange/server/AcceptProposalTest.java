@@ -25,7 +25,11 @@ public class AcceptProposalTest {
     PhysicalCard dummyReceiverPhysicalCard = new PhysicalCard(Game.randomGame(), 222, Status.randomStatus(), "This is a valid description");
     Map<Integer, Proposal> dummyProposalMap = new HashMap<>() {{
         put(1, new Proposal("test2@test.it", "test@test.it",
-                Collections.singletonList(dummySenderPhysicalCard), Collections.singletonList(dummyReceiverPhysicalCard)));
+                Collections.singletonList(dummySenderPhysicalCard),
+                Collections.singletonList(dummyReceiverPhysicalCard)));
+        put(2, new Proposal("test3@test.it", "test@test.it",
+                Collections.singletonList(new PhysicalCard(Game.randomGame(), 333, Status.randomStatus(), "This is a valid description")),
+                Collections.singletonList(dummyReceiverPhysicalCard)));
     }};
 
     @BeforeEach
@@ -80,6 +84,7 @@ public class AcceptProposalTest {
             Assertions.assertTrue(fakeDB.getDeckMap().get("test2@test.it").get("Owned").getPhysicalCards().stream().anyMatch(pCard -> pCard.equals(dummyReceiverPhysicalCard)));
             Assertions.assertTrue(fakeDB.getDeckMap().get("test@test.it").get("Wished").getPhysicalCards().isEmpty());
             Assertions.assertTrue(fakeDB.getDeckMap().get("test@test.it").get("Custom").getPhysicalCards().isEmpty());
+            Assertions.assertTrue(fakeDB.getProposalMap().isEmpty());
         });
     }
 
