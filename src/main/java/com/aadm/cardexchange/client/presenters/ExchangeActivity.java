@@ -58,7 +58,7 @@ public class ExchangeActivity extends AbstractActivity implements NewExchangeVie
             public void onSuccess(ProposalPayload payload) {
                 view.setSenderDeck(false, payload.getSenderCards(), null, payload.getSenderEmail());
                 view.setReceiverDeck(false, payload.getReceiverCards(), null, payload.getReceiverEmail());
-                view.setAcceptButtonEnabled(true);
+                view.setAcceptButtonEnabled(!payload.getSenderEmail().equals(authSubject.getEmail()));
             }
         });
     }

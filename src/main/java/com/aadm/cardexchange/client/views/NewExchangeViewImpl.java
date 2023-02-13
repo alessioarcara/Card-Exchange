@@ -116,7 +116,7 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
 
     @Override
     public void setAcceptButtonEnabled(boolean enabled) {
-        acceptButton.setEnabled(true);
+        acceptButton.setEnabled(enabled);
     }
 
     @Override
