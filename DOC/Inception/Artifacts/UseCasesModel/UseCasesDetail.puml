@@ -1,0 +1,171 @@
+@startuml UseCasesDetail
+
+rectangle UseCasesDetail {
+    package Signup [
+    **ID:** UC1
+    **Actors:** Visitor
+    **Pre-conditions:** The visitor has started the application
+    **Main sequence:**
+        1. The visitor enters the Authentication section and selects
+            the 'Signup' option
+        2. The system shows the forms for data entry (email, password)
+        3. The visitor enters his own email and password and confirms
+        4. The system navigates the visitor to the Home page
+    **Alternative sequence:**
+      3a.  Invalid fields (email or password):
+            3a.1) The system shows an error alert with a message of invalid
+            fields and returns to step 2
+    **Post-conditions:** The visitor has registered to the application and is
+    automatically authenticated
+    ]
+
+    package Login [
+    **ID:** UC2
+    **Actors:** Visitor
+    **Pre-conditions:** The visitor has signed up
+    **Main sequence:**
+        1. The visitor enters the Authentication section and selects
+            the 'Login' option
+        2. The system shows the forms for data entry (email, password)
+        3. The visitor enters his credentials and confirms
+        4. The system navigates the visitor to the Home page
+    **Alternative sequence:**
+      3a.  Incorrect credentials (email or password):
+            3a.1) The system shows an error alert with a message of incorrect
+            credentials and returns to step 2
+    **Post-conditions:** The visitor has authenticated
+    ]
+
+    package CardVisualization [
+    **ID:** UC3
+    **Actors:** Visitor
+    **Pre-conditions:** The visitor has navigated to the Home page
+    **Main sequence:**
+        1. The visitor selects one of the available games
+        2. The system shows the cards of the selected game with
+            their main informations
+    **Alternative sequence:**  /
+    **Post-conditions:** The visitor has visualized the cards
+    ]
+
+    package CardDetailsVisualization [
+    **ID:** UC4
+    **Actors:** Visitor
+    **Pre-conditions:**  /
+    **Main sequence:**
+        1. The visitor selects the option "Open details"
+             from the card in the Home page
+     - step2
+     - step3
+    **Alternative sequence:**  /
+    **Post-conditions:**
+    ]
+
+    package CardsManagement [
+    **ID:** UC5
+    **Actors:** User
+    **Pre-conditions:** The user has logged in
+    **Main sequence:**
+     - step1
+     - step2
+     - step3
+    **Alternative sequence:**
+    **Post-conditions:**
+    ]
+
+    package OwnedCardsManagement [
+    **ID:** UC6
+    **Actors:** User
+    **Pre-conditions:** The user has logged in
+    **Main sequence:**
+     - step1
+     - step2
+     - step3
+    **Alternative sequence:**
+    **Post-conditions:**
+    ]
+
+    package WishedCardsManagement [
+    **ID:** UC7
+    **Actors:** User
+    **Pre-conditions:** The user has logged in
+    **Main sequence:**
+     - step1
+     - step2
+     - step3
+    **Alternative sequence:**
+    **Post-conditions:**
+    ]
+
+    package DecksManagement [
+    **ID:** UC8
+    **Actors:** User
+    **Pre-conditions:** The user has logged in
+    **Main sequence:**
+     - step1
+     - step2
+     - step3
+    **Alternative sequence:**
+    **Post-conditions:**
+    ]
+
+    package ProposeExchange [
+    **ID:** UC9
+    **Actors:** User
+    **Pre-conditions:** The user has logged in
+    **Main sequence:**
+     - step1
+     - step2
+     - step3
+    **Alternative sequence:**
+    **Post-conditions:**
+    ]
+
+    package ExchangeProposalVisualization [
+    **ID:** UC10
+    **Actors:** User
+    **Pre-conditions:** The user has logged in
+    **Main sequence:**
+     - step1
+     - step2
+     - step3
+    **Alternative sequence:**
+    **Post-conditions:**
+    ]
+
+    package RefuseExchange [
+    **ID:** UC11
+    **Actors:** User
+    **Pre-conditions:**  /
+    **Main sequence:**
+     - condizione di attivazione
+     - step2
+     - step3
+    **Alternative sequence:**  /
+    **Post-conditions:**
+    ]
+
+    package AcceptExchange [
+    **ID:** UC12
+    **Actors:** User
+    **Pre-conditions:**  /
+    **Main sequence:**
+     - condizione di attivazione
+     - step2
+     - step3
+    **Alternative sequence:**  /
+    **Post-conditions:**
+    ]
+
+    package Logout [
+    **ID:** UC13
+    **Actors:** User
+    **Pre-conditions:** The user has logged in
+    **Main sequence:**
+        1. The user logs out of the application through the apposite button
+    **Alternative sequence:**  /
+    **Post-conditions:** The user is no longer authenticated
+    ]
+}
+
+@enduml
