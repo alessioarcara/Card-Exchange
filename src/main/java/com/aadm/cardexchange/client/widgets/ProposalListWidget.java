@@ -13,9 +13,11 @@ public class ProposalListWidget extends BaseListWidget {
     private static final ProposalListUiBinder uiBinder = GWT.create(ProposalListUiBinder.class);
     private static final String NO_PROPOSALS_TEXT = "No proposals";
     String otherUser;
+    int size;
 
     public ProposalListWidget(String title, String otherUser) {
         this.otherUser = otherUser;
+        this.size = 0;
         setupTable();
         initWidget(uiBinder.createAndBindUi(this));
         tableHeading.setInnerText(title);
@@ -30,7 +32,7 @@ public class ProposalListWidget extends BaseListWidget {
     }
 
     public void addRow(int id, String date, String email, ImperativeHandleProposalList rowClickHandler) {
-        if (table.getRowCount() == noItemsRow) table.removeRow(noItemsRow);
+        if (size++ == 0) table.removeRow(noItemsRow);
         int numRows = (table.getRowCount());
         table.setText(numRows, 0, String.valueOf(id));
         table.setText(numRows, 1, date);
@@ -47,6 +49,7 @@ public class ProposalListWidget extends BaseListWidget {
 
     public void resetTable() {
         table.removeAllRows();
+        size = 0;
         setNoItemsText(NO_PROPOSALS_TEXT);
     }
 
