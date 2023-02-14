@@ -6,6 +6,7 @@ import com.aadm.cardexchange.client.views.HomeView;
 import com.aadm.cardexchange.server.DummyData;
 import com.aadm.cardexchange.shared.CardServiceAsync;
 import com.aadm.cardexchange.shared.models.*;
+import com.google.gwt.event.shared.EventBus;
 import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
@@ -47,6 +48,17 @@ public class HomeActivityTest {
         ctrl.replay();
         homeActivity.goTo(new CardPlace(null, 1));
         ctrl.verify();
+    }
+
+    @Test
+    public void testStartForGetCacheCardList() {
+        EventBus mockEventBus = ctrl.createMock(EventBus.class);
+        homeActivity.start(new FakeContainer(), mockEventBus);
+    }
+
+    @Test
+    public void testStopForCacheCardList() {
+        homeActivity.onStop();
     }
 
     @Test

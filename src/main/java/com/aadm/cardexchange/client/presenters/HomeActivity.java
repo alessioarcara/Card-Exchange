@@ -1,6 +1,7 @@
 package com.aadm.cardexchange.client.presenters;
 
 import com.aadm.cardexchange.client.utils.BaseAsyncCallback;
+import com.aadm.cardexchange.client.utils.CardListCache;
 import com.aadm.cardexchange.client.views.HomeView;
 import com.aadm.cardexchange.shared.CardServiceAsync;
 import com.aadm.cardexchange.shared.models.*;
@@ -29,6 +30,7 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
     public void start(AcceptsOneWidget containerWidget, EventBus eventBus) {
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
+        cards = CardListCache.getCachedCardList();
     }
 
     public void fetchGameCards(Game game) {
@@ -100,6 +102,11 @@ public class HomeActivity extends AbstractActivity implements HomeView.Presenter
             }
         }
         return filteredCards;
+    }
+
+    @Override
+    public void onStop() {
+        CardListCache.cacheCardList(cards);
     }
 
     public void goTo(Place place) {
