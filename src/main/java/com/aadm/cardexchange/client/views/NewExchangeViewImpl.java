@@ -126,8 +126,8 @@ public class NewExchangeViewImpl extends Composite implements NewExchangeView, I
 
     @Override
     public void onChangeSelection() {
-        acceptButton.setEnabled(receiverDeck != null && !receiverDeck.getDeckSelectedCards().isEmpty()
-                && senderDeck != null && !senderDeck.getDeckSelectedCards().isEmpty());
+        acceptButton.setEnabled(receiverDeck != null && receiverDeck.getDeckSelectedCards() != null && !receiverDeck.getDeckSelectedCards().isEmpty()
+                && senderDeck != null && senderDeck.getDeckSelectedCards() != null && !senderDeck.getDeckSelectedCards().isEmpty());
     }
 
     interface NewExchangeViewImplUIBinder extends UiBinder<Widget, NewExchangeViewImpl> {

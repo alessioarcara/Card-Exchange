@@ -14,7 +14,6 @@
             display: block;
             max-height: 60vh;
             overflow-y: scroll;
-            cursor: pointer;
         }
 
         .table::-webkit-scrollbar {
@@ -22,6 +21,7 @@
         }
 
         .table th, td {
+            text-align: center;
             padding: 0.2rem 1rem 0.2rem 0.7rem;
         }
 
@@ -35,6 +35,10 @@
             top: 0;
             background-color: rgb(205, 88, 136);
             font-weight: bold;
+        }
+
+        .table tbody > tr {
+            cursor: pointer;
         }
 
         .table thead td:first-child {
