@@ -1,0 +1,6 @@
+###### Inception - 07-01-2023 ######
+
+Lettura delle specifiche testuali dell'applicazione,
+modellazione dei casi d'uso progettuali e stesura del modello di dominio
+in preparazione allo Sprint Planning 01
+[Alessio, Alessia, Davide, Matteo]
