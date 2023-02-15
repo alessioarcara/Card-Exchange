@@ -1,0 +1,12 @@
+## DEFINITION OF DONE
+
+_** Dod (TASK) **_
+- La pull request ha un titolo e descrizione adeguata
+- La pull request è stata collegata con la issue del task
+- I requisiti funzionali del task collegato sono soddisfatti
+- Il codice si compila senza errori
+- Gli Unit Tests sono stati scritti e passati
+- Gli Unit Tests esistenti sono stati passati
+- Il Code Review è stato fatto
+- La documentazione è stata aggiornata
+- La pull request è stata accettata e fatto merge sul branch development.

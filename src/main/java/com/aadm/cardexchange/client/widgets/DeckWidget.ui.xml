@@ -10,26 +10,25 @@
 
         .deckHeader {
             display: flex;
+            justify-content: space-between;
             align-items: center;
             color: #fff;
-            padding-left: 1rem;
+            padding: 0 1rem 0 1rem;
+        }
+
+        .deckNameWrapper {
+            display: flex;
+            align-items: center;
             gap: 1rem;
         }
 
-        .showButton {
-            background: #444;
-            color: #eee;
-            border: none;
-            height: 2rem;
-            width: 2rem;
-            border-radius: 25%;
-            font-size: 1.1em;
-            transform: rotate(90deg);
+        .actions {
+            display: flex;
+            gap: 0.5rem;
         }
 
-        .showButton:hover {
-            background: #eee;
-            color: #444;
+        .showButton {
+            transform: rotate(90deg);
         }
 
         .cards {
@@ -41,14 +40,17 @@
             width: 100%;
             justify-content: flex-start;
             align-items: stretch;
-            overflow-x: scroll;
+            overflow-x: auto;
             background: #eee;
         }
     </ui:style>
     <g:HTMLPanel styleName="{style.deck}">
         <div class="{style.deckHeader}">
-            <h2 ui:field="deckName"/>
-            <g:Button styleName="{style.showButton}" ui:field="showButton">></g:Button>
+            <div class="{style.deckNameWrapper}">
+                <h2 ui:field="deckName"/>
+                <g:Button styleName="deckButton {style.showButton}" ui:field="showButton">></g:Button>
+            </div>
+            <g:HTMLPanel styleName="{style.actions}" ui:field="actions"/>
         </div>
         <g:HTMLPanel styleName="{style.cards}" ui:field="cards"/>
     </g:HTMLPanel>

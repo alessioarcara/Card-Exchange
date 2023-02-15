@@ -1,7 +1,0 @@
-###### GLOSSARIO ######
-
-# Scrum Roles:
-
-PO: Product Owner
-SM: Scrum Master
-DT: Development team

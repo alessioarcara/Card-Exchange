@@ -47,6 +47,10 @@ public class PhysicalCard implements Serializable {
         return description;
     }
 
+    public PhysicalCard copyWithModifiedStatusAndDescription(Status newStatus, String newDescription) {
+        return new PhysicalCard(getId(), getCardId(), newStatus, newDescription);
+    }
+
     public Game getGameType() {
         return id.charAt(0) == 'm' ? Game.MAGIC :
                 id.charAt(0) == 'y' ? Game.YUGIOH :

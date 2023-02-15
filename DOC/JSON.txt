@@ -1,7 +1,0 @@
-------------------------------------------------------
-Carta
-   artista
-   name
-
-Pokemon
-   image: un link all’immagine della carta

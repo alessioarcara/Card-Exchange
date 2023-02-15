@@ -13,14 +13,13 @@ import com.aadm.cardexchange.shared.models.PhysicalCard;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithName;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
-import com.google.gwt.place.shared.Place;
 import com.google.gwt.place.shared.PlaceController;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.AcceptsOneWidget;
 
 import java.util.List;
 
-public class NewExchangeActivity extends AbstractActivity implements NewExchangeView.Presenter {
+public class NewExchangeActivity extends AbstractActivity implements NewExchangeView.NewExchangePresenter {
     private final NewExchangePlace place;
     private final NewExchangeView view;
     private final DeckServiceAsync deckService;
@@ -37,20 +36,22 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         this.authSubject = authSubject;
         this.placeController = placeController;
     }
+
     @Override
     public void start(AcceptsOneWidget acceptsOneWidget, EventBus eventBus) {
         view.setPresenter(this);
         acceptsOneWidget.setWidget(view.asWidget());
+        view.setNewExchangeButtons();
+        view.setData("New Exchange Page", "Go back", "Send proposal");
         fetchMyOwnedDeck();
         fetchUserOwnedDeck();
-        view.setReceiverDeckName(place.getReceiverUserEmail());
     }
 
     private void fetchMyOwnedDeck() {
         deckService.getMyDeck(authSubject.getToken(), "Owned", new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
             public void onSuccess(List<PhysicalCardWithName> physicalCards) {
-                view.setSenderDeck(physicalCards);
+                view.setSenderDeck(true, physicalCards, place.getSelectedCardId(), authSubject.getEmail());
             }
         });
     }
@@ -59,7 +60,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         deckService.getUserOwnedDeck(place.getReceiverUserEmail(), new BaseAsyncCallback<List<PhysicalCardWithName>>() {
             @Override
             public void onSuccess(List<PhysicalCardWithName> physicalCards) {
-                view.setReceiverDeck(physicalCards, place.getSelectedCardId());
+                view.setReceiverDeck(true, physicalCards, place.getSelectedCardId(), place.getReceiverUserEmail());
             }
         });
     }
@@ -68,8 +69,7 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
     public void createProposal(List<PhysicalCard> senderDeckSelectedCards, List<PhysicalCard> receiverDeckSelectedCards) {
         if (senderDeckSelectedCards.isEmpty() || receiverDeckSelectedCards.isEmpty()) {
             view.showAlert("Invalid selection error:\nProvide at least one card form each deck");
-        }
-        else {
+        } else {
             exchangeService.addProposal(authSubject.getToken(), place.getReceiverUserEmail(), senderDeckSelectedCards, receiverDeckSelectedCards, new AsyncCallback<Boolean>() {
                 @Override
                 public void onFailure(Throwable caught) {
@@ -85,7 +85,8 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
                 @Override
                 public void onSuccess(Boolean result) {
                     if (result) {
-                        goTo(new HomePlace());
+                        view.showAlert("Proposal successfully created");
+                        placeController.goTo(new HomePlace());
                     } else {
                         view.showAlert("Something went wrong...\nThis proposal already exists");
                     }
@@ -94,7 +95,8 @@ public class NewExchangeActivity extends AbstractActivity implements NewExchange
         }
     }
 
-    public void goTo(Place place) {
-        placeController.goTo(place);
+    @Override
+    public void onStop() {
+        view.resetHandlers();
     }
 }

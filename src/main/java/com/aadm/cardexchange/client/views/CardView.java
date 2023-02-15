@@ -18,12 +18,15 @@ public interface CardView extends IsWidget {
 
     void createUserWidgets(boolean isLoggedIn);
 
+    void setWishedByUserList(List<? extends PhysicalCardWithEmail> pCards);
+
     void setOwnedByUserList(List<PhysicalCardWithEmail> pCards);
 
     void setPresenter(Presenter presenter);
 
     interface Presenter {
         void goTo(Place place);
+
         void fetchCard();
 
         void addCardToDeck(String deckName, String status, String description);

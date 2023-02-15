@@ -2,11 +2,11 @@ package com.aadm.cardexchange.client;
 
 import com.aadm.cardexchange.client.auth.AuthSubject;
 import com.aadm.cardexchange.client.auth.Observer;
+import com.aadm.cardexchange.client.handlers.ImperativeHandleSidebar;
 import com.aadm.cardexchange.client.places.HomePlace;
 import com.aadm.cardexchange.client.routes.AppActivityMapper;
 import com.aadm.cardexchange.client.routes.AppPlaceHistoryMapper;
 import com.aadm.cardexchange.client.utils.IgnoreAsyncCallback;
-import com.aadm.cardexchange.client.widgets.ImperativeHandleSidebar;
 import com.aadm.cardexchange.client.widgets.SidebarWidget;
 import com.aadm.cardexchange.shared.AuthService;
 import com.aadm.cardexchange.shared.AuthServiceAsync;
@@ -84,6 +84,6 @@ public class CardExchange implements EntryPoint, Observer, ImperativeHandleSideb
 
     @Override
     public void update() {
-        appSidebar.setLinks(authSubject.isLoggedIn());
+        appSidebar.setLinks(authSubject.getEmail(), authSubject.isLoggedIn());
     }
 }

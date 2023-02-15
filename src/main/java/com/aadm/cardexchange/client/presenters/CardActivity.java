@@ -11,6 +11,7 @@ import com.aadm.cardexchange.shared.exceptions.AuthException;
 import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.Card;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithEmail;
+import com.aadm.cardexchange.shared.models.PhysicalCardWithEmailDealing;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.activity.shared.AbstractActivity;
 import com.google.gwt.event.shared.EventBus;
@@ -45,13 +46,14 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
         view.setPresenter(this);
         containerWidget.setWidget(view.asWidget());
         fetchCard();
-        fetchOwnedPhysicalCards();
         update();
     }
 
     @Override
     public void update() {
         view.createUserWidgets(authSubject.isLoggedIn());
+        fetchOwnedPhysicalCards();
+        fetchWishedPhysicalCards();
     }
 
     public void fetchCard() {
@@ -63,17 +65,35 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
         });
     }
 
+    private List<PhysicalCardWithEmail> filterOwnPhysicalCards(List<? extends PhysicalCardWithEmail> pCardsWithEmail) {
+        return pCardsWithEmail.stream().filter(pCardWithEmail -> !pCardWithEmail.getEmail().equals(authSubject.getEmail())).collect(Collectors.toList());
+    }
+
     private void fetchOwnedPhysicalCards() {
         deckService.getOwnedPhysicalCardsByCardId(place.getCardId(), new BaseAsyncCallback<List<PhysicalCardWithEmail>>() {
             @Override
             public void onSuccess(List<PhysicalCardWithEmail> result) {
-                view.setOwnedByUserList(
-                        authSubject.isLoggedIn() ?
-                                result.stream().filter(pCardWithEmail -> !pCardWithEmail.getEmail().equals(authSubject.getEmail())).collect(Collectors.toList()) :
-                                result
-                );
+                view.setOwnedByUserList(filterOwnPhysicalCards(result));
             }
         });
+    }
+
+    private void fetchWishedPhysicalCards() {
+        if (authSubject.isLoggedIn()) {
+            deckService.getListPhysicalCardWithEmailDealing(authSubject.getToken(), place.getGame(), place.getCardId(), new BaseAsyncCallback<List<PhysicalCardWithEmailDealing>>() {
+                @Override
+                public void onSuccess(List<PhysicalCardWithEmailDealing> result) {
+                    view.setWishedByUserList(filterOwnPhysicalCards(result));
+                }
+            });
+        } else {
+            deckService.getWishedPhysicalCardsByCardId(place.getCardId(), new BaseAsyncCallback<List<PhysicalCardWithEmail>>() {
+                @Override
+                public void onSuccess(List<PhysicalCardWithEmail> result) {
+                    view.setWishedByUserList(filterOwnPhysicalCards(result));
+                }
+            });
+        }
     }
 
     public void addCardToDeck(String deckName, String status, String description) {
@@ -110,5 +130,7 @@ public class CardActivity extends AbstractActivity implements CardView.Presenter
     }
 
     @Override
-    public void goTo(Place place) { placeController.goTo(place); }
+    public void goTo(Place place) {
+        placeController.goTo(place);
+    }
 }

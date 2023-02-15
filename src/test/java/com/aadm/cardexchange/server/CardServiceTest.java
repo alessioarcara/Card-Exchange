@@ -2,6 +2,7 @@ package com.aadm.cardexchange.server;
 
 import com.aadm.cardexchange.server.mapdb.MapDB;
 import com.aadm.cardexchange.server.services.CardServiceImpl;
+import com.aadm.cardexchange.shared.exceptions.InputException;
 import com.aadm.cardexchange.shared.models.*;
 import org.easymock.IMocksControl;
 import org.junit.jupiter.api.Assertions;
@@ -42,23 +43,23 @@ public class CardServiceTest {
 
     private static Stream<Arguments> provideClassAndMockData() {
         return Stream.of(
-                Arguments.of(Game.MAGIC, MagicCard.class, MockCardData.createMagicDummyMap()),
-                Arguments.of(Game.POKEMON, PokemonCard.class, MockCardData.createPokemonDummyMap()),
-                Arguments.of(Game.YUGIOH, YuGiOhCard.class, MockCardData.createYuGiOhDummyMap())
+                Arguments.of(Game.MAGIC, MagicCard.class, DummyData.createMagicDummyMap()),
+                Arguments.of(Game.POKEMON, PokemonCard.class, DummyData.createPokemonDummyMap()),
+                Arguments.of(Game.YUGIOH, YuGiOhCard.class, DummyData.createYuGiOhDummyMap())
         );
     }
 
     private static Stream<Arguments> provideMockData() {
         return Stream.of(
-                Arguments.of(Game.MAGIC, MockCardData.createMagicDummyMap()),
-                Arguments.of(Game.POKEMON, MockCardData.createPokemonDummyMap()),
-                Arguments.of(Game.YUGIOH, MockCardData.createYuGiOhDummyMap())
+                Arguments.of(Game.MAGIC, DummyData.createMagicDummyMap()),
+                Arguments.of(Game.POKEMON, DummyData.createPokemonDummyMap()),
+                Arguments.of(Game.YUGIOH, DummyData.createYuGiOhDummyMap())
         );
     }
 
     @ParameterizedTest
     @MethodSource("provideClassAndMockData")
-    public void testGetGameCardsListContainsCorrectSubClassesForGameParameter(Game game, Class<?> clazz, Map<Integer, Card> expectedMap) {
+    public void testGetGameCardsListContainsCorrectSubClassesForGameParameter(Game game, Class<?> clazz, Map<Integer, Card> expectedMap) throws InputException {
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(expectedMap);
         ctrl.replay();
@@ -71,12 +72,12 @@ public class CardServiceTest {
 
     @Test
     public void testGetGameCardsForNullParameter() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> cardService.getGameCards(null));
+        Assertions.assertThrows(InputException.class, () -> cardService.getGameCards(null));
     }
 
     @ParameterizedTest
     @MethodSource("provideMockData")
-    public void testGetGameCardsExpectedListForGameParameter(Game game, Map<Integer, Card> expectedMap) {
+    public void testGetGameCardsExpectedListForGameParameter(Game game, Map<Integer, Card> expectedMap) throws InputException {
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(expectedMap);
         ctrl.replay();
@@ -87,17 +88,17 @@ public class CardServiceTest {
 
     @Test
     public void testGetGameCardForNullGameParameter() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> cardService.getGameCard(null, 2));
+        Assertions.assertThrows(InputException.class, () -> cardService.getGameCard(null, 2));
     }
 
     @Test
     public void testGetGameCardForLessThan0CardIdParameter() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> cardService.getGameCard(Game.MAGIC, -5));
+        Assertions.assertThrows(InputException.class, () -> cardService.getGameCard(Game.MAGIC, -5));
     }
 
     @ParameterizedTest
     @MethodSource("provideMockData")
-    public void testGetGameCardForIdParameter(Game game, Map<Integer, Card> expectedMap) {
+    public void testGetGameCardForIdParameter(Game game, Map<Integer, Card> expectedMap) throws InputException {
         expect(mockDB.getCachedMap(isA(ServletContext.class), anyString(), isA(Serializer.class), isA(Serializer.class)))
                 .andReturn(expectedMap);
         ctrl.replay();

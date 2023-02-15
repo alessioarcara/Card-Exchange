@@ -3,24 +3,18 @@ package com.aadm.cardexchange.client.widgets;
 import com.aadm.cardexchange.shared.models.PhysicalCardWithEmail;
 import com.aadm.cardexchange.shared.models.Status;
 import com.google.gwt.core.client.GWT;
-import com.google.gwt.dom.client.*;
-import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.dom.client.TableRowElement;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiConstructor;
-import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.ui.Button;
-import com.google.gwt.user.client.ui.Composite;
-import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.Widget;
 
 import java.util.List;
+import java.util.function.Function;
 
-public class UserListWidget extends Composite {
+public class UserListWidget extends BaseListWidget {
     private static final UserListUIBinder uiBinder = GWT.create(UserListUIBinder.class);
-    @UiField
-    HeadingElement tableHeading;
-    @UiField(provided = true)
-    FlexTable table;
+    private static final String NO_USERS_TEXT = "No users";
     boolean showExchangeButton;
 
     @UiConstructor
@@ -29,21 +23,19 @@ public class UserListWidget extends Composite {
         setupTable();
         initWidget(uiBinder.createAndBindUi(this));
         tableHeading.setInnerText(title);
+        setNoItemsText(NO_USERS_TEXT);
     }
 
-    private void setupTable() {
-        table = new FlexTable();
-        TableSectionElement tHead = ((TableElement) ((Element) table.getElement())).createTHead();
-        TableRowElement row = tHead.insertRow(0);
+    @Override
+    protected void setupTableHeader(TableRowElement row) {
         row.insertCell(0).setInnerText("User");
         row.insertCell(1).setInnerText("Status");
         if (showExchangeButton) row.insertCell(2).setInnerText("");
     }
 
-    public void setTable(List<PhysicalCardWithEmail> pCards, ImperativeHandleUserList parent) {
-        pCards.forEach(pCard -> addRow(pCard.getEmail(), pCard.getStatus(), new Button(
-                "Exchange", (ClickHandler) event -> parent.onClickExchange(pCard.getEmail(), pCard.getId())
-        )));
+    public void setTable(List<? extends PhysicalCardWithEmail> pCards, Function<PhysicalCardWithEmail, Button> createButton) {
+        if (!pCards.isEmpty()) table.removeRow(noItemsRow);
+        pCards.forEach(pCard -> addRow(pCard.getEmail(), pCard.getStatus(), createButton.apply(pCard)));
     }
 
     private void addRow(String email, Status status, Button button) {

@@ -1,0 +1,38 @@
+@startuml UseCases
+left to right direction
+
+actor Visitor as  V
+actor User as U
+
+rectangle CardExchange {
+    (Signup) as UC1
+    (Login) as UC2
+    (Cards visualization) as UC3
+    (Card details visualization) as UC4
+    (Cards management) as UC5
+    (Wished cards management) as UC6
+    (Owned cards management) as UC7
+    (Decks management) as UC8
+    (Propose exchange) as UC9
+    (Exchange proposal visualization) as UC10
+    (Accept exchange) as UC11
+    (Refuse exchange) as UC12
+    (Logout) as UC13
+}
+
+V <- U
+V ----> UC1
+V ----> UC2
+V ----> UC3
+UC3 <.. UC4 : <<extend>>
+U ----> UC5
+UC5 ^-- UC6
+UC5 ^-- UC7
+U ----> UC8
+U ----> UC9
+U ----> UC10
+UC10 <.. UC11 : <<extend>>
+UC10 <.. UC12 : <<extend>>
+U ----> UC13
+
+@enduml

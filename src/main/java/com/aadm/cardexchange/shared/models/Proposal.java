@@ -8,12 +8,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Proposal implements Serializable {
     private static final long serialVersionUID = 997487558313555532L;
     private static final AtomicInteger uniqueId = new AtomicInteger();
-
     private int id;
     private String senderUserEmail;
     private String receiverUserEmail;
     private List<PhysicalCard> senderPhysicalCards;
     private List<PhysicalCard> receiverPhysicalCards;
+    private long date;
 
     public Proposal(String senderUserEmail, String receiverUserEmail, List<PhysicalCard> senderPhysicalCards, List<PhysicalCard> receiverPhysicalCards) {
         this.id = uniqueId.getAndIncrement();
@@ -21,6 +21,7 @@ public class Proposal implements Serializable {
         this.receiverUserEmail = receiverUserEmail;
         this.senderPhysicalCards = senderPhysicalCards;
         this.receiverPhysicalCards = receiverPhysicalCards;
+        this.date = System.currentTimeMillis();
     }
 
     public Proposal() {
@@ -46,6 +47,10 @@ public class Proposal implements Serializable {
         return receiverPhysicalCards;
     }
 
+    public long getDate() {
+        return date;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -60,6 +65,6 @@ public class Proposal implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, senderUserEmail, receiverUserEmail, senderPhysicalCards, receiverPhysicalCards);
+        return Objects.hash(id, senderUserEmail, receiverUserEmail, senderPhysicalCards, receiverPhysicalCards, date);
     }
 }

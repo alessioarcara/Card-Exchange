@@ -1,13 +1,19 @@
 package com.aadm.cardexchange.client.views;
 
+import com.aadm.cardexchange.client.handlers.ImperativeHandleAddCardToDeck;
+import com.aadm.cardexchange.client.handlers.ImperativeHandleAddCardToDeckModal;
+import com.aadm.cardexchange.client.handlers.ImperativeHandleUserList;
 import com.aadm.cardexchange.client.places.NewExchangePlace;
 import com.aadm.cardexchange.client.utils.DefaultImagePathLookupTable;
-import com.aadm.cardexchange.client.widgets.*;
+import com.aadm.cardexchange.client.widgets.AddCardToDeckModalWidget;
+import com.aadm.cardexchange.client.widgets.AddCardToDeckWidget;
+import com.aadm.cardexchange.client.widgets.UserListWidget;
 import com.aadm.cardexchange.shared.models.*;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.DivElement;
 import com.google.gwt.dom.client.HeadingElement;
 import com.google.gwt.dom.client.SpanElement;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.uibinder.client.UiBinder;
 import com.google.gwt.uibinder.client.UiField;
 import com.google.gwt.user.client.Window;
@@ -49,6 +55,7 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
     AddCardToDeckWidget addCardToDeckWidget = new AddCardToDeckWidget(this);
     DialogBox dialog = new AddCardToDeckModalWidget(this);
     UserListWidget ownedByUserList;
+    UserListWidget wishedByUserList;
 
     public CardViewImpl() {
         initWidget(uiBinder.createAndBindUi(this));
@@ -116,13 +123,29 @@ public class CardViewImpl extends Composite implements CardView, ImperativeHandl
         }
         // create UserListWidget 'Exchange' buttons
         ownedByUserList = new UserListWidget("Owned by", isLoggedIn);
+        wishedByUserList = new UserListWidget("Wished by", isLoggedIn);
         userLists.add(ownedByUserList);
-        userLists.add(new UserListWidget("Wished by", isLoggedIn));
+        userLists.add(wishedByUserList);
+    }
+
+    public Button createWishedButton(PhysicalCardWithEmail pCard) {
+        if (pCard instanceof PhysicalCardWithEmailDealing && ((PhysicalCardWithEmailDealing) pCard).getIdPhysicalCardPawn() != null) {
+            return new Button("Exchange", (ClickHandler) e -> presenter.goTo(new NewExchangePlace(
+                    ((PhysicalCardWithEmailDealing) pCard).getIdPhysicalCardPawn(), pCard.getEmail())));
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void setOwnedByUserList(List<PhysicalCardWithEmail> pCards) {
-        ownedByUserList.setTable(pCards, this);
+        ownedByUserList.setTable(pCards, pCard -> new Button("Exchange", (ClickHandler) e ->
+                presenter.goTo(new NewExchangePlace(pCard.getId(), pCard.getEmail()))));
+    }
+
+    @Override
+    public void setWishedByUserList(List<? extends PhysicalCardWithEmail> pCards) {
+        wishedByUserList.setTable(pCards, this::createWishedButton);
     }
 
     @Override
