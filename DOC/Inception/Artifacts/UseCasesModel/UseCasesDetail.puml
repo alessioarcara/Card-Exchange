@@ -254,7 +254,6 @@ rectangle UseCasesDetail {
     **Actors:** User
     **Pre-conditions:**  /
     **Main sequence:**
-    **Main sequence:**
         1. The user clicks on the "Accept proposal" button
         2. The system displays a success alert with a message of exchange
             proposal accepted
