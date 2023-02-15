@@ -1,12 +1,12 @@
-### PROPOSTA DEFINITION OF DONE ###
+## DEFINITION OF DONE
 
-(TASK)
-
-- Verifica copertura TDD (Unit test definiti ove possibile)
-- Superamento Unit Test
-- Code review da parte di altro Dev
-- Documentazione tecnica funzionale completata
-- Test funzionali principali su Chrome/Firefox/Edge superati
-- Test accessibilità fatti e documentati
-- Merge su Dev effettuato
-- PO accetta la User Story
+_** Dod (TASK) **_
+- La pull request ha un titolo e descrizione adeguata
+- La pull request è stata collegata con la issue del task
+- I requisiti funzionali del task collegato sono soddisfatti
+- Il codice si compila senza errori
+- Gli Unit Tests sono stati scritti e passati
+- Gli Unit Tests esistenti sono stati passati
+- Il Code Review è stato fatto
+- La documentazione è stata aggiornata
+- La pull request è stata accettata e fatto merge sul branch development.
