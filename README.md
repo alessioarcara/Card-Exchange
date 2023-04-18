@@ -1,7 +1,8 @@
-# Progetto SWENG A.A. 2022/23
+# Card Exchange Platform
+Progetto SWENG A.A. 2022/23<br>
 Gruppo: Alessio Arcara, Alessia Crimaldi, Davide Fermi, Matteo Sacco
 
-## Quick Start Guide
+## Usage
 
 To successfully launch, test, and use the application, it is important to follow some simple steps:
 
